@@ -1,0 +1,14 @@
+
+
+<p>
+  <input type="text" [(ngModel)]="loginForm.id" (keypress)="keypressHandler($event)">
+</p>
+
+<p>
+  <input type="password" [(ngModel)]="loginForm.key" (keypress)="keypressHandler($event)">
+</p>
+
+<p>
+  <button type="button" (click)="logon()" >Login</button>
+</p>
+
