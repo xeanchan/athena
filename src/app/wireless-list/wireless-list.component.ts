@@ -9,6 +9,7 @@ export class WirelessListComponent implements OnInit {
 
   constructor() { }
 
+
   ngOnInit(): void {
   }
 
