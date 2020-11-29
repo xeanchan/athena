@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NewPlanningModule } from '../new-planning/new-planning.module';
-import { TranslatePipe } from '../pipes/translate-pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -23,8 +23,9 @@ import { TranslatePipe } from '../pipes/translate-pipe';
     MatButtonModule,
     MatProgressBarModule,
     MatDialogModule,
-    NewPlanningModule
+    NewPlanningModule,
+    TranslateModule
   ],
-  providers: [ TranslatePipe ]
+  providers: [ ]
 })
 export class WirelessListModule { }

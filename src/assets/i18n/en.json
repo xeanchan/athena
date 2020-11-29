@@ -1,4 +1,8 @@
 {
 	"language.en": "English",
-	"language.zh-TW": "Chinese"
+	"language.tw": "Chinese",
+	"login.account": "Account",
+	"login.password": "Password",
+	"login.login": "Login",
+	"login.fail": "Invalid user password, please confirm."
 }

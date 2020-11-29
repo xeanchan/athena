@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule } from '@angular/core';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -10,21 +10,15 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatRadioModule, MatTooltipModule, MatSidenavModule, MatButtonToggleModule, MatTabsModule } from '@angular/material';
 import { SpinnerModule } from './utility/spinner/spinner.module';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { TranslateService } from './service/translate.service';
 import { AuthService } from './service/auth.service';
 import { AuthGuardService } from './service/auth-guard.service';
-import { TranslatePipe } from './pipes/translate-pipe';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-/**
- * i18n
- * @param service 
- */
-export function setupTranslateFactory(
-  service: TranslateService): Function {
-  return () => {
-    console.log(navigator.language);
-    service.use('zh-TW');
-  };
+
+// 建立TranslateHttpLoader作為語系檔的讀取器
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
@@ -44,20 +38,21 @@ export function setupTranslateFactory(
     MatTooltipModule,
     MatSidenavModule,
     MatButtonToggleModule,
-    MatTabsModule
+    MatTabsModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
+      defaultLanguage: 'zh-TW'
+    }),
+    
   ],
   
   providers: [
     AuthService,
-    AuthGuardService,
-    TranslatePipe,
-    TranslateService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: setupTranslateFactory,
-      deps: [ TranslateService ],
-      multi: true
-    }
+    AuthGuardService
   ],
   bootstrap: [AppComponent]
 })

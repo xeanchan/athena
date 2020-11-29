@@ -15,18 +15,25 @@ export class LoginComponent implements OnInit {
     public router: Router,) { }
 
   loginForm: LoginForm = new LoginForm();
+  // show error message
+  showMsg = false;
 
   ngOnInit() {
-    // this.http.get('http://211.20.94.210:3000/son/taskList/sel/son_session_76204433-7568-440e-bfa7-dd2b310e2c4b').subscribe();
   }
 
   logon() {
     this.authService.logon(JSON.stringify(this.loginForm)).subscribe(
       res => {
         if (typeof res['session'] !== 'undefined') {
+          this.showMsg = false;
           this.authService.setUserToken(res['session']);
           this.router.navigate(['/']);
+        } else {
+          this.showMsg = true;
         }
+      },
+      err => {
+        this.showMsg = true;
       }
     );
   }

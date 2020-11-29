@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../service/auth.service';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
-import { TranslatePipe } from '../pipes/translate-pipe';
 
 @Component({
   selector: 'app-wireless-list',
@@ -15,8 +14,7 @@ export class WirelessListComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private http: HttpClient,
-    private dialog: MatDialog,
-    public translate: TranslatePipe
+    private dialog: MatDialog
   ) { }
 
   taskList;
