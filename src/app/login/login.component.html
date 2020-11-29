@@ -1,0 +1,16 @@
+
+
+<p>
+  {{ 'login.account' | translate }}<input type="text" [(ngModel)]="loginForm.id" (keypress)="keypressHandler($event)">
+</p>
+
+<p>
+  {{ 'login.password' | translate }}<input type="password" [(ngModel)]="loginForm.key" (keypress)="keypressHandler($event)">
+</p>
+
+<p>
+  <button type="button" (click)="logon()" >{{ 'login.login' | translate }}</button>
+</p>
+
+<p *ngIf="showMsg" class="text-danger">{{ 'login.fail' | translate }}</p>
+

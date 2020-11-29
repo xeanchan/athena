@@ -11,6 +11,9 @@ export class BaseService {
   public distPath = '/';
   public contextPath = '/';
   public jsessionid = '/';
+  public API_URL = 'http://211.20.94.210:3000/son';
+  public userToken = null;
+
 
   public httpOptions;
 

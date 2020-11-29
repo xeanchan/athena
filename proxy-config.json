@@ -1,6 +1,6 @@
 {
-  "/self-planning": {
-      "target": "http://localhost:8080",
+  "/son": {
+      "target": "http://211.20.94.210:8080/",
       "secure": false
   }
 }

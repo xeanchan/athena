@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../service/auth.service';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { NewPlanningComponent } from '../new-planning/new-planning.component';
 
 @Component({
   selector: 'app-wireless-list',
@@ -7,10 +11,58 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WirelessListComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    private dialog: MatDialog
+  ) { }
+
+  taskList;
+  timeInterval;
+  dialogRef;
+  matDialogConfig: MatDialogConfig;
 
 
   ngOnInit(): void {
+    this.matDialogConfig = new MatDialogConfig();
+    this.matDialogConfig.autoFocus = false;
+
+    this.getList();
+    window.setTimeout(() => {
+      this.startInterval();
+    }, 5000);
+  }
+
+  /**
+   * get task list
+   */
+  getList() {
+    if (this.authService.userToken != null) {
+      this.http.get(`${this.authService.API_URL}/taskList/sel/${this.authService.userToken}`).subscribe(
+        res => {
+          this.taskList = res;
+        }
+      );
+    }
+  }
+
+  /**
+   * timer get list
+   */
+  startInterval() {
+    window.clearInterval(this.timeInterval);
+    window.setInterval(() => {
+      this.getList();
+    }, 5000);
+  }
+
+  logout() {
+    window.clearInterval(this.timeInterval);
+    this.authService.logout();
+  }
+
+  openDialog() {
+    this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
 
 }
