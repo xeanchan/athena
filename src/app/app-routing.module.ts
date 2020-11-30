@@ -23,7 +23,7 @@ export const routes: Routes = [
     path: 'site',
     component: LayoutComponent,
     children: [
-      { path: 'site-planning', loadChildren: './site/site-planning/site-planning.module#SitePlanningModule', canActivate: [AuthGuardService] },
+      { path: '', loadChildren: './site/site.module#SiteModule', canActivate: [AuthGuardService] },
     ]
   }
 ];

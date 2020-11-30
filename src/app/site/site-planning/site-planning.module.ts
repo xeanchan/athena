@@ -1,16 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { SitePlanningRoutingModule } from './site-planning-routing.module';
 import { SitePlanningComponent } from './site-planning.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
     CommonModule,
-    SitePlanningRoutingModule,
+    RouterModule,
     MatSidenavModule
   ],
-  declarations: [SitePlanningComponent]
+  declarations: [SitePlanningComponent],
+  exports: [SitePlanningComponent]
 })
 export class SitePlanningModule { }
