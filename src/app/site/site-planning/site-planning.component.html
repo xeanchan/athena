@@ -1,0 +1,14 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav-content>
+    <h1>場域規劃</h1>
+
+    <a href="javascript:void(0)" [routerLink]="['/site/view3d']">3D顯示</a>
+    
+    <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
+    
+    
+  </mat-sidenav-content>
+  <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >
+    Sidenav content
+  </mat-sidenav>
+</mat-sidenav-container>

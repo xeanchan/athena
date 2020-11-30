@@ -14,6 +14,7 @@ import { AuthService } from './service/auth.service';
 import { AuthGuardService } from './service/auth-guard.service';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { LayoutComponent } from './layout/layout.component';
 
 
 // 建立TranslateHttpLoader作為語系檔的讀取器
@@ -23,8 +24,9 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent
-    ],
+    AppComponent,
+    LayoutComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,

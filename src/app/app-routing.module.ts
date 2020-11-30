@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './service/auth-guard.service';
+import { LayoutComponent } from './layout/layout.component';
 
 export const routes: Routes = [
   { 
@@ -13,8 +14,16 @@ export const routes: Routes = [
   { path: 'logon', loadChildren: './login/login.module#LoginModule' }, // 登入
   {
     path: 'wireless-list',
+    component: LayoutComponent,
     children: [
       { path: '', loadChildren: './wireless-list/wireless-list.module#WirelessListModule', canActivate: [AuthGuardService] },
+    ]
+  },
+  {
+    path: 'site',
+    component: LayoutComponent,
+    children: [
+      { path: '', loadChildren: './site/site.module#SiteModule', canActivate: [AuthGuardService] },
     ]
   }
 ];
