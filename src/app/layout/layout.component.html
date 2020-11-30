@@ -1,0 +1,17 @@
+<div class="wrap">
+	<div class="header">
+		<h1>Athena Planning Portal</h1>
+		<span class="headerRightarea"> 
+			<mat-button-toggle-group name="fontStyle" [(value)]="authService.lang" aria-label="Font Style">
+				<mat-button-toggle value="zh-TW" (change)="authService.changeLanguage('zh-TW')" selected>{{ 'language.tw' | translate }}</mat-button-toggle>
+				<mat-button-toggle value="en" (change)="authService.changeLanguage('en')">{{ 'language.en' | translate }}</mat-button-toggle>
+			</mat-button-toggle-group>
+			<a href="javascript:void(0)" (click)="logout()"><i class="fas fa-sign-out-alt logout"></i></a>
+		</span>
+	</div>
+	<div class="content">
+		<router-outlet></router-outlet>
+				
+	</div>
+</div>
+

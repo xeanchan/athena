@@ -1,0 +1,11 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav-content>
+    
+    <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
+    main content
+    
+  </mat-sidenav-content>
+  <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >
+    Sidenav content
+  </mat-sidenav>
+</mat-sidenav-container>
