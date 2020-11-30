@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatRadioModule, MatTooltipModule, MatSidenavModule, MatButtonToggleModule, MatTabsModule } from '@angular/material';
+import { MatDialogModule, MatRadioModule, MatTooltipModule, MatSidenavModule, MatButtonToggleModule, MatTabsModule, MatIconModule } from '@angular/material';
 import { SpinnerModule } from './utility/spinner/spinner.module';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { AuthService } from './service/auth.service';
@@ -39,6 +39,7 @@ export function createTranslateLoader(http: HttpClient) {
     MatSidenavModule,
     MatButtonToggleModule,
     MatTabsModule,
+    MatIconModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

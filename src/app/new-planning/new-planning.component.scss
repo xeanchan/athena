@@ -1,0 +1,27 @@
+.modalContent {
+    color: #333;
+}
+td div input[type="text"] {
+    margin: .3em .5em;
+    width: 4em;
+}
+td.th {
+    background-color: #eee;
+}
+mat-button-toggle-group {
+    margin-left: .5em;
+}
+:host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+    line-height: 30px;
+    padding: 0 12px;
+}
+.h3, h3 {
+    font-size: 1.3rem;
+}
+h3 button {
+    font-size: .8em;
+    margin-left: .5em;
+    font-weight: normal;
+    border: 0;
+    background-color: transparent;
+}

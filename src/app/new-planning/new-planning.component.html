@@ -3,34 +3,60 @@
       <button mat-button>載入</button>
   </span>
 </h3>
-<div class="modal-content">
+<div class="modalContent">
   <table>
-    <thead>
-      <tr>
-        <th>規劃案名稱</th>
-        <th>規劃目標</th>
-        <th>場域平面圖</th>
-        <th>場域尺寸</th>
-      </tr>
-    </thead>
     <tbody>
       <tr>
-        <td><input type="text"></td>
-        <td>
-          <select name="" id=""></select>
-        </td>
-        <td>
+        <td class="th">規劃案名稱</td>
+        <td><input type="text" class="w100"></td>
+        <td class="th">規劃目標</td>
+        <mat-button-toggle-group>
+          <mat-button-toggle value="zh-TW" selected>a</mat-button-toggle>
+          <mat-button-toggle value="en">b</mat-button-toggle>
+          <mat-button-toggle value="en">c</mat-button-toggle>
+        </mat-button-toggle-group>
+      </tr>
+      <tr>
+        <td class="th">場域平面圖</td>
+        <td colspan="3">
           <input type="file">
           <span class="note">圖檔限制...</span>
         </td>
-        <td>
-          <label>長<input type="text"></label>
-          <label>寬<input type="text"></label>
-          <label>高<input type="text"></label>
+      </tr>
+      <tr>
+        <td class="th">場域尺寸</td>
+        <td colspan="3">
+          <div>長<input type="text">公尺</div>
+          <div>寬<input type="text">公尺</div>
+          <div>高<input type="text">公尺</div>
         </td>
       </tr>
     </tbody>
   </table>
-  
-  <button>確定</button>
+  <span class="example-button-row">
+    <button mat-button>確定</button>
+  </span>
 </div>
+
+<span class="material-icons">
+  stop
+  </span>
+
+  <span class="material-icons">
+    fiber_manual_record
+    </span>
+
+    <span class="material-icons">
+      play_arrow
+      </span>
+
+      <span class="material-icons">
+        router
+        </span>
+
+        <span class="material-icons">
+          fiber_new
+          </span>
+      <span class="material-icons">
+        desktop_windows
+        </span>

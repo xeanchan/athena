@@ -1,1 +1,100 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+
+body {
+    background-color: #2d2f31;
+    color: #fff;
+}
+.header {
+    display: block;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    height: 60px;
+    border-bottom: 1px solid #212529;
+    background-color: #24272b;    color: #fff;
+    padding: 1em;
+}
+table {
+    background-color: #323232;
+}
+mat-dialog-container table {
+    background-color: initial;
+}
+span {
+    display: inline-block;
+}
+.float-right {
+    float: right;
+}
+.wrap {
+    width: 100%;
+    position: relative;
+}
+
+h1 {
+    display: inline-block;
+    font-size: 1.7em;
+    margin-left: 1em;
+}
+h2 {
+    font-size: 1.3em;
+}
+.headerRightarea {
+    position: absolute;
+    right: 0;
+    top: 0%;
+}
+.content {
+    margin-top: 60px;
+    padding: 2em;
+}
+table {
+    margin: 1em 0 3em;
+    width: 100%;
+}
+th,td {
+    line-height: 2em;
+    padding: .5em 1em;
+}
+td input[type="text"] {
+    margin: .3em 0;
+}
+thead tr {
+    border-bottom: 2px solid rgb(37, 125, 197);
+}
+tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+td i {
+    color: rgb(46, 133, 214);
+    cursor: pointer;
+    font-size: 1.2em;
+}
+.mat-progress-bar {
+    display: inline-block!important;
+    height: 15px!important;
+    overflow: hidden;
+    position: relative;
+    transition: opacity 250ms linear;
+    width: 70%!important;
+    margin-left: .5em!important;
+}
+.logout {
+    font-size: 1.2em;
+    margin: 0 1em;
+}
+
+span.headerRightarea {
+    margin: .8em 0 0 0;
+}
+th.date,
+th.stat {
+    width: 13em;
+}
+th.min {
+    width: 6em;
+}
+.w100 {
+    width: 100%;
+}
