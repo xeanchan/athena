@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { MatTabsModule } from '@angular/material/tabs';
     MatButtonToggleModule,
     MatIconModule,
     MatExpansionModule,
-    MatTabsModule
+    MatTabsModule,
+    MatCheckboxModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent]

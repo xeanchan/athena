@@ -9,6 +9,7 @@ body {
     display: block;
     width: 100%;
     position: fixed;
+    font-size: .8em;
     top: 0;
     height: 60px;
     border-bottom: 1px solid #212529;
@@ -41,7 +42,7 @@ h1 {
     margin-left: 1em;
 }
 h2 {
-    font-size: 1.3em;
+    font-size: 1.2em;
 }
 .headerRightarea {
     position: absolute;
@@ -51,6 +52,7 @@ h2 {
 .content {
     margin-top: 60px;
     padding: 2em;
+    font-size: .9em;
 }
 table {
     margin: 1em 0 3em;

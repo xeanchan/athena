@@ -1,6 +1,6 @@
 mat-sidenav-container {
     margin: -2em 0 0 2em;
-    padding: 2em;
+    padding: 2em 0 0 1em;
     position: relative;
     height: 95vh;
 }
@@ -29,8 +29,13 @@ mat-sidenav-container {
     border: 0;
     background-color: transparent;
     outline: 0;
+    margin-right: .5em;
     cursor: pointer;
 }
 :host ::ng-deep .mat-button-toggle-group {
     margin-left: 1em;
+}
+.dropDown_area {
+    width: 100%;
+    display: block;
 }
