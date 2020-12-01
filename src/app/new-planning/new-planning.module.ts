@@ -4,6 +4,7 @@ import { NewPlanningComponent } from './new-planning.component';
 import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NewPlanningRoutingModule } from './new-planning-routing.module';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   imports: [
@@ -11,7 +12,8 @@ import { NewPlanningRoutingModule } from './new-planning-routing.module';
     MatButtonToggleModule,
     MatIconModule,
     NewPlanningRoutingModule,
-    RouterModule
+    RouterModule,
+    MatSelectModule
   ],
   declarations: [NewPlanningComponent],
   entryComponents: [NewPlanningComponent],
