@@ -46,9 +46,9 @@ export function createTranslateLoader(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      },
-      defaultLanguage: 'zh-TW'
+        deps: [HttpClient],
+        
+      }
     }),
     
   ],

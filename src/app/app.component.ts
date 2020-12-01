@@ -24,6 +24,8 @@ export class AppComponent {
 
       // the lang to use, if the lang isn't available, it will use the current loader to get them
       translate.use(window.localStorage.getItem('son_language'));
+    } else {
+      translate.use('zh-TW');
     }
 
     translate.onLangChange.subscribe((event: LangChangeEvent) => {

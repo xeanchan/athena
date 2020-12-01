@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { NewPlanningComponent } from './new-planning.component';
 
 const routes: Routes = [
-  { path: 'new-planning', component: NewPlanningComponent },
+  { path: '', component: NewPlanningComponent },
 ];
 
 @NgModule({

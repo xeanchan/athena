@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material';
 export class LayoutComponent implements OnInit {
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private http: HttpClient,
     private dialog: MatDialog
   ) { }
