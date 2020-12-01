@@ -24,6 +24,9 @@ mat-dialog-container table {
 span {
     display: inline-block;
 }
+.inline-block {
+    display: inline-block;
+}
 .float-right {
     float: right;
 }

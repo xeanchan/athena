@@ -1,37 +1,42 @@
+<div class="tool">
+  <span class="material-icons">stop</span>
+  <span class="material-icons">fiber_manual_record</span>
+  <span class="material-icons">play_arrow</span>
+  <span class="material-icons">router</span>
+  <span class="material-icons">fiber_new</span>
+  <span class="material-icons">desktop_windows</span>
+</div>
+
 <mat-sidenav-container class="example-container">
   <mat-sidenav-content>
-    <h1>場域規劃</h1>
+    
 
-    <a href="javascript:void(0)" [routerLink]="['/site/view3d']">3D顯示</a>
+    <div>
     
-    <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
-    <div class="tool">
-      <span class="material-icons">
-        stop
-        </span>
-      
-        <span class="material-icons">
-          fiber_manual_record
-          </span>
-      
-          <span class="material-icons">
-            play_arrow
-            </span>
-      
-            <span class="material-icons">
-              router
-              </span>
-      
-              <span class="material-icons">
-                fiber_new
-                </span>
-            <span class="material-icons">
-              desktop_windows
-              </span>
-    </div>
-    
+    <h2 class="inline-block">場域規劃</h2>
+    <mat-button-toggle-group class="inline-block">
+      <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
+      <mat-button-toggle value="export">匯出</mat-button-toggle>
+      <mat-button-toggle value="go">開始運算</mat-button-toggle>
+     <!-- <mat-button-toggle [routerLink]="['/site/view3d']" value="3D">3D顯示</mat-button-toggle>-->
+    </mat-button-toggle-group>
+    <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
+  </div>
   </mat-sidenav-content>
   <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >
-    Sidenav content
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true"
+                           (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Self aware panel
+          </mat-panel-title>
+          <mat-panel-description>
+            Currently I am {{panelOpenState ? 'open' : 'closed'}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>I'm visible because I am open</p>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-sidenav>
 </mat-sidenav-container>
