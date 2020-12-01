@@ -5,7 +5,30 @@
     <a href="javascript:void(0)" [routerLink]="['/site/view3d']">3D顯示</a>
     
     <p><button mat-button (click)="sidenav.toggle()">sidenav.toggle()</button></p>
-    
+    <div class="tool">
+      <span class="material-icons">
+        stop
+        </span>
+      
+        <span class="material-icons">
+          fiber_manual_record
+          </span>
+      
+          <span class="material-icons">
+            play_arrow
+            </span>
+      
+            <span class="material-icons">
+              router
+              </span>
+      
+              <span class="material-icons">
+                fiber_new
+                </span>
+            <span class="material-icons">
+              desktop_windows
+              </span>
+    </div>
     
   </mat-sidenav-content>
   <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >

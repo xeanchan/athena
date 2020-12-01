@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './service/auth-guard.service';
 import { LayoutComponent } from './layout/layout.component';
 
+
 export const routes: Routes = [
   { 
     path: '', 
@@ -17,6 +18,13 @@ export const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', loadChildren: './wireless-list/wireless-list.module#WirelessListModule', canActivate: [AuthGuardService] },
+    ]
+  },
+  {
+    path: 'new-planning',
+    component: LayoutComponent,
+    children: [
+      { path: '', loadChildren: './new-planning/new-planning.module#NewPlanningModule', canActivate: [AuthGuardService] },
     ]
   },
   {

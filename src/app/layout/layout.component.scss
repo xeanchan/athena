@@ -21,10 +21,23 @@ span {
   padding: 1em ;
 
 }
+.header .mat-button-toggle-appearance-standard {
+  color: #fff;
+  background: transparent;
+}
+.header .mat-button-toggle-group-appearance-standard, 
+.header .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
+  border: 0;
+}
+.header .mat-button-toggle-checked {
+  background-color: #666!important;
+  color: #fff!important;
+  border-radius: 5px;
+}
 h1 {
   display: inline-block;
-  font-size: 1.7em;
-  margin-left: 1em;
+  font-size: 1.6em;
+  margin-left: .5em;
 }
 h2 {
   font-size: 1.3em;
