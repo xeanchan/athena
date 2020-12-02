@@ -8,6 +8,7 @@ import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatIconModule,
     MatExpansionModule,
     MatTabsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent]

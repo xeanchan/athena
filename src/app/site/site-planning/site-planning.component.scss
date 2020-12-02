@@ -8,6 +8,7 @@ mat-sidenav-container {
     position: absolute;
     left: 0px;
     top: 60px;
+    padding-top: 1em;
     width: 4em;
     height: 100%;
     background-color: #000;
@@ -16,10 +17,15 @@ mat-sidenav-container {
 }
 .tool span {
     display: block;
-    padding: 1em 0 0;
+    padding: .3em 0;
     width: 100%;
     text-align: center;
     cursor: move;
+}
+.tool hr {
+    border-color: #545151;
+    width: 55%;
+    margin: .8em auto;
 }
 .mat-sidenav {
     max-width: 30%;
@@ -29,7 +35,7 @@ mat-sidenav-container {
     border: 0;
     background-color: transparent;
     outline: 0;
-    margin-right: .5em;
+    margin: .2em .3em;
     cursor: pointer;
 }
 :host ::ng-deep .mat-button-toggle-group {
@@ -52,4 +58,13 @@ mat-sidenav-container {
     width: 3em;
     margin-left: .3em;
     vertical-align:middle;
+}
+.saveArea {
+    display: block;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    right: .5em;
+    bottom: 4em;
 }

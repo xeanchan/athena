@@ -1,10 +1,12 @@
 <div class="tool">
-  <span class="material-icons">stop</span>
-  <span class="material-icons">fiber_manual_record</span>
-  <span class="material-icons">play_arrow</span>
-  <span class="material-icons">router</span>
-  <span class="material-icons">fiber_new</span>
-  <span class="material-icons">desktop_windows</span>
+  <span class="material-icons" matTooltip="障礙物" >stop</span>
+  <span class="material-icons" matTooltip="障礙物">fiber_manual_record</span>
+  <span class="material-icons" matTooltip="障礙物">play_arrow</span>
+  <hr>
+  <span class="material-icons" matTooltip="現有基站">router</span>
+  <span class="material-icons" matTooltip="新增基站">fiber_new</span>
+  <hr>
+  <span class="material-icons" matTooltip="新增ＵＥ">desktop_windows</span>
 </div>
 
 <mat-sidenav-container class="example-container">
@@ -13,15 +15,13 @@
 
     <div>
       <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-    
-    <h2 class="inline-block">場域規劃</h2>
-    <mat-button-toggle-group class="inline-block">
-      <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
-      <mat-button-toggle value="export">匯出</mat-button-toggle>
-      <mat-button-toggle value="go">開始運算</mat-button-toggle>
-     <!-- <mat-button-toggle [routerLink]="['/site/view3d']" value="3D">3D顯示</mat-button-toggle>-->
-    </mat-button-toggle-group>
 
+      <mat-button-toggle-group class="inline-block float-right">
+        <mat-button-toggle value="go">開始運算</mat-button-toggle>
+      <!-- <mat-button-toggle [routerLink]="['/site/view3d']" value="3D">3D顯示</mat-button-toggle>-->
+      </mat-button-toggle-group>
+
+      <h2 class="inline-block">場域規劃</h2>
     <div class="dropDown_area" style="background-image:url(/assets/img/Layout.png)">
     </div>
 
@@ -37,8 +37,8 @@
         <div class="pannel-content">
           <div><mat-checkbox>平均 SINR</mat-checkbox><input type="text"></div>
           <div><mat-checkbox>平均 Throughput</mat-checkbox><input type="text"></div>
-          <div><mat-checkbox>UE 平均 SINR</mat-checkbox><input type="text"></div>
           <div><mat-checkbox>場域Coverage</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>UE 平均 SINR</mat-checkbox><input type="text"></div>
           <div><mat-checkbox>UE平均Throughput</mat-checkbox><input type="text"></div>
           <div><mat-checkbox>UE平均Throughput最大(依距離)</mat-checkbox><input type="text"></div>
         </div>
@@ -48,8 +48,9 @@
           <mat-panel-title>場域設定</mat-panel-title>
         </mat-expansion-panel-header>
         <p>
-            
-            
+          障礙物資訊
+          UE 設定
+          切面高度
         </p>
       </mat-expansion-panel>
       <mat-expansion-panel>
@@ -60,18 +61,11 @@
         <p>
         </p>
       </mat-expansion-panel>
+      
       <mat-expansion-panel>
 
         <mat-expansion-panel-header>
-          <mat-panel-title>障礙物資訊</mat-panel-title>
-        </mat-expansion-panel-header>
-        <p>
-        </p>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-
-        <mat-expansion-panel-header>
-          <mat-panel-title>UE 設定</mat-panel-title>
+          <mat-panel-title>無線模型參數</mat-panel-title>
         </mat-expansion-panel-header>
         <p>
         </p>
@@ -85,5 +79,12 @@
         </p>
       </mat-expansion-panel>
     </mat-accordion>
+    <div class="saveArea">
+      <mat-button-toggle-group>
+        <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
+        <mat-button-toggle value="export">匯出</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    
   </mat-sidenav>
 </mat-sidenav-container>
