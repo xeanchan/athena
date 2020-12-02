@@ -1,5 +1,5 @@
 mat-sidenav-container {
-    margin: -2em 0 0 2em;
+    margin: -2em -2em 0 2em;
     padding: 2em 0 0 1em;
     position: relative;
     height: 95vh;
@@ -7,7 +7,7 @@ mat-sidenav-container {
 .tool {
     position: absolute;
     left: 0px;
-    top: 0;
+    top: 60px;
     width: 4em;
     height: 100%;
     background-color: #000;
@@ -19,7 +19,7 @@ mat-sidenav-container {
     padding: 1em 0 0;
     width: 100%;
     text-align: center;
-    cursor: pointer;
+    cursor: move;
 }
 .mat-sidenav {
     max-width: 30%;
@@ -36,6 +36,20 @@ mat-sidenav-container {
     margin-left: 1em;
 }
 .dropDown_area {
-    width: 100%;
+    margin: 1em;
+    width: 90%;
+    min-height: 80vh;
     display: block;
+    background-repeat: no-repeat;
+    background-position: left top;
+    background-size: contain;
+    opacity: .4;
+}
+.pannel-content {
+    font-size: .9em;
+}
+.pannel-content div input[type="text"] {
+    width: 3em;
+    margin-left: .3em;
+    vertical-align:middle;
 }

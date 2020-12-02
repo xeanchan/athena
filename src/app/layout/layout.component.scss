@@ -11,15 +11,11 @@ span {
 .header {
   display: block;
   width: 100%;
-  position: fixed;
-  top: 0;
+  font-size: .8em;
   height: 60px;
-
-  background-color: #333;
-  color: #fff;
-
-  padding: 1em ;
-
+  border-bottom: 1px solid #212529;
+  background-color: #24272b;    color: #fff;
+  padding: 1em;
 }
 .header .mat-button-toggle-appearance-standard {
   color: #fff;
@@ -34,13 +30,30 @@ span {
   color: #fff!important;
   border-radius: 5px;
 }
+.header a {
+  color: #fff;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 1em;
+}
 h1 {
   display: inline-block;
   font-size: 1.6em;
   margin-left: .5em;
+  cursor: pointer;
+  outline: 0;
 }
 h2 {
   font-size: 1.3em;
+}
+:host ::ng-deep h2 .mat-button,
+:host ::ng-deep h3 .mat-button {
+  color: #fff;
+  background-color: #3183dc;
+  line-height: 2;
+  margin-left: .5em;
+  font-size: .7em;
+
 }
 .headerRightarea {
   position: absolute;
@@ -48,7 +61,6 @@ h2 {
   top: 0%;
 }
 .content {
-  margin-top: 60px;
   padding: 2em;
 }
 table {
@@ -87,7 +99,11 @@ td i {
 :host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
   line-height: 32px;
   padding: 0 12px;
+  font-size: .85em!important;
 }
 span.headerRightarea {
   margin: .8em 0 0 0;
+}
+:host ::ng-deep .mat-expansion-panel-header-title {
+  font-size: .9em!important;
 }

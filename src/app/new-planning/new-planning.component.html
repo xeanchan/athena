@@ -9,37 +9,79 @@
       <tr>
         <td class="th">規劃案名稱</td>
         <td><input type="text" class="w100"></td>
+      </tr>
+      <tr>
         <td class="th">規劃目標</td>
         <td>
-          <select>
+          <mat-radio-group aria-label="Select an option">
+            <mat-radio-button value="1">UE 平均 SINR 最大</mat-radio-button>
+            <mat-radio-button value="2">UE 覆蓋範圍最大</mat-radio-button>
+            <mat-radio-button value="3">UE 平均下行 Throughput 最大</mat-radio-button>
+            <mat-radio-button value="4">場域平均 SINR 最大</mat-radio-button>
+            <mat-radio-button value="5">場域覆蓋範圍最大</mat-radio-button>
+          </mat-radio-group>
+          <!--<select>
             <option value="option1">UE 平均 SINR 最大</option>
             <option value="option2">UE 覆蓋範圍最大</option>
             <option value="option3">UE 平均下行 Throughput 最大</option>
             <option value="option4">場域平均 SINR 最大</option>
             <option value="option5">場域覆蓋範圍最大</option>
-          </select>
+          </select>-->
         </td>
         
       </tr>
       <tr>
         <td class="th">場域平面圖</td>
-        <td colspan="3">
+        <td>
           <input type="file">
           <span class="note">圖檔限制...</span>
         </td>
       </tr>
       <tr>
         <td class="th">場域尺寸</td>
-        <td colspan="3">
-          <div>長<input type="text">公尺</div>
-          <div>寬<input type="text">公尺</div>
-          <div>高<input type="text">公尺</div>
+        <td class="size">
+          <span><input type="text" placeholder="長">公尺</span>
+          <span><input type="text" placeholder="寬">公尺</span>
+          <span><input type="text" placeholder="高">公尺</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="th">新增基站</td>
+        <td class="size">
+          <input class="w3em" type="text">台
+        </td>
+      </tr>
+      <tr>
+        <td class="th">傳輸功率 / 可分配波數</td>
+        <td class="size"><span>傳輸功率
+          <input class="w3em" type="text" placeholder="下限">~
+          <input class="w3em" type="text" placeholder="上限">dBm</span>;
+          <span>
+            可分配波數編號
+            <input class="w3em" type="text" placeholder="下限">~
+            <input class="w3em" type="text" placeholder="上限">dBm
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td class="th">LTE系統</td>
+        <td class="size">
+          <span>
+            頻寬
+          <select>
+            <option value="">1.4</option>
+          </select>(MHz)
+        </span>;
+          <span>
+            頻率<input type="text">(MHz)
+          </span>
+          
         </td>
       </tr>
     </tbody>
   </table>
-  <span class="example-button-row">
-    <a   [routerLink]="['/site/site-planning']">確定</a>
-  </span>
+  <div class="modalFooter">
+    <a [routerLink]="['/site/site-planning']">確定</a>
+  </div>
 </div>
 

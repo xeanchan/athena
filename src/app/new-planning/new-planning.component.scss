@@ -1,15 +1,23 @@
 .modalContent {
     color: #333;
 }
+
 td div input[type="text"] {
     margin: .3em .5em;
     width: 4em;
 }
 td.th {
     background-color: #eee;
+    text-align: right;
+}
+.modalContent table .th {
+    width: 12em;
 }
 mat-button-toggle-group {
     margin-left: .5em;
+}
+.mat-radio-button {
+    margin-right: 1em;
 }
 :host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
     line-height: 30px;
@@ -24,4 +32,16 @@ h3 button {
     font-weight: normal;
     border: 0;
     background-color: transparent;
+}
+.size span {
+    display: inline-block;
+    margin-right: 1em;
+}
+.size input {
+    width: 3em;
+    margin: 0 .3em;
+}
+.note {
+    font-size: .85em;
+    color: #999;
 }

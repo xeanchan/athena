@@ -4,7 +4,7 @@ import { NewPlanningComponent } from './new-planning.component';
 import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NewPlanningRoutingModule } from './new-planning-routing.module';
-import {MatSelectModule} from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   imports: [
@@ -13,7 +13,7 @@ import {MatSelectModule} from '@angular/material/select';
     MatIconModule,
     NewPlanningRoutingModule,
     RouterModule,
-    MatSelectModule
+    MatRadioModule
   ],
   declarations: [NewPlanningComponent],
   entryComponents: [NewPlanningComponent],

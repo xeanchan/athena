@@ -2,39 +2,10 @@
 
 
 body {
-    background-color: #33373c;
-    color: #fff;
+    /*background-color: #33373c;
+    color: #fff;*/
 }
-.header {
-    display: block;
-    width: 100%;
-    position: fixed;
-    font-size: .8em;
-    top: 0;
-    height: 60px;
-    border-bottom: 1px solid #212529;
-    background-color: #24272b;    color: #fff;
-    padding: 1em;
-}
-table {
-    background-color: #323232;
-}
-mat-dialog-container table {
-    background-color: initial;
-}
-span {
-    display: inline-block;
-}
-.inline-block {
-    display: inline-block;
-}
-.float-right {
-    float: right;
-}
-.wrap {
-    width: 100%;
-    position: relative;
-}
+
 
 h1 {
     display: inline-block;
@@ -49,21 +20,20 @@ h2 {
     right: 0;
     top: 0%;
 }
-.content {
-    margin-top: 60px;
-    padding: 2em;
-    font-size: .9em;
-}
+
 table {
     margin: 1em 0 3em;
     width: 100%;
+}
+.modalContent table {
+    margin-bottom: 1em;
 }
 th,td {
     line-height: 2em;
     padding: .5em 1em;
 }
 td input[type="text"] {
-    margin: .3em 0;
+    margin: .3em .3em 0 0;
 }
 thead tr {
     border-bottom: 2px solid rgb(37, 125, 197);
@@ -98,8 +68,18 @@ th.stat {
     width: 13em;
 }
 th.min {
-    width: 6em;
+    width: 6.5em;
 }
 .w100 {
     width: 100%;
+}
+.modalFooter {
+    text-align:center;
+}
+.modalFooter a {
+    text-decoration: none;
+    color: #000;
+}
+.w3em {
+    width: 3em;
 }

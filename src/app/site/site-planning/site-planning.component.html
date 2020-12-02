@@ -22,8 +22,7 @@
      <!-- <mat-button-toggle [routerLink]="['/site/view3d']" value="3D">3D顯示</mat-button-toggle>-->
     </mat-button-toggle-group>
 
-    <div class="dropDown_area"> 
-
+    <div class="dropDown_area" style="background-image:url(/assets/img/Layout.png)">
     </div>
 
   </div>
@@ -35,15 +34,14 @@
         <mat-expansion-panel-header>
           <mat-panel-title>規劃目標設定</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-          <mat-checkbox>平均 SINR</mat-checkbox>
-            <mat-checkbox>平均 Throughput</mat-checkbox>
-            <mat-checkbox>UE 平均 SINR</mat-checkbox>
-            <mat-checkbox>場域Coverage</mat-checkbox>
-            <mat-checkbox>UE平均Throughput</mat-checkbox>
-            <mat-checkbox>UE平均Throughput最大(依距離)</mat-checkbox>
-            <mat-checkbox>UE平均Throughput最大(依訊號強度)</mat-checkbox>
-        </p>
+        <div class="pannel-content">
+          <div><mat-checkbox>平均 SINR</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>平均 Throughput</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>UE 平均 SINR</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>場域Coverage</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>UE平均Throughput</mat-checkbox><input type="text"></div>
+          <div><mat-checkbox>UE平均Throughput最大(依距離)</mat-checkbox><input type="text"></div>
+        </div>
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -51,11 +49,7 @@
         </mat-expansion-panel-header>
         <p>
             
-            <mat-tab-group>
-              <mat-tab label="First"> Content 1 </mat-tab>
-              <mat-tab label="Second"> Content 2 </mat-tab>
-              <mat-tab label="Third"> Content 3 </mat-tab>
-            </mat-tab-group>
+            
         </p>
       </mat-expansion-panel>
       <mat-expansion-panel>
