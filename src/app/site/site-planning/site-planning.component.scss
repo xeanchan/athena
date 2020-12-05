@@ -51,13 +51,101 @@ mat-sidenav-container {
     background-size: contain;
     opacity: .4;
 }
-.pannel-content {
+:host ::ng-deep .mat-expansion-panel-body {
     font-size: .9em;
 }
-.pannel-content div input[type="text"] {
-    width: 3em;
+:host ::ng-deep .mat-expansion-panel-body p {
+    margin: 0;
+    padding: 0;
+    color: #3b71b5;
+}
+:host ::ng-deep .mat-expansion-panel-body p label{
+    width: 2em;
+    height: 2em;
+    display: inline-block;
+    line-height: 2em;
+    margin-left: .3em;
+    color: #fff;
+    background-color: #3b71b5;
+    font-size: .5em;
+    text-align: center;
+    border-radius: 5em;
+}
+:host ::ng-deep .mat-expansion-panel-body ul > li {
+    padding: 0 0 1em;
+
+}
+:host ::ng-deep .mat-expansion-panel-body ul > li div {
+    margin-left: 1em;
+}
+:host ::ng-deep .mat-expansion-panel-body p::before {
+    content: '。';
+}
+:host ::ng-deep .mat-expansion-panel-body li input[type="text"]{
+    width: 5em;
+}
+:host ::ng-deep .mat-expansion-panel-body input[type="text"]{
     margin-left: .3em;
     vertical-align:middle;
+    padding-left: 1.2em;
+
+    width: 5em;
+
+    background: transparent;
+    border: transparent;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
+}
+:host ::ng-deep .mat-expansion-panel-body ul > li > ul {
+    margin-left: 1em;
+} 
+:host ::ng-deep .mat-expansion-panel-body ul > li > ul li {
+    padding-bottom: 0;
+}
+input[type="text"], select {
+    outline:0;
+}
+
+ol li {
+    display: list-item;
+    list-style: decimal;
+    margin-left: 2.2em;
+    line-height: 2em;
+}
+ol li span {
+    position: relative;
+    display: inline-block;
+}
+ol li label {
+    position: absolute;
+    left: 0;
+    color: #ddd;
+    font-size: .7em;
+    left: 2px;
+    top: 0;
+}
+ li select {
+    background: transparent;
+    border: transparent;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0;
+    width: 5em;
+    vertical-align: bottom;
+    margin: 0 .5em 0 1em;
+}
+ol.inline-block li {
+    display: list-item;
+    list-style: decimal;
+    float: left;
+}
+ol.inline-block li input[type="text"] {
+    padding-left: .5em;
+}
+span {
+    display: inline-block;
+}
+.widthAuto {
+    width: auto!important;
 }
 .saveArea {
     display: block;

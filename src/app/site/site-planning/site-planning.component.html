@@ -22,7 +22,7 @@
       </mat-button-toggle-group>
 
       <h2 class="inline-block">場域規劃</h2>
-    <div class="dropDown_area" style="background-image:url(/assets/img/Layout.png)">
+    <div class="dropDown_area" style="background-image:url(assets/img/Layout.png)">
     </div>
 
   </div>
@@ -47,19 +47,248 @@
         <mat-expansion-panel-header>
           <mat-panel-title>場域設定</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-          障礙物資訊
-          UE 設定
-          切面高度
-        </p>
+        <ul>
+          <li>
+            <p>平面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
+            <ol class="inline-block">
+              <li><input type="text" value="60"></li>
+              <li><input type="text"></li>
+              <li><input type="text"></li>
+            </ol>
+          </li>
+
+          <li>
+            <p>障礙物資訊<label>3</label></p>
+            <ol>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text" value="12.3">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text" value="34.4">
+                </span>
+                <br>
+                <span>
+                  <label>長</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>寬</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>高</label>
+                  <input type="text" value="28.7">
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text" value="12.3">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text" value="34.4">
+                </span>
+                <br>
+                <span>
+                  <label>長</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>寬</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>高</label>
+                  <input type="text" value="28.7">
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text" value="12.3">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text" value="34.4">
+                </span>
+                <br>
+                <span>
+                  <label>長</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>寬</label>
+                  <input type="text" value="28.7">
+                </span>
+                <span>
+                  <label>高</label>
+                  <input type="text" value="28.7">
+                </span>
+              </li>
+              
+            </ol>
+          </li>
+        
+          <li>
+            <p>UE 設定<label>3</label></p>
+            <ol>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <select class="zAxis" name="" id="">
+                    <option value="">60</option>
+                  </select>
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <select class="zAxis" name="" id="">
+                    <option value="">60</option>
+                  </select>
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <select class="zAxis" name="" id="">
+                    <option value="">60</option>
+                  </select>
+                </span>
+              </li>
+            </ol>
+          </li>
+        </ul>
+        
       </mat-expansion-panel>
       <mat-expansion-panel>
 
         <mat-expansion-panel-header>
           <mat-panel-title>基站設定</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-        </p>
+        <ul>
+          <li>
+            <p>參數設定</p>
+            <ul>
+              <li>
+                <label>傳輸功率</label>
+                <span>
+                  <input type="text" placeholder="下限">~<input type="text" placeholder="上限">
+                </span>
+              </li>
+              <li>
+                <label>可分配波數編號</label>
+                <span>
+                  <input type="text" placeholder="下限">~<input type="text" placeholder="上限">
+                </span>
+              </li>
+              <li>
+                <label>系統頻寬 / 頻率</label>
+                <span>
+                  <select name="" id="">
+                    <option value=""></option>
+                  </select>
+                  /
+                  <input type="text" placeholder="下限">
+                </span>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>現有基站<label>2</label></p>
+            <ol>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <input type="text">
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <input type="text">
+                </span>
+              </li>
+            </ol>
+          </li>
+          <li>
+            <p>新增基站<label>2</label></p>
+            <ol>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <input type="text">
+                </span>
+              </li>
+              <li>
+                <span>
+                  <label>X</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <input type="text">
+                </span>
+              </li>
+            </ol>
+          </li>
+        </ul>
       </mat-expansion-panel>
       
       <mat-expansion-panel>
@@ -67,16 +296,46 @@
         <mat-expansion-panel-header>
           <mat-panel-title>無線模型參數</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-        </p>
+        <ul>
+          <li>
+            <span>Path Loss Model</span>
+            <select class="widthAuto">
+              <option>台中智機場域</option>
+            </select>
+          </li>
+        </ul>
       </mat-expansion-panel>
       <mat-expansion-panel>
 
         <mat-expansion-panel-header>
           <mat-panel-title>演算法設定</mat-panel-title>
         </mat-expansion-panel-header>
-        <p>
-        </p>
+        <ul>
+          <li>
+            <span>C值</span>
+            <input type="text">
+          </li>
+          <li>
+            <span>天線數</span>
+            <input type="text">
+          </li>
+          <li>
+            <span>氣溫</span>
+            <input type="text">
+          </li> 
+          <li>
+            <span>節點模擬時間限制</span>
+            <input type="text">
+          </li> 
+          <li>
+            <span>本次規劃之時間限制</span>
+            <input type="text">
+          </li>
+          <li>
+            <span>本次規劃之模擬次數上限</span>
+            <input type="text">
+          </li>          
+        </ul>
       </mat-expansion-panel>
     </mat-accordion>
     <div class="saveArea">

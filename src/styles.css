@@ -85,3 +85,20 @@ th.min {
 .w3em {
     width: 3em;
 }
+
+.xAxis::before {
+    display: inline-block;
+    content: "X 座標";
+    font-size: 1em;
+    color: #999;
+    position: absolute;
+    left: 0;
+}
+.yAxis::before {
+    display: inline-block;
+    content: "Y 座標";
+    font-size: 1em;
+    color: #999;
+    position: absolute;
+    left: 0;
+}
