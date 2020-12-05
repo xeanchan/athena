@@ -13,15 +13,15 @@
   <mat-sidenav-content>
     
 
-    <div>
+  <div>
       <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-
-      <mat-button-toggle-group class="inline-block float-right">
+      <h2 class="inline-block">場域規劃</h2>
+      <mat-button-toggle-group class="inline-block">
+        <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
+        <mat-button-toggle value="export">匯出</mat-button-toggle>
         <mat-button-toggle value="go">開始運算</mat-button-toggle>
-      <!-- <mat-button-toggle [routerLink]="['/site/view3d']" value="3D">3D顯示</mat-button-toggle>-->
       </mat-button-toggle-group>
 
-      <h2 class="inline-block">場域規劃</h2>
     <div class="dropDown_area" style="background-image:url(assets/img/Layout.png)">
     </div>
 
@@ -58,7 +58,9 @@
           </li>
 
           <li>
-            <p>障礙物資訊<label>3</label></p>
+            <p class="subitem active">障礙物資訊<label class="matBadge">3</label>
+            <span class="material-icons">keyboard_arrow_down</span>
+            </p>
             <ol>
               <li>
                 <span>
@@ -134,7 +136,9 @@
           </li>
         
           <li>
-            <p>UE 設定<label>3</label></p>
+            <p class="subitem">UE 設定<label class="matBadge">3</label>
+              <span class="material-icons">keyboard_arrow_down</span>
+            </p>
             <ol>
               <li>
                 <span>
@@ -190,7 +194,6 @@
         
       </mat-expansion-panel>
       <mat-expansion-panel>
-
         <mat-expansion-panel-header>
           <mat-panel-title>基站設定</mat-panel-title>
         </mat-expansion-panel-header>
@@ -201,15 +204,22 @@
               <li>
                 <label>傳輸功率</label>
                 <span>
-                  <input type="text" placeholder="下限">~<input type="text" placeholder="上限">
+                  <input type="text" value="-20" placeholder="下限">~<input value="19" type="text" placeholder="上限">dBm
                 </span>
               </li>
               <li>
-                <label>可分配波數編號</label>
+                <label>新基站數量</label>
                 <span>
-                  <input type="text" placeholder="下限">~<input type="text" placeholder="上限">
+                  <input type="text">
                 </span>
               </li>
+                <label>基站頻率</label>
+                <span>
+                  <select name="" id="">
+                    <option value="">2.4G</option>
+                    <option value="">5G</option>
+                  </select>
+                </span>
               <li>
                 <label>系統頻寬 / 頻率</label>
                 <span>
@@ -217,46 +227,13 @@
                     <option value=""></option>
                   </select>
                   /
-                  <input type="text" placeholder="下限">
+                  <input type="text">
                 </span>
               </li>
             </ul>
           </li>
           <li>
-            <p>現有基站<label>2</label></p>
-            <ol>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <input type="text">
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <input type="text">
-                </span>
-              </li>
-            </ol>
-          </li>
-          <li>
-            <p>新增基站<label>2</label></p>
+            <p>現有基站<label class="matBadge">2</label></p>
             <ol>
               <li>
                 <span>
@@ -292,11 +269,23 @@
       </mat-expansion-panel>
       
       <mat-expansion-panel>
-
         <mat-expansion-panel-header>
           <mat-panel-title>無線模型參數</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
+          <li>
+            <label>預設無線模型</label>
+            <span><select name="" id=""></select></span>
+          </li>
+          <li>
+            <label>自訂無線模型(@jane要再給)</label>
+          
+            <span>
+            a<input type="text">
+            b<input type="text">
+            c<input type="text">
+            </span>
+          </li>
           <li>
             <span>Path Loss Model</span>
             <select class="widthAuto">
@@ -306,7 +295,6 @@
         </ul>
       </mat-expansion-panel>
       <mat-expansion-panel>
-
         <mat-expansion-panel-header>
           <mat-panel-title>演算法設定</mat-panel-title>
         </mat-expansion-panel-header>
@@ -334,16 +322,44 @@
           <li>
             <span>本次規劃之模擬次數上限</span>
             <input type="text">
-          </li>          
+          </li>
         </ul>
       </mat-expansion-panel>
-    </mat-accordion>
-    <div class="saveArea">
-      <mat-button-toggle-group>
-        <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
-        <mat-button-toggle value="export">匯出</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-    
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>待選基站位置<label class="matBadge">2</label></mat-panel-title>
+        </mat-expansion-panel-header>
+          <ol>
+            <li>
+              <span>
+                <label>X</label>
+                <input type="text">
+              </span>
+              <span>
+                <label>Y</label>
+                <input type="text">
+              </span>
+              <span>
+                <label>Z</label>
+                <input type="text">
+              </span>
+            </li>
+            <li>
+              <span>
+                <label>X</label>
+                <input type="text">
+              </span>
+              <span>
+                <label>Y</label>
+                <input type="text">
+              </span>
+              <span>
+                <label>Z</label>
+                <input type="text">
+              </span>
+            </li>
+          </ol>
+      </mat-expansion-panel>
+    </mat-accordion>    
   </mat-sidenav>
 </mat-sidenav-container>
