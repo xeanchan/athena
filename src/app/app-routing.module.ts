@@ -5,40 +5,54 @@ import { LayoutComponent } from './layout/layout.component';
 
 
 export const routes: Routes = [
-  { 
-    path: '', 
+  {
+    path: '',
     redirectTo: 'wireless-list',
     pathMatch: 'full',
     // loadChildren: './wireless-list/wireless-list.module#WirelessListModule',
     canActivate: [AuthGuardService]
   },
-  { path: 'logon', loadChildren: './login/login.module#LoginModule' }, // 登入
+  {
+    path: 'logon',
+    loadChildren: () => import('./login/login.module').then(m => m.LoginModule) // 登入
+  },
   {
     path: 'wireless-list',
     component: LayoutComponent,
     children: [
-      { path: '', loadChildren: './wireless-list/wireless-list.module#WirelessListModule', canActivate: [AuthGuardService] },
+      {
+        path: '',
+        loadChildren: () => import('./wireless-list/wireless-list.module').then(m => m.WirelessListModule),
+        canActivate: [AuthGuardService]
+      }
     ]
   },
   {
     path: 'new-planning',
     component: LayoutComponent,
     children: [
-      { path: '', loadChildren: './new-planning/new-planning.module#NewPlanningModule', canActivate: [AuthGuardService] },
+      {
+        path: '',
+        loadChildren: () => import('./new-planning/new-planning.module').then(m => m.NewPlanningModule),
+        canActivate: [AuthGuardService]
+      }
     ]
   },
   {
     path: 'site',
     component: LayoutComponent,
     children: [
-      { path: '', loadChildren: './site/site.module#SiteModule', canActivate: [AuthGuardService] },
+      {
+        path: '',
+        loadChildren: () => import('./site/site.module').then(m => m.SiteModule),
+        canActivate: [AuthGuardService]
+      }
     ]
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule],
-  providers: []
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }

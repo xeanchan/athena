@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { SitePlanningComponent } from './site-planning.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterModule } from '@angular/router';
-import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxMoveableModule } from 'ngx-moveable';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [
@@ -20,7 +22,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatExpansionModule,
     MatTabsModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    NgxMoveableModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent]

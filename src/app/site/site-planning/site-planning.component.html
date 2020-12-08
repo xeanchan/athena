@@ -1,6 +1,7 @@
+<div class="label" #label></div>
 <div class="tool">
-  <span class="material-icons" matTooltip="障礙物" >stop</span>
-  <span class="material-icons" matTooltip="障礙物">fiber_manual_record</span>
+  <span class="material-icons target" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
+  <span class="material-icons target" matTooltip="障礙物" (click)="moveClick($event)">fiber_manual_record</span>
   <span class="material-icons" matTooltip="障礙物">play_arrow</span>
   <hr>
   <span class="material-icons" matTooltip="現有基站">router</span>
@@ -26,6 +27,37 @@
     </div>
 
   </div>
+
+  <ngx-moveable
+    #moveable
+    [target]="target"
+    [draggable]="true"
+    [origin]="false"
+    [rotatable]="true"
+    [pinchable]="true"
+    [scalable]="scalable"
+    [resizable]="resizable"
+    [warpable]="warpable"
+    [keepRatio]="false"
+    [throttleDrag]="1"
+    [throttleScale]="0.01"
+    [throttleRotate]="0.2"
+    [throttleResize]="1"
+    (drag)="onDrag($event)"
+    (resize)="onResize($event)"
+    (scale)="onScale($event)"
+    (warp)="onWarp($event)"
+    (rotate)="onRotate($event)"
+    (pinch)="onPinch($event)"
+    (dragEnd)="onEnd()"
+    (resizeEnd)="onEnd()"
+    (scaleEnd)="onEnd()"
+    (warpEnd)="onEnd()"
+    (rotateEnd)="onEnd()"
+    (pinchEnd)="onEnd()"
+  ></ngx-moveable>
+
+
   </mat-sidenav-content>
   <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >
     <mat-accordion>
