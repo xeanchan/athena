@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NewPlanningComponent } from './new-planning.component';
-import { MatButtonToggleModule, MatIconModule } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { NewPlanningRoutingModule } from './new-planning-routing.module';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   imports: [

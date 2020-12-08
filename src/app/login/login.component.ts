@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    public router: Router,) { }
+    public router: Router) { }
 
   loginForm: LoginForm = new LoginForm();
   // show error message

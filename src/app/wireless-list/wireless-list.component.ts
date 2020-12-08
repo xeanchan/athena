@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../service/auth.service';
-import { MatDialog, MatDialogConfig } from '@angular/material';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-wireless-list',

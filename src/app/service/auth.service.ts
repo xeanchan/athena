@@ -10,8 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
 export class AuthService {
 
   constructor(
-    private http: HttpClient, 
-    public router: Router, 
+    private http: HttpClient,
+    public router: Router,
     private translateService: TranslateService
   ) {
     this.userToken = window.sessionStorage.getItem('son_session');
