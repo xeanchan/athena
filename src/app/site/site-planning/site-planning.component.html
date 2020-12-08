@@ -19,8 +19,9 @@
       <mat-button-toggle-group class="inline-block">
         <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
         <mat-button-toggle value="export">匯出</mat-button-toggle>
-        <mat-button-toggle value="go">開始運算</mat-button-toggle>
+        <mat-button-toggle value="go" [routerLink]="['/site/result']">開始運算</mat-button-toggle>
       </mat-button-toggle-group>
+      <a href="javascript:void(0)" [routerLink]="['/site/result']">開始運算</a>
 
     <div class="dropDown_area" style="background-image:url(assets/img/Layout.png)">
     </div>
