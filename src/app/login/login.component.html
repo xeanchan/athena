@@ -1,16 +1,23 @@
 
+<div class="login">
+  
+  <div class="box">
+    <div class="logo"></div>
+    <h5>Login</h5>
+    <div>
+      <span>{{ 'login.account' | translate }}</span>
+      <input class="input100" type="text" name="username" placeholder="Username" [(ngModel)]="loginForm.id" (keypress)="keypressHandler($event)">
+    </div>
 
-<p>
-  {{ 'login.account' | translate }}<input type="text" [(ngModel)]="loginForm.id" (keypress)="keypressHandler($event)">
-</p>
+    <div>
+      <span>{{ 'login.password' | translate }}</span>
+      <input type="password" [(ngModel)]="loginForm.key" (keypress)="keypressHandler($event)">
+    </div>
 
-<p>
-  {{ 'login.password' | translate }}<input type="password" [(ngModel)]="loginForm.key" (keypress)="keypressHandler($event)">
-</p>
+    <div>
+      <button type="button" (click)="logon()" >{{ 'login.login' | translate }}</button>
+    </div>
 
-<p>
-  <button type="button" (click)="logon()" >{{ 'login.login' | translate }}</button>
-</p>
-
-<p *ngIf="showMsg" class="text-danger">{{ 'login.fail' | translate }}</p>
-
+    <div *ngIf="showMsg" class="text-danger">{{ 'login.fail' | translate }}</div>
+  </div>
+</div>

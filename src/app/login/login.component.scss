@@ -1,0 +1,54 @@
+.login {
+    width: 100vw;
+    display: flex;
+    height: 100vh;
+    background-color: #333;
+}
+h5 {
+    color: #333;
+    text-align: center;
+    margin: 1em 0;
+}
+.box {
+    display: inline-block;
+    min-width: 25em;
+    min-height: 20em;
+    margin: auto;
+    padding: 2em;
+    background-color: #fff;
+    line-height: 2;
+    border-radius: 6px;
+}
+.box input {
+    margin: 3px;
+    padding: 0 .5em;
+    line-height: 1.5;
+}
+.box div {
+    width: 80%;
+    margin: auto;
+}
+.box div span {
+    display: inline-block;
+    width: 4.5em;
+}
+.box button {
+    border: 1px solid #ddd;
+    border-radius: 5em;
+    background-color: #333;
+    color: #fff;
+    padding: .1em 4em;
+    margin: 1em auto 0;
+    display: block;
+    cursor: pointer;
+    width: 96%;
+    outline: 0;
+}
+.logo {
+    background-color: #ddd;
+    width: 5em!important;
+    height: 5em;
+    display: block;
+    border-radius: 5em;
+    margin: 0 auto;
+}
