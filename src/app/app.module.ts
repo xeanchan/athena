@@ -46,14 +46,14 @@ export function createTranslateLoader(http: HttpClient) {
     MatButtonToggleModule,
     MatTabsModule,
     MatIconModule,
+    FontAwesomeModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
         deps: [HttpClient],
       }
-    }),
-    FontAwesomeModule,
+    })
   ],
   providers: [
     AuthService,
