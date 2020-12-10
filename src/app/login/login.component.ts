@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { LoginForm } from '../form/LoginForm';
 import { AuthService } from '../service/auth.service';
 import {  Router } from '@angular/router';
@@ -8,7 +8,7 @@ import {  Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
 
   constructor(
     public authService: AuthService,
@@ -19,6 +19,10 @@ export class LoginComponent implements OnInit {
   showMsg = false;
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit(): void {
+    (<HTMLInputElement> document.querySelector('.input100')).focus();
   }
 
   logon() {
