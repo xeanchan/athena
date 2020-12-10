@@ -2,6 +2,10 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit }
 import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
+import { TaskFormService } from '../task-form.service';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-site-planning',
@@ -10,7 +14,11 @@ import { NgxMoveableComponent } from 'ngx-moveable';
 })
 export class SitePlanningComponent implements OnInit, AfterViewInit {
 
-  constructor() { }
+  constructor(
+    private taskFormService: TaskFormService,
+    private router: Router,
+    private matDialog: MatDialog,
+    private http: HttpClient) { }
 
   @ViewChild('label') label: ElementRef;
   @ViewChild('moveable') moveable: NgxMoveableComponent;
@@ -55,6 +63,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    console.log(this.taskFormService.data)
   }
 
   ngAfterViewInit(): void {
