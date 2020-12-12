@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
@@ -6,6 +6,7 @@ import { TaskFormService } from '../task-form.service';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { CalculateForm } from '../../form/CalculateForm';
 
 @Component({
   selector: 'app-site-planning',
@@ -46,28 +47,65 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   panelOpenState = false;
   matrix;
   live = false;
+  /** calculate form */
+  calculateForm: CalculateForm;
+  /** upload image src */
+  imageSrc;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    console.log(this.target)
     if (typeof this.target !== 'undefined') {
       if (this.target.contains(event.target)) {
-        // this.text = "clicked inside";
         this.live = true;
       } else {
-        this.moveableDestroy();
+        this.moveable.destroy();
         this.live = false;
-        // this.text = "clicked outside";
       }
     }
   }
 
   ngOnInit() {
-    console.log(this.taskFormService.data)
+    this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+    // console.log(this.taskFormService.calculateForm);
+    this.initData();
   }
 
   ngAfterViewInit(): void {
-    this.moveable.destroy();
+    // this.moveable.destroy();
+  }
+
+  /**
+   * init data
+   */
+  initData() {
+    if (this.calculateForm.mapImage != null) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
+      reader.onload = (e) => {
+        this.imageSrc = reader.result;
+      };
+    }
+  }
+
+  /**
+   * dataURI to blob
+   * @param dataURI
+   */
+  dataURLtoBlob(dataURI) {
+    let byteString;
+    if (dataURI.split(',')[0].indexOf('base64') >= 0) {
+      byteString = atob(dataURI.split(',')[1]);
+    } else {
+      byteString = unescape(dataURI.split(',')[1]);
+    }
+    // separate out the mime component
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    // write the bytes of the string to a typed array
+    const ia = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ia], {type: mimeString});
   }
 
   moveClick(event) {

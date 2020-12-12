@@ -6,10 +6,12 @@ import { NewPlanningRoutingModule } from './new-planning-routing.module';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonToggleModule,
     MatIconModule,
     NewPlanningRoutingModule,

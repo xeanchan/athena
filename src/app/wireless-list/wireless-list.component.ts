@@ -27,10 +27,10 @@ export class WirelessListComponent implements OnInit {
     this.matDialogConfig = new MatDialogConfig();
     this.matDialogConfig.autoFocus = false;
 
-    this.getList();
-    window.setTimeout(() => {
-      this.startInterval();
-    }, 5000);
+    // this.getList();
+    // window.setTimeout(() => {
+    //   this.startInterval();
+    // }, 5000);
   }
 
   /**
