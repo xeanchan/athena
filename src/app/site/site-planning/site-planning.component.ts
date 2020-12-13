@@ -51,6 +51,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   calculateForm: CalculateForm;
   /** upload image src */
   imageSrc;
+  /** subitem class */
+  subitemClass = {
+    obstacle: 'subitem active',
+    ue: 'subitem active'
+  };
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -219,10 +224,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   onEnd() {
     this.label.nativeElement.style.display = 'none';
   }
-    
 
   moveableDestroy() {
     this.moveable.destroy();
+  }
+
+  arrowUpDown(event, type) {
+    const target = event.target;
+    if (target.innerHTML === 'keyboard_arrow_down') {
+      target.innerHTML = 'keyboard_arrow_up';
+      this.subitemClass[type] = 'subitem active';
+    } else {
+      target.innerHTML = 'keyboard_arrow_down';
+      this.subitemClass[type] = 'subitem';
+    }
   }
 
 

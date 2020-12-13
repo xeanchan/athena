@@ -91,8 +91,8 @@
           </li>
 
           <li>
-            <p class="subitem active">障礙物資訊<label class="matBadge">3</label>
-            <span class="material-icons">keyboard_arrow_down</span>
+            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">3</label>
+            <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
             </p>
             <ol>
               <li>
@@ -169,8 +169,8 @@
           </li>
         
           <li>
-            <p class="subitem">UE 設定<label class="matBadge">3</label>
-              <span class="material-icons">keyboard_arrow_down</span>
+            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">3</label>
+              <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
             </p>
             <ol>
               <li>
