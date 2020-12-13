@@ -9,7 +9,7 @@ export class CalculateForm {
   crossover = null;
   mutation = null;
   iteration = null;
-  seed = null;
+  seed = '1';
   defaultBs = null;
   candidateBs = null;
   width = null;

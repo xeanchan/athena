@@ -11,10 +11,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxMoveableModule } from 'ngx-moveable';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     MatSidenavModule,
     MatButtonToggleModule,
