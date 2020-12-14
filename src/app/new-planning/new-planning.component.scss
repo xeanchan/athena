@@ -27,11 +27,17 @@ mat-button-toggle-group {
     font-size: 1.3rem;
 }
 h3 button {
-    font-size: .8em;
+    font-size: .7em;
     margin-left: .5em;
     font-weight: normal;
     border: 0;
-    background-color: transparent;
+    background-color: #ddd;
+    outline: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: .3em 1em .4em;
+    line-height: 1;
+    vertical-align: bottom;
 }
 .size span {
     display: inline-block;

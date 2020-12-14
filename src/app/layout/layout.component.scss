@@ -12,7 +12,7 @@ span {
   display: block;
   width: 100%;
   font-size: .8em;
-  height: 60px;
+  height: 54px;
   border-bottom: 1px solid #212529;
   background-color: #24272b;    color: #fff;
   padding: 1em;
@@ -20,6 +20,8 @@ span {
 .header .mat-button-toggle-appearance-standard {
   color: #fff;
   background: transparent;
+  border: none;
+  width: 5em;
 }
 .header .mat-button-toggle-group-appearance-standard, 
 .header .mat-button-toggle-standalone.mat-button-toggle-appearance-standard {
@@ -42,6 +44,12 @@ h1 {
   margin-left: .5em;
   cursor: pointer;
   outline: 0;
+}
+h1.fa-home {
+  display: inline-block;
+  font-size: .7em;
+  margin-left: .5em;
+  opacity: .5;
 }
 h2 {
   font-size: 1.3em;
@@ -93,7 +101,7 @@ td i {
   margin-left: .5em;
 }
 .logout {
-  font-size: 1.2em;
+  font-size: 1.4em;
   margin: 0 1em;
 }
 :host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
@@ -104,6 +112,10 @@ td i {
 span.headerRightarea {
   margin: .8em 0 0 0;
 }
+:host ::ng-deep .mat-expansion-panel-header {
+  font-weight: bold;
+}
+
 :host ::ng-deep .mat-expansion-panel-header-title {
   font-size: .9em!important;
 }

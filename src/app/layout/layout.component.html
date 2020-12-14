@@ -1,6 +1,7 @@
 <div class="wrap">
 	<div class="header">
-		<h1 [routerLink]="['']">Athena Planning Portal</h1>
+		<h1 [routerLink]="['']">Athena Planning Portal<i class="fas fa-home"></i></h1>
+
 		<span class="headerRightarea"> 
 			<mat-button-toggle-group name="fontStyle" [(value)]="authService.lang" aria-label="Font Style">
 				<mat-button-toggle value="zh-TW" (change)="authService.changeLanguage('zh-TW')" selected>{{ 'language.tw' | translate }}</mat-button-toggle>
