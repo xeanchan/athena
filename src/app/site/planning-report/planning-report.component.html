@@ -1,3 +1,8 @@
-<p>
-  planning-report works!
-</p>
+<h2 class="inline-block">規劃報告</h2>
+
+<mat-button-toggle-group class="inline-block">
+  <mat-button-toggle [routerLink]="['/site/result']" value="back">回上頁</mat-button-toggle>
+  <mat-button-toggle value="report">匯出設置</mat-button-toggle>
+  <mat-button-toggle value="report">匯出報告</mat-button-toggle>
+  <mat-button-toggle value="report">儲存</mat-button-toggle>
+</mat-button-toggle-group>

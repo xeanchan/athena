@@ -12,18 +12,19 @@
 }
 .box .map {
     display: block;
-    width: 84%;
+    width: 95%;
     height: auto;
-    margin-bottom: 1em;
+    margin: .5em auto;
 }
 .panel {
     padding: .6em 1em;
     background-color: #5aa5e2!important;
     color: #fff!important;
     font-size: .8em;
+    border-right: 1px solid #fff!important;
 }
 .panel label {
-    font-size: 1.2em;
+    font-size: 1.3em;
 }
 .box table {
     margin: 0 1em 0 0;
@@ -37,6 +38,9 @@
 .box table td {
     border-right:1px solid #5aa5e2;
     line-height: 1.5;
+}
+.box table td {
+    text-align: center;
 }
 .box table th:last-child,
 .box table td:last-child {
@@ -97,5 +101,25 @@
     display: inline-block;
 }
 .mapType {
+    background-color: #eee;
+    margin-top: 1.5em;
+    border-top: 2px solid #5aa5e2;
+    padding: 0 1em 1em;
+}
+.mapType mat-button-toggle-group {
     margin: 1em 0 0 0;
+}
+.ds {
+    display: block;
+    width: 98.5%;
+    font-size: .9em;
+    margin: .5em 0;
+    padding: 0 1em;
+    background-color: #e9f3f8;
+    line-height: 2.5;
+    border-left: 3px solid #5aa5e2;
+}
+.ds i {
+    color:#5aa5e2;
+    margin-right: .3em;
 }
