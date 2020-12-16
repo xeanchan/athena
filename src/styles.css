@@ -22,7 +22,9 @@ h2 {
     right: 0;
     top: 0%;
 }
-
+.mL_1{
+    margin-left: 1em!important;
+}
 table {
     margin: 1em 0 3em;
     width: 100%;
@@ -32,7 +34,7 @@ table {
 }
 th,td {
     line-height: 2em;
-    padding: .5em 1em;
+    padding: .5em 1.34em;
 }
 td input[type="text"] {
     margin: .3em .3em 0 0;

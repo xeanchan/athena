@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ResultComponent } from './result.component';
 import { RouterModule } from '@angular/router';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -11,7 +10,6 @@ import { MatSelectModule } from '@angular/material/select';
     CommonModule,
     RouterModule,
     MatButtonToggleModule,
-    MatSelectModule
   ],
   declarations: [ResultComponent]
 })

@@ -5,12 +5,16 @@
   <mat-button-toggle-group class="inline-block">
     <mat-button-toggle [routerLink]="['/site/site-planning']" value="back">回上頁</mat-button-toggle>
     <mat-button-toggle [routerLink]="['/site/planning-report']" value="report">規劃報告</mat-button-toggle>
-    <mat-button-toggle [routerLink]="['/site/planning-report']" value="3d">3D 顯示</mat-button-toggle>
-    <mat-button-toggle value="export" [routerLink]="['/site/result']">匯出</mat-button-toggle>
+    <mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
+    <mat-button-toggle value="export">匯出</mat-button-toggle>
   </mat-button-toggle-group>
-<div>
-<div class="box">
-       
+
+    <div class="box">
+        <div class="ds">
+            <i class="fas fa-info-circle"></i>
+            規劃目標 : 不限制增加基站數量，以達到 UE 平均下行 Throughput 最大
+        </div>
+
         <table>
             <tbody>
                 <tr>
@@ -45,6 +49,7 @@
                 </tr>
             </tbody>
         </table>
+
         <table>
             <tbody>
                 <tr>
@@ -57,13 +62,13 @@
                     <th>切面平均 RSRP</th>
                 </tr>
                 <tr>
-                    <td>0.5公尺</td>
+                    <td>100公分</td>
                     <td>98%</td>
                     <td>12.38dB</td>
                     <td>-83.58dBm</td>
                 </tr>
                 <tr>
-                    <td>1.5公尺</td>
+                    <td>150公分</td>
                     <td>98%</td>
                     <td>12.38dB</td>
                     <td>-83.58dBm</td>
@@ -79,75 +84,76 @@
                 <mat-option1>1.5公尺</mat-option>
             </mat-select>
         </mat-form-field> -->
-        <div>
-        <label>地圖切面(高度)</label>
-        <mat-button-toggle-group class="mapType">
-            <mat-button-toggle  value="" selected>1 公尺</mat-button-toggle>
-            <mat-button-toggle  value="">1.5 公尺</mat-button-toggle>
-        </mat-button-toggle-group>
+        <div class="mapType">
+            <label>各切面資訊</label>
+            <mat-button-toggle-group>
+                <mat-button-toggle  value="" selected>高度 1 公尺</mat-button-toggle>
+                <mat-button-toggle  value="">高度 1.5 公尺</mat-button-toggle>
+            </mat-button-toggle-group>
 
-        <mat-button-toggle-group class="mapType">
-            <mat-button-toggle  value="SINR" selected>SINR Map</mat-button-toggle>
-            <mat-button-toggle  value="PCI">PCI Map</mat-button-toggle>
-            <mat-button-toggle  value="RSRP">RSRP Map</mat-button-toggle>
-        </mat-button-toggle-group>
-    </div>  
-        <img class="map" src="/assets/img/resultMap.jpg">
+            <label class="mL_1">分布圖切換</label>
+            <mat-button-toggle-group>
+                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
+                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
+                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
+            </mat-button-toggle-group>
+            <img class="map" src="/assets/img/sinr.png">           
+        </div>  
+    <!--
+        <div class="res_1">
+            <ul>
+                <li>
+                    <label>場域數據</label>
+                    <span><label>場域覆蓋率</label>98.04</span>
+                    <span><label>場域平均SINR</label>13dB</span>
+                    <span><label>場域平均RSRP</label>-82.75dBm</span>
+                    <span><label>UE覆蓋率</label>100</span>
+                    <span><label>UE平均SINR</label>18.58dB</span>
+                    <span><label>UE平均RSRP</label>-77.4dBm</span>
+                    <span><label>UE平均throughput</label>5.29Mb/s</span>
+                </li>
+                <li>
+                    <label>切面數據</label>
+                    <span><label>切面覆蓋率</label>98</span>
+                    <span><label>切面平均SINR</label>12.38dB</span>
+                    <span><label>切面平均RSRP</label>-83.58dBm</span>
+                </li>
+            </ul>
+        </div>
+        <div class="res_1">
+            <ul>
+                <li>
+                    <label>預估場域效能</label>
+                    <span><label>場域覆蓋率</label>98.04</span>
+                    <span><label>場域平均SINR</label>13dB</span>
+                    <span><label>場域平均RSRP</label>-82.75dBm</span>
+                    <span><label>UE覆蓋率</label>100</span>
+                    <span><label>UE平均SINR</label>18.58dB</span>
+                    <span><label>UE平均RSRP</label>-77.4dBm</span>
+                    <span><label>UE平均throughput</label>5.29Mb/s</span>
+                </li>
+                <li></li>
+            </ul>
+        </div>
+    <div class="box">
+        <h3>統計圖表</h3>
+        <ul>
+            <li>場域 Modulation 統計
+                <img src="">
+            </li>
+            <li>場域Modulation CDF 圖
+                <img src="">
+            </li>
+            <li>場域訊號強度
+                <img src="">
+            </li>
+            <li>場域訊號強度 CDF 圖
+                <img src="">
+            </li>
+            
+        </ul>
+        
+    </div>
+    -->
+    </div>
 
-    <div class="res_1">
-        <ul>
-            <li>
-                <label>場域數據</label>
-                <span><label>場域覆蓋率</label>98.04</span>
-                <span><label>場域平均SINR</label>13dB</span>
-                <span><label>場域平均RSRP</label>-82.75dBm</span>
-                <span><label>UE覆蓋率</label>100</span>
-                <span><label>UE平均SINR</label>18.58dB</span>
-                <span><label>UE平均RSRP</label>-77.4dBm</span>
-                <span><label>UE平均throughput</label>5.29Mb/s</span>
-            </li>
-            <li>
-                <label>切面數據</label>
-                <span><label>切面覆蓋率</label>98</span>
-                <span><label>切面平均SINR</label>12.38dB</span>
-                <span><label>切面平均RSRP</label>-83.58dBm</span>
-            </li>
-        </ul>
-    </div>
-    <div class="res_1">
-        <ul>
-            <li>
-                <label>預估場域效能</label>
-                <span><label>場域覆蓋率</label>98.04</span>
-                <span><label>場域平均SINR</label>13dB</span>
-                <span><label>場域平均RSRP</label>-82.75dBm</span>
-                <span><label>UE覆蓋率</label>100</span>
-                <span><label>UE平均SINR</label>18.58dB</span>
-                <span><label>UE平均RSRP</label>-77.4dBm</span>
-                <span><label>UE平均throughput</label>5.29Mb/s</span>
-            </li>
-            <li></li>
-        </ul>
-    </div>
-</div>
-</div>
-<div class="box">
-    <h3>統計圖表</h3>
-    <ul>
-        <li>場域 Modulation 統計
-            <img src="">
-        </li>
-        <li>場域Modulation CDF 圖
-            <img src="">
-        </li>
-        <li>場域訊號強度
-            <img src="">
-        </li>
-        <li>場域訊號強度 CDF 圖
-            <img src="">
-        </li>
-         
-    </ul>
-    
-</div>
-<div class="ds">規劃目標:新增1台基站，以達到UE平均下行throughput最大</div>
