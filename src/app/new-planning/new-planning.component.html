@@ -32,15 +32,15 @@
       <tr>
         <td class="th">場域尺寸</td>
         <td class="size">
-          <span><input type="text" placeholder="長" [(ngModel)]="calculateForm.altitude" >公尺</span>
-          <span><input type="text" placeholder="寬" [(ngModel)]="calculateForm.width">公尺</span>
-          <span><input type="text" placeholder="高" [(ngModel)]="calculateForm.height">公尺</span>
+          <span><input type="text" placeholder="長" [(ngModel)]="calculateForm.width" >公尺</span>
+          <span><input type="text" placeholder="寬" [(ngModel)]="calculateForm.height">公尺</span>
+          <span><input type="text" placeholder="高" [(ngModel)]="calculateForm.altitude">公尺</span>
         </td>
       </tr>
       <tr>
         <td class="th">網路種類</td>
         <td>
-          <mat-radio-group [(ngModel)]="calculateForm.seed" aria-label="Select an option">
+          <mat-radio-group [(ngModel)]="calculateForm.objectiveIndex" aria-label="Select an option">
             <mat-radio-button value="1">4G</mat-radio-button>
             <mat-radio-button value="2">5G</mat-radio-button>
             <mat-radio-button value="3">Wifi</mat-radio-button>

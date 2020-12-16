@@ -30,6 +30,18 @@ export class CalculateForm {
   addFixedBsNumber = null;
   bandwidth = null;
   Frequency = null;
+  isAverageSinr = false;
+  sinrRatio = null;
+  isAvgThroughput = false;
+  throughputRatio = null;
+  isCoverage = false;
+  coverageRatio = null;
+  isUeAvgSinr = false;
+  ueAvgSinrRatio = null;
+  isUeAvgThroughput = false;
+  ueAvgThroughputRatio = null;
+  isUeTpByDistance = false;
+  ueTpByDistanceRatio = false;
 
   // constructor(options: {
   //   sessionid?: string,

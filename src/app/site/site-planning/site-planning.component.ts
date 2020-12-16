@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
+import * as _ from 'lodash';
+import { OnDragEnd } from 'gesto';
 
 @Component({
   selector: 'app-site-planning',
@@ -56,6 +58,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     obstacle: 'subitem active',
     ue: 'subitem active'
   };
+  /** 平面高度 */
+  zValues = ['', '', ''];
+  /** 障礙物 */
+  dragList = [];
+  dragObject = {};
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -76,6 +83,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // this.tools = _.cloneDeep(document.querySelector('.tool').innerHTML);
     // this.moveable.destroy();
   }
 
@@ -118,6 +126,36 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.moveable.destroy();
     }
     this.live = !this.live;
+    // add new element
+    const newElement = document.getElementById('new_element');
+    const len = newElement.querySelectorAll('span').length;
+    const elm = event.target.cloneNode();
+    elm.innerHTML = event.target.innerHTML;
+    elm.setAttribute('id', `drag_${len + 1}`);
+    this.dragList.push(`drag_${len + 1}`);
+    this.dragObject[`drag_${len + 1}`] = {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      altitude: 0,
+      rotate: 0
+    };
+    document.getElementById('new_element').appendChild(elm);
+    window.setTimeout(() => {
+      this.target = elm;
+      elm.addEventListener('click', this.newElementClick.bind(this));
+      this.moveable.ngOnInit();
+      elm.style.position = 'relative';
+    }, 0);
+
+  }
+
+  newElementClick(event) {
+    if (this.live) {
+      this.moveable.destroy();
+    }
+    this.live = !this.live;
     this.target = event.target;
     this.moveable.ngOnInit();
   }
@@ -144,6 +182,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   setTransform(target) {
     target.style.cssText = this.frame.toCSS();
   }
+
   setLabel(clientX, clientY, text) {
     this.label.nativeElement.style.cssText =
       `display: block; transform: translate(${clientX}px,
@@ -151,6 +190,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
     this.label.nativeElement.innerHTML = text;
   }
+
   onPinch({ target, clientX, clientY }: OnPinch) {
     setTimeout(() => {
       this.setLabel(
@@ -160,9 +200,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           <br/>Y: ${this.frame.get('top')}
           <br/>W: ${this.frame.get('width')}
           <br/>H: ${this.frame.get('height')}
-          <br/>S: ${this.frame.get('transform', 'scaleX').toFixed(2)}, ${this.frame
-          .get('transform', 'scaleY')
-          .toFixed(2)}
+          <br/>S: ${this.frame.get('transform', 'scaleX').toFixed(2)}, ${this.frame.get('transform', 'scaleY').toFixed(2)}
           <br/>R: ${parseFloat(this.frame.get('transform', 'rotate')).toFixed(1)}deg`
       );
     });
@@ -175,6 +213,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `X: ${left}px<br/>Y: ${top}px`);
     }
+    this.dragObject[target.id].x = clientX;
+    this.dragObject[target.id].y = clientY;
   }
 
   onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {
@@ -200,6 +240,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `R: ${deg.toFixed(1)}`);
     }
+    this.dragObject[target.id].rotate = deg;
   }
 
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
@@ -209,6 +250,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
     }
+    this.dragObject[target.id].width = width;
+    this.dragObject[target.id].height = height;
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
@@ -223,6 +266,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
   onEnd() {
     this.label.nativeElement.style.display = 'none';
+    this.target.style.left = this.frame.get('left');
+    this.target.style.top = this.frame.get('top')
   }
 
   moveableDestroy() {
@@ -238,6 +283,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       target.innerHTML = 'keyboard_arrow_down';
       this.subitemClass[type] = 'subitem';
     }
+  }
+
+  /**
+   * 開始運算
+   */
+  calculate() {
+    if (typeof this.calculateForm.isAvgThroughput === 'undefined') {
+      this.calculateForm.isAvgThroughput = false;
+    }
+    console.log(this.calculateForm);
   }
 
 
