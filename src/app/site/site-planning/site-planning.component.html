@@ -1,13 +1,13 @@
 <div class="label" #label></div>
 <div class="tool">
-  <span class="material-icons target" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
-  <span class="material-icons target" matTooltip="障礙物" (click)="moveClick($event)">fiber_manual_record</span>
-  <span class="material-icons target" matTooltip="障礙物" (click)="moveClick($event)" >play_arrow</span>
+  <span class="material-icons" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
+  <span class="material-icons" matTooltip="障礙物" (click)="moveClick($event)">fiber_manual_record</span>
+  <span class="material-icons" matTooltip="障礙物" (click)="moveClick($event)" >play_arrow</span>
   <hr>
-  <span class="material-icons target" matTooltip="現有基站" (click)="moveClick($event)" >router</span>
-  <span class="material-icons target" matTooltip="新增基站" (click)="moveClick($event)" >fiber_new</span>
+  <span class="material-icons" matTooltip="現有基站" (click)="moveClick($event)" >router</span>
+  <span class="material-icons" matTooltip="新增基站" (click)="moveClick($event)" >fiber_new</span>
   <hr>
-  <span class="material-icons target" matTooltip="新增ＵＥ" (click)="moveClick($event)" >desktop_windows</span>
+  <span class="material-icons" matTooltip="新增ＵＥ" (click)="moveClick($event)" >desktop_windows</span>
   <div id="new_element"></div>
 </div>
 
@@ -15,18 +15,22 @@
   <mat-sidenav-content>
     
 
-  <div>
-      <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-      <h2 class="inline-block">場域規劃</h2>
-      <mat-button-toggle-group class="inline-block">
-        <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
-        <mat-button-toggle value="export">匯出</mat-button-toggle>
-        <mat-button-toggle value="go" (click)="calculate()" [routerLink]="['/site/result']">開始運算</mat-button-toggle>
-        <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
-      </mat-button-toggle-group>
-    <div class="dropDown_area" style="background-image:url({{imageSrc}})">
+  <div id="d_area">
+    <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
+    <h2 class="inline-block">場域規劃</h2>
+    <mat-button-toggle-group class="inline-block">
+      <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
+      <mat-button-toggle value="export">匯出</mat-button-toggle>
+      <mat-button-toggle value="go" (click)="calculate()" [routerLink]="['/site/result']">開始運算</mat-button-toggle>
+      <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
+    </mat-button-toggle-group>
+    <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
       
+    </div> -->
+    <div id="chart">
+      <span *ngFor="let item of dragList" class="material-icons dragList" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
     </div>
+    
 
   </div>
 
@@ -38,7 +42,7 @@
     [rotatable]="true"
     [pinchable]="true"
     [scalable]="scalable"
-    [resizable]="true"
+    [resizable]="resizable"
     [warpable]="warpable"
     [keepRatio]="false"
     [throttleDrag]="1"
@@ -85,15 +89,9 @@
           <li>
             <p>平面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
             <ol class="inline-block">
-<<<<<<< HEAD
               <li><input type="text" [(ngModel)]="zValues[0]"></li>
               <li><input type="text" [(ngModel)]="zValues[1]"></li>
               <li><input type="text" [(ngModel)]="zValues[2]"></li>
-=======
-              <li><input type="text" value="100"></li>
-              <li><input type="text" value="150"></li>
-              <li><input type="text"></li>
->>>>>>> 84d3dc012f08a72fdd5143d9e0cb382829b12d11
             </ol>
           </li>
 

@@ -8,7 +8,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
-import { OnDragEnd } from 'gesto';
+
+declare var Plotly: any;
+
+interface PlotHTMLElement extends HTMLElement {
+  on(eventName: string, handler: any): void;
+}
 
 @Component({
   selector: 'app-site-planning',
@@ -95,8 +100,87 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-        this.imageSrc = reader.result;
+        // this.imageSrc = reader.result;
+
+        const defaultPlotlyConfiguration = {
+          displaylogo: false,
+          showTips: true,
+          editable: false,
+          scrollZoom: false,
+          displayModeBar: false
+        };
+  
+        const pLayout = {
+          autosize: true,
+          hovermode: 'closest',
+          // height: (this.parent.chartSize === 'B' ? window.innerHeight - 85 : 140),
+          xaxis: {
+            linewidth: 1,
+            mirror: 'all',
+            range: [0, this.calculateForm.width],
+            showgrid: false,
+            zeroline: false,
+          },
+          yaxis: {
+            linewidth: 1,
+            mirror: 'all',
+            range: [0, this.calculateForm.height],
+            showgrid: false,
+            zeroline: false,
+          },
+          margin: { t: 20, b: 20, l: 40},
+          images: [{
+            source: reader.result,
+            x: 0,
+            y: 0,
+            sizex: this.calculateForm.width,
+            sizey: this.calculateForm.height,
+            xref: 'x',
+            yref: 'y',
+            xanchor: 'left',
+            yanchor: 'bottom',
+            sizing: 'stretch',
+            hover: 'x+y'
+          }]
+        };
+  
+        Plotly.newPlot('chart', {
+          data: [],
+          layout: pLayout,
+          config: defaultPlotlyConfiguration
+        });
+
+        const myPlot = <PlotHTMLElement> document.getElementById('chart');
+        myPlot.on('plotly_hover', (data) => {
+          console.log(data)
+        });
       };
+
+      
+
+      // const svgX = Plotly.d3.select('#svg_x').append('svg').attr('width', 971).attr('height', 30);
+
+      // const xLinear = Plotly.d3.scale.linear()
+      //   .domain([0, this.calculateForm.width])
+      //   .range([0, 971]);
+      // const scaleX = xLinear.ticks(15);
+
+      // const axisBottom = Plotly.d3.svg.axis().scale(xLinear).orient('bottom');
+      // const gAxis = svgX.append('g').attr('transform', 'translate(10, 0)').attr('class', 'axis');
+      // axisBottom(gAxis);
+
+      // const svgY = Plotly.d3.select('#svg_y').append('svg').attr('width', 971).attr('height', 900);
+      // const yLinear = Plotly.d3.scale.linear()
+      //   .domain([0, this.calculateForm.height])
+      //   .range([0, 900]);
+      // const scaleY = yLinear.ticks(10);
+
+      // const axisY = Plotly.d3.svg.axis().scale(yLinear).orient('left');
+      // const yAxis = svgY.append('g').attr('transform', 'translate(30, 0)').attr('class', 'axis');
+      // axisY(yAxis);
+
+      // console.log(scaleX, scaleY)
+
     }
   }
 
@@ -126,28 +210,58 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.moveable.destroy();
     }
     this.live = !this.live;
-    // add new element
-    const newElement = document.getElementById('new_element');
-    const len = newElement.querySelectorAll('span').length;
-    const elm = event.target.cloneNode();
-    elm.innerHTML = event.target.innerHTML;
-    elm.setAttribute('id', `drag_${len + 1}`);
-    this.dragList.push(`drag_${len + 1}`);
-    this.dragObject[`drag_${len + 1}`] = {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0,
-      altitude: 0,
-      rotate: 0
-    };
-    document.getElementById('new_element').appendChild(elm);
-    window.setTimeout(() => {
-      this.target = elm;
-      elm.addEventListener('click', this.newElementClick.bind(this));
+    if (event.target.className.indexOf('dragList') === -1) {
+      const len = this.dragList.length;
+      this.dragList.push(`drag_${len + 1}`);
+      this.dragObject[`drag_${len + 1}`] = {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        altitude: 0,
+        rotate: 0
+      };
+      this.frame = new Frame({
+        width: '50px',
+        height: '50px',
+        left: '200px',
+        top: '250px',
+        transform: {
+          rotate: '0deg',
+          scaleX: 1,
+          scaleY: 1,
+          matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        }
+      });
+      // document.getElementById('chart').appendChild(elm);
+      window.setTimeout(() => {
+        // elm.style.left = 150;
+        // elm.style.top = -350;
+        // elm.position = 'absolute';
+        // this.target = elm;
+        const span = document.querySelectorAll('.dragList');
+        span[span.length - 1].innerHTML = event.target.innerHTML;
+        this.target = span[span.length - 1];
+        // elm.addEventListener('click', this.newElementClick.bind(this));
+        this.moveable.ngOnInit();
+        // this.moveable.destroy();
+        // this.moveable.ngOnInit();
+        // elm.style.position = 'a';
+      }, 0);
+    } else {
+      this.target = event.target;
       this.moveable.ngOnInit();
-      elm.style.position = 'relative';
-    }, 0);
+    }
+    // add new element
+    // const newElement = document.getElementById('chart');
+    // const len = newElement.querySelectorAll('span').length;
+    // const elm = event.target.cloneNode();
+    // elm.innerHTML = event.target.innerHTML;
+    // elm.setAttribute('id', `drag_${len + 1}`);
+    // elm.setAttribute('style', 'left: 200px; top: -350px');
+
+    
+    
 
   }
 
@@ -215,6 +329,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     }
     this.dragObject[target.id].x = clientX;
     this.dragObject[target.id].y = clientY;
+    console.log(left, top)
   }
 
   onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {

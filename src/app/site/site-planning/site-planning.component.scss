@@ -161,3 +161,9 @@ span {
 .target {
     position: relative;
 }
+.dragList {
+    position: fixed;
+    left: 200px;
+    top: 250px;
+    z-index: 9999;
+}
