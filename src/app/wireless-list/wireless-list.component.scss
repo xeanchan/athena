@@ -2,3 +2,17 @@
     line-height: 30px;
     padding: 0 12px;
 }
+.planningList {
+    border: 1px solid #5aa5e2;
+    padding: 2px;
+    margin: .5em 0 3em;
+}
+.planningList table {
+    font-size: .9em;
+    display: table;
+    width: 100%;
+    margin: 0;
+}
+.planningList table th, .planningList table td {
+    padding: .5em;
+}

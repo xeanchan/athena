@@ -27,6 +27,15 @@ mat-sidenav-container {
     width: 55%;
     margin: .8em auto;
 }
+.tool .svg {
+    margin-bottom: .6em;
+}
+.tool .svg img {
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: auto;
+}
 .mat-sidenav {
     max-width: 30%;
 }
@@ -152,9 +161,9 @@ ol.inline-block li {
 ol.inline-block li input[type="text"] {
     padding-left: .5em;
 }
-span {
+/*span {
     display: inline-block;
-}
+}*/
 .widthAuto {
     width: auto!important;
 }

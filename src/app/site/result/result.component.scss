@@ -4,7 +4,8 @@
 .box {
     display: inline-block;
     vertical-align: top;
-    padding: 1em 0;
+    padding: .5em 0 0;
+    width: 100%;
 }
 .box label {
     font-weight: bold;
@@ -12,7 +13,7 @@
 }
 .box .map {
     display: block;
-    width: 95%;
+    width: 100%;
     height: auto;
     margin: auto;
 }
