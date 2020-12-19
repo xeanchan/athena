@@ -14,23 +14,23 @@
     display: block;
     width: 95%;
     height: auto;
-    margin: .5em auto;
+    margin: auto;
 }
 .panel {
-    padding: .6em 1em;
+    padding: 0.4em .8em;
     background-color: #5aa5e2!important;
     color: #fff!important;
     font-size: .8em;
     border-right: 1px solid #fff!important;
 }
 .panel label {
-    font-size: 1.3em;
+    font-size: 1.1em;
 }
 .box table {
-    margin: 0 1em 0 0;
-    width: auto;
+    margin: 0 0 1em 0;
+    display: table;
+    width: 100%;
     border:1.5px solid #5aa5e2;
-    display:inline-block;
     vertical-align: top;
     
 }
@@ -39,6 +39,7 @@
     border-right:1px solid #5aa5e2;
     line-height: 1.5;
 }
+
 .box table td {
     text-align: center;
 }
@@ -46,9 +47,16 @@
 .box table td:last-child {
     border-right:none;
 }
+.mapType {
+    border-right:1px solid #5aa5e2!important;
+}
 .box table th {
 /*     font-size: .9em;
  */    background-color: #eaf3f8;
+ border-top: 1.5px solid #5aa5e2;
+ font-size: .95em;
+ color: #1760af;
+
 }
 .box table tr {
     border-bottom: 1.5px solid #5aa5e2;
@@ -100,14 +108,11 @@
     content: ":";
     display: inline-block;
 }
-.mapType {
-    background-color: #eee;
-    margin-top: 1.5em;
-    border-top: 2px solid #5aa5e2;
-    padding: 0 1em 1em;
-}
+.mapType label{
+    font-size: .9em;
+    }
 .mapType mat-button-toggle-group {
-    margin: 1em 0 0 0;
+    margin: .5em 0 0 0;
 }
 .ds {
     display: block;
@@ -117,9 +122,51 @@
     padding: 0 1em;
     background-color: #e9f3f8;
     line-height: 2.5;
-    border-left: 3px solid #5aa5e2;
+    border-top: 3px solid #5aa5e2;
 }
 .ds i {
     color:#5aa5e2;
     margin-right: .3em;
+}
+
+.leftArea,.rightArea {
+    display: inline-block;
+    vertical-align: top;
+}
+.leftArea {
+    width: 75%;
+    padding: 0.5em 1em 0 0;
+
+}
+.rightArea {
+    padding: 1em;
+    font-size: .9em;
+    width: 25%;
+}
+.rightArea h5 {
+    font-size: 1.1em;
+    color: #1760af;
+}
+.rightArea ul li {
+    display: block;
+}
+.rightArea ul li > span {
+    display: block;
+    font-size: .9;
+    line-height: 1.5;
+    margin: 0 0 .4em 1.5em;
+}
+.rightArea ul li span > span {
+    display: inline;
+}
+.rightArea ul li span label {
+    font-weight: bold;
+    font-size: .95em;
+    margin-right: .2em;
+}
+.rightArea ul li span label::after {
+    content: " :";
+}
+.thCenter th {
+    text-align: center;
 }

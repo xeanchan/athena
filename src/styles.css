@@ -32,6 +32,9 @@ table {
 .modalContent table {
     margin-bottom: 1em;
 }
+.center {
+    text-align: center!important;
+}
 th,td {
     line-height: 2em;
     padding: .5em 1.34em;
