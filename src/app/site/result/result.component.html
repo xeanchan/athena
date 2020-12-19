@@ -4,21 +4,23 @@
 
   <mat-button-toggle-group class="inline-block">
     <mat-button-toggle [routerLink]="['/site/site-planning']" value="back">回上頁</mat-button-toggle>
-    <mat-button-toggle [routerLink]="['/site/planning-report']" value="report">規劃報告</mat-button-toggle>
-    <mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
+    <!--<mat-button-toggle [routerLink]="['/site/planning-report']" value="report">規劃報告</mat-button-toggle>-->
+   <mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
     <mat-button-toggle value="export">匯出</mat-button-toggle>
   </mat-button-toggle-group>
 
     <div class="box">
-        <div class="ds">
+        <div class="leftArea">
+
+        <!--<div class="ds">
             <i class="fas fa-info-circle"></i>
             規劃目標 : 不限制增加基站數量，以達到 UE 平均下行 Throughput 最大
-        </div>
+        </div>-->
 
         <table>
             <tbody>
                 <tr>
-                    <th class="panel" colspan="7"><label class="bold">建議方案</label>待選基站位置 ( 共6處 )</th>
+                    <th class="panel center" colspan="7"><label class="bold">建議方案</label>待選基站位置 ( 共6處 )</th>
                 </tr>
                 <tr>
                     <th>基站編號</th>
@@ -50,11 +52,39 @@
             </tbody>
         </table>
 
-        <table>
+        <table class="thCenter">
             <tbody>
                 <tr>
-                    <th class="panel" colspan="4"><label class="bold">預估場域效能</label></th>
+                    <th class="panel" colspan="4"><label class="bold">預估效能</label></th>
                 </tr>
+                <tr>
+                    <th>場域覆蓋率</th>
+                    <th>場域平均 SINR</th>
+                    <th>場域平均 RSRP</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td>100%</td>
+                    <td>13.66dB</td>
+                    <td>-68.17dBm</td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <th>UE 覆蓋率</th>
+                    <th>UE 平均 SINR</th>
+                    <th>UE 平均 RSRP</th>
+                    <th>UE 平均 Throughput</th>
+                </tr>
+                <tr>
+                    <td>13.9dB</td>
+                    <td>100%</td>
+                    <td>-60.16dBm</td>
+                    <td>0Mb/s</td>
+                </tr>
+            </tbody>
+            <tbody>
                 <tr>
                     <th>地圖切面(高度)</th>
                     <th>切面覆蓋率</th>
@@ -62,20 +92,61 @@
                     <th>切面平均 RSRP</th>
                 </tr>
                 <tr>
-                    <td>100公分</td>
+                    <td>1公尺</td>
                     <td>98%</td>
                     <td>12.38dB</td>
                     <td>-83.58dBm</td>
                 </tr>
                 <tr>
-                    <td>150公分</td>
+                    <td>1.5公尺</td>
                     <td>98%</td>
                     <td>12.38dB</td>
                     <td>-83.58dBm</td>
                 </tr>
             </tbody>
-            
         </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th colspan="2" class="panel center">統計資訊</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <tbody>
+                <tr>
+                    <th colspan="2" class="panel center">圖面資訊</th>
+                </tr>
+                <tr>
+                    <td class="mapType">
+                            <label>切面高度</label>
+                            <mat-button-toggle-group>
+                                <mat-button-toggle  value="" selected> 1 公尺</mat-button-toggle>
+                                <mat-button-toggle  value=""> 1.5 公尺</mat-button-toggle>
+                            </mat-button-toggle-group>
+                
+                            <label class="mL_1">分布圖切換</label>
+                            <mat-button-toggle-group>
+                                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
+                                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
+                                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
+                            </mat-button-toggle-group>
+                            <img class="map" src="/assets/img/map.png">           
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
 
         <!-- <mat-form-field>
             <mat-label>地圖切面(高度):</mat-label>
@@ -84,21 +155,7 @@
                 <mat-option1>1.5公尺</mat-option>
             </mat-select>
         </mat-form-field> -->
-        <div class="mapType">
-            <label>各切面資訊</label>
-            <mat-button-toggle-group>
-                <mat-button-toggle  value="" selected>高度 1 公尺</mat-button-toggle>
-                <mat-button-toggle  value="">高度 1.5 公尺</mat-button-toggle>
-            </mat-button-toggle-group>
-
-            <label class="mL_1">分布圖切換</label>
-            <mat-button-toggle-group>
-                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
-                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
-                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
-            </mat-button-toggle-group>
-            <img class="map" src="/assets/img/sinr.png">           
-        </div>  
+        
     <!--
         <div class="res_1">
             <ul>
@@ -156,4 +213,33 @@
     </div>
     -->
     </div>
-
+    
+    <div class="rightArea ds">
+        <h5><i class="fas fa-info-circle"></i>場域設定資訊</h5>
+        <ul>
+          <li>
+          <span><label>專案名稱</label>eaaaaa</span>
+          <span><label>規劃時間</label>2020-12-19 12:17:13</span>
+        </li>
+        <li>
+          <span><label>規劃目標</label>
+          <span>不限制增加基站數量，以達到UE平均下行throughput最大.</span>
+          </span>
+        </li>
+        <li>
+          <span><label>場域大小</label>長 104 公尺/ 寬 26 公尺／高 2 公尺</span>
+          <span><label>地圖切面(高度)</label>1 公尺／1.5 公尺</span>
+        </li>
+        <hr>
+        <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
+        <li>
+          <span><label>待選基站位置</label>(共6處)</span>
+          <span><label>現有基站</label>(共0台)</span>
+          <span><label>發射功率範圍</label>	-5 dBm ~ 21 dBm</span>
+          <span><label>可分配波束編號範圍</label>	0 ~ 30</span>
+          <span><label>LTE系統頻寬(MHz)</label>	20 MHz</span>
+          <span><label>LTE系統頻率(MHz)</label>	1900 MHz</span>
+        </li>
+      </ul>
+      </div>
+</div>
