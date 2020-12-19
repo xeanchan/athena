@@ -28,10 +28,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     private matDialog: MatDialog,
     private http: HttpClient) { }
 
+  // @ViewChild('target') target: ElementRef;
   @ViewChild('label') label: ElementRef;
   @ViewChild('moveable') moveable: NgxMoveableComponent;
   // @ViewChildren(TemplateRef) templateList: QueryList<TemplateRef<any>>;
 
+  target;
   scalable = true;
   resizable = false;
   warpable = false;
@@ -42,13 +44,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     top: '0px',
     transform: {
       rotate: '0deg',
-      scaleX: 1,
+      scaleX: 1.64,
       scaleY: 1,
       matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     }
   });
   iconList = [1, 2, 3];
-  target;
+  // target;
 
   opened = true;
   panelOpenState = false;
@@ -68,6 +70,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   /** 障礙物 */
   dragList = [];
   dragObject = {};
+  // 比例尺公式
+  xLinear;
+  yLinear;
+  // x邊界
+  xBorder = 145;
+  targetObject;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -100,8 +108,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-        // this.imageSrc = reader.result;
+        // 比例尺計算
+        const image = new Image();
+        image.src = reader.result as string;
+        image.onload = () => {
+          console.log(image.naturalWidth)
+          this.xLinear = Plotly.d3.scale.linear()
+            .domain([0, image.naturalWidth])
+            .range([0, this.calculateForm.width]).nice();
 
+          this.yLinear = Plotly.d3.scale.linear()
+            .domain([0, image.naturalHeight])
+            .range([0, this.calculateForm.height]);
+        };
+
+        // draw background image chart
         const defaultPlotlyConfiguration = {
           displaylogo: false,
           showTips: true,
@@ -109,11 +130,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           scrollZoom: false,
           displayModeBar: false
         };
-  
+
         const pLayout = {
           autosize: true,
-          hovermode: 'closest',
-          // height: (this.parent.chartSize === 'B' ? window.innerHeight - 85 : 140),
           xaxis: {
             linewidth: 1,
             mirror: 'all',
@@ -143,17 +162,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
             hover: 'x+y'
           }]
         };
-  
+
         Plotly.newPlot('chart', {
           data: [],
           layout: pLayout,
           config: defaultPlotlyConfiguration
         });
 
-        const myPlot = <PlotHTMLElement> document.getElementById('chart');
-        myPlot.on('plotly_hover', (data) => {
-          console.log(data)
-        });
+        // const myPlot = <PlotHTMLElement> document.getElementById('chart');
+        // myPlot.on('plotly_hover', (data) => {
+        //   console.log(data)
+        // });
       };
 
       
@@ -221,6 +240,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         altitude: 0,
         rotate: 0
       };
+      
       this.frame = new Frame({
         width: '50px',
         height: '50px',
@@ -252,6 +272,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.target = event.target;
       this.moveable.ngOnInit();
     }
+    console.log(this.frame)
     // add new element
     // const newElement = document.getElementById('chart');
     // const len = newElement.querySelectorAll('span').length;
@@ -321,15 +342,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   }
 
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
-    this.frame.set('left', `${left}px`);
-    this.frame.set('top', `${top}px`);
-    this.setTransform(target);
-    if (!isPinch) {
-      this.setLabel(clientX, clientY, `X: ${left}px<br/>Y: ${top}px`);
+    
+    if (left > this.xBorder) {
+      this.frame.set('left', `${left}px`);
+      this.frame.set('top', `${top}px`);
+      this.setTransform(target);
+      if (!isPinch) {
+        this.setLabel(clientX, clientY, `X: ${left}px<br/>Y: ${top}px`);
+      }
     }
-    this.dragObject[target.id].x = clientX;
-    this.dragObject[target.id].y = clientY;
-    console.log(left, top)
+    
+    // this.dragObject[target.id].x = clientX;
+    // this.dragObject[target.id].y = clientY;
+    console.log(clientX, left)
+    console.log(this.xLinear(left - this.xBorder))
   }
 
   onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {
@@ -345,6 +371,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         `S: ${scaleX.toFixed(2)}, ${scaleY.toFixed(2)}`
       );
     }
+    console.log('scaleX='+scaleX)
+    console.log(target.style.width)
   }
 
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
@@ -365,8 +393,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
     }
-    this.dragObject[target.id].width = width;
-    this.dragObject[target.id].height = height;
+    console.log(width)
+    this.target.style.width = width + 'px';
+    // this.dragObject[target.id].width = width;
+    // this.dragObject[target.id].height = height;
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
@@ -381,8 +411,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
   onEnd() {
     this.label.nativeElement.style.display = 'none';
-    this.target.style.left = this.frame.get('left');
-    this.target.style.top = this.frame.get('top')
+    // this.target.style.left = this.frame.get('left');
+    // this.target.style.top = this.frame.get('top')
   }
 
   moveableDestroy() {

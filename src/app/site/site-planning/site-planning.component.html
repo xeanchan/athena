@@ -1,4 +1,3 @@
-<div class="label" #label></div>
 <div class="tool">
   <span class="material-icons" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
   <span class="material-icons" matTooltip="障礙物" (click)="moveClick($event)">fiber_manual_record</span>
@@ -28,11 +27,13 @@
       
     </div> -->
     <div id="chart">
-      <span *ngFor="let item of dragList" class="material-icons dragList" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
+      <span *ngFor="let item of dragList" #target class="dragList" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
     </div>
     
 
   </div>
+
+  <div class="label" #label></div>
 
   <ngx-moveable
     #moveable
