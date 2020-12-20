@@ -1,5 +1,5 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
-import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp } from 'moveable';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp, MoveableGroupInterface, BeforeRenderableProps } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
 import { TaskFormService } from '../task-form.service';
@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
+import { MatTooltip } from '@angular/material/tooltip';
 
 declare var Plotly: any;
 
@@ -28,8 +29,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     private matDialog: MatDialog,
     private http: HttpClient) { }
 
-  // @ViewChild('target') target: ElementRef;
-  @ViewChild('label') label: ElementRef;
   @ViewChild('moveable') moveable: NgxMoveableComponent;
   // @ViewChildren(TemplateRef) templateList: QueryList<TemplateRef<any>>;
 
@@ -68,14 +67,50 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   /** 平面高度 */
   zValues = ['', '', ''];
   /** 障礙物 */
-  dragList = [];
-  dragObject = {};
+  obstacleList = [];
+  obstacleObject = {};
   // 比例尺公式
   xLinear;
   yLinear;
-  // x邊界
-  xBorder = 145;
+  // chart邊界
+  chartLeft = 0;
+  chartRight = 0;
+  chartTop = 0;
+  chartBottom = 0;
   targetObject;
+  svgMap = {
+    svg_01: {
+      id: 'svg_1',
+      title: '障礙物'
+    },
+    svg_02: {
+      id: 'svg_2',
+      title: '障礙物'
+    },
+    svg_03: {
+      id: 'svg_3',
+      title: '障礙物'
+    }
+  };
+  // select svg id
+  svgId;
+  scalex;
+  scaley;
+  tooltipStr = '';
+  // round
+  roundFormat = Plotly.d3.format('.1f');
+  // bounds = {
+  //   left: 150,
+  //   top: 0,
+  //   right: 300,
+  //   bottom: 500
+  // };
+  @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
+  @Input() public container!: SVGElement | HTMLElement | null;
+
+  @ViewChild('msgLabel') label: ElementRef;
+  @ViewChild('tooltip') tooltip: MatTooltip;
+  @ViewChild('chart') chart: ElementRef;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -108,19 +143,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-        // 比例尺計算
-        const image = new Image();
-        image.src = reader.result as string;
-        image.onload = () => {
-          console.log(image.naturalWidth)
-          this.xLinear = Plotly.d3.scale.linear()
-            .domain([0, image.naturalWidth])
-            .range([0, this.calculateForm.width]).nice();
+        
+        // const image = new Image();
+        // image.src = reader.result as string;
+        // image.onload = () => {
+        //   console.log(image.naturalWidth)
 
-          this.yLinear = Plotly.d3.scale.linear()
-            .domain([0, image.naturalHeight])
-            .range([0, this.calculateForm.height]);
-        };
+        // };
 
         // draw background image chart
         const defaultPlotlyConfiguration = {
@@ -167,39 +196,25 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           data: [],
           layout: pLayout,
           config: defaultPlotlyConfiguration
+        }).then((gd) => {
+          // 比例尺計算
+          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+          const rect = xy.getBoundingClientRect();
+          this.chartLeft = rect.left;
+          this.chartRight = rect.right;
+          this.chartTop = rect.top;
+          this.chartBottom = rect.bottom;
+
+          this.xLinear = Plotly.d3.scale.linear()
+            .domain([0, rect.width])
+            .range([0, this.calculateForm.width]);
+
+          this.yLinear = Plotly.d3.scale.linear()
+            .domain([0, rect.height])
+            .range([0, this.calculateForm.height]);
+
         });
-
-        // const myPlot = <PlotHTMLElement> document.getElementById('chart');
-        // myPlot.on('plotly_hover', (data) => {
-        //   console.log(data)
-        // });
       };
-
-      
-
-      // const svgX = Plotly.d3.select('#svg_x').append('svg').attr('width', 971).attr('height', 30);
-
-      // const xLinear = Plotly.d3.scale.linear()
-      //   .domain([0, this.calculateForm.width])
-      //   .range([0, 971]);
-      // const scaleX = xLinear.ticks(15);
-
-      // const axisBottom = Plotly.d3.svg.axis().scale(xLinear).orient('bottom');
-      // const gAxis = svgX.append('g').attr('transform', 'translate(10, 0)').attr('class', 'axis');
-      // axisBottom(gAxis);
-
-      // const svgY = Plotly.d3.select('#svg_y').append('svg').attr('width', 971).attr('height', 900);
-      // const yLinear = Plotly.d3.scale.linear()
-      //   .domain([0, this.calculateForm.height])
-      //   .range([0, 900]);
-      // const scaleY = yLinear.ticks(10);
-
-      // const axisY = Plotly.d3.svg.axis().scale(yLinear).orient('left');
-      // const yAxis = svgY.append('g').attr('transform', 'translate(30, 0)').attr('class', 'axis');
-      // axisY(yAxis);
-
-      // console.log(scaleX, scaleY)
-
     }
   }
 
@@ -229,21 +244,24 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.moveable.destroy();
     }
     this.live = !this.live;
-    if (event.target.className.indexOf('dragList') === -1) {
-      const len = this.dragList.length;
-      this.dragList.push(`drag_${len + 1}`);
-      this.dragObject[`drag_${len + 1}`] = {
+    if (event.target.getAttribute('class').indexOf('drag_rect') === -1) {
+      const svg = event.target.closest('svg');
+      this.svgId = svg.id;
+      const len = this.obstacleList.length;
+      this.obstacleList.push(this.svgId);
+      this.obstacleObject[this.svgId] = {
         x: 0,
         y: 0,
         width: 0,
         height: 0,
-        altitude: 0,
-        rotate: 0
+        altitude: this.calculateForm.altitude,
+        rotate: 0,
+        title: this.svgMap[this.svgId].title
       };
-      
+
       this.frame = new Frame({
-        width: '50px',
-        height: '50px',
+        width: '30px',
+        height: '30px',
         left: '200px',
         top: '250px',
         transform: {
@@ -253,37 +271,33 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         }
       });
-      // document.getElementById('chart').appendChild(elm);
+
       window.setTimeout(() => {
-        // elm.style.left = 150;
-        // elm.style.top = -350;
-        // elm.position = 'absolute';
-        // this.target = elm;
+
         const span = document.querySelectorAll('.dragList');
-        span[span.length - 1].innerHTML = event.target.innerHTML;
+        const rect = svg.querySelector(`#${this.svgMap[svg.id].id}`);
+        rect.setAttribute('fill', 'green');
+        rect.setAttribute('class', 'drag_rect');
+        span[span.length - 1].innerHTML += svg.outerHTML;
         this.target = span[span.length - 1];
-        // elm.addEventListener('click', this.newElementClick.bind(this));
+
+        this.target.bounds = this.bounds;
+        this.target.dragArea = document.getElementById('chart');
+
+        // 還原來源顏色 & class
+        event.target.setAttribute('fill', '#ffffff');
+        event.target.setAttribute('class', 'target');
+
         this.moveable.ngOnInit();
-        // this.moveable.destroy();
-        // this.moveable.ngOnInit();
-        // elm.style.position = 'a';
+        this.setTooltip();
+        this.tooltip.show();
       }, 0);
     } else {
-      this.target = event.target;
+      this.target = event.target.closest('span');
       this.moveable.ngOnInit();
+      this.setTooltip();
+      this.tooltip.show();
     }
-    console.log(this.frame)
-    // add new element
-    // const newElement = document.getElementById('chart');
-    // const len = newElement.querySelectorAll('span').length;
-    // const elm = event.target.cloneNode();
-    // elm.innerHTML = event.target.innerHTML;
-    // elm.setAttribute('id', `drag_${len + 1}`);
-    // elm.setAttribute('style', 'left: 200px; top: -350px');
-
-    
-    
-
   }
 
   newElementClick(event) {
@@ -341,21 +355,80 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     });
   }
 
+  setTooltip() {
+    const rect = this.target.closest('span').getBoundingClientRect();
+    const rectLeft = rect.left - this.chartLeft;
+    const rectBottom = this.chartBottom - rect.bottom;
+    let xVal = this.roundFormat(this.xLinear(rectLeft));
+    if (xVal < 0) {
+      xVal = 0;
+    }
+    const yVal = this.roundFormat(this.yLinear(rectBottom));
+    const wVal = this.roundFormat(this.xLinear(rect.width));
+    const hVal = this.roundFormat(this.yLinear(rect.height));
+    this.tooltipStr = `${this.svgMap[this.svgId].title}
+      X: ${xVal}
+      Y: ${yVal}
+      長: ${wVal}
+      寬: ${hVal}
+      高: ${this.calculateForm.altitude}`;
+
+    this.obstacleObject[this.svgId] = {
+      x: xVal,
+      y: yVal,
+      width: wVal,
+      height: hVal,
+      altitude: this.calculateForm.altitude,
+      rotate: 0,
+      title: this.svgMap[this.svgId].title
+    };
+  }
+
+  dragStart(moveable: MoveableGroupInterface<BeforeRenderableProps>, e: any) {
+
+    e.bounds = this.bounds;
+  }
+
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
-    
-    if (left > this.xBorder) {
+
+    const rect = target.closest('span').getBoundingClientRect();
+    const rectLeft = rect.left;
+    const rectRight = rect.right;
+    const rectTop = rect.top;
+    const rectBottom = rect.bottom;
+
+    if (rectLeft > this.chartLeft - 1 && rectRight < this.chartRight
+      && rectTop > this.chartTop && rectBottom < this.chartBottom) {
       this.frame.set('left', `${left}px`);
       this.frame.set('top', `${top}px`);
       this.setTransform(target);
       if (!isPinch) {
         this.setLabel(clientX, clientY, `X: ${left}px<br/>Y: ${top}px`);
       }
+
+    } else {
+      if (rectLeft < this.chartLeft) {
+        this.frame.set('left', `${this.chartLeft}px`);
+        this.setTransform(target);
+        target.closest('span').style.left = `${152}px`;
+      } else if (rectTop <= this.chartTop) {
+        this.frame.set('top', `${this.chartTop + 1}px`);
+        this.setTransform(target);
+        const t = Number(target.closest('span').style.top.replace('px', ''));
+        target.closest('span').style.top = `${t + 1}px`;
+      } else if (rectRight >= this.chartRight) {
+        this.frame.set('left', `${rectLeft - 1}px`);
+        this.setTransform(target);
+        const t = Number(target.closest('span').style.left.replace('px', ''));
+        target.closest('span').style.left = `${t - 1}px`;
+      } else if (rectBottom >= this.chartBottom) {
+        this.frame.set('top', `${rectTop - 1}px`);
+        this.setTransform(target);
+        const t = Number(target.closest('span').style.top.replace('px', ''));
+        target.closest('span').style.top = `${t - 1}px`;
+      }
     }
-    
-    // this.dragObject[target.id].x = clientX;
-    // this.dragObject[target.id].y = clientY;
-    console.log(clientX, left)
-    console.log(this.xLinear(left - this.xBorder))
+    this.setTooltip();
   }
 
   onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {
@@ -371,8 +444,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         `S: ${scaleX.toFixed(2)}, ${scaleY.toFixed(2)}`
       );
     }
-    console.log('scaleX='+scaleX)
-    console.log(target.style.width)
+    this.scalex = scaleX;
   }
 
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
@@ -383,7 +455,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `R: ${deg.toFixed(1)}`);
     }
-    this.dragObject[target.id].rotate = deg;
+    this.obstacleObject[this.svgId].rotate = deg;
   }
 
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
@@ -393,10 +465,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
     }
-    console.log(width)
-    this.target.style.width = width + 'px';
-    // this.dragObject[target.id].width = width;
-    // this.dragObject[target.id].height = height;
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {

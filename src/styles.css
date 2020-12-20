@@ -107,3 +107,6 @@ th.min {
     position: absolute;
     left: 0;
 }
+.mat-tooltip {
+    white-space: pre-line;
+}

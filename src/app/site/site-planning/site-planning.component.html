@@ -1,7 +1,48 @@
 <div class="tool">
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg1.svg"></span>
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg2.svg"></span>
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg3.svg"></span>
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+    <svg id="svg_01" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="#fff"/>
+       <g id="canvasGrid" display="none">
+        <rect width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+       </g>
+      </g>
+      <g>
+       <rect fill="#000000" stroke-width="1.5" x="111" y="151" width="41" height="28" stroke="#000"/>
+       <rect class="target" fill="#ffffff" stroke-width="1.5" x="0" y="0" width="30" height="30" id="svg_1"/>
+      </g>
+    </svg>
+  </span>
+
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+    <svg id="svg_02" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
+       <g display="none" id="canvasGrid">
+        <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+       </g>
+      </g>
+      <g>
+       <rect stroke="#000" id="svg_3" height="28" width="41" y="151" x="111" stroke-width="1.5" fill="#000000"/>
+       <ellipse class="target" ry="15" rx="15" id="svg_2" cy="15" cx="15" stroke-width="1.5" fill="#ffffff"/>
+      </g>
+     </svg>
+  </span>
+
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+    <svg id="svg_03" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="none"/>
+       <g id="canvasGrid" display="none">
+        <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+       </g>
+      </g>
+      <g>
+       <rect fill="#000000" stroke-width="1.5" x="111" y="151" width="41" height="28" stroke="#000"/>
+       <path class="target" fill="#ffffff" stroke-width="1.5" d="m1.75,28.69313l13.5,-25.625l13.5,25.625l-27,0z" id="svg_3"/>
+      </g>
+     </svg>
+  </span>
   <hr>
   <span class="material-icons" matTooltip="現有基站" (click)="moveClick($event)" >router</span>
   <span class="material-icons" matTooltip="新增基站" (click)="moveClick($event)" >fiber_new</span>
@@ -27,14 +68,15 @@
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
       
     </div> -->
-    <div id="chart">
-      <span *ngFor="let item of dragList" #target class="dragList" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
+    <div #container id="chart">
+      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
+      <div class="msg_label" #msgLabel></div>
     </div>
     
 
   </div>
 
-  <div class="label" #label></div>
+  
 
   <ngx-moveable
     #moveable
@@ -98,31 +140,31 @@
           </li>
 
           <li>
-            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ dragList.length }}</label>
+            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
               <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
             </p>
             <ol>
-              <li *ngFor="let item of dragList">
+              <li *ngFor="let item of obstacleList">
                 <span>
                   <label>X</label>
-                  <input type="text" [value]="dragObject[item].x">
+                  <input type="text" [value]="obstacleObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text" [value]="dragObject[item].y">
+                  <input type="text" [value]="obstacleObject[item].y">
                 </span>
                 <br>
                 <span>
                   <label>長</label>
-                  <input type="text" [value]="dragObject[item].width">
+                  <input type="text" [value]="obstacleObject[item].width">
                 </span>
                 <span>
                   <label>寬</label>
-                  <input type="text" [value]="dragObject[item].height">
+                  <input type="text" [value]="obstacleObject[item].height">
                 </span>
                 <span>
                   <label>高</label>
-                  <input type="text" [value]="dragObject[item].altitude">
+                  <input type="text" [value]="obstacleObject[item].altitude">
                 </span>
               </li>
             </ol>
