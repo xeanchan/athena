@@ -90,6 +90,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     svg_03: {
       id: 'svg_3',
       title: '障礙物'
+    },
+    svg_04: {
+      id: 'svg_4',
+      title: '現有基站'
+    },
+    svg_05: {
+      id: 'svg_5',
+      title: '新增基站'
+    },
+    svg_06: {
+      id: 'svg_6',
+      title: '新增ＵＥ'
     }
   };
   // select svg id
@@ -143,18 +155,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-        
-        // const image = new Image();
-        // image.src = reader.result as string;
-        // image.onload = () => {
-        //   console.log(image.naturalWidth)
-
-        // };
 
         // draw background image chart
         const defaultPlotlyConfiguration = {
           displaylogo: false,
-          showTips: true,
+          showTips: false,
           editable: false,
           scrollZoom: false,
           displayModeBar: false
@@ -168,6 +173,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
             range: [0, this.calculateForm.width],
             showgrid: false,
             zeroline: false,
+            fixedrange: true
           },
           yaxis: {
             linewidth: 1,
@@ -175,6 +181,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
             range: [0, this.calculateForm.height],
             showgrid: false,
             zeroline: false,
+            fixedrange: true
           },
           margin: { t: 20, b: 20, l: 40},
           images: [{
