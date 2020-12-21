@@ -68,7 +68,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   zValues = ['', '', ''];
   /** 障礙物 */
   obstacleList = [];
-  obstacleObject = {};
+  dragObject = {};
+  /** 現有基站 */
+  defaultBSList = [];
+  /** 新增基站 */
+  newBSList = [];
+  /** 新增ＵＥ */
+  ueList = [];
   // 比例尺公式
   xLinear;
   yLinear;
@@ -77,31 +83,36 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   chartRight = 0;
   chartTop = 0;
   chartBottom = 0;
-  targetObject;
   svgMap = {
     svg_01: {
       id: 'svg_1',
-      title: '障礙物'
+      title: '障礙物',
+      type: 'obstacle'
     },
     svg_02: {
       id: 'svg_2',
-      title: '障礙物'
+      title: '障礙物',
+      type: 'obstacle'
     },
     svg_03: {
       id: 'svg_3',
-      title: '障礙物'
+      title: '障礙物',
+      type: 'obstacle'
     },
     svg_04: {
       id: 'svg_4',
-      title: '現有基站'
+      title: '現有基站',
+      type: 'defaultBS'
     },
     svg_05: {
       id: 'svg_5',
-      title: '新增基站'
+      title: '新增基站',
+      type: 'newBS'
     },
     svg_06: {
       id: 'svg_6',
-      title: '新增ＵＥ'
+      title: '新增ＵＥ',
+      type: 'UE'
     }
   };
   // select svg id
@@ -130,8 +141,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       if (this.target.contains(event.target)) {
         this.live = true;
       } else {
-        this.moveable.destroy();
         this.live = false;
+        this.moveable.destroy();
       }
     }
   }
@@ -250,20 +261,40 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (this.live) {
       this.moveable.destroy();
     }
+
     this.live = !this.live;
-    if (event.target.getAttribute('class').indexOf('drag_rect') === -1) {
-      const svg = event.target.closest('svg');
+    if (event.target.closest('span').querySelector('.drag_rect') == null) {
+      let svg = event.target;
+      if (event.target.tagName !== 'svg') {
+        svg = event.target.closest('svg');
+      }
       this.svgId = svg.id;
-      const len = this.obstacleList.length;
-      this.obstacleList.push(this.svgId);
-      this.obstacleObject[this.svgId] = {
+      const titleName = this.svgMap[this.svgId].title;
+      const typeName = this.svgMap[this.svgId].type;
+      if (this.svgMap[this.svgId].type === 'obstacle') {
+        this.svgId = `${this.svgId}_${this.obstacleList.length}`;
+        this.obstacleList.push(this.svgId);
+      } else if (this.svgMap[this.svgId].type === 'defaultBS') {
+        this.svgId = `${this.svgId}_${this.defaultBSList.length}`;
+        this.defaultBSList.push(this.svgId);
+      } else if (this.svgMap[this.svgId].type === 'newBS') {
+        this.svgId = `${this.svgId}_${this.newBSList.length}`;
+        this.newBSList.push(this.svgId);
+      } else if (this.svgMap[this.svgId].type === 'UE') {
+        this.svgId = `${this.svgId}_${this.ueList.length}`;
+        this.ueList.push(this.svgId);
+      }
+
+      this.dragObject[this.svgId] = {
         x: 0,
         y: 0,
+        z: 0,
         width: 0,
         height: 0,
         altitude: this.calculateForm.altitude,
         rotate: 0,
-        title: this.svgMap[this.svgId].title
+        title: titleName,
+        type: typeName
       };
 
       this.frame = new Frame({
@@ -282,7 +313,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       window.setTimeout(() => {
 
         const span = document.querySelectorAll('.dragList');
-        const rect = svg.querySelector(`#${this.svgMap[svg.id].id}`);
+        const rect = svg.querySelector('.target');
         rect.setAttribute('fill', 'green');
         rect.setAttribute('class', 'drag_rect');
         span[span.length - 1].innerHTML += svg.outerHTML;
@@ -292,15 +323,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         this.target.dragArea = document.getElementById('chart');
 
         // 還原來源顏色 & class
-        event.target.setAttribute('fill', '#ffffff');
-        event.target.setAttribute('class', 'target');
+        if (event.target.tagName !== 'svg') {
+          event.target.setAttribute('fill', '#ffffff');
+          event.target.setAttribute('class', 'target');
+        } else {
+          event.target.querySelector('.drag_rect').setAttribute('fill', '#ffffff');
+          event.target.querySelector('.drag_rect').setAttribute('class', 'target');
+        }
 
+        if (this.svgId === 'svg_01' || this.svgId === 'svg_02' || this.svgId === 'svg_03') {
+          this.moveable.rotatable = true;
+          this.moveable.scalable = true;
+        } else {
+          this.moveable.rotatable = false;
+          this.moveable.scalable = false;
+        }
         this.moveable.ngOnInit();
         this.setTooltip();
         this.tooltip.show();
       }, 0);
     } else {
       this.target = event.target.closest('span');
+      if (this.svgId === 'svg_01' || this.svgId === 'svg_02' || this.svgId === 'svg_03') {
+        this.moveable.rotatable = true;
+        this.moveable.scalable = true;
+      } else {
+        this.moveable.rotatable = false;
+        this.moveable.scalable = false;
+      }
       this.moveable.ngOnInit();
       this.setTooltip();
       this.tooltip.show();
@@ -373,21 +423,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     const yVal = this.roundFormat(this.yLinear(rectBottom));
     const wVal = this.roundFormat(this.xLinear(rect.width));
     const hVal = this.roundFormat(this.yLinear(rect.height));
-    this.tooltipStr = `${this.svgMap[this.svgId].title}
+    this.tooltipStr = `${this.dragObject[this.svgId].title}
       X: ${xVal}
       Y: ${yVal}
       長: ${wVal}
       寬: ${hVal}
       高: ${this.calculateForm.altitude}`;
 
-    this.obstacleObject[this.svgId] = {
+    this.dragObject[this.svgId] = {
       x: xVal,
       y: yVal,
       width: wVal,
       height: hVal,
       altitude: this.calculateForm.altitude,
       rotate: 0,
-      title: this.svgMap[this.svgId].title
+      title: this.dragObject[this.svgId].title
     };
   }
 
@@ -462,7 +512,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `R: ${deg.toFixed(1)}`);
     }
-    this.obstacleObject[this.svgId].rotate = deg;
+    this.dragObject[this.svgId].rotate = Math.ceil(deg);
   }
 
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {

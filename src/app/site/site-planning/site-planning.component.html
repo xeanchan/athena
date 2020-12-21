@@ -45,18 +45,18 @@
   </span>
   <hr>
   <span class="svg" matTooltip="現有基站" (click)="moveClick($event)" >
-    <svg id="svg_04" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+    <svg id="svg_04" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
-       <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
+       <rect fill="none" height="32" width="32" y="-1" x="-1"/>
       </g>
       <g>
-       <path class="target" fill="#ffffff" stroke="null" id="svg_4" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
+       <path class="target" fill="#ffffff" id="svg_4" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
       </g>
      </svg>
   </span>
 
   <span class="svg" matTooltip="新增基站" (click)="moveClick($event)" >
-    <svg id="svg_05" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+    <svg id="svg_05" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
       </g>
@@ -64,7 +64,7 @@
         <g>
           <rect  x="0" width="24" height="24" fill="none"/>
         </g>
-        <g id="svg_3">
+        <g>
           <g stroke="null">
             <g stroke="null">
               <path class="target" fill="#ffffff" stroke="null" id="svg_5" d="m26.60334,2.83059l-23.16898,0c-1.60735,0 -2.88164,1.28877 -2.88164,2.89612l-0.01448,17.37673c0,1.60735 1.28877,2.89612 2.89612,2.89612l23.16898,0c1.60735,0 2.89612,-1.28877 2.89612,-2.89612l0,-17.37673c0,-1.60735 -1.28877,-2.89612 -2.89612,-2.89612zm-16.6527,15.92867l-1.73767,0l-3.69256,-5.06821l0,5.06821l-1.81008,0l0,-8.68837l1.81008,0l3.62015,5.06821l0,-5.06821l1.81008,0l0,8.68837zm7.2403,-6.86381l-3.62015,0l0,1.62183l3.62015,0l0,1.82456l-3.62015,0l0,1.60735l3.62015,0l0,1.81008l-5.79224,0l0,-8.68837l5.79224,0l0,1.82456zm10.13643,5.41575c0,0.79643 -0.65163,1.44806 -1.44806,1.44806l-5.79224,0c-0.79643,0 -1.44806,-0.65163 -1.44806,-1.44806l0,-7.2403l1.81008,0l0,6.53075l1.63631,0l0,-5.09717l1.81008,0l0,5.08269l1.62183,0l0,-6.51627l1.81008,0l0,7.2403z"/>
@@ -76,7 +76,7 @@
   </span>
   <hr>
   <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event)" >
-    <svg id="svg_06" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+    <svg id="svg_06" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
       </g>
@@ -107,6 +107,9 @@
     </div> -->
     <div #container id="chart">
       <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
+      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
+      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
+      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
       <div class="msg_label" #msgLabel></div>
     </div>
     
@@ -184,79 +187,51 @@
               <li *ngFor="let item of obstacleList">
                 <span>
                   <label>X</label>
-                  <input type="text" [value]="obstacleObject[item].x">
+                  <input type="text" [value]="dragObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text" [value]="obstacleObject[item].y">
+                  <input type="text" [value]="dragObject[item].y">
+                </span>
+                <span>
+                  <label>角度</label>
+                  <input type="text" [value]="dragObject[item].rotate">
                 </span>
                 <br>
                 <span>
                   <label>長</label>
-                  <input type="text" [value]="obstacleObject[item].width">
+                  <input type="text" [value]="dragObject[item].width">
                 </span>
                 <span>
                   <label>寬</label>
-                  <input type="text" [value]="obstacleObject[item].height">
+                  <input type="text" [value]="dragObject[item].height">
                 </span>
                 <span>
                   <label>高</label>
-                  <input type="text" [value]="obstacleObject[item].altitude">
+                  <input type="text" [value]="dragObject[item].altitude">
                 </span>
               </li>
             </ol>
           </li>
         
           <li>
-            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">3</label>
+            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
               <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
             </p>
             <ol>
-              <li>
+              <li *ngFor="let item of ueList">
                 <span>
                   <label>X</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].y">
                 </span>
                 <span>
                   <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
-                  </select>
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
-                  </select>
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
+                  <select class="zAxis" name="" id="" [value]="dragObject[item].z">
+                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
                   </select>
                 </span>
               </li>
@@ -305,34 +280,20 @@
             </ul>
           </li>
           <li>
-            <p>現有基站<label class="matBadge">2</label></p>
+            <p>現有基站<label class="matBadge">{{ defaultBSList.length }}</label></p>
             <ol>
-              <li>
+              <li *ngFor="let item of defaultBSList">
                 <span>
                   <label>X</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].y">
                 </span>
                 <span>
                   <label>Z</label>
-                  <input type="text">
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].z">
                 </span>
               </li>
             </ol>
@@ -341,35 +302,21 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>待選基站位置<label class="matBadge">2</label></mat-panel-title>
+          <mat-panel-title>待選基站位置<label class="matBadge">{{ newBSList.length }}</label></mat-panel-title>
         </mat-expansion-panel-header>
           <ol>
-            <li>
+            <li *ngFor="let item of newBSList">
               <span>
                 <label>X</label>
-                <input type="text">
+                <input type="text" [value]="dragObject[item].x">
               </span>
               <span>
                 <label>Y</label>
-                <input type="text">
+                <input type="text" [value]="dragObject[item].y">
               </span>
               <span>
                 <label>Z</label>
-                <input type="text">
-              </span>
-            </li>
-            <li>
-              <span>
-                <label>X</label>
-                <input type="text">
-              </span>
-              <span>
-                <label>Y</label>
-                <input type="text">
-              </span>
-              <span>
-                <label>Z</label>
-                <input type="text">
+                <input type="text" [value]="dragObject[item].z">
               </span>
             </li>
           </ol>
