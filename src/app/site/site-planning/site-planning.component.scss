@@ -170,7 +170,7 @@ ol.inline-block li input[type="text"] {
 .target {
     position: relative;
 }
-.dragList {
+.obstacle, .defaultBS, .newBS, .UE {
     position: fixed;
     left: 200px;
     top: 250px;

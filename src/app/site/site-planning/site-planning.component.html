@@ -1,5 +1,5 @@
 <div class="tool">
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
     <svg id="svg_01" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
        <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="#fff"/>
@@ -14,7 +14,7 @@
     </svg>
   </span>
 
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
     <svg id="svg_02" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
        <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
@@ -29,7 +29,7 @@
      </svg>
   </span>
 
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)">
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
     <svg id="svg_03" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
        <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="none"/>
@@ -44,7 +44,7 @@
      </svg>
   </span>
   <hr>
-  <span class="svg" matTooltip="現有基站" (click)="moveClick($event)" >
+  <span class="svg" matTooltip="現有基站" (click)="moveClick($event, 'defaultBS')" >
     <svg id="svg_04" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
        <rect fill="none" height="32" width="32" y="-1" x="-1"/>
@@ -55,7 +55,7 @@
      </svg>
   </span>
 
-  <span class="svg" matTooltip="新增基站" (click)="moveClick($event)" >
+  <span class="svg" matTooltip="新增基站" (click)="moveClick($event, 'newBS')" >
     <svg id="svg_05" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
@@ -75,7 +75,7 @@
     </svg>
   </span>
   <hr>
-  <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event)" >
+  <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event, 'UE')" >
     <svg id="svg_06" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
         <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
@@ -106,17 +106,14 @@
       
     </div> -->
     <div #container id="chart">
-      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
-      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
-      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
-      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="dragList" [matTooltip]="tooltipStr" (click)="moveClick($event);" ></span>
+      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="obstacle" [matTooltip]="tooltipStr" (click)="moveClick($event, 'obstacle');" ></span>
+      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" ></span>
+      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" ></span>
+      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" ></span>
       <div class="msg_label" #msgLabel></div>
     </div>
-    
 
   </div>
-
-  
 
   <ngx-moveable
     #moveable
@@ -230,7 +227,7 @@
                 </span>
                 <span>
                   <label>Z</label>
-                  <select class="zAxis" name="" id="" [value]="dragObject[item].z">
+                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
                     <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
                   </select>
                 </span>
@@ -251,30 +248,31 @@
               <li>
                 <label>傳輸功率</label>
                 <span>
-                  <input type="text" value="-20" placeholder="下限">~<input value="19" type="text" placeholder="上限">dBm
+                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
                 </span>
               </li>
               <li>
                 <label>新基站數量</label>
                 <span>
-                  <input type="text">
+                  <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
                 </span>
               </li>
                 <label>基站頻率</label>
                 <span>
-                  <select name="" id="">
-                    <option value="">2.4G</option>
-                    <option value="">5G</option>
+                  <select [(ngModel)]="calculateForm.objectiveIndex">
+                    <option value="1">4G</option>
+                    <option value="2">5G</option>
+                    <option value="3">Wifi</option>
                   </select>
                 </span>
               <li>
                 <label>系統頻寬 / 頻率</label>
                 <span>
-                  <select name="" id="">
+                  <select [(ngModel)]="calculateForm.bandwidth">
                     <option value=""></option>
                   </select>
                   /
-                  <input type="text">
+                  <input type="text" [(ngModel)]="calculateForm.Frequency">
                 </span>
               </li>
             </ul>
@@ -293,7 +291,9 @@
                 </span>
                 <span>
                   <label>Z</label>
-                  <input type="text" [value]="dragObject[item].z">
+                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                  </select>
                 </span>
               </li>
             </ol>
@@ -316,7 +316,9 @@
               </span>
               <span>
                 <label>Z</label>
-                <input type="text" [value]="dragObject[item].z">
+                <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                  <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                </select>
               </span>
             </li>
           </ol>
@@ -328,15 +330,18 @@
         <ul>
           <li>
             <label>預設無線模型</label>
-            <span><select name="" id=""></select></span>
+            <span>
+              <select [(ngModel)]="calculateForm.pathLossModelId">
+                <option *ngFor="let i of pathLossModelIdList" [value]="i"></option>
+              </select>
+            </span>
           </li>
           <li>
             <label>自訂無線模型(@jane要再給)</label>
-          
             <span>
-            a<input type="text">
-            b<input type="text">
-            c<input type="text">
+              a<input type="text" [(ngModel)]="calculateForm.modelname">
+              b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
+              c<input type="text" [(ngModel)]="calculateForm.contantFactor">
             </span>
           </li>
           <li>
@@ -354,27 +359,27 @@
         <ul>
           <li>
             <span>C值</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsC">
           </li>
           <li>
             <span>天線數</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsMimo">
           </li>
           <li>
             <span>氣溫</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTemperature">
           </li> 
           <li>
             <span>節點模擬時間限制</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTime">
           </li> 
           <li>
             <span>本次規劃之時間限制</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTestTime">
           </li>
           <li>
             <span>本次規劃之模擬次數上限</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTotalTime">
           </li>
         </ul>
       </mat-expansion-panel>

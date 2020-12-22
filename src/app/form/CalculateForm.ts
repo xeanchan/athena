@@ -42,6 +42,15 @@ export class CalculateForm {
   ueAvgThroughputRatio = null;
   isUeTpByDistance = false;
   ueTpByDistanceRatio = false;
+  modelname = null;
+  distanceFactor = null;
+  contantFactor = null;
+  mctsC = null;
+  mctsMimo = null;
+  mctsTemperature = null;
+  mctsTime = null;
+  mctsTestTime = null;
+  mctsTotalTime = null;
 
   // constructor(options: {
   //   sessionid?: string,
