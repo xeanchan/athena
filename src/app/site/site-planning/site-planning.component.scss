@@ -22,6 +22,13 @@ mat-sidenav-container {
     text-align: center;
     cursor: move;
 }
+
+.tool span:nth-child(1) svg,.tool span:nth-child(2) svg,.tool span:nth-child(3) svg {
+    transform: scale(0.6);
+}
+.tool span:nth-child(4) svg,.tool span:nth-child(5) svg.tool span:nth-child(6) svg {
+    transform: scale(0.8);
+}
 .tool hr {
     border-color: #545151;
     width: 55%;
