@@ -29,7 +29,7 @@
     "babylon": "^6.18.0",
     "classlist.js": "^1.1.20150312",
     "file-saver": "^2.0.5",
-    "ngx-moveable": "^0.17.1",
+    "ngx-moveable": "^0.18.2",
     "ngx-spinner": "^10.0.1",
     "rxjs": "~6.5.4",
     "scenejs": "^1.4.3",

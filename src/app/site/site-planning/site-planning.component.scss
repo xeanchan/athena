@@ -170,9 +170,15 @@ ol.inline-block li input[type="text"] {
 .target {
     position: relative;
 }
-.dragList {
+.obstacle, .defaultBS, .newBS, .UE {
     position: fixed;
     left: 200px;
     top: 250px;
+    z-index: 9999;
+}
+.mat-tooltip {
+    white-space: pre-line;
+}
+.msg_label {
     z-index: 9999;
 }

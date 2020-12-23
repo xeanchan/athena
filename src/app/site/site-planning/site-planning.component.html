@@ -1,13 +1,91 @@
 <div class="tool">
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg1.svg"></span>
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg2.svg"></span>
-  <span class="svg" matTooltip="障礙物" (click)="moveClick($event)"><img src="assets/img/svg3.svg"></span>
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
+    <svg id="svg_01" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="#fff"/>
+       <g id="canvasGrid" display="none">
+        <rect width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+       </g>
+      </g>
+      <g>
+       <rect fill="#000000" stroke-width="1.5" x="111" y="151" width="41" height="28" stroke="#000"/>
+       <rect class="target" fill="#ffffff" stroke-width="1.5" x="0" y="0" width="30" height="30" id="svg_1"/>
+      </g>
+    </svg>
+  </span>
+
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
+    <svg id="svg_02" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
+       <g display="none" id="canvasGrid">
+        <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+       </g>
+      </g>
+      <g>
+       <rect stroke="#000" id="svg_3" height="28" width="41" y="151" x="111" stroke-width="1.5" fill="#000000"/>
+       <ellipse class="target" ry="15" rx="15" id="svg_2" cy="15" cx="15" stroke-width="1.5" fill="#ffffff"/>
+      </g>
+     </svg>
+  </span>
+
+  <span class="svg" matTooltip="障礙物" (click)="moveClick($event, 'obstacle')">
+    <svg id="svg_03" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="none"/>
+       <g id="canvasGrid" display="none">
+        <rect id="svg_1" width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+       </g>
+      </g>
+      <g>
+       <rect fill="#000000" stroke-width="1.5" x="111" y="151" width="41" height="28" stroke="#000"/>
+       <path class="target" fill="#ffffff" stroke-width="1.5" d="m1.75,28.69313l13.5,-25.625l13.5,25.625l-27,0z" id="svg_3"/>
+      </g>
+     </svg>
+  </span>
   <hr>
-  <span class="svg" matTooltip="現有基站" (click)="moveClick($event)" ><img src="assets/img/svg4.svg"></span>
-  <span class="svg" matTooltip="新增基站" (click)="moveClick($event)" ><img src="assets/img/svg5.svg"></span>
+  <span class="svg" matTooltip="現有基站" (click)="moveClick($event, 'defaultBS')" >
+    <svg id="svg_04" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+       <rect fill="none" height="32" width="32" y="-1" x="-1"/>
+      </g>
+      <g>
+       <path class="target" fill="#ffffff" id="svg_4" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
+      </g>
+     </svg>
+  </span>
+
+  <span class="svg" matTooltip="新增基站" (click)="moveClick($event, 'newBS')" >
+    <svg id="svg_05" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
+      </g>
+      <g>
+        <g>
+          <rect  x="0" width="24" height="24" fill="none"/>
+        </g>
+        <g>
+          <g stroke="null">
+            <g stroke="null">
+              <path class="target" fill="#ffffff" stroke="null" id="svg_5" d="m26.60334,2.83059l-23.16898,0c-1.60735,0 -2.88164,1.28877 -2.88164,2.89612l-0.01448,17.37673c0,1.60735 1.28877,2.89612 2.89612,2.89612l23.16898,0c1.60735,0 2.89612,-1.28877 2.89612,-2.89612l0,-17.37673c0,-1.60735 -1.28877,-2.89612 -2.89612,-2.89612zm-16.6527,15.92867l-1.73767,0l-3.69256,-5.06821l0,5.06821l-1.81008,0l0,-8.68837l1.81008,0l3.62015,5.06821l0,-5.06821l1.81008,0l0,8.68837zm7.2403,-6.86381l-3.62015,0l0,1.62183l3.62015,0l0,1.82456l-3.62015,0l0,1.60735l3.62015,0l0,1.81008l-5.79224,0l0,-8.68837l5.79224,0l0,1.82456zm10.13643,5.41575c0,0.79643 -0.65163,1.44806 -1.44806,1.44806l-5.79224,0c-0.79643,0 -1.44806,-0.65163 -1.44806,-1.44806l0,-7.2403l1.81008,0l0,6.53075l1.63631,0l0,-5.09717l1.81008,0l0,5.08269l1.62183,0l0,-6.51627l1.81008,0l0,7.2403z"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </span>
   <hr>
-  <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event)" ><img src="assets/img/svg6.svg"></span>
-  <div id="new_element"></div>
+  <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event, 'UE')" >
+    <svg id="svg_06" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
+      </g>
+      <g>
+        <path fill="none" d="m0,0l24,0l0,24l-24,0l0,-24z"/>
+        <path class="target" fill="#ffffff" stroke="null" id="svg_6" d="m27.1373,5.80872l1.19321,-1.19321c-2.08811,-2.08811 -4.77283,-3.13217 -7.45754,-3.13217s-5.36943,1.04406 -7.45754,3.13217l1.19321,1.19321c1.78981,-1.64066 4.02707,-2.53556 6.26434,-2.53556s4.47453,0.89491 6.26434,2.53556zm-1.34236,1.19321c-1.34236,-1.34236 -3.13217,-2.08811 -4.92198,-2.08811s-3.57962,0.74575 -4.92198,2.08811l1.19321,1.19321c1.04406,-1.04406 2.38641,-1.49151 3.72877,-1.49151c1.34236,0 2.68472,0.44745 3.72877,1.49151l1.19321,-1.19321zm-0.44745,9.39651l-2.98302,0l0,-5.96604l-2.98302,0l0,5.96604l-14.91509,0c-1.64066,0 -2.98302,1.34236 -2.98302,2.98302l0,5.96604c0,1.64066 1.34236,2.98302 2.98302,2.98302l20.88112,0c1.64066,0 2.98302,-1.34236 2.98302,-2.98302l0,-5.96604c0,-1.64066 -1.34236,-2.98302 -2.98302,-2.98302zm-16.4066,7.45754l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302z"/>
+      </g>
+     </svg>
+  </span>
 </div>
 
 <mat-sidenav-container class="example-container">
@@ -27,14 +105,15 @@
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
       
     </div> -->
-    <div id="chart">
-      <span *ngFor="let item of dragList" #target class="dragList" matTooltip="障礙物" (click)="moveClick($event)" >stop</span>
+    <div #container id="chart">
+      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="obstacle" [matTooltip]="tooltipStr" (click)="moveClick($event, 'obstacle');" ></span>
+      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" ></span>
+      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" ></span>
+      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" ></span>
+      <div class="msg_label" #msgLabel></div>
     </div>
-    
 
   </div>
-
-  <div class="label" #label></div>
 
   <ngx-moveable
     #moveable
@@ -98,11 +177,11 @@
           </li>
 
           <li>
-            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ dragList.length }}</label>
+            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
               <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
             </p>
             <ol>
-              <li *ngFor="let item of dragList">
+              <li *ngFor="let item of obstacleList">
                 <span>
                   <label>X</label>
                   <input type="text" [value]="dragObject[item].x">
@@ -110,6 +189,10 @@
                 <span>
                   <label>Y</label>
                   <input type="text" [value]="dragObject[item].y">
+                </span>
+                <span>
+                  <label>角度</label>
+                  <input type="text" [value]="dragObject[item].rotate">
                 </span>
                 <br>
                 <span>
@@ -129,55 +212,23 @@
           </li>
         
           <li>
-            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">3</label>
+            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
               <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
             </p>
             <ol>
-              <li>
+              <li *ngFor="let item of ueList">
                 <span>
                   <label>X</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].y">
                 </span>
                 <span>
                   <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
-                  </select>
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
-                  </select>
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" name="" id="">
-                    <option value="">60</option>
+                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
                   </select>
                 </span>
               </li>
@@ -197,63 +248,52 @@
               <li>
                 <label>傳輸功率</label>
                 <span>
-                  <input type="text" value="-20" placeholder="下限">~<input value="19" type="text" placeholder="上限">dBm
+                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
                 </span>
               </li>
               <li>
                 <label>新基站數量</label>
                 <span>
-                  <input type="text">
+                  <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
                 </span>
               </li>
                 <label>基站頻率</label>
                 <span>
-                  <select name="" id="">
-                    <option value="">2.4G</option>
-                    <option value="">5G</option>
+                  <select [(ngModel)]="calculateForm.objectiveIndex">
+                    <option value="1">4G</option>
+                    <option value="2">5G</option>
+                    <option value="3">Wifi</option>
                   </select>
                 </span>
               <li>
                 <label>系統頻寬 / 頻率</label>
                 <span>
-                  <select name="" id="">
+                  <select [(ngModel)]="calculateForm.bandwidth">
                     <option value=""></option>
                   </select>
                   /
-                  <input type="text">
+                  <input type="text" [(ngModel)]="calculateForm.Frequency">
                 </span>
               </li>
             </ul>
           </li>
           <li>
-            <p>現有基站<label class="matBadge">2</label></p>
+            <p>現有基站<label class="matBadge">{{ defaultBSList.length }}</label></p>
             <ol>
-              <li>
+              <li *ngFor="let item of defaultBSList">
                 <span>
                   <label>X</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].x">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text">
+                  <input type="text" [value]="dragObject[item].y">
                 </span>
                 <span>
                   <label>Z</label>
-                  <input type="text">
-                </span>
-              </li>
-              <li>
-                <span>
-                  <label>X</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <input type="text">
+                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                  </select>
                 </span>
               </li>
             </ol>
@@ -262,35 +302,23 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>待選基站位置<label class="matBadge">2</label></mat-panel-title>
+          <mat-panel-title>待選基站位置<label class="matBadge">{{ newBSList.length }}</label></mat-panel-title>
         </mat-expansion-panel-header>
           <ol>
-            <li>
+            <li *ngFor="let item of newBSList">
               <span>
                 <label>X</label>
-                <input type="text">
+                <input type="text" [value]="dragObject[item].x">
               </span>
               <span>
                 <label>Y</label>
-                <input type="text">
+                <input type="text" [value]="dragObject[item].y">
               </span>
               <span>
                 <label>Z</label>
-                <input type="text">
-              </span>
-            </li>
-            <li>
-              <span>
-                <label>X</label>
-                <input type="text">
-              </span>
-              <span>
-                <label>Y</label>
-                <input type="text">
-              </span>
-              <span>
-                <label>Z</label>
-                <input type="text">
+                <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                  <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                </select>
               </span>
             </li>
           </ol>
@@ -302,15 +330,18 @@
         <ul>
           <li>
             <label>預設無線模型</label>
-            <span><select name="" id=""></select></span>
+            <span>
+              <select [(ngModel)]="calculateForm.pathLossModelId">
+                <option *ngFor="let i of pathLossModelIdList" [value]="i"></option>
+              </select>
+            </span>
           </li>
           <li>
             <label>自訂無線模型(@jane要再給)</label>
-          
             <span>
-            a<input type="text">
-            b<input type="text">
-            c<input type="text">
+              a<input type="text" [(ngModel)]="calculateForm.modelname">
+              b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
+              c<input type="text" [(ngModel)]="calculateForm.contantFactor">
             </span>
           </li>
           <li>
@@ -328,27 +359,27 @@
         <ul>
           <li>
             <span>C值</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsC">
           </li>
           <li>
             <span>天線數</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsMimo">
           </li>
           <li>
             <span>氣溫</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTemperature">
           </li> 
           <li>
             <span>節點模擬時間限制</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTime">
           </li> 
           <li>
             <span>本次規劃之時間限制</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTestTime">
           </li>
           <li>
             <span>本次規劃之模擬次數上限</span>
-            <input type="text">
+            <input type="text" [(ngModel)]="calculateForm.mctsTotalTime">
           </li>
         </ul>
       </mat-expansion-panel>
