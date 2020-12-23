@@ -6,17 +6,20 @@ import { NewPlanningRoutingModule } from './new-planning-routing.module';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatButtonToggleModule,
     MatIconModule,
     NewPlanningRoutingModule,
     RouterModule,
-    MatRadioModule
+    MatRadioModule,
+    TranslateModule
   ],
   declarations: [NewPlanningComponent],
   entryComponents: [NewPlanningComponent],

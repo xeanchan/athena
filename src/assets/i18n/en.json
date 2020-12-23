@@ -4,5 +4,7 @@
 	"login.account": "Account",
 	"login.password": "Password",
 	"login.login": "Login",
-	"login.fail": "Invalid user password, please confirm."
+	"login.fail": "Invalid user password, please confirm.",
+	"field.required": "Field is required.",
+	"image.required": "Please upload image."
 }

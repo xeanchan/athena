@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { TaskFormService } from '../site/task-form.service';
 import { CalculateForm } from '../form/CalculateForm';
 import { AuthService } from '../service/auth.service';
+import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-new-planning',
@@ -23,9 +24,40 @@ export class NewPlanningComponent implements OnInit {
     }
 
   calculateForm: CalculateForm = new CalculateForm();
+  formGroup: FormGroup;
+  sizeGroup: FormGroup;
+  showImgMsg = false;
+
+  get taskName() { return this.formGroup.get('taskName'); }
+  get width() { return this.formGroup.get('width'); }
+  get height() { return this.formGroup.get('height'); }
+  get altitude() { return this.formGroup.get('altitude'); }
 
   ngOnInit() {
     this.calculateForm.sessionid = this.authService.userToken;
+
+    this.formGroup = new FormGroup({
+      taskName: new FormControl(this.calculateForm.taskName, [
+        Validators.required
+      ])
+    });
+
+    const sizeValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+      const width = control.get('width');
+      const height = control.get('height');
+      const altitude = control.get('altitude');
+      if (width.valid && height.valid && altitude.valid) {
+        return null;
+      } else {
+        return { sizeRevealed: true };
+      }
+    };
+
+    this.sizeGroup = new FormGroup({
+      width: new FormControl(),
+      height: new FormControl(),
+      altitude: new FormControl()
+    }, { validators: sizeValidator });
   }
 
   fileChange(event) {
@@ -36,9 +68,17 @@ export class NewPlanningComponent implements OnInit {
       this.calculateForm.mapImage = reader.result;
     };
     this.calculateForm.mapName = file.name;
+    this.showImgMsg = false;
   }
 
   ok() {
+    if (this.calculateForm.mapName == null) {
+      this.showImgMsg = true;
+      return;
+    }
+    if (this.formGroup.invalid || this.sizeGroup.invalid) {
+      return;
+    }
     sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
     this.taskFormService.calculateForm = this.calculateForm;
     this.matDialog.closeAll();
