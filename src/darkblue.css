@@ -1,0 +1,111 @@
+body {
+    color: #fff;
+    background-color: #13161d;
+}
+.header {
+    background-color: transparent;
+    border-bottom: 1px solid #212633;
+  }
+.planningList table {
+    background-color: #1f242f;
+}
+.planningList tbody tr {
+    border-bottom: 1px solid #2b3346;
+}
+.mat-expansion-panel {
+    background: #35363a;
+    color: #c3c8ce;
+}
+.mat-expansion-panel-body p {
+    color: #c3c8ce!important;
+}
+.mat-expansion-panel-header-title {
+    color: rgb(255 255 255 / 87%);
+}
+.mat-expansion-panel-header-description, .mat-expansion-indicator::after {
+    color: #fff;
+}
+.mat-accordion .mat-expansion-panel:first-of-type {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+    border-bottom: 1px solid #4a4d5a;
+}
+.mat-drawer {
+    background-color: #35363a;
+    color: rgba(255,255,255,.87);
+}
+.tool {
+    background-color: #0d223a!important;
+}
+.tool hr {
+    border-color: #214065!important;
+}
+#d_area .toggle .material-icons {
+    color: #007bff!important;
+}
+h3 button {
+    background-color: #007bff!important;
+    color: #fff!important;
+}
+
+.ds {
+    background-color: #202633!important;
+    border-top: 3px solid #0f4e82!important;
+}
+.rightArea h5 {
+    color: #3978ab!important;
+}
+.ds h5 i {
+    color: #8d9daf;
+}
+
+.rightArea ul li > span {
+    color: #a6b2c5!important;
+}
+.leftArea table .panel {
+    background-color: #2a3a5d !important;
+    color: #cae8ff!important;
+    border-right: 1px solid #0f4e82 !important;
+}
+.leftArea table .panel label {
+    color: #fff !important;
+}
+.box table {
+    border: 1.5px solid #0f4e82!important;
+}
+.box table tr {
+    border-bottom: 1.5px solid #0f4e82!important;
+}
+.box table th {
+    background-color: transparent!important;
+    border-top: 1.5px solid #0f4e82!important;
+    color: #4da3ff!important;
+}
+.box table th, .box table td {
+    border-right: 1px solid #0f4e82!important;
+}
+.mapType {
+    background-color: #fff;
+}
+.mapType label {
+    color: #333;
+}
+/* check box */
+.mat-checkbox-frame {
+    border-color: #185ea9!important;
+}
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #185ea9!important;
+}
+/* setting select */
+.mat-expansion-panel-body input[type=text] ,
+.mat-expansion-panel-body ul li select {
+    border-bottom: 1px solid #185ea9!important;
+    color: #5cabff!important;
+}
+
+
