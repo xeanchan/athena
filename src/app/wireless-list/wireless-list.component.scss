@@ -3,7 +3,7 @@
     padding: 0 12px;
 }
 .planningList {
-    border: 1px solid #5aa5e2;
+    /*border: 1px solid #5aa5e2;*/
     padding: 2px;
     margin: .5em 0 3em;
 }
@@ -12,7 +12,11 @@
     display: table;
     width: 100%;
     margin: 0;
+    border-radius: 3px;
 }
 .planningList table th, .planningList table td {
     padding: .5em;
+}
+.planningList table th {
+    color: #236fc3;
 }

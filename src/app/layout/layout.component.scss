@@ -13,8 +13,7 @@
   width: 100%;
   font-size: .8em;
   height: 54px;
-  border-bottom: 1px solid #212529;
-  background-color: #24272b;    color: #fff;
+  color: #fff;
   padding: 1em;
 }
 .header .mat-button-toggle-appearance-standard {
@@ -40,8 +39,9 @@
 }
 h1 {
   display: inline-block;
-  font-size: 1.6em;
+  font-size: 1.5em;
   margin-left: .5em;
+  font-weight: normal;
   cursor: pointer;
   outline: 0;
 }
