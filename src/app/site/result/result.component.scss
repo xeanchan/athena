@@ -28,7 +28,7 @@
     font-size: 1.1em;
 }
 .box table {
-    margin: 0 0 1em 0;
+    margin: 0 0 2em 0;
     display: table;
     width: 100%;
     border:1.5px solid #5aa5e2;
@@ -170,4 +170,20 @@
 }
 .thCenter th {
     text-align: center;
+}
+.choose {
+    background-color: #3d5790;
+    position: relative;
+    
+}
+.choose .material-icons {
+    background-color: #fff;
+    color: #5aa5e2;
+    width: 1em;
+    height: 1em;
+    border-radius: 3em;
+    display: inline-block;
+    margin-left: .3em;
+    vertical-align: middle;
+    font-size: 16px;
 }

@@ -23,35 +23,69 @@
                     <th class="panel center" colspan="7"><label class="bold">建議方案</label>待選基站位置 ( 共6處 )</th>
                 </tr>
                 <tr>
+                    <td colspan="7" class="mapType">
+                        <img class="map" src="assets/img/map.png">           
+                    </td>
+                </tr>
+                <tr>
                     <th>基站編號</th>
-                    <td>1</td>
-                    <td>2</td>
-                    <td>3</td>
+                    <td class="choose">1<span class="material-icons">
+                        check
+                        </span></td>
+                    <td class="choose">2<span class="material-icons">
+                        check
+                        </span></td>
+                    <td class="choose">3<span class="material-icons">
+                        check
+                        </span></td>
                     <td>4</td>
                     <td>5</td>
                     <td>6</td>
                 </tr>
                 <tr>
                     <th>發射功率(dBm)</th>
-                    <td>10</td>
-                    <td>20</td>
-                    <td>19</td>
+                    <td class="choose">10</td>
+                    <td class="choose">20</td>
+                    <td class="choose">19</td>
                     <td>18</td>
                     <td>11</td>
                     <td>2</td>
                 </tr>
                 <tr>
                     <th>波束編號</th>
-                    <td>32</td>
-                    <td>288</td>
-                    <td>704</td>
+                    <td class="choose">32</td>
+                    <td class="choose">288</td>
+                    <td class="choose">704</td>
                     <td>480</td>
                     <td>448</td>
                     <td>640</td>
                 </tr>
             </tbody>
         </table>
-
+        <table>
+            <tbody>
+                <tr>
+                    <th colspan="2" class="panel center"><label>圖面資訊</label></th>
+                </tr>
+                <tr>
+                    <td class="mapType">
+                            <label>切面高度</label>
+                            <mat-button-toggle-group>
+                                <mat-button-toggle  value="" selected> 1 公尺</mat-button-toggle>
+                                <mat-button-toggle  value=""> 1.5 公尺</mat-button-toggle>
+                            </mat-button-toggle-group>
+                
+                            <label class="mL_1">分布圖切換</label>
+                            <mat-button-toggle-group>
+                                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
+                                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
+                                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
+                            </mat-button-toggle-group>
+                            <img class="map" src="assets/img/map.png">           
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <table class="thCenter">
             <tbody>
                 <tr>
@@ -130,30 +164,7 @@
             </tbody>
         </table>
 
-        <table>
-            <tbody>
-                <tr>
-                    <th colspan="2" class="panel center"><label>圖面資訊</label></th>
-                </tr>
-                <tr>
-                    <td class="mapType">
-                            <label>切面高度</label>
-                            <mat-button-toggle-group>
-                                <mat-button-toggle  value="" selected> 1 公尺</mat-button-toggle>
-                                <mat-button-toggle  value=""> 1.5 公尺</mat-button-toggle>
-                            </mat-button-toggle-group>
-                
-                            <label class="mL_1">分布圖切換</label>
-                            <mat-button-toggle-group>
-                                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
-                                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
-                                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
-                            </mat-button-toggle-group>
-                            <img class="map" src="assets/img/map.png">           
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        
 
 
         <!-- <mat-form-field>

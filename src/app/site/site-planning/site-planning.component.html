@@ -94,10 +94,14 @@
 
   <div id="d_area">
     <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-    <h2 class="inline-block">場域規劃</h2>
+    <h2 class="inline-block">場域規劃(wifi)</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
+      <mat-button-toggle value="import">匯入</mat-button-toggle>
       <mat-button-toggle value="export">匯出</mat-button-toggle>
+    </mat-button-toggle-group>
+
+    <mat-button-toggle-group class="inline-block ml_5">
       <mat-button-toggle value="go" (click)="calculate()" [routerLink]="['/site/result']">開始運算</mat-button-toggle>
       <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
       <mat-button-toggle value="export">3Ｄ顯示</mat-button-toggle>
@@ -167,6 +171,26 @@
           <mat-panel-title>場域設定</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
+          <li><p>場域名稱</p><input type="text" class="w18"></li>
+          <li>
+            <p>上傳圖檔</p><input type="file">
+          </li>
+          <li>
+            <p>場域尺寸</p>
+            <ul>
+              <li class="inline-block"><label>長</label><input type="text"></li>
+              <li class="inline-block"><label>寬</label><input type="text"></li>
+              <li class="inline-block"><label>高</label><input type="text"></li>
+            </ul>
+          </li>
+          <li><p>網路種類	</p>
+          <select name="" id="">
+            <option value="">4G</option>
+            <option value="">5G</option>
+            <option value="">Wifi</option>
+          </select>
+          </li>
+          
           <li>
             <p>平面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
             <ol class="inline-block">
@@ -192,7 +216,7 @@
                 </span>
                 <span>
                   <label>角度</label>
-                  <input type="text" [value]="dragObject[item].rotate">
+                  <input type="text" class="w22" [value]="dragObject[item].rotate">
                 </span>
                 <br>
                 <span>
@@ -257,19 +281,26 @@
                   <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
                 </span>
               </li>
-                <label>基站頻率</label>
+                <!--<label>基站頻率</label>
                 <span>
                   <select [(ngModel)]="calculateForm.objectiveIndex">
-                    <option value="1">4G</option>
-                    <option value="2">5G</option>
-                    <option value="3">Wifi</option>
+                    <option value="1">3.5</option>
+                    <option value="2">3</option>
+                    <option value="3">5</option>
+                    <option value="3">10</option>
+                    <option value="3">15</option>
                   </select>
-                </span>
+                </span>-->
               <li>
                 <label>系統頻寬 / 頻率</label>
                 <span>
                   <select [(ngModel)]="calculateForm.bandwidth">
-                    <option value=""></option>
+                    <option value="">3</option>
+                    <option value="">3</option>
+                    <option value="">5</option>
+                    <option value="">10</option>
+                    <option value="">15</option>
+                    <option value="">20</option>
                   </select>
                   /
                   <input type="text" [(ngModel)]="calculateForm.Frequency">
