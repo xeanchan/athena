@@ -6,5 +6,7 @@
 	"login.login": "登入",
 	"login.fail": "使用者密碼有誤, 請確認.",
 	"field.required": "必填欄位",
-	"image.required": "請選擇圖檔"
+	"image.required": "請選擇圖檔",
+	"numeric.enter": "請填寫數字",
+	"delete": "刪除"
 }

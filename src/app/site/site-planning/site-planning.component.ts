@@ -9,6 +9,10 @@ import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { AbstractControl, FormControl } from '@angular/forms';
+import { ThemePalette } from '@angular/material/core';
+import { ColorPickerService } from 'ngx-color-picker';
 
 declare var Plotly: any;
 
@@ -31,6 +35,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
   @ViewChild('moveable') moveable: NgxMoveableComponent;
   // @ViewChildren(TemplateRef) templateList: QueryList<TemplateRef<any>>;
+  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
 
   target;
   scalable = true;
@@ -130,6 +135,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   //   right: 300,
   //   bottom: 500
   // };
+
+  // we create an object that contains coordinates
+  menuTopLeftPosition =  {x: '0', y: '0'};
+  public color;
+  colorToggle = false;
+
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
   @Input() public container!: SVGElement | HTMLElement | null;
 
@@ -578,5 +589,51 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     console.log(this.calculateForm);
   }
 
+  /** 右鍵選單 */
+  onRightClick(event: MouseEvent, svgId) {
+    this.svgId = svgId;
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    event.preventDefault();
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = event.clientX + 'px';
+    this.menuTopLeftPosition.y = event.clientY + 'px';
+    // we open the menu
+    this.matMenuTrigger.openMenu();
+  }
+
+  /** delete */
+  delete() {
+    if (this.dragObject[this.svgId].type === 'obstacle') {
+      for (let i = this.obstacleList.length - 1; i >= 0; i--) {
+        if (this.obstacleList[i] === this.svgId) {
+          this.obstacleList.splice(i, 1);
+        }
+      }
+    } else if (this.dragObject[this.svgId].type === 'defaultBS') {
+      for (let i = this.defaultBSList.length - 1; i >= 0; i--) {
+        if (this.defaultBSList[i] === this.svgId) {
+          this.defaultBSList.splice(i, 1);
+        }
+      }
+    } else if (this.dragObject[this.svgId].type === 'newBS') {
+      for (let i = this.newBSList.length - 1; i >= 0; i--) {
+        if (this.newBSList[i] === this.svgId) {
+          this.newBSList.splice(i, 1);
+        }
+      }
+    } else if (this.dragObject[this.svgId].type === 'UE') {
+      for (let i = this.ueList.length - 1; i >= 0; i--) {
+        if (this.ueList[i] === this.svgId) {
+          this.ueList.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  openColor() {
+    window.setTimeout(() => {
+      this.colorToggle = true;
+    }, 1000);
+  }
 
 }

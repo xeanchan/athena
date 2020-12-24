@@ -94,7 +94,7 @@
 
   <div id="d_area">
     <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-    <h2 class="inline-block">場域規劃(wifi)</h2>
+    <h2 class="inline-block">場域規劃({{ calculateForm.taskName }})</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
       <mat-button-toggle value="import">匯入</mat-button-toggle>
@@ -110,10 +110,10 @@
       
     </div> -->
     <div #container id="chart">
-      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="obstacle" [matTooltip]="tooltipStr" (click)="moveClick($event, 'obstacle');" ></span>
-      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" ></span>
-      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" ></span>
-      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" ></span>
+      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="obstacle" [matTooltip]="tooltipStr" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
       <div class="msg_label" #msgLabel></div>
     </div>
 
@@ -147,6 +147,23 @@
     (rotateEnd)="onEnd()"
     (pinchEnd)="onEnd()"
   ></ngx-moveable>
+
+  <!-- an hidden div is created to set the position of appearance of the menu-->
+  <div style="visibility: hidden; position: fixed;"
+    [style.left]="menuTopLeftPosition.x"
+    [style.top]="menuTopLeftPosition.y"
+    [matMenuTriggerFor]="rightMenu"></div>
+
+  <!-- standard material menu -->
+  <mat-menu #rightMenu="matMenu">
+    <ng-template matMenuContent >
+      <button mat-menu-item (click)="delete()">{{ 'delete' | translate }}</button>
+      <button mat-menu-item (click)="openColor()" [(colorPicker)]="color" [(cpToggle)]="colorToggle">換顏色</button>
+      <button mat-menu-item>材質設定</button>
+    </ng-template>
+  </mat-menu>
+
+  
 
 
   </mat-sidenav-content>

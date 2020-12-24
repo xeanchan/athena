@@ -141,7 +141,9 @@
     "template-no-negated-async": true,
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
-    "no-angle-bracket-type-assertion": false
+    "no-angle-bracket-type-assertion": false,
+    "prefer-for-of": false,
+    "object-literal-shorthand": false
   },
   "rulesDirectory": [
     "codelyzer"

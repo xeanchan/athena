@@ -11,12 +11,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgxMoveableModule } from 'ngx-moveable';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { TranslateModule } from '@ngx-translate/core';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     MatSidenavModule,
     MatButtonToggleModule,
@@ -25,7 +29,10 @@ import { FormsModule } from '@angular/forms';
     MatTabsModule,
     MatCheckboxModule,
     MatTooltipModule,
-    NgxMoveableModule
+    NgxMoveableModule,
+    MatMenuModule,
+    TranslateModule,
+    ColorPickerModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent]

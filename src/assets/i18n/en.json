@@ -6,5 +6,7 @@
 	"login.login": "Login",
 	"login.fail": "Invalid user password, please confirm.",
 	"field.required": "Field is required.",
-	"image.required": "Please upload image."
+	"image.required": "Please upload image.",
+	"numeric.enter": "Please Enter Numeric.",
+	"delete": "delete"
 }

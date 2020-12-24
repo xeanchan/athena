@@ -29,9 +29,9 @@ export class NewPlanningComponent implements OnInit {
   showImgMsg = false;
 
   get taskName() { return this.formGroup.get('taskName'); }
-  get width() { return this.formGroup.get('width'); }
-  get height() { return this.formGroup.get('height'); }
-  get altitude() { return this.formGroup.get('altitude'); }
+  get width() { return this.sizeGroup.get('width'); }
+  get height() { return this.sizeGroup.get('height'); }
+  get altitude() { return this.sizeGroup.get('altitude'); }
 
   ngOnInit() {
     this.calculateForm.sessionid = this.authService.userToken;
@@ -46,6 +46,7 @@ export class NewPlanningComponent implements OnInit {
       const width = control.get('width');
       const height = control.get('height');
       const altitude = control.get('altitude');
+      
       if (width.valid && height.valid && altitude.valid) {
         return null;
       } else {
@@ -72,6 +73,11 @@ export class NewPlanningComponent implements OnInit {
   }
 
   ok() {
+    const input: NodeListOf<HTMLInputElement> = document.querySelector('.modalContent').querySelectorAll('input[type="text"]');
+    for (let i = 0; i < input.length; i++) {
+      input[i].focus();
+      input[i].blur();
+    }
     if (this.calculateForm.mapName == null) {
       this.showImgMsg = true;
       return;
