@@ -139,7 +139,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   // we create an object that contains coordinates
   menuTopLeftPosition =  {x: '0', y: '0'};
   public color;
-  colorToggle = false;
+  // mouseover target
+  hoverObj;
+  // show image file name
+  showFileName = true;
 
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
   @Input() public container!: SVGElement | HTMLElement | null;
@@ -187,7 +190,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-
         // draw background image chart
         const defaultPlotlyConfiguration = {
           displaylogo: false,
@@ -278,6 +280,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     return new Blob([ia], {type: mimeString});
   }
 
+  /** moveable init */
   moveClick(event, typeName) {
     try {
       this.moveable.destroy();
@@ -314,7 +317,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         altitude: this.calculateForm.altitude,
         rotate: 0,
         title: titleName,
-        type: typeName
+        type: typeName,
+        color: 'green',
+        material: '1'
       };
 
       this.frame = new Frame({
@@ -334,7 +339,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
         const span = document.querySelectorAll(`.${typeName}`);
         const rect = svg.querySelector('.target');
-        rect.setAttribute('fill', 'green');
+        rect.setAttribute('fill', this.dragObject[this.svgId].color);
         rect.setAttribute('class', 'drag_rect');
         span[span.length - 1].innerHTML += svg.outerHTML;
         this.target = span[span.length - 1];
@@ -359,7 +364,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           this.moveable.scalable = false;
         }
         this.moveable.ngOnInit();
-        this.setTooltip();
+        this.setDragData();
         this.tooltip.show();
       }, 0);
     } else {
@@ -373,18 +378,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         this.moveable.scalable = false;
       }
       this.moveable.ngOnInit();
-      this.setTooltip();
+      this.setDragData();
       this.tooltip.show();
     }
-  }
-
-  newElementClick(event) {
-    if (this.live) {
-      this.moveable.destroy();
-    }
-    this.live = !this.live;
-    this.target = event.target;
-    this.moveable.ngOnInit();
   }
 
   onWindowReisze = () => {
@@ -433,8 +429,38 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     });
   }
 
-  setTooltip() {
-    const rect = this.target.closest('span').getBoundingClientRect();
+  /** mat-tooltip 文字 */
+  getTooltip() {
+    if (typeof this.hoverObj !== 'undefined') {
+      const span = this.hoverObj.closest('span');
+      const id = span.id;
+      const rect = span.getBoundingClientRect();
+      const rectLeft = rect.left - this.chartLeft;
+      const rectBottom = this.chartBottom - rect.bottom;
+      let xVal = this.roundFormat(this.xLinear(rectLeft));
+      if (xVal < 0) {
+        xVal = 0;
+      }
+      const yVal = this.roundFormat(this.yLinear(rectBottom));
+      const wVal = this.roundFormat(this.xLinear(rect.width));
+      const hVal = this.roundFormat(this.yLinear(rect.height));
+      return `${this.dragObject[id].title}
+        X: ${xVal}
+        Y: ${yVal}
+        長: ${wVal}
+        寬: ${hVal}
+        高: ${this.calculateForm.altitude}
+        材質: ${this.parseMaterial(this.dragObject[id].material)}`;
+
+    } else {
+      return '';
+    }
+  }
+
+  /** set drag object data */
+  setDragData() {
+    const span = this.target.closest('span');
+    const rect = span.getBoundingClientRect();
     const rectLeft = rect.left - this.chartLeft;
     const rectBottom = this.chartBottom - rect.bottom;
     let xVal = this.roundFormat(this.xLinear(rectLeft));
@@ -444,32 +470,29 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     const yVal = this.roundFormat(this.yLinear(rectBottom));
     const wVal = this.roundFormat(this.xLinear(rect.width));
     const hVal = this.roundFormat(this.yLinear(rect.height));
-    this.tooltipStr = `${this.dragObject[this.svgId].title}
-      X: ${xVal}
-      Y: ${yVal}
-      長: ${wVal}
-      寬: ${hVal}
-      高: ${this.calculateForm.altitude}`;
+    this.dragObject[this.svgId].x = xVal;
+    this.dragObject[this.svgId].y = yVal;
+    this.dragObject[this.svgId].width = wVal;
+    this.dragObject[this.svgId].height = hVal;
+  }
 
-
-    this.dragObject[this.svgId] = {
-      x: xVal,
-      y: yVal,
-      z: this.dragObject[this.svgId].z,
-      width: wVal,
-      height: hVal,
-      altitude: this.calculateForm.altitude,
-      rotate: 0,
-      title: this.dragObject[this.svgId].title,
-      type: this.dragObject[this.svgId].type
-    };
+  parseMaterial(val) {
+    if (val === '1') {
+      return '木頭';
+    } else if (val === '2') {
+      return '水泥';
+    } else if (val === '3') {
+      return '輕鋼架';
+    } else if (val === '4') {
+      return '玻璃';
+    }
   }
 
   dragStart(moveable: MoveableGroupInterface<BeforeRenderableProps>, e: any) {
-
     e.bounds = this.bounds;
   }
 
+  /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
 
     const rect = target.getBoundingClientRect();
@@ -509,9 +532,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         target.closest('span').style.top = `${t - 1}px`;
       }
     }
-    this.setTooltip();
+    this.setDragData();
   }
 
+  /** 縮放 */
   onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {
     const scaleX = this.frame.get('transform', 'scaleX') * delta[0];
     const scaleY = this.frame.get('transform', 'scaleY') * delta[1];
@@ -528,6 +552,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     this.scalex = scaleX;
   }
 
+  /** 旋轉角度 */
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
 
@@ -560,14 +585,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
   onEnd() {
     this.label.nativeElement.style.display = 'none';
-    // this.target.style.left = this.frame.get('left');
-    // this.target.style.top = this.frame.get('top')
   }
 
   moveableDestroy() {
     this.moveable.destroy();
   }
 
+  /** 右邊選單開合切換 */
   arrowUpDown(event, type) {
     const target = event.target;
     if (target.innerHTML === 'keyboard_arrow_down') {
@@ -630,10 +654,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openColor() {
-    window.setTimeout(() => {
-      this.colorToggle = true;
-    }, 1000);
+  /** change color */
+  colorChange() {
+    this.dragObject[this.svgId].color = this.color;
+    document.querySelector(`#${this.svgId}`)
+    .querySelector('.drag_rect').setAttribute('fill', this.color);
+  }
+
+  /** 變更材質 */
+  materialChange(val) {
+    this.dragObject[this.svgId].material = val;
+  }
+
+  /** get mat-tooltip object */
+  hover(event) {
+    this.hoverObj = event.target;
+  }
+
+  /** file change */
+  fileChange(event) {
+    const file = event.target.files[0];
+    this.calculateForm.mapName = file.name;
+    this.showFileName = false;
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.calculateForm.mapImage = reader.result;
+      this.initData();
+    };
   }
 
 }

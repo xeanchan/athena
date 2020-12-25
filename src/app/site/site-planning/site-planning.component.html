@@ -94,7 +94,7 @@
 
   <div id="d_area">
     <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
-    <h2 class="inline-block">場域規劃({{ calculateForm.taskName }})</h2>
+    <h2 class="inline-block">場域wifi規劃({{ calculateForm.taskName }})</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
       <mat-button-toggle value="import">匯入</mat-button-toggle>
@@ -110,10 +110,10 @@
       
     </div> -->
     <div #container id="chart">
-      <span *ngFor="let item of obstacleList" #tooltip="matTooltip" class="obstacle" [matTooltip]="tooltipStr" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of defaultBSList" #tooltip="matTooltip" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of newBSList" #tooltip="matTooltip" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of ueList" #tooltip="matTooltip" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of obstacleList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="obstacle" [matTooltip]="getTooltip()" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of defaultBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="defaultBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of newBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="newBS" [matTooltip]="tooltipStr" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of ueList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="UE" [matTooltip]="tooltipStr" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
       <div class="msg_label" #msgLabel></div>
     </div>
 
@@ -158,8 +158,19 @@
   <mat-menu #rightMenu="matMenu">
     <ng-template matMenuContent >
       <button mat-menu-item (click)="delete()">{{ 'delete' | translate }}</button>
-      <button mat-menu-item (click)="openColor()" [(colorPicker)]="color" [(cpToggle)]="colorToggle">換顏色</button>
-      <button mat-menu-item>材質設定</button>
+      <button mat-menu-item 
+        (click)="$event.stopPropagation()" 
+        [(colorPicker)]="color" 
+        (colorPickerChange)="colorChange()">換顏色</button>
+      <button mat-menu-item [matMenuTriggerFor]="mater">材質設定</button>
+    </ng-template>
+  </mat-menu>
+  <mat-menu #mater="matMenu">
+    <ng-template matMenuContent>
+      <button mat-menu-item (click)="materialChange('1')" [class]="(dragObject[svgId].material === '1' ? 'text-white bg-primary' : '')">木頭</button>
+      <button mat-menu-item (click)="materialChange('2')" [class]="(dragObject[svgId].material === '2' ? 'text-white bg-primary' : '')">水泥</button>
+      <button mat-menu-item (click)="materialChange('3')" [class]="(dragObject[svgId].material === '3' ? 'text-white bg-primary' : '')">輕鋼架</button>
+      <button mat-menu-item (click)="materialChange('4')" [class]="(dragObject[svgId].material === '4' ? 'text-white bg-primary' : '')">玻璃</button>
     </ng-template>
   </mat-menu>
 
@@ -188,24 +199,38 @@
           <mat-panel-title>場域設定</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
-          <li><p>場域名稱</p><input type="text" class="w18"></li>
           <li>
-            <p>上傳圖檔</p><input type="file">
+            <p>場域名稱</p>
+            <input type="text" [(ngModel)]="calculateForm.taskName" class="w18">
+          </li>
+          <li>
+            <p>上傳圖檔</p><input type="file" (change)="fileChange($event)">
+            <span *ngIf="showFileName">{{ calculateForm.mapName }}</span>
           </li>
           <li>
             <p>場域尺寸</p>
             <ul>
-              <li class="inline-block"><label>長</label><input type="text"></li>
-              <li class="inline-block"><label>寬</label><input type="text"></li>
-              <li class="inline-block"><label>高</label><input type="text"></li>
+              <li class="inline-block">
+                <label>長</label>
+                <input type="text" [(ngModel)]="calculateForm.width" (change)="initData()">
+              </li>
+              <li class="inline-block">
+                <label>寬</label>
+                <input type="text" [(ngModel)]="calculateForm.height" (change)="initData()">
+              </li>
+              <li class="inline-block">
+                <label>高</label>
+                <input type="text" [(ngModel)]="calculateForm.altitude" (change)="initData()">
+              </li>
             </ul>
           </li>
-          <li><p>網路種類	</p>
-          <select name="" id="">
-            <option value="">4G</option>
-            <option value="">5G</option>
-            <option value="">Wifi</option>
-          </select>
+          <li>
+            <p>網路種類	</p>
+            <select [(ngModel)]="calculateForm.objectiveIndex">
+              <option value="1">4G</option>
+              <option value="2">5G</option>
+              <option value="3">Wifi</option>
+            </select>
           </li>
           
           <li>
