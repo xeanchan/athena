@@ -70,7 +70,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     ue: 'subitem active'
   };
   /** 平面高度 */
-  zValues = ['', '', ''];
+  zValues = ['50', '', ''];
   /** 障礙物 */
   obstacleList = [];
   dragObject = {};
@@ -143,6 +143,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   hoverObj;
   // show image file name
   showFileName = true;
+  circleStyle = {};
 
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
   @Input() public container!: SVGElement | HTMLElement | null;
@@ -342,8 +343,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         rect.setAttribute('fill', this.dragObject[this.svgId].color);
         rect.setAttribute('class', 'drag_rect');
         span[span.length - 1].innerHTML += svg.outerHTML;
+        // const newSpan = document.createElement('span');
+        // newSpan.setAttribute('class', 'rounded-circle');
+        // newSpan.style.backgroundColor = '#dc3545';
+        // newSpan.style.color = '#ffffff';
+        // newSpan.style.marginLeft = '-20PX';
+        // // newSpan.style.marginTop = '-20PX';
+        // newSpan.style.padding = '0px 5px';
+        // span[span.length - 1].appendChild(newSpan);
+        // newSpan.innerHTML = span.length.toString();
         this.target = span[span.length - 1];
-
+        
         this.target.bounds = this.bounds;
         this.target.dragArea = document.getElementById('chart');
 
@@ -366,6 +376,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         this.moveable.ngOnInit();
         this.setDragData();
         this.tooltip.show();
+        this.moveNumber();
+
       }, 0);
     } else {
 
@@ -444,13 +456,26 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const yVal = this.roundFormat(this.yLinear(rectBottom));
       const wVal = this.roundFormat(this.xLinear(rect.width));
       const hVal = this.roundFormat(this.yLinear(rect.height));
-      return `${this.dragObject[id].title}
+      let title = `${this.dragObject[id].title}
         X: ${xVal}
-        Y: ${yVal}
-        長: ${wVal}
-        寬: ${hVal}
-        高: ${this.calculateForm.altitude}
-        材質: ${this.parseMaterial(this.dragObject[id].material)}`;
+        Y: ${yVal}\n`;
+      if (this.dragObject[id].type === 'obstacle') {
+        title += `長: ${wVal}
+        寬: ${hVal}\n`;
+      }
+      title += `高: ${this.calculateForm.altitude}\n`;
+      if (this.dragObject[id].type === 'obstacle') {
+        title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
+      }
+      return title;
+
+      // return `${this.dragObject[id].title}
+      //   X: ${xVal}
+      //   Y: ${yVal}
+      //   長: ${wVal}
+      //   寬: ${hVal}
+      //   高: ${this.calculateForm.altitude}
+      //   材質: ${this.parseMaterial(this.dragObject[id].material)}`;
 
     } else {
       return '';
@@ -533,6 +558,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       }
     }
     this.setDragData();
+    this.moveNumber();
   }
 
   /** 縮放 */
@@ -550,6 +576,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       );
     }
     this.scalex = scaleX;
+    this.moveNumber();
   }
 
   /** 旋轉角度 */
@@ -682,6 +709,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.calculateForm.mapImage = reader.result;
       this.initData();
     };
+  }
+
+  /** 數量物件移動 */
+  moveNumber() {
+    const circleElement: HTMLSpanElement = document.querySelector(`#${this.svgId}_circle`);
+    const targetElement: HTMLSpanElement = document.querySelector(`#${this.svgId}`);
+    const targetRect = targetElement.getBoundingClientRect();
+    circleElement.style.top = `${targetRect.top - 25}px`;
+    circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
   }
 
 }

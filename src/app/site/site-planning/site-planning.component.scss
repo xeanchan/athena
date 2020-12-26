@@ -206,3 +206,10 @@ input[type="file"] {
 .spCell input {
     width: 6.5em!important;
 }
+.rounded-circle {
+    background-color: #dc3545;
+    padding: 0px 7px;
+    color: #ffffff;
+    z-index: 99999;
+    position: fixed;
+}
