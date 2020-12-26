@@ -24,7 +24,7 @@
 }
 .login .box input {
     margin: 3px;
-    padding: 0 .5em;
+    padding: 0.2em .5em;
     line-height: 1.5;
     font-size: .9em;
     outline: 0;
@@ -34,6 +34,7 @@
     margin: auto;
 }
 .login .box div span {
+    text-align: right;
     display: inline-block;
     width: 4.5em;
     font-size: .85em;
@@ -67,10 +68,17 @@
     
 
 .login .logo {
-    background-color: #ddd;
-    width: 5em!important;
-    height: 5em;
+    background-color: #fff;
+    width: 6em !important;
+    height: 6em;
+    padding: .3em;
     display: block;
     border-radius: 5em;
     margin: 0 auto;
+}
+.text-danger {
+    display: block;
+    margin-top: 1.5em!important;
+    line-height: 1.1;
+    text-align: center;
 }

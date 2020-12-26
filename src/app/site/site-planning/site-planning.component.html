@@ -158,7 +158,7 @@
   <mat-menu #rightMenu="matMenu">
     <ng-template matMenuContent >
       <button mat-menu-item (click)="delete()">{{ 'delete' | translate }}</button>
-      <button mat-menu-item (click)="openColor()" [(colorPicker)]="color" [(cpToggle)]="colorToggle">換顏色</button>
+      <button mat-menu-item (click)="openColor()" [(colorPicker)]="color" [(cpToggle)]="colorToggle">更改顏色</button>
       <button mat-menu-item>材質設定</button>
     </ng-template>
   </mat-menu>
@@ -376,6 +376,13 @@
           <mat-panel-title>無線模型參數</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
+          
+          <li>
+            <span>Path Loss Model</span>
+            <select class="widthAuto">
+              <option>台中智機場域</option>
+            </select>
+          </li>
           <li>
             <label>預設無線模型</label>
             <span>
@@ -386,18 +393,13 @@
           </li>
           <li>
             <label>自訂無線模型(@jane要再給)</label>
-            <span>
+            <span class="block spCell">
               a<input type="text" [(ngModel)]="calculateForm.modelname">
               b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
               c<input type="text" [(ngModel)]="calculateForm.contantFactor">
             </span>
           </li>
-          <li>
-            <span>Path Loss Model</span>
-            <select class="widthAuto">
-              <option>台中智機場域</option>
-            </select>
-          </li>
+          
         </ul>
       </mat-expansion-panel>
       <mat-expansion-panel>

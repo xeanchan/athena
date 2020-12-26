@@ -9,12 +9,13 @@
       <tr>
         <td class="th">規劃案名稱</td>
         <td [formGroup]="formGroup">
-          <input type="text" class="w100" [(ngModel)]="this.calculateForm.taskName" formControlName="taskName" required >
-          <div *ngIf="taskName.invalid && (taskName.dirty || taskName.touched)" class="alert alert-danger">
-            <div *ngIf="taskName.errors.required">
-              {{ 'field.required' | translate }}
+          
+            <input type="text" class="w100" [(ngModel)]="this.calculateForm.taskName" formControlName="taskName" required >
+            <div *ngIf="taskName.invalid && (taskName.dirty || taskName.touched)" class="alert alert-danger">
+              <div *ngIf="taskName.errors.required">
+                {{ 'field.required' | translate }}
+              </div>
             </div>
-          </div>
         </td>
       </tr>
       <!--<tr>

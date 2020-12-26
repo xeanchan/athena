@@ -190,7 +190,9 @@ ol.inline-block li input[type="text"] {
     z-index: 9999;
 }
 input[type="file"] {
-    margin-left: .5em;
+    display: inline-block;
+    margin-left: 0.5em;
+    width: 75%;
 }
 .w22 {
     padding-left: 2.2em!important;
@@ -200,4 +202,7 @@ input[type="file"] {
 }
 .w18 {
     width: 18em!important;
+}
+.spCell input {
+    width: 6.5em!important;
 }

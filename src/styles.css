@@ -111,3 +111,22 @@ th.min {
 .mat-tooltip {
     white-space: pre-line;
 }
+.block {
+    display: block!important;
+}
+.alert {
+    padding: 0!important;
+}
+
+.alert-danger {
+    margin: 0;
+    color: #d31d59;
+    background-color: transparent;
+    border-color: transparent;
+}
+.relative {
+    position: relative;
+}
+button {
+    outline: 0;
+}
