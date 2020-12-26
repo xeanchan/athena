@@ -111,13 +111,13 @@
     </div> -->
     <div #container id="chart">
       <span *ngFor="let item of obstacleList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="obstacle" [matTooltip]="getTooltip()" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
+      <!-- <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <span *ngFor="let item of defaultBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="defaultBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
       <span *ngFor="let item of defaultBSList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
       <span *ngFor="let item of newBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="newBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
       <span *ngFor="let item of newBSList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
       <span *ngFor="let item of ueList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="UE" [matTooltip]="getTooltip()" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of ueList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
+      <!-- <span *ngFor="let item of ueList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <div class="msg_label" #msgLabel></div>
     </div>
 
@@ -166,17 +166,17 @@
         (click)="$event.stopPropagation()" 
         [(colorPicker)]="color" 
         (colorPickerChange)="colorChange()">換顏色</button>
-      <button mat-menu-item [matMenuTriggerFor]="mater">材質設定</button>
+      <button mat-menu-item (click)="openHeightSetting()">{{ 'altitude.setting' | translate }}/{{ 'material.setting' | translate }}</button>
     </ng-template>
   </mat-menu>
-  <mat-menu #mater="matMenu">
+  <!-- <mat-menu #mater="matMenu">
     <ng-template matMenuContent>
       <button mat-menu-item (click)="materialChange('1')" [class]="(dragObject[svgId].material === '1' ? 'text-white bg-primary' : '')">木頭</button>
       <button mat-menu-item (click)="materialChange('2')" [class]="(dragObject[svgId].material === '2' ? 'text-white bg-primary' : '')">水泥</button>
       <button mat-menu-item (click)="materialChange('3')" [class]="(dragObject[svgId].material === '3' ? 'text-white bg-primary' : '')">輕鋼架</button>
       <button mat-menu-item (click)="materialChange('4')" [class]="(dragObject[svgId].material === '4' ? 'text-white bg-primary' : '')">玻璃</button>
     </ng-template>
-  </mat-menu>
+  </mat-menu> -->
 
   
 
@@ -466,3 +466,37 @@
     </mat-accordion>    
   </mat-sidenav>
 </mat-sidenav-container>
+
+<ng-template #materialModal>
+  <h1 mat-dialog-title>{{ 'altitude.setting' | translate }}/{{ 'material.setting' | translate }} </h1>
+  <div mat-dialog-content>
+    <p>
+      <mat-form-field>
+        <mat-label>{{ 'altitude.setting' | translate }}1</mat-label>
+        <input matInput [(ngModel)]="dragObject[svgId].altitude">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
+        <input matInput >
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ 'altitude.setting' | translate }}3</mat-label>
+        <input matInput >
+      </mat-form-field>
+    </p>
+    <p>{{ 'material.setting' | translate }}</p>
+    <p>
+      <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
+        <mat-radio-button value="1">木頭</mat-radio-button>
+        <mat-radio-button class="ml-2" value="2">水泥</mat-radio-button>
+        <mat-radio-button class="ml-2" value="3">輕鋼架</mat-radio-button>
+        <mat-radio-button class="ml-2" value="4">玻璃</mat-radio-button>
+      </mat-radio-group>
+    </p>
+    
+  </div>
+  <!-- <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+  </div> -->
+</ng-template>
