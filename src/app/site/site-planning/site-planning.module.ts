@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
 
 @NgModule({
   imports: [
@@ -35,6 +35,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
     ColorPickerModule
   ],
   declarations: [SitePlanningComponent],
-  exports: [SitePlanningComponent]
+  exports: [SitePlanningComponent],
+  providers: [ColorPickerDirective]
 })
 export class SitePlanningModule { }
