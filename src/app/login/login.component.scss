@@ -17,10 +17,13 @@
     min-height: 20em;
     margin: auto;
     padding: 3em 2em 2em;
-    background-color: #0e1521;
-    opacity: .9;
+    /* background-color: #ec8119; */
+    opacity: 0.9;
+    border: 1px solid #4a290c;
     line-height: 2;
     border-radius: 6px;
+    background: rgb(17,59,60);
+    background: linear-gradient(337deg, rgba(17,59,60,1) 25%, rgba(232,152,11,1) 81%);
 }
 .login .box input {
     margin: 3px;
