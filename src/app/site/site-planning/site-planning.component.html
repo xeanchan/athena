@@ -103,14 +103,14 @@
     </mat-button-toggle-group>
 
     <mat-button-toggle-group class="inline-block ml_5">
-      <mat-button-toggle value="go" (click)="calculate()" [routerLink]="['/site/result']">開始運算</mat-button-toggle>
+      <mat-button-toggle value="go" (click)="calculate()">開始運算</mat-button-toggle>
       <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
       <mat-button-toggle value="export">3Ｄ顯示</mat-button-toggle>
     </mat-button-toggle-group>
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
       
     </div> -->
-    <div #container id="chart">
+    <div #chart id="chart">
       <span *ngFor="let item of obstacleList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="obstacle" [matTooltip]="getTooltip()" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <span *ngFor="let item of defaultBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="defaultBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
@@ -191,12 +191,30 @@
           <mat-panel-title>規劃目標設定</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="pannel-content">
-          <div><mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均 SINR</mat-checkbox><input type="text" [(ngModel)]="calculateForm.sinrRatio" ></div>
-          <div><mat-checkbox [(ngModel)]="calculateForm.isAvgThroughput">平均 Throughput</mat-checkbox><input type="text" [(ngModel)]="calculateForm.throughputRatio"></div>
-          <div><mat-checkbox [(ngModel)]="calculateForm.isCoverage">場域Coverage</mat-checkbox><input type="text" [(ngModel)]="calculateForm.coverageRatio"></div>
-          <div><mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr">UE 平均 SINR</mat-checkbox><input type="text" [(ngModel)]="calculateForm.ueAvgSinrRatio"></div>
-          <div><mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput">UE平均Throughput</mat-checkbox><input type="text" [(ngModel)]="calculateForm.ueAvgThroughputRatio" ></div>
-          <div><mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">UE平均Throughput最大(依距離)</mat-checkbox><input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio"></div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均 SINR</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.sinrRatio" (keyup)="calculateForm.isAverageSinr = setCheckbox(calculateForm.sinrRatio)" >
+          </div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isAvgThroughput">平均 Throughput</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.throughputRatio" (keyup)="calculateForm.isAvgThroughput = setCheckbox(calculateForm.throughputRatio)">
+          </div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isCoverage">場域Coverage</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.coverageRatio" (keyup)="calculateForm.isCoverage = setCheckbox(calculateForm.coverageRatio)">
+          </div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr">UE 平均 SINR</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.ueAvgSinrRatio" (keyup)="calculateForm.isUeAvgSinr = setCheckbox(calculateForm.ueAvgSinrRatio)">
+          </div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput">UE平均Throughput</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.ueAvgThroughputRatio" (keyup)="calculateForm.isUeAvgThroughput = setCheckbox(calculateForm.ueAvgThroughputRatio)">
+          </div>
+          <div>
+            <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">UE平均Throughput最大(依距離)</mat-checkbox>
+            <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
+          </div>
         </div>
       </mat-expansion-panel>
       <mat-expansion-panel>
@@ -329,7 +347,7 @@
               <li>
                 <label>新基站數量</label>
                 <span>
-                  <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
+                  <input type="text" [(ngModel)]="newBSList.length">
                 </span>
               </li>
                 <!--<label>基站頻率</label>
@@ -346,15 +364,14 @@
                 <label>系統頻寬 / 頻率</label>
                 <span>
                   <select [(ngModel)]="calculateForm.bandwidth">
-                    <option value="">3</option>
-                    <option value="">3</option>
-                    <option value="">5</option>
-                    <option value="">10</option>
-                    <option value="">15</option>
-                    <option value="">20</option>
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
                   </select>
                   /
-                  <input type="text" [(ngModel)]="calculateForm.Frequency">
+                  <input [(ngModel)]="calculateForm.Frequency">
                 </span>
               </li>
             </ul>
@@ -421,18 +438,18 @@
             <label>預設無線模型</label>
             <span>
               <select [(ngModel)]="calculateForm.pathLossModelId">
-                <option *ngFor="let i of pathLossModelIdList" [value]="i"></option>
+                <option *ngFor="let i of pathLossModelIdList" value="{{i}}">{{ i }}</option>
               </select>
             </span>
           </li>
-          <li>
+          <!-- <li>
             <label>自訂無線模型(@jane要再給)</label>
             <span class="block spCell">
               a<input type="text" [(ngModel)]="calculateForm.modelname">
               b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
               c<input type="text" [(ngModel)]="calculateForm.contantFactor">
             </span>
-          </li>
+          </li> -->
           
         </ul>
       </mat-expansion-panel>
@@ -500,8 +517,13 @@
     </p>
     
   </div>
-  <!-- <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
-  </div> -->
 </ng-template>
+
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.5)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-multiple">
+  <p style="font-size: 20px; color: white">Loading...</p>
+  <p><a href="javascript:void(0)" [routerLink]="['/']" >回首頁</a></p>
+</ngx-spinner>
