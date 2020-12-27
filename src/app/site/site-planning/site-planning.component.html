@@ -39,7 +39,8 @@
       </g>
       <g>
        <rect fill="#000000" stroke-width="1.5" x="111" y="151" width="41" height="28" stroke="#000"/>
-       <path class="target" fill="#ffffff" stroke-width="1.5" d="m1.75,28.69313l13.5,-25.625l13.5,25.625l-27,0z" id="svg_3"/>
+       <polygon class="target" points="15,0 30,30 0,30" fill="#ffffff" id="svg_3" />
+       <!-- <path class="target" fill="#ffffff" stroke-width="1.5" d="m1.75,28.69313l13.5,-25.625l13.5,25.625l-27,0z" id="svg_3"/> -->
       </g>
      </svg>
   </span>
@@ -276,6 +277,10 @@
                 <span>
                   <label>高</label>
                   <input type="text" [value]="dragObject[item].altitude">
+                </span>
+                <span>
+                  <label>材質</label>
+                  <input type="text" [value]="parseMaterial(dragObject[item].material)">
                 </span>
               </li>
             </ol>

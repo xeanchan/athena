@@ -38,8 +38,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
 
   target;
-  scalable = true;
-  resizable = false;
+  scalable = false;
+  resizable = true;
   warpable = false;
   frame = new Frame({
     width: '50px',
@@ -48,9 +48,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     top: '0px',
     transform: {
       rotate: '0deg',
-      scaleX: 1.64,
+      scaleX: 1,
       scaleY: 1,
-      matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     }
   });
   iconList = [1, 2, 3];
@@ -92,32 +92,38 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     svg_01: {
       id: 'svg_1',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'rect'
     },
     svg_02: {
       id: 'svg_2',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'ellipse'
     },
     svg_03: {
       id: 'svg_3',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'polygon'
     },
     svg_04: {
       id: 'svg_4',
       title: '現有基站',
-      type: 'defaultBS'
+      type: 'defaultBS',
+      element: ''
     },
     svg_05: {
       id: 'svg_5',
       title: '新增基站',
-      type: 'newBS'
+      type: 'newBS',
+      element: ''
     },
     svg_06: {
       id: 'svg_6',
       title: '新增ＵＥ',
-      type: 'UE'
+      type: 'UE',
+      element: ''
     }
   };
   // select svg id
@@ -323,7 +329,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       }
       this.svgId = svg.id;
       const titleName = this.svgMap[this.svgId].title;
+      // element形狀
+      let shape = '';
       if (this.svgMap[this.svgId].type === 'obstacle') {
+        shape = this.svgMap[this.svgId].element;
         this.svgId = `${this.svgId}_${this.obstacleList.length}`;
         this.obstacleList.push(this.svgId);
       } else if (this.svgMap[this.svgId].type === 'defaultBS') {
@@ -348,7 +357,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         title: titleName,
         type: typeName,
         color: 'green',
-        material: '1'
+        material: '1',
+        element: shape
       };
 
       this.frame = new Frame({
@@ -360,7 +370,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           rotate: '0deg',
           scaleX: 1,
           scaleY: 1,
-          matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         }
       });
 
@@ -387,26 +397,26 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
         if (typeName === 'obstacle') {
           this.moveable.rotatable = true;
-          this.moveable.scalable = true;
+          this.moveable.resizable = true;
         } else {
           this.moveable.rotatable = false;
-          this.moveable.scalable = false;
+          this.moveable.resizable = false;
         }
         this.moveable.ngOnInit();
         this.setDragData();
         this.tooltip.show();
         this.moveNumber();
-console.log(this.live)
+
       }, 0);
     } else {
 
       this.target = event.target.closest('span');
       if (typeName === 'obstacle') {
         this.moveable.rotatable = true;
-        this.moveable.scalable = true;
+        this.moveable.resizable = true;
       } else {
         this.moveable.rotatable = false;
-        this.moveable.scalable = false;
+        this.moveable.resizable = false;
       }
       this.moveable.ngOnInit();
       this.setDragData();
@@ -610,6 +620,7 @@ console.log(this.live)
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
   }
 
+  /** 縮放 */
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
@@ -617,6 +628,29 @@ console.log(this.live)
     if (!isPinch) {
       this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
     }
+    const svg = target.querySelector('svg');
+    svg.setAttribute('width', width.toString());
+    svg.setAttribute('height', height.toString());
+    const dragRect = svg.querySelector('.drag_rect');
+    const type = this.dragObject[this.svgId].element;
+    if (type === 'rect') {
+      // 方形
+      dragRect.setAttribute('width', width.toString());
+      dragRect.setAttribute('height', height.toString());
+    } else if (type === 'ellipse') {
+      // 圓形
+      const val = (Plotly.d3.min([width, height]) / 2).toString();
+      dragRect.setAttribute('rx', width.toString());
+      dragRect.setAttribute('ry', height.toString());
+      dragRect.setAttribute('cx', width.toString());
+      dragRect.setAttribute('cy', height.toString());
+    } else if (type === 'polygon') {
+      // 三角形
+      const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+      dragRect.setAttribute('points', points);
+    }
+    this.setDragData();
+    this.moveNumber();
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
