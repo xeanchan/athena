@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, TemplateRef } from '@angular/core';
 import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp, MoveableGroupInterface, BeforeRenderableProps } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
@@ -38,8 +38,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
 
   target;
-  scalable = true;
-  resizable = false;
+  scalable = false;
+  resizable = true;
   warpable = false;
   frame = new Frame({
     width: '50px',
@@ -48,9 +48,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     top: '0px',
     transform: {
       rotate: '0deg',
-      scaleX: 1.64,
+      scaleX: 1,
       scaleY: 1,
-      matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
     }
   });
   iconList = [1, 2, 3];
@@ -92,32 +92,38 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     svg_01: {
       id: 'svg_1',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'rect'
     },
     svg_02: {
       id: 'svg_2',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'ellipse'
     },
     svg_03: {
       id: 'svg_3',
       title: '障礙物',
-      type: 'obstacle'
+      type: 'obstacle',
+      element: 'polygon'
     },
     svg_04: {
       id: 'svg_4',
       title: '現有基站',
-      type: 'defaultBS'
+      type: 'defaultBS',
+      element: ''
     },
     svg_05: {
       id: 'svg_5',
       title: '新增基站',
-      type: 'newBS'
+      type: 'newBS',
+      element: ''
     },
     svg_06: {
       id: 'svg_6',
       title: '新增ＵＥ',
-      type: 'UE'
+      type: 'UE',
+      element: ''
     }
   };
   // select svg id
@@ -151,6 +157,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
   @ViewChild('chart') chart: ElementRef;
+  @ViewChild('materialModal') materialModal: TemplateRef<any>;
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -164,6 +171,30 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         } catch (error) {
           this.moveable.ngOnInit();
           this.moveable.destroy();
+        }
+      }
+    }
+  }
+
+  /** delete keyCode 刪除物件 */
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (typeof this.target !== 'undefined') {
+      if (this.live) {
+        if (event.key === 'Delete') {
+          this.live = false;
+          this.moveable.destroy();
+          const id = this.target.closest('span').id;
+          const obj = this.dragObject[id];
+          if (obj.type === 'obstacle') {
+            this.obstacleList.splice(this.obstacleList.indexOf(id), 1);
+          } else if (obj.type === 'defaultBS') {
+            this.defaultBSList.splice(this.defaultBSList.indexOf(id), 1);
+          } else if (obj.type === 'newBS') {
+            this.newBSList.splice(this.newBSList.indexOf(id), 1);
+          } else if (obj.type === 'UE') {
+            this.ueList.splice(this.ueList.indexOf(id), 1);
+          }
         }
       }
     }
@@ -286,8 +317,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     try {
       this.moveable.destroy();
     } catch (error) {}
+    // delete keycode生效
+    window.setTimeout(() => {
+      this.live = true;
+    }, 0);
 
-    this.live = !this.live;
     if (event.target.closest('span').querySelector('.drag_rect') == null) {
       let svg = event.target;
       if (event.target.tagName !== 'svg') {
@@ -295,7 +329,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       }
       this.svgId = svg.id;
       const titleName = this.svgMap[this.svgId].title;
+      // element形狀
+      let shape = '';
       if (this.svgMap[this.svgId].type === 'obstacle') {
+        shape = this.svgMap[this.svgId].element;
         this.svgId = `${this.svgId}_${this.obstacleList.length}`;
         this.obstacleList.push(this.svgId);
       } else if (this.svgMap[this.svgId].type === 'defaultBS') {
@@ -315,12 +352,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         z: 0,
         width: 0,
         height: 0,
-        altitude: this.calculateForm.altitude,
+        altitude: 50,
         rotate: 0,
         title: titleName,
         type: typeName,
         color: 'green',
-        material: '1'
+        material: '1',
+        element: shape
       };
 
       this.frame = new Frame({
@@ -332,7 +370,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           rotate: '0deg',
           scaleX: 1,
           scaleY: 1,
-          matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         }
       });
 
@@ -343,17 +381,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         rect.setAttribute('fill', this.dragObject[this.svgId].color);
         rect.setAttribute('class', 'drag_rect');
         span[span.length - 1].innerHTML += svg.outerHTML;
-        // const newSpan = document.createElement('span');
-        // newSpan.setAttribute('class', 'rounded-circle');
-        // newSpan.style.backgroundColor = '#dc3545';
-        // newSpan.style.color = '#ffffff';
-        // newSpan.style.marginLeft = '-20PX';
-        // // newSpan.style.marginTop = '-20PX';
-        // newSpan.style.padding = '0px 5px';
-        // span[span.length - 1].appendChild(newSpan);
-        // newSpan.innerHTML = span.length.toString();
+
         this.target = span[span.length - 1];
-        
         this.target.bounds = this.bounds;
         this.target.dragArea = document.getElementById('chart');
 
@@ -368,10 +397,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
         if (typeName === 'obstacle') {
           this.moveable.rotatable = true;
-          this.moveable.scalable = true;
+          this.moveable.resizable = true;
         } else {
           this.moveable.rotatable = false;
-          this.moveable.scalable = false;
+          this.moveable.resizable = false;
         }
         this.moveable.ngOnInit();
         this.setDragData();
@@ -384,10 +413,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.target = event.target.closest('span');
       if (typeName === 'obstacle') {
         this.moveable.rotatable = true;
-        this.moveable.scalable = true;
+        this.moveable.resizable = true;
       } else {
         this.moveable.rotatable = false;
-        this.moveable.scalable = false;
+        this.moveable.resizable = false;
       }
       this.moveable.ngOnInit();
       this.setDragData();
@@ -463,7 +492,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         title += `長: ${wVal}
         寬: ${hVal}\n`;
       }
-      title += `高: ${this.calculateForm.altitude}\n`;
+      title += `高: ${this.dragObject[id].altitude}\n`;
       if (this.dragObject[id].type === 'obstacle') {
         title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
       }
@@ -591,6 +620,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
   }
 
+  /** 縮放 */
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
@@ -598,6 +628,29 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     if (!isPinch) {
       this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
     }
+    const svg = target.querySelector('svg');
+    svg.setAttribute('width', width.toString());
+    svg.setAttribute('height', height.toString());
+    const dragRect = svg.querySelector('.drag_rect');
+    const type = this.dragObject[this.svgId].element;
+    if (type === 'rect') {
+      // 方形
+      dragRect.setAttribute('width', width.toString());
+      dragRect.setAttribute('height', height.toString());
+    } else if (type === 'ellipse') {
+      // 圓形
+      const val = (Plotly.d3.min([width, height]) / 2).toString();
+      dragRect.setAttribute('rx', width.toString());
+      dragRect.setAttribute('ry', height.toString());
+      dragRect.setAttribute('cx', width.toString());
+      dragRect.setAttribute('cy', height.toString());
+    } else if (type === 'polygon') {
+      // 三角形
+      const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+      dragRect.setAttribute('points', points);
+    }
+    this.setDragData();
+    this.moveNumber();
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
@@ -688,6 +741,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     .querySelector('.drag_rect').setAttribute('fill', this.color);
   }
 
+  openHeightSetting() {
+    this.matDialog.open(this.materialModal);
+  }
+
   /** 變更材質 */
   materialChange(val) {
     this.dragObject[this.svgId].material = val;
@@ -714,10 +771,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   /** 數量物件移動 */
   moveNumber() {
     const circleElement: HTMLSpanElement = document.querySelector(`#${this.svgId}_circle`);
-    const targetElement: HTMLSpanElement = document.querySelector(`#${this.svgId}`);
-    const targetRect = targetElement.getBoundingClientRect();
-    circleElement.style.top = `${targetRect.top - 25}px`;
-    circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
+    if (circleElement != null) {
+      const targetElement: HTMLSpanElement = document.querySelector(`#${this.svgId}`);
+      const targetRect = targetElement.getBoundingClientRect();
+      circleElement.style.top = `${targetRect.top - 20}px`;
+      circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
+    }
   }
+
 
 }

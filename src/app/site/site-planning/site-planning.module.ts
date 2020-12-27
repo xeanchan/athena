@@ -15,6 +15,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
+import { MatRadioModule } from '@angular/material/radio';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   imports: [
@@ -32,7 +34,9 @@ import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
     NgxMoveableModule,
     MatMenuModule,
     TranslateModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatRadioModule,
+    MatInputModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent],

@@ -8,5 +8,8 @@
 	"field.required": "Field is required.",
 	"image.required": "Please upload image.",
 	"numeric.enter": "Please Enter Numeric.",
-	"delete": "delete"
+	"delete": "delete",
+	"altitude": "altitude",
+	"altitude.setting": "高度",
+	"material.setting": "材質設定"
 }
