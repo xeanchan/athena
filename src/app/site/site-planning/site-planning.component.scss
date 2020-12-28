@@ -207,9 +207,18 @@ input[type="file"] {
     width: 6.5em!important;
 }
 .rounded-circle {
-    background-color: #dc3545;
+    background-color: #f7176a;
     padding: 0px 7px;
-    color: #ffffff;
+    color: #fff;
     z-index: 99999;
     position: fixed;
+}
+.defaultBS + .rounded-circle {
+    background-color: #338aee!important;
+}
+
+.highset input {
+    display: inline-block;
+    margin-right: .3em;
+    width: 3em;
 }

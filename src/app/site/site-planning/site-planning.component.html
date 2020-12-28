@@ -48,12 +48,14 @@
   <span class="svg" matTooltip="現有基站" (click)="moveClick($event, 'defaultBS')" >
     <svg id="svg_04" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
-       <rect fill="none" height="32" width="32" y="-1" x="-1"/>
+        <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
       </g>
       <g>
-       <path class="target" fill="#ffffff" id="svg_4" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
+        <path fill="none" d="m0,0l24,0l0,24l-24,0l0,-24z"/>
+        <path class="target" fill="#ffffff" stroke="null" id="svg_6" d="m27.1373,5.80872l1.19321,-1.19321c-2.08811,-2.08811 -4.77283,-3.13217 -7.45754,-3.13217s-5.36943,1.04406 -7.45754,3.13217l1.19321,1.19321c1.78981,-1.64066 4.02707,-2.53556 6.26434,-2.53556s4.47453,0.89491 6.26434,2.53556zm-1.34236,1.19321c-1.34236,-1.34236 -3.13217,-2.08811 -4.92198,-2.08811s-3.57962,0.74575 -4.92198,2.08811l1.19321,1.19321c1.04406,-1.04406 2.38641,-1.49151 3.72877,-1.49151c1.34236,0 2.68472,0.44745 3.72877,1.49151l1.19321,-1.19321zm-0.44745,9.39651l-2.98302,0l0,-5.96604l-2.98302,0l0,5.96604l-14.91509,0c-1.64066,0 -2.98302,1.34236 -2.98302,2.98302l0,5.96604c0,1.64066 1.34236,2.98302 2.98302,2.98302l20.88112,0c1.64066,0 2.98302,-1.34236 2.98302,-2.98302l0,-5.96604c0,-1.64066 -1.34236,-2.98302 -2.98302,-2.98302zm-16.4066,7.45754l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302z"/>
       </g>
      </svg>
+     
   </span>
 
   <span class="svg" matTooltip="新增基站" (click)="moveClick($event, 'newBS')" >
@@ -79,12 +81,12 @@
   <span class="svg" matTooltip="新增ＵＥ" (click)="moveClick($event, 'UE')" >
     <svg id="svg_06" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
       <g>
-        <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
-      </g>
-      <g>
-        <path fill="none" d="m0,0l24,0l0,24l-24,0l0,-24z"/>
-        <path class="target" fill="#ffffff" stroke="null" id="svg_6" d="m27.1373,5.80872l1.19321,-1.19321c-2.08811,-2.08811 -4.77283,-3.13217 -7.45754,-3.13217s-5.36943,1.04406 -7.45754,3.13217l1.19321,1.19321c1.78981,-1.64066 4.02707,-2.53556 6.26434,-2.53556s4.47453,0.89491 6.26434,2.53556zm-1.34236,1.19321c-1.34236,-1.34236 -3.13217,-2.08811 -4.92198,-2.08811s-3.57962,0.74575 -4.92198,2.08811l1.19321,1.19321c1.04406,-1.04406 2.38641,-1.49151 3.72877,-1.49151c1.34236,0 2.68472,0.44745 3.72877,1.49151l1.19321,-1.19321zm-0.44745,9.39651l-2.98302,0l0,-5.96604l-2.98302,0l0,5.96604l-14.91509,0c-1.64066,0 -2.98302,1.34236 -2.98302,2.98302l0,5.96604c0,1.64066 1.34236,2.98302 2.98302,2.98302l20.88112,0c1.64066,0 2.98302,-1.34236 2.98302,-2.98302l0,-5.96604c0,-1.64066 -1.34236,-2.98302 -2.98302,-2.98302zm-16.4066,7.45754l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302z"/>
-      </g>
+        <rect fill="none" height="32" width="32" y="-1" x="-1"/>
+       </g>
+       <g>
+        <path class="target" fill="#ffffff" id="svg_4" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
+       </g>
+      
      </svg>
   </span>
 </div>
@@ -490,31 +492,33 @@
 </mat-sidenav-container>
 
 <ng-template #materialModal>
-  <h1 mat-dialog-title>{{ 'altitude.setting' | translate }}/{{ 'material.setting' | translate }} </h1>
+  <h5 mat-dialog-title>{{ 'altitude.setting' | translate }} / {{ 'material.setting' | translate }} </h5>
   <div mat-dialog-content>
-    <p>
+    <ul>
+    <li class="highset">
       <mat-form-field>
-        <mat-label>{{ 'altitude.setting' | translate }}1</mat-label>
-        <input matInput [(ngModel)]="dragObject[svgId].altitude">
+        <mat-label>{{ 'altitude.setting' | translate }}</mat-label>
+        <input type="text" [(ngModel)]="dragObject[svgId].altitude">公分
       </mat-form-field>
-      <mat-form-field>
+      <!--<mat-form-field>
         <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
         <input matInput >
       </mat-form-field>
       <mat-form-field>
         <mat-label>{{ 'altitude.setting' | translate }}3</mat-label>
         <input matInput >
-      </mat-form-field>
-    </p>
-    <p>{{ 'material.setting' | translate }}</p>
-    <p>
+      </mat-form-field>-->
+    </li>
+    <li>
+      <mat-label>{{ 'material.setting' | translate }}</mat-label>
       <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
         <mat-radio-button value="1">木頭</mat-radio-button>
         <mat-radio-button class="ml-2" value="2">水泥</mat-radio-button>
         <mat-radio-button class="ml-2" value="3">輕鋼架</mat-radio-button>
         <mat-radio-button class="ml-2" value="4">玻璃</mat-radio-button>
       </mat-radio-group>
-    </p>
+    </li>
+    </ul>
     
   </div>
 </ng-template>

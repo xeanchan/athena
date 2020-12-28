@@ -50,7 +50,7 @@ tbody tr {
     border-bottom: 1px solid #ddd;
 }
 td i {
-    color: rgb(46, 133, 214);
+    color: #78b6ef;
     cursor: pointer;
     font-size: 1.2em;
 }
@@ -73,7 +73,7 @@ span.headerRightarea {
 }
 th.date,
 th.stat {
-    width: 13em;
+    width: 15em;
 }
 th.min {
     width: 6.5em;
@@ -129,4 +129,16 @@ th.min {
 }
 button {
     outline: 0;
+}
+.mat-dialog-container h5 {
+    background-color: #4576bb;
+    color: #fff;
+    font-size: 1.2em;
+    margin: -24px -24px 1em;
+    line-height: 2.5em;
+    padding: 0 1em;
+}
+.mat-dialog-container ul li mat-label {
+    margin-right: .5em;
+    vertical-align: text-bottom;
 }
