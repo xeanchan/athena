@@ -10,9 +10,9 @@ import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { AbstractControl, FormControl } from '@angular/forms';
-import { ThemePalette } from '@angular/material/core';
-import { ColorPickerService } from 'ngx-color-picker';
+import html2canvas from 'html2canvas';
+import { AuthService } from '../../service/auth.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 declare var Plotly: any;
 
@@ -29,8 +29,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
   constructor(
     private taskFormService: TaskFormService,
+    private authService: AuthService,
     private router: Router,
     private matDialog: MatDialog,
+    public spinner: NgxSpinnerService,
     private http: HttpClient) { }
 
   @ViewChild('moveable') moveable: NgxMoveableComponent;
@@ -150,9 +152,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   // show image file name
   showFileName = true;
   circleStyle = {};
-
+  // number column list
+  numColumnList = ['totalRound', 'crossover', 'mutation', 'iteration', 'seed',
+    'width', 'height', 'altitude', 'pathLossModelId', 'useUeCoordinate',
+    'powerMaxRange', 'powerMinRange', 'beamMaxId', 'beamMinId', 'objectiveIndex',
+    'availableNewBsNumber', 'addFixedBsNumber', 'bandwidth', 'Frequency', 'sinrRatio',
+    'throughputRatio', 'coverageRatio', 'ueAvgSinrRatio', 'ueAvgThroughputRatio', 'ueTpByDistanceRatio',
+    'mctsC', 'mctsMimo',
+    'mctsTemperature', 'mctsTime', 'mctsTestTime', 'mctsTotalTime'];
+    // 'distanceFactor', 'contantFactor',
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
-  @Input() public container!: SVGElement | HTMLElement | null;
 
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
@@ -349,7 +358,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.dragObject[this.svgId] = {
         x: 0,
         y: 0,
-        z: 0,
+        z: this.zValues[0],
         width: 0,
         height: 0,
         altitude: 50,
@@ -497,14 +506,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
       }
       return title;
-
-      // return `${this.dragObject[id].title}
-      //   X: ${xVal}
-      //   Y: ${yVal}
-      //   長: ${wVal}
-      //   寬: ${hVal}
-      //   高: ${this.calculateForm.altitude}
-      //   材質: ${this.parseMaterial(this.dragObject[id].material)}`;
 
     } else {
       return '';
@@ -683,16 +684,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /**
-   * 開始運算
-   */
-  calculate() {
-    if (typeof this.calculateForm.isAvgThroughput === 'undefined') {
-      this.calculateForm.isAvgThroughput = false;
-    }
-    console.log(this.calculateForm);
-  }
-
   /** 右鍵選單 */
   onRightClick(event: MouseEvent, svgId) {
     this.svgId = svgId;
@@ -763,7 +754,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      this.calculateForm.mapImage = reader.result;
+      this.calculateForm.mapImage = reader.result.toString();
       this.initData();
     };
   }
@@ -777,6 +768,128 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       circleElement.style.top = `${targetRect.top - 20}px`;
       circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
     }
+  }
+
+  setCheckbox(val) {
+    if (val !== '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * 開始運算
+   */
+  calculate() {
+    try {
+      this.moveable.destroy();
+    } catch (error) {}
+
+    this.spinner.show();
+    if (typeof this.calculateForm.isAverageSinr === 'undefined') {
+      this.calculateForm.isAverageSinr = false;
+    }
+    if (typeof this.calculateForm.isAvgThroughput === 'undefined') {
+      this.calculateForm.isAvgThroughput = false;
+    }
+    if (typeof this.calculateForm.isCoverage === 'undefined') {
+      this.calculateForm.isCoverage = false;
+    }
+    if (typeof this.calculateForm.isUeAvgSinr === 'undefined') {
+      this.calculateForm.isUeAvgSinr = false;
+    }
+    if (typeof this.calculateForm.isUeAvgThroughput === 'undefined') {
+      this.calculateForm.isUeAvgThroughput = false;
+    }
+    if (typeof this.calculateForm.isUeTpByDistance === 'undefined') {
+      this.calculateForm.isUeTpByDistance = false;
+    }
+    this.calculateForm.sessionid = this.authService.userToken;
+
+    html2canvas(this.chart.nativeElement).then(canvas => {
+      const src = canvas.toDataURL();
+      // 組form
+      this.calculateForm.mapImage = src;
+      const zValue = this.zValues.filter(
+        option => option !== ''
+      );
+      this.calculateForm.zValue = `[${zValue.toString()}]`;
+      this.calculateForm.availableNewBsNumber = this.newBSList.length;
+      if (this.obstacleList.length > 0) {
+        // 障礙物資訊
+        let obstacleInfo = '';
+        for (let i = 0; i < this.obstacleList.length; i++) {
+          const obj = this.dragObject[this.obstacleList[i]];
+          obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate}]`;
+          if (i < this.obstacleList.length - 1) {
+            obstacleInfo += '|';
+          }
+        }
+        this.calculateForm.obstacleInfo = obstacleInfo;
+      }
+      if (this.ueList.length > 0) {
+        // UE設定
+        let ueCoordinate = '';
+        for (let i = 0; i < this.ueList.length; i++) {
+          const obj = this.dragObject[this.ueList[i]];
+          ueCoordinate += `[${obj.x},${obj.y},${obj.z}]`;
+          if (i < this.ueList.length - 1) {
+            ueCoordinate += '|';
+          }
+        }
+        this.calculateForm.ueCoordinate = ueCoordinate;
+      }
+      if (this.defaultBSList.length > 0) {
+        // 現有基站
+        let defaultBs = '';
+        for (let i = 0; i < this.defaultBSList.length; i++) {
+          const obj = this.dragObject[this.defaultBSList[i]];
+          defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
+          if (i < this.defaultBSList.length - 1) {
+            defaultBs += '|';
+          }
+        }
+        this.calculateForm.defaultBs = defaultBs;
+      }
+      if (this.newBSList.length > 0) {
+        // 新增基站
+        let newBs = '';
+        for (let i = 0; i < this.newBSList.length; i++) {
+          const obj = this.dragObject[this.newBSList[i]];
+          newBs += `[${obj.x},${obj.y},${obj.z}]`;
+          if (i < this.newBSList.length - 1) {
+            newBs += '|';
+          }
+        }
+        this.calculateForm.candidateBs = newBs;
+      }
+      this.calculateForm.availableNewBsNumber = this.newBSList.length;
+
+      // number type to number
+      Object.keys(this.calculateForm).forEach((key) => {
+        if (this.numColumnList.includes(key)) {
+          console.log('tonumber = ' + key)
+          this.calculateForm[key] = Number(this.calculateForm[key]);
+        }
+      });
+
+      const url = `${this.authService.API_URL}/calculate`;
+      this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
+        res => {
+          this.spinner.hide();
+          console.log(res);
+          this.router.navigate([`/site/result/${res['taskid']}`]);
+        },
+        err => {
+          this.spinner.hide();
+          console.log(err);
+        }
+      );
+
+
+      console.log(this.calculateForm);
+    });
   }
 
 

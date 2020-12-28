@@ -1,94 +1,94 @@
 export class CalculateForm {
 
-  sessionid = null;
-  taskName = null;
-  totalRound = null;
-  mapName = null;
-  mapImage = null;
-  createTime = null;
-  crossover = null;
-  mutation = null;
-  iteration = null;
-  seed = '1';
-  defaultBs = null;
-  candidateBs = null;
-  width = null;
-  height = null;
-  altitude = null;
-  zValue = null;
-  pathLossModelId = null;
-  ueCoordinate = null;
-  useUeCoordinate = null;
-  powerMaxRange = null;
-  powerMinRange = null;
-  beamMaxId = null;
-  beamMinId = null;
-  objectiveIndex = '1';
-  threshold = null;
-  obstacleInfo = null;
-  availableNewBsNumber = null;
-  addFixedBsNumber = null;
-  bandwidth = null;
-  Frequency = null;
+  sessionid: string = null;
+  taskName: string = null;
+  totalRound: number = null;
+  mapName: string = null;
+  mapImage: string = null;
+  // createTime = null;
+  crossover: number = null;
+  mutation: number = null;
+  iteration: number = null;
+  seed: number = null;
+  defaultBs: string = null;
+  candidateBs: string = null;
+  width: number = null;
+  height: number = null;
+  altitude: number = null;
+  zValue: string = null;
+  pathLossModelId: number = 0;
+  ueCoordinate: string = null;
+  useUeCoordinate: number = null;
+  powerMaxRange: number = null;
+  powerMinRange: number = null;
+  beamMaxId: number = null;
+  beamMinId: number = null;
+  objectiveIndex = '0';
+  // threshold = null;
+  obstacleInfo: string = null;
+  availableNewBsNumber: number = 0;
+  addFixedBsNumber: number = 0;
+  bandwidth: number = null;
+  Frequency: number = null;
   isAverageSinr = false;
-  sinrRatio = null;
+  sinrRatio: number = null;
   isAvgThroughput = false;
-  throughputRatio = null;
-  isCoverage = false;
-  coverageRatio = null;
-  isUeAvgSinr = false;
-  ueAvgSinrRatio = null;
-  isUeAvgThroughput = false;
-  ueAvgThroughputRatio = null;
-  isUeTpByDistance = false;
-  ueTpByDistanceRatio = false;
-  modelname = null;
-  distanceFactor = null;
-  contantFactor = null;
-  mctsC = null;
-  mctsMimo = null;
-  mctsTemperature = null;
-  mctsTime = null;
-  mctsTestTime = null;
-  mctsTotalTime = null;
+  throughputRatio: number = null;
+  isCoverage: boolean = false;
+  coverageRatio: number = null;
+  isUeAvgSinr: boolean = false;
+  ueAvgSinrRatio: number = null;
+  isUeAvgThroughput: boolean = false;
+  ueAvgThroughputRatio: number = null;
+  isUeTpByDistance: boolean = false;
+  ueTpByDistanceRatio: number = null;
+  // modelname: string = null;
+  // distanceFactor: number = null;
+  // contantFactor: number = null;
+  mctsC: number = null;
+  mctsMimo: number = null;
+  mctsTemperature: number = null;
+  mctsTime: number = null;
+  mctsTestTime: number = null;
+  mctsTotalTime: number = null;
 
   // constructor(options: {
   //   sessionid?: string,
   //   taskName?: string,
-  //   totalRound?: string,
+  //   totalRound?: number,
   //   mapName?: string,
   //   mapImage?: string,
-  //   createTime?: string,
-  //   crossover?: string,
-  //   mutation?: string,
-  //   iteration?: string,
-  //   seed?: string,
+  //   // createTime?: string,
+  //   crossover?: number,
+  //   mutation?: number,
+  //   iteration?: number,
+  //   seed?: number,
   //   defaultBs?: string,
   //   candidateBs?: string,
-  //   width?: string,
-  //   height?: string,
-  //   altitude?: string,
+  //   width?: number,
+  //   height?: number,
+  //   altitude?: number,
   //   zValue?: string,
-  //   pathLossModelId?: string,
+  //   pathLossModelId?: number,
   //   ueCoordinate?: string,
-  //   useUeCoordinate?: string,
-  //   powerMaxRange?: string,
-  //   powerMinRange?: string,
-  //   beamMaxId?: string,
-  //   beamMinId?: string,
-  //   objectiveIndex?: string,
-  //   threshold?: string,
+  //   useUeCoordinate?: number,
+  //   powerMaxRange?: number,
+  //   powerMinRange?: number,
+  //   beamMaxId?: number,
+  //   beamMinId?: number,
+  //   objectiveIndex?: number,
+  //   // threshold?: number,
   //   obstacleInfo?: string,
-  //   availableNewBsNumber?: string,
-  //   addFixedBsNumber?: string,
-  //   bandwidth?: string,
-  //   Frequency?: string
+  //   availableNewBsNumber?: number,
+  //   addFixedBsNumber?: number,
+  //   bandwidth?: number,
+  //   Frequency?: number
   // } = {}) {
   //     this.sessionid = options.sessionid;
   //     this.taskName = options.taskName;
   //     this.mapName = options.mapName;
   //     this.mapImage = options.mapImage;
-  //     this.createTime = options.createTime;
+  //     // this.createTime = options.createTime;
   //     this.crossover = options.crossover;
   //     this.mutation = options.mutation;
   //     this.iteration = options.iteration;
@@ -107,7 +107,7 @@ export class CalculateForm {
   //     this.beamMaxId = options.beamMaxId;
   //     this.beamMinId = options.beamMinId;
   //     this.objectiveIndex = options.objectiveIndex;
-  //     this.threshold = options.threshold;
+  //     // this.threshold = options.threshold;
   //     this.obstacleInfo = options.obstacleInfo;
   //     this.availableNewBsNumber = options.availableNewBsNumber;
   //     this.addFixedBsNumber = options.addFixedBsNumber;

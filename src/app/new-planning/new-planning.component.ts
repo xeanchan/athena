@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { TaskFormService } from '../site/task-form.service';
 import { CalculateForm } from '../form/CalculateForm';
@@ -19,14 +19,17 @@ export class NewPlanningComponent implements OnInit {
     private authService: AuthService,
     private matDialog: MatDialog,
     private http: HttpClient,
-    private taskFormService: TaskFormService) {
+    private taskFormService: TaskFormService,
+    @Inject(MAT_DIALOG_DATA) public data) {
       sessionStorage.removeItem('sessionStorage');
+      this.timeInterval = data.timeInterval;
     }
 
   calculateForm: CalculateForm = new CalculateForm();
   formGroup: FormGroup;
   sizeGroup: FormGroup;
   showImgMsg = false;
+  timeInterval;
 
   get taskName() { return this.formGroup.get('taskName'); }
   get width() { return this.sizeGroup.get('width'); }
@@ -66,7 +69,7 @@ export class NewPlanningComponent implements OnInit {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      this.calculateForm.mapImage = reader.result;
+      this.calculateForm.mapImage = reader.result.toString();
     };
     this.calculateForm.mapName = file.name;
     this.showImgMsg = false;
@@ -85,6 +88,7 @@ export class NewPlanningComponent implements OnInit {
     if (this.formGroup.invalid || this.sizeGroup.invalid) {
       return;
     }
+    window.clearInterval(this.timeInterval);
     sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
     this.taskFormService.calculateForm = this.calculateForm;
     this.matDialog.closeAll();

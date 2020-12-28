@@ -35,14 +35,17 @@
 					<tr *ngFor="let item of taskList">
 						<td>{{ item.taskName }}</td>
 						<td>
-						<span>{{ item.progress * 100 }}%</span> 
-						<mat-progress-bar mode="determinate" value="{{ item.progress * 100 }}"></mat-progress-bar>
+							<span>{{ item.progress * 100 }}%</span> 
+							<mat-progress-bar mode="determinate" value="{{ item.progress * 100 }}"></mat-progress-bar>
 						</td>
 						<td>{{ item.createTime }}</td>
 						<td><i class="far fa-file-pdf"></i></td>
 						<td><i class="fas fa-pencil-alt"></i></td>
 						<td><i class="far fa-trash-alt"></i></td>
 						<td><i class="fas fa-file-download"></i></td>
+					</tr>
+					<tr *ngIf="taskList.length === 0">
+						<td colspan="7" class="text-center">{{ 'notaskList' | translate }}</td>
 					</tr>
 				</tbody>
 			</table>
