@@ -237,8 +237,8 @@
         <h5><i class="fas fa-info-circle"></i>場域設定資訊</h5>
         <ul>
           <li>
-          <span><label>專案名稱</label>eaaaaa</span>
-          <span><label>規劃時間</label>2020-12-19 12:17:13</span>
+          <span><label>專案名稱</label>{{ calculateForm['taskName'] }}</span>
+          <span><label>規劃時間</label>{{ result['createTime'] }}</span>
         </li>
         <li>
           <span><label>規劃目標</label>
@@ -246,7 +246,7 @@
           </span>
         </li>
         <li>
-          <span><label>場域大小</label>長 104 公尺/ 寬 26 公尺／高 2 公尺</span>
+          <span><label>場域大小</label>長 {{ result['inputWidth'] }} 公尺/ 寬 {{ result['inputHeight'] }} 公尺／高 {{ calculateForm['altitude'] }} 公尺</span>
           <span><label>切面高度</label>1 公尺／1.5 公尺</span>
         </li>
         <hr>

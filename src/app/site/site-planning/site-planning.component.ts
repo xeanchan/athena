@@ -162,6 +162,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     'mctsTemperature', 'mctsTime', 'mctsTestTime', 'mctsTotalTime'];
     // 'distanceFactor', 'contantFactor',
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
+  // task id
+  taskid;
+  // progress interval
+  progressInterval;
+  heightList = [];
 
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
@@ -420,6 +425,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     } else {
 
       this.target = event.target.closest('span');
+      this.svgId = this.target.id;
+
       if (typeName === 'obstacle') {
         this.moveable.rotatable = true;
         this.moveable.resizable = true;
@@ -588,7 +595,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       }
     }
     this.setDragData();
-    this.moveNumber();
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+      this.moveNumber();
+    }
   }
 
   /** 縮放 */
@@ -606,7 +615,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       );
     }
     this.scalex = scaleX;
-    this.moveNumber();
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+      this.moveNumber();
+    }
   }
 
   /** 旋轉角度 */
@@ -651,7 +662,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       dragRect.setAttribute('points', points);
     }
     this.setDragData();
-    this.moveNumber();
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+      this.moveNumber();
+    }
   }
 
   onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
@@ -877,9 +890,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       const url = `${this.authService.API_URL}/calculate`;
       this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
         res => {
-          this.spinner.hide();
-          console.log(res);
-          this.router.navigate([`/site/result/${res['taskid']}`]);
+          this.taskid = res['taskid'];
+          this.getProgress();
         },
         err => {
           this.spinner.hide();
@@ -890,6 +902,31 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
 
       console.log(this.calculateForm);
     });
+  }
+
+  /** 查詢進度 */
+  getProgress() {
+    const url = `${this.authService.API_URL}/progress/${this.taskid}/${this.authService.userToken}`;
+    this.http.get(url).subscribe(
+      res => {
+        window.clearInterval(this.progressInterval);
+        if (res['progress'] === 1) {
+          // done
+          this.spinner.hide();
+          this.router.navigate([`/site/result`], { queryParams: { taskId: this.taskid }});
+        } else {
+          // query again
+          window.clearInterval(this.progressInterval);
+          this.progressInterval = window.setTimeout(() => {
+            this.getProgress();
+          }, 5000);
+        }
+
+      }, err => {
+        this.spinner.hide();
+        window.clearInterval(this.progressInterval);
+      }
+    );
   }
 
 
