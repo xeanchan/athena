@@ -85,6 +85,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
   // 比例尺公式
   xLinear;
   yLinear;
+  pixelXLinear;
+  pixelYLinear;
   // chart邊界
   chartLeft = 0;
   chartRight = 0;
@@ -299,6 +301,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           this.yLinear = Plotly.d3.scale.linear()
             .domain([0, rect.height])
             .range([0, this.calculateForm.height]);
+
+          this.pixelXLinear = Plotly.d3.scale.linear()
+            .domain([0, this.calculateForm.width])
+            .range([0, rect.width]);
+
+          this.pixelYLinear = Plotly.d3.scale.linear()
+            .domain([0, this.calculateForm.height])
+            .range([0, rect.height]);
 
         });
       };
@@ -652,10 +662,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     } else if (type === 'ellipse') {
       // 圓形
       const val = (Plotly.d3.min([width, height]) / 2).toString();
-      dragRect.setAttribute('rx', width.toString());
-      dragRect.setAttribute('ry', height.toString());
-      dragRect.setAttribute('cx', width.toString());
-      dragRect.setAttribute('cy', height.toString());
+      dragRect.setAttribute('rx', val.toString());
+      dragRect.setAttribute('ry', val.toString());
+      dragRect.setAttribute('cx', val.toString());
+      dragRect.setAttribute('cy', val.toString());
     } else if (type === 'polygon') {
       // 三角形
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
@@ -929,5 +939,61 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     );
   }
 
+  changeSize(svgId) {
+    this.svgId = svgId;
+    this.target = document.querySelector(`#${svgId}`);
+    const elementWidth = this.pixelXLinear(this.dragObject[svgId].width);
+    const elementHeight = this.pixelYLinear(this.dragObject[svgId].height);
+    this.frame.set('width', `${elementWidth}px`);
+    this.frame.set('height', `${elementHeight}px`);
+    this.setTransform(this.target);
+
+    const svg = this.target.querySelector('svg');
+    svg.setAttribute('width', elementWidth.toString());
+    svg.setAttribute('height', elementHeight.toString());
+    const dragRect = svg.querySelector('.drag_rect');
+    const type = this.dragObject[this.svgId].element;
+    if (type === 'rect') {
+      // 方形
+      dragRect.setAttribute('width', elementWidth.toString());
+      dragRect.setAttribute('height', elementHeight.toString());
+    } else if (type === 'ellipse') {
+      // 圓形
+      const val = (Plotly.d3.min([elementWidth, elementHeight]) / 2).toString();
+      dragRect.setAttribute('rx', val.toString());
+      dragRect.setAttribute('ry', val.toString());
+      dragRect.setAttribute('cx', val.toString());
+      dragRect.setAttribute('cy', val.toString());
+    } else if (type === 'polygon') {
+      // 三角形
+      const points = `${elementWidth / 2},0 ${elementWidth}, ${elementHeight} 0, ${elementHeight}`;
+      dragRect.setAttribute('points', points);
+    }
+    // this.setDragData();
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+      this.moveNumber();
+    }
+  }
+
+  changePosition(svgId) {
+    this.svgId = svgId;
+    this.target = document.querySelector(`#${svgId}`);
+    const rect = this.target.getBoundingClientRect();
+    const height = rect.height;
+
+    const left = this.pixelXLinear(this.dragObject[svgId].x) + this.chartLeft;
+    const bottom = this.chartBottom - this.pixelYLinear(this.dragObject[svgId].y);
+    const yPos = bottom - height;
+    this.frame.set('left', `${left}px`);
+    this.frame.set('top', `${yPos}px`);
+    this.setTransform(this.target);
+
+    this.target.style.top = `${yPos}px`;
+    this.target.style.left = `${left}px`;
+
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+      this.moveNumber();
+    }
+  }
 
 }

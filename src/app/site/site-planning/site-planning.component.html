@@ -274,28 +274,28 @@
               <li *ngFor="let item of obstacleList">
                 <span>
                   <label>X</label>
-                  <input type="text" [value]="dragObject[item].x">
+                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text" [value]="dragObject[item].y">
+                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>角度</label>
-                  <input type="text" class="w22" [value]="dragObject[item].rotate">
+                  <input type="text" class="w22" [(ngModel)]="dragObject[item].rotate">
                 </span>
                 <br>
                 <span>
                   <label>長</label>
-                  <input type="text" [value]="dragObject[item].width">
+                  <input type="text" [(ngModel)]="dragObject[item].width" (change)="changeSize(item)">
                 </span>
                 <span>
                   <label>寬</label>
-                  <input type="text" [value]="dragObject[item].height">
+                  <input type="text" [(ngModel)]="dragObject[item].height" (change)="changeSize(item)">
                 </span>
                 <span>
                   <label>高</label>
-                  <input type="text" [ngModel]="dragObject[item].altitude">
+                  <input type="text" [(ngModel)]="dragObject[item].altitude">
                 </span>
                 <span>
                   <label>材質</label>
@@ -318,11 +318,11 @@
               <li *ngFor="let item of ueList">
                 <span>
                   <label>X</label>
-                  <input type="text" [value]="dragObject[item].x">
+                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text" [value]="dragObject[item].y">
+                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>Z</label>
@@ -388,11 +388,11 @@
               <li *ngFor="let item of defaultBSList">
                 <span>
                   <label>X</label>
-                  <input type="text" [value]="dragObject[item].x">
+                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>Y</label>
-                  <input type="text" [value]="dragObject[item].y">
+                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
                 </span>
                 <span>
                   <label>Z</label>
@@ -413,11 +413,11 @@
             <li *ngFor="let item of newBSList">
               <span>
                 <label>X</label>
-                <input type="text" [value]="dragObject[item].x">
+                <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
               </span>
               <span>
                 <label>Y</label>
-                <input type="text" [value]="dragObject[item].y">
+                <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
               </span>
               <span>
                 <label>Z</label>
@@ -499,29 +499,27 @@
   <h5 mat-dialog-title>{{ 'altitude.setting' | translate }} / {{ 'material.setting' | translate }} </h5>
   <div mat-dialog-content>
     <ul>
-    <li class="highset">
-      <mat-form-field>
-        <mat-label>{{ 'altitude.setting' | translate }}</mat-label>
-        <input type="text" [(ngModel)]="dragObject[svgId].altitude">公分
-      </mat-form-field>
-      <!--<mat-form-field>
-        <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
-        <input matInput >
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>{{ 'altitude.setting' | translate }}3</mat-label>
-        <input matInput >
-      </mat-form-field>-->
-    </li>
-    <li>
-      <mat-label>{{ 'material.setting' | translate }}</mat-label>
-      <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
-        <mat-radio-button value="1">木頭</mat-radio-button>
-        <mat-radio-button class="ml-2" value="2">水泥</mat-radio-button>
-        <mat-radio-button class="ml-2" value="3">輕鋼架</mat-radio-button>
-        <mat-radio-button class="ml-2" value="4">玻璃</mat-radio-button>
-      </mat-radio-group>
-    </li>
+      <li class="highset">
+          {{ 'altitude.setting' | translate }}
+          <input type="text" [(ngModel)]="dragObject[svgId].altitude">公分
+        <!--<mat-form-field>
+          <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
+          <input matInput >
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ 'altitude.setting' | translate }}3</mat-label>
+          <input matInput >
+        </mat-form-field>-->
+      </li>
+      <li class="mt-2">
+        <mat-label>{{ 'material.setting' | translate }}</mat-label>
+        <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
+          <mat-radio-button value="1">木頭</mat-radio-button>
+          <mat-radio-button class="ml-2" value="2">水泥</mat-radio-button>
+          <mat-radio-button class="ml-2" value="3">輕鋼架</mat-radio-button>
+          <mat-radio-button class="ml-2" value="4">玻璃</mat-radio-button>
+        </mat-radio-group>
+      </li>
     </ul>
     
   </div>
