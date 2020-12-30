@@ -115,9 +115,9 @@
       <span *ngFor="let item of obstacleList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="obstacle" [matTooltip]="getTooltip()" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <span *ngFor="let item of defaultBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="defaultBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of defaultBSList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
+      <span *ngFor="let item of defaultBSList; let i=index" id="{{item}}_circle" class="rounded-circle blue_circle" >{{ (i + 1) }}</span>
       <span *ngFor="let item of newBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="newBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
-      <span *ngFor="let item of newBSList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span>
+      <span *ngFor="let item of newBSList; let i=index" id="{{item}}_circle" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
       <span *ngFor="let item of ueList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="UE" [matTooltip]="getTooltip()" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of ueList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <div class="msg_label" #msgLabel></div>
