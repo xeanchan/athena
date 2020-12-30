@@ -36,12 +36,18 @@ export class AppComponent {
     });
   }
 
-
+  /** show loading */
   show() {
     this.spinner.show();
   }
 
+  /** hide loading */
   hide() {
     this.spinner.hide();
+  }
+
+  /** show loading, 有home link */
+  showAsHome() {
+    this.spinner.showAsHome();
   }
 }

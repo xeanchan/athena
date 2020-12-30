@@ -25,14 +25,13 @@ interface PlotHTMLElement extends HTMLElement {
   templateUrl: './site-planning.component.html',
   styleUrls: ['./site-planning.component.scss']
 })
-export class SitePlanningComponent implements OnInit, AfterViewInit {
+export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private taskFormService: TaskFormService,
     private authService: AuthService,
     private router: Router,
     private matDialog: MatDialog,
-    public spinner: NgxSpinnerService,
     private http: HttpClient) { }
 
   @ViewChild('moveable') moveable: NgxMoveableComponent;
@@ -223,6 +222,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
     this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
     // console.log(this.taskFormService.calculateForm);
     this.initData();
+  }
+
+  ngOnDestroy(): void {
+    if (typeof this.progressInterval !== 'undefined') {
+      window.clearInterval(this.progressInterval);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -809,7 +814,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
       this.moveable.destroy();
     } catch (error) {}
 
-    this.spinner.show();
+
     if (typeof this.calculateForm.isAverageSinr === 'undefined') {
       this.calculateForm.isAverageSinr = false;
     }
@@ -904,7 +909,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
           this.getProgress();
         },
         err => {
-          this.spinner.hide();
+          this.authService.spinnerHide();
           console.log(err);
         }
       );
@@ -922,7 +927,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         window.clearInterval(this.progressInterval);
         if (res['progress'] === 1) {
           // done
-          this.spinner.hide();
+          this.authService.spinnerHide();
           this.router.navigate([`/site/result`], { queryParams: { taskId: this.taskid }});
         } else {
           // query again
@@ -933,7 +938,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit {
         }
 
       }, err => {
-        this.spinner.hide();
+        this.authService.spinnerHide();
         window.clearInterval(this.progressInterval);
       }
     );

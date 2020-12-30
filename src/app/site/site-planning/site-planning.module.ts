@@ -17,7 +17,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatInputModule} from '@angular/material/input';
-import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   imports: [
@@ -37,8 +36,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     TranslateModule,
     ColorPickerModule,
     MatRadioModule,
-    MatInputModule,
-    NgxSpinnerModule
+    MatInputModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent],
