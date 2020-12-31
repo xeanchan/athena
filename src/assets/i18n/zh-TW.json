@@ -12,5 +12,6 @@
 	"altitude": "高",
 	"altitude.setting": "高度",
 	"material.setting": "材質設定",
-	"notaskList": "沒有任務正在運算中."
+	"notaskList": "沒有任務正在運算中.",
+	"home": "回首頁"
 }

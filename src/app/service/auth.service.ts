@@ -56,4 +56,20 @@ export class AuthService {
   public changeLanguage(langulage) {
     this.translateService.use(langulage);
   }
+
+  /** show loading */
+  spinnerShow() {
+    document.getElementById('ngxSpinnerShow').click();
+  }
+
+  /** hide loading */
+  spinnerHide() {
+    document.getElementById('ngxSpinnerHide').click();
+  }
+
+  /** show loading, 有home link */
+  spinnerShowAsHome() {
+    document.getElementById('ngxSpinnerShowAsHome').click();
+  }
+
 }
