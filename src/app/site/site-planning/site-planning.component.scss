@@ -49,10 +49,15 @@ mat-sidenav-container {
 .toggle {
     float: right;
     border: 0;
-    background-color: transparent;
+    background-color: #2e5480;
     outline: 0;
-    margin: .2em .3em;
+    margin: 0;
     cursor: pointer;
+    border-radius: 3px 0 0 3px;
+}
+#d_area .toggle .material-icons {
+    font-size: 22px;
+    margin-top: .2em;
 }
 :host ::ng-deep .mat-button-toggle-group {
     margin-left: 1em;
@@ -114,10 +119,8 @@ p.subitem.active + ol {
 :host ::ng-deep .mat-expansion-panel-body input[type="text"]{
     margin-left: .3em;
     vertical-align:middle;
-    padding-left: 1.2em;
-
+    padding-left: .5em;
     width: 5em;
-
     background: transparent;
     border: transparent;
     border-bottom: 1px solid #ddd;
@@ -144,21 +147,21 @@ ol li span {
     display: inline-block;
 }
 ol li label {
-    position: absolute;
-    left: 0;
     color: #999;
     font-size: .7em;
-    left: 2px;
-    top: 3px;
 }
- li select {
+.w7em {
+    width: 7em!important;
+}
+ul li select ,
+ol li select {
     background: transparent;
     border: transparent;
     border-bottom: 1px solid #ddd;
     border-radius: 0;
     width: 5em;
     vertical-align: sub;
-    margin: 0 .5em 0 1em;
+    margin: 0 .5em;
 }
 ol.inline-block li {
     display: list-item;
@@ -206,19 +209,42 @@ input[type="file"] {
 .spCell input {
     width: 6.5em!important;
 }
-.rounded-circle {
+.pink_circle {
     background-color: #f7176a;
     padding: 0px 7px;
     color: #fff;
     z-index: 99999;
     position: fixed;
 }
-.defaultBS + .rounded-circle {
+.blue_circle {
     background-color: #338aee!important;
+    padding: 0px 7px;
+    color: #fff;
+    z-index: 99999;
+    position: fixed;
 }
 
 .highset input {
     display: inline-block;
     margin-right: .3em;
     width: 3em;
+}
+.clearAll {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 0 .5em;
+    font-weight: normal;
+    color: #659cd8;
+    vertical-align: middle;
+    transition: all 0.25s;
+    background-color: #4c5661;
+    padding: .2em .8em .2em .6em;
+    border-radius: 10px;
+}
+.clearAll:hover {
+    color: #fff;
+}
+.clearAll .material-icons {
+    font-size: 18px;
+    vertical-align: middle;
 }

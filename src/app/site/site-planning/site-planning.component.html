@@ -95,7 +95,9 @@
     
 
   <div id="d_area">
-    <button class="toggle" mat-button (click)="sidenav.toggle()"><span class="material-icons">tune</span></button>
+    <button class="toggle" mat-button (click)="sidenav.toggle()">
+      <span class="material-icons">swap_horiz</span>
+    </button>
     <h2 class="inline-block">場域wifi規劃({{ calculateForm.taskName }})</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
@@ -189,7 +191,7 @@
       <mat-expansion-panel (opened)="panelOpenState = true"
                            (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title>規劃目標設定</mat-panel-title>
+          <mat-panel-title>規劃目標</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="pannel-content">
           <div>
@@ -220,7 +222,7 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>場域設定</mat-panel-title>
+          <mat-panel-title>場域資訊</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
           <li>
@@ -233,7 +235,7 @@
           </li>
           <li>
             <p>場域尺寸</p>
-            <ul>
+            <ul class="inline-block">
               <li class="inline-block">
                 <label>長</label>
                 <input type="text" [(ngModel)]="calculateForm.width" (change)="initData()">
@@ -265,11 +267,57 @@
               <li><input type="text" [(ngModel)]="zValues[2]"></li>
             </ol>
           </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>基站參數設定</mat-panel-title>
+        </mat-expansion-panel-header>
+            <ul>
+              <li>
+                <label>傳輸功率</label>
+                <span>
+                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
+                </span>
+              </li>
+              <li>
+                <label>新基站數量</label>
+                <span>
+                  <input type="text" [(ngModel)]="newBSList.length">
+                </span>
+              </li>
+              <li>
+                <label>系統頻寬</label>
+                <span>
+                  <select [(ngModel)]="calculateForm.bandwidth">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                  /
+                  <label>頻率</label>
+                  <input type="text" [(ngModel)]="calculateForm.Frequency">
+                </span>
+              </li>
+            
+          </ul>
+      </mat-expansion-panel>
 
-          <li>
-            <p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title [class]="subitemClass['obstacle']">障礙物
+            <label class="matBadge">{{ obstacleList.length }}</label>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <!--@xean 泡泡=0 時不出現 clear -->
+        <span class="clearAll">
+          <span class="material-icons">clear</span>Clear All
+        </span>
+            <!--<p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
               <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
-            </p>
+            </p>-->
             <ol>
               <li *ngFor="let item of obstacleList">
                 <span>
@@ -282,7 +330,7 @@
                 </span>
                 <span>
                   <label>角度</label>
-                  <input type="text" class="w22" [(ngModel)]="dragObject[item].rotate">
+                  <input type="text" [(ngModel)]="dragObject[item].rotate">
                 </span>
                 <br>
                 <span>
@@ -299,7 +347,7 @@
                 </span>
                 <span>
                   <label>材質</label>
-                  <select [(ngModel)]="dragObject[item].material">
+                  <select class="w7em" [(ngModel)]="dragObject[item].material">
                     <option value="1">木頭</option>
                     <option value="2">水泥</option>
                     <option value="3">輕鋼架</option>
@@ -308,54 +356,18 @@
                 </span>
               </li>
             </ol>
-          </li>
-        
-          <li>
-            <p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
-              <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
-            </p>
-            <ol>
-              <li *ngFor="let item of ueList">
-                <span>
-                  <label>X</label>
-                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                  </select>
-                </span>
-              </li>
-            </ol>
-          </li>
-        </ul>
-        
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>基站設定</mat-panel-title>
+          <mat-panel-title>現有基站
+            <label class="matBadge">{{ defaultBSList.length }}</label>
+            
+          </mat-panel-title>
         </mat-expansion-panel-header>
+        <span class="clearAll">
+          <span class="material-icons">clear</span>Clear All
+        </span>
         <ul>
-          <li>
-            <p>參數設定</p>
-            <ul>
-              <li>
-                <label>傳輸功率</label>
-                <span>
-                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
-                </span>
-              </li>
-              <li>
-                <label>新基站數量</label>
-                <span>
-                  <input type="text" [(ngModel)]="newBSList.length">
-                </span>
-              </li>
                 <!--<label>基站頻率</label>
                 <span>
                   <select [(ngModel)]="calculateForm.objectiveIndex">
@@ -366,24 +378,9 @@
                     <option value="3">15</option>
                   </select>
                 </span>-->
-              <li>
-                <label>系統頻寬 / 頻率</label>
-                <span>
-                  <select [(ngModel)]="calculateForm.bandwidth">
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                  </select>
-                  /
-                  <input type="text" [(ngModel)]="calculateForm.Frequency">
-                </span>
-              </li>
-            </ul>
-          </li>
+              
           <li>
-            <p>現有基站<label class="matBadge">{{ defaultBSList.length }}</label></p>
+            <!--<p>現有基站</p>-->
             <ol>
               <li *ngFor="let item of defaultBSList">
                 <span>
@@ -407,8 +404,13 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>待選基站位置<label class="matBadge">{{ newBSList.length }}</label></mat-panel-title>
+          <mat-panel-title>新增待選基站
+            <label class="matBadge">{{ newBSList.length }}</label>
+          </mat-panel-title>
         </mat-expansion-panel-header>
+        <span class="clearAll">
+          <span class="material-icons">clear</span>Clear All
+        </span>
           <ol>
             <li *ngFor="let item of newBSList">
               <span>
@@ -430,10 +432,44 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
+          <mat-panel-title [class]="subitemClass['ue']">UE
+            <label class="matBadge">{{ ueList.length }}</label>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <span class="clearAll">
+          <span class="material-icons">clear</span>Clear All
+        </span>
+        <ul>
+          <li>
+            <!--<p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
+              <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
+            </p>-->
+            <ol>
+              <li *ngFor="let item of ueList">
+                <span>
+                  <label>X</label>
+                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                </span>
+                <span>
+                  <label>Y</label>
+                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                </span>
+                <span>
+                  <label>Z</label>
+                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                  </select>
+                </span>
+              </li>
+            </ol>
+          </li>
+        </ul>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
           <mat-panel-title>無線模型參數</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
-          
           <li>
             <span>Path Loss Model</span>
             <select class="widthAuto">
@@ -461,7 +497,7 @@
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>演算法設定</mat-panel-title>
+          <mat-panel-title>演算法</mat-panel-title>
         </mat-expansion-panel-header>
         <ul>
           <li>

@@ -5,6 +5,7 @@
 body {
     /*background-color: #33373c;
     color: #fff;*/
+    overflow: hidden;
 }
 
 .inline-block {

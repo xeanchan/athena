@@ -114,6 +114,7 @@ span.headerRightarea {
 }
 :host ::ng-deep .mat-expansion-panel-header {
   font-weight: bold;
+  height: 43px!important;
 }
 
 :host ::ng-deep .mat-expansion-panel-header-title {

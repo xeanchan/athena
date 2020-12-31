@@ -46,7 +46,7 @@ body {
     border-color: #214065!important;
 }
 #d_area .toggle .material-icons {
-    color: #007bff!important;
+    color: #c1dfff!important;
 }
 h3 button {
     background-color: #007bff!important;
@@ -105,7 +105,8 @@ h3 button {
 }
 /* setting select */
 .mat-expansion-panel-body input[type=text] ,
-.mat-expansion-panel-body ul li select {
+.mat-expansion-panel-body ul li select ,
+.mat-expansion-panel-body ol li select {
     border-bottom: 1px solid #185ea9!important;
     color: #5cabff!important;
 }

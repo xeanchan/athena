@@ -33,7 +33,7 @@
     width: 100%;
     border:1.5px solid #5aa5e2;
     vertical-align: top;
-    
+    background-color: #202633;
 }
 .box table th,
 .box table td {
@@ -172,9 +172,20 @@
     text-align: center;
 }
 .choose {
-    background-color: #3d5790;
+    background-color: #edd31c;
+    color: #333;
     position: relative;
-    
+}
+.choose label {
+    background-color: #ce1a21;
+    color: #fff;
+    width: 1.6em;
+    height: 1.6em;
+    line-height: 1.6em;
+    text-align: center;
+    margin: 0!important;
+    border-radius: 50em;
+    font-weight: normal!important;
 }
 .choose .material-icons {
     background-color: #fff;
