@@ -29,30 +29,24 @@
                 </tr>
                 <tr>
                     <th>基站編號</th>
-                    <td class="choose"><label>1</label></td>
-                    <td class="choose"><label>2</label></td>
-                    <td class="choose"><label>3</label></td>
-                    <td>4</td>
-                    <td>5</td>
-                    <td>6</td>
-                </tr>
-                <tr>
                     <th>發射功率(dBm)</th>
-                    <td class="choose">10</td>
-                    <td class="choose">20</td>
-                    <td class="choose">19</td>
-                    <td>18</td>
-                    <td>11</td>
-                    <td>2</td>
+                    <th>波束編號</th>
+                    
                 </tr>
                 <tr>
-                    <th>波束編號</th>
+                    
+                    <td class="choose"><label>1</label></td>
+                    <td class="choose">10</td>
                     <td class="choose">32</td>
+                </tr>
+                <tr>
+                    <td class="choose"><label>2</label></td>
+                    <td class="choose">20</td>
                     <td class="choose">288</td>
+                <tr>
+                    <td class="choose"><label>3</label></td>
+                    <td class="choose">19</td>
                     <td class="choose">704</td>
-                    <td>480</td>
-                    <td>448</td>
-                    <td>640</td>
                 </tr>
             </tbody>
         </table>
@@ -65,15 +59,15 @@
                     <td class="mapType">
                             <label>切面高度</label>
                             <mat-button-toggle-group>
-                                <mat-button-toggle  value="" selected> 1 公尺</mat-button-toggle>
-                                <mat-button-toggle  value=""> 1.5 公尺</mat-button-toggle>
+                                <mat-button-toggle  value="" selected>50 公分</mat-button-toggle>
+                                
                             </mat-button-toggle-group>
                 
                             <label class="mL_1">分布圖切換</label>
                             <mat-button-toggle-group>
-                                <mat-button-toggle  value="SINR" selected>SINR</mat-button-toggle>
-                                <mat-button-toggle  value="PCI">PCI</mat-button-toggle>
-                                <mat-button-toggle  value="RSRP">RSRP</mat-button-toggle>
+                                <mat-button-toggle  value="SINR" selected>訊號品質圖</mat-button-toggle>
+                                <mat-button-toggle  value="PCI">訊號覆蓋圖</mat-button-toggle>
+                                <mat-button-toggle  value="RSRP">訊號強度圖</mat-button-toggle>
                             </mat-button-toggle-group>
                             <img class="map" src="assets/img/map.png">           
                     </td>
@@ -241,7 +235,7 @@
         </li>
         <li>
           <span><label>場域大小</label>長 {{ result['inputWidth'] }} 公尺/ 寬 {{ result['inputHeight'] }} 公尺／高 {{ calculateForm['altitude'] }} 公尺</span>
-          <span><label>切面高度</label>1 公尺／1.5 公尺</span>
+          <span><label>切面高度</label>50 公分</span>
         </li>
         <hr>
         <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
