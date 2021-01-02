@@ -168,11 +168,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   // progress interval
   progressInterval;
   heightList = [];
+  plotLayout;
 
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
+
+  @HostListener('window:resize') windowResize() {
+    this.plotResize();
+  }
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
@@ -252,7 +257,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           displayModeBar: false
         };
 
-        const pLayout = {
+        this.plotLayout = {
           autosize: true,
           xaxis: {
             linewidth: 1,
@@ -288,36 +293,40 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
         Plotly.newPlot('chart', {
           data: [],
-          layout: pLayout,
+          layout: this.plotLayout,
           config: defaultPlotlyConfiguration
         }).then((gd) => {
-          // 比例尺計算
-          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
-          const rect = xy.getBoundingClientRect();
-          this.chartLeft = rect.left;
-          this.chartRight = rect.right;
-          this.chartTop = rect.top;
-          this.chartBottom = rect.bottom;
-
-          this.xLinear = Plotly.d3.scale.linear()
-            .domain([0, rect.width])
-            .range([0, this.calculateForm.width]);
-
-          this.yLinear = Plotly.d3.scale.linear()
-            .domain([0, rect.height])
-            .range([0, this.calculateForm.height]);
-
-          this.pixelXLinear = Plotly.d3.scale.linear()
-            .domain([0, this.calculateForm.width])
-            .range([0, rect.width]);
-
-          this.pixelYLinear = Plotly.d3.scale.linear()
-            .domain([0, this.calculateForm.height])
-            .range([0, rect.height]);
-
+          // 計算比例尺
+          this.calScale(gd);
         });
       };
     }
+  }
+
+  /** 計算比例尺 */
+  calScale(gd) {
+    const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+    const rect = xy.getBoundingClientRect();
+    this.chartLeft = rect.left;
+    this.chartRight = rect.right;
+    this.chartTop = rect.top;
+    this.chartBottom = rect.bottom;
+
+    this.xLinear = Plotly.d3.scale.linear()
+      .domain([0, rect.width])
+      .range([0, this.calculateForm.width]);
+
+    this.yLinear = Plotly.d3.scale.linear()
+      .domain([0, rect.height])
+      .range([0, this.calculateForm.height]);
+
+    this.pixelXLinear = Plotly.d3.scale.linear()
+      .domain([0, this.calculateForm.width])
+      .range([0, rect.width]);
+
+    this.pixelYLinear = Plotly.d3.scale.linear()
+      .domain([0, this.calculateForm.height])
+      .range([0, rect.height]);
   }
 
   /**
@@ -980,6 +989,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /** change X,Y */
   changePosition(svgId) {
     this.svgId = svgId;
     this.target = document.querySelector(`#${svgId}`);
@@ -999,6 +1009,62 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
       this.moveNumber();
     }
+  }
+
+  /** change rotate */
+  changeRotate(svgId) {
+    this.svgId = svgId;
+    this.target = document.querySelector(`#${svgId}`);
+    this.frame.set('transform', 'rotate', `${this.dragObject[svgId].rotate}deg`);
+    this.setTransform(this.target);
+    this.target.setAttribute('style', `transform: rotate(${this.dragObject[svgId].rotate}deg)`);
+    if (this.dragObject[svgId].rotate === '0') {
+      // 0時click才會生效
+      this.target.click();
+      this.target.blur();
+    }
+  }
+
+  /** clear all */
+  clearAll(type) {
+    if (type === 'obstacle') {
+      this.obstacleList.length = 0;
+    } else if (type === 'defaultBS') {
+      this.defaultBSList.length = 0;
+    } else if (type === 'newBS') {
+      this.newBSList.length = 0;
+    } else if (type === 'UE') {
+      this.ueList.length = 0;
+    }
+  }
+
+  /** 圖區縮放 */
+  plotResize() {
+    window.setTimeout(() => {
+      const dArea = document.getElementById('d_area').clientWidth;
+      Plotly.relayout('chart', {
+        width: dArea
+      }).then((gd) => {
+        // 重新計算比例尺
+        this.calScale(gd);
+        // 物件移動
+        const ary = _.concat(this.obstacleList, this.defaultBSList, this.newBSList, this.ueList);
+        for (const item of ary) {
+          this.changePosition(item);
+        }
+      });
+    }, 300);
+  }
+
+  view3D() {
+    sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
+    sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
+    sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
+    sessionStorage.setItem('newBSList', JSON.stringify(this.newBSList));
+    sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
+    sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
+
+    this.router.navigate(['/site/view3d']);
   }
 
 }

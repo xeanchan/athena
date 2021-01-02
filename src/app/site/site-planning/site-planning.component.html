@@ -108,7 +108,7 @@
     
 
   <div id="d_area">
-    <button class="toggle" mat-button (click)="sidenav.toggle()">
+    <button class="toggle" mat-button (click)="sidenav.toggle();plotResize()">
       <span class="material-icons">swap_horiz</span>
     </button>
     <h2 class="inline-block">場域 wifi 規劃({{ calculateForm.taskName }})</h2>
@@ -121,7 +121,7 @@
     <mat-button-toggle-group class="inline-block ml_5">
       <mat-button-toggle value="go" (click)="calculate()">開始運算</mat-button-toggle>
       <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
-      <mat-button-toggle value="export">3Ｄ顯示</mat-button-toggle>
+      <mat-button-toggle (click)="view3D()">3Ｄ顯示</mat-button-toggle>
     </mat-button-toggle-group>
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
       
@@ -296,7 +296,7 @@
               <li>
                 <label>新基站數量</label>
                 <span>
-                  <input type="text" [(ngModel)]="newBSList.length">
+                  <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
                 </span>
               </li>
               <li>
@@ -324,8 +324,7 @@
             <label class="matBadge">{{ obstacleList.length }}</label>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <!--@xean 泡泡=0 時不出現 clear -->
-        <span class="clearAll">
+        <span *ngIf="obstacleList.length > 0" class="clearAll" (click)="clearAll('obstacle')">
           <span class="material-icons">clear</span>Clear All
         </span>
             <!--<p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
@@ -343,7 +342,7 @@
                 </span>
                 <span>
                   <label>角度</label>
-                  <input type="text" [(ngModel)]="dragObject[item].rotate">
+                  <input type="text" [(ngModel)]="dragObject[item].rotate" (change)="changeRotate(item)">
                 </span>
                 <br>
                 <span>
@@ -378,7 +377,7 @@
             
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <span class="clearAll">
+        <span *ngIf="defaultBSList.length > 0" class="clearAll" (click)="clearAll('defaultBS')">
           <span class="material-icons">clear</span>Clear All
         </span>
         <ul>
@@ -422,7 +421,7 @@
             <label class="matBadge">{{ newBSList.length }}</label>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <span class="clearAll">
+        <span *ngIf="newBSList.length > 0" class="clearAll" (click)="clearAll('newBS')">
           <span class="material-icons">clear</span>Clear All
         </span>
           <ol>
@@ -450,7 +449,7 @@
             <label class="matBadge">{{ ueList.length }}</label>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <span class="clearAll">
+        <span *ngIf="ueList.length > 0" class="clearAll" (click)="clearAll('UE')">
           <span class="material-icons">clear</span>Clear All
         </span>
         <ul>
