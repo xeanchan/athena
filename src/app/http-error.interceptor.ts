@@ -8,8 +8,15 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
 
+@Injectable({
+  providedIn: 'root'
+})
 export class HttpErrorInterceptor implements HttpInterceptor {
+
+  constructor(private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request)
@@ -18,11 +25,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         catchError((err: HttpErrorResponse) => {
           if (err != null) {
             console.log(err);
-            if (err.error.indexOf('logonPage.do') !== -1) {
-              // timeout
-              location.href = err.error;
+            if (err.status === 401) {
+              this.router.navigate(['/logon']);
             }
-            
           }
           return throwError(err);
         })

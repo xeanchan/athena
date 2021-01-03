@@ -4,7 +4,7 @@ import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
 import { TaskFormService } from '../task-form.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
@@ -13,6 +13,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import html2canvas from 'html2canvas';
 import { AuthService } from '../../service/auth.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { View3dComponent } from '../view3d/view3d.component';
 
 declare var Plotly: any;
 
@@ -169,6 +170,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   progressInterval;
   heightList = [];
   plotLayout;
+  view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
 
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
@@ -221,6 +223,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.view3dDialogConfig.autoFocus = false;
+    this.view3dDialogConfig.width = '80%';
+
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
     }
@@ -233,6 +238,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof this.progressInterval !== 'undefined') {
       window.clearInterval(this.progressInterval);
     }
+    try {
+      this.moveable.destroy();
+    } catch (error) {}
   }
 
   ngAfterViewInit(): void {
@@ -658,6 +666,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 縮放 */
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
+    if (width < 1) {
+      width = 1;
+    }
+    if (height < 1) {
+      height = 1;
+    }
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
     this.setTransform(target);
@@ -675,11 +689,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       dragRect.setAttribute('height', height.toString());
     } else if (type === 'ellipse') {
       // 圓形
-      const val = (Plotly.d3.min([width, height]) / 2).toString();
-      dragRect.setAttribute('rx', val.toString());
-      dragRect.setAttribute('ry', val.toString());
-      dragRect.setAttribute('cx', val.toString());
-      dragRect.setAttribute('cy', val.toString());
+      const x = (width / 2).toString();
+      const y = (height / 2).toString();
+      dragRect.setAttribute('rx', x);
+      dragRect.setAttribute('ry', y);
+      dragRect.setAttribute('cx', x);
+      dragRect.setAttribute('cy', y);
     } else if (type === 'polygon') {
       // 三角形
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
@@ -1057,14 +1072,23 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   view3D() {
-    sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
-    sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
-    sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
-    sessionStorage.setItem('newBSList', JSON.stringify(this.newBSList));
-    sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
-    sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
+    this.view3dDialogConfig.data = {
+      calculateForm: this.calculateForm,
+      obstacleList: this.obstacleList,
+      defaultBSList: this.defaultBSList,
+      newBSList: this.newBSList,
+      ueList: this.ueList,
+      dragObject: this.dragObject
+    };
+    this.matDialog.open(View3dComponent, this.view3dDialogConfig);
+    // sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
+    // sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
+    // sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
+    // sessionStorage.setItem('newBSList', JSON.stringify(this.newBSList));
+    // sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
+    // sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
 
-    this.router.navigate(['/site/view3d']);
+    // this.router.navigate(['/site/view3d']);
   }
 
 }

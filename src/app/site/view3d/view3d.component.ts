@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CalculateForm } from '../../form/CalculateForm';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import * as _ from 'lodash';
 
 declare var Plotly: any;
 
@@ -18,14 +19,17 @@ export class View3dComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private matDialog: MatDialog,
-    private http: HttpClient) {
+    private http: HttpClient,
+    @Inject(MAT_DIALOG_DATA) public data) {
 
-      this.calculateForm = JSON.parse(window.sessionStorage.getItem('calculateForm'));
-      this.obstacleList = JSON.parse(window.sessionStorage.getItem('obstacleList'));
-      this.defaultBSList = JSON.parse(window.sessionStorage.getItem('defaultBSList'));
-      this.newBSList = JSON.parse(window.sessionStorage.getItem('newBSList'));
-      this.ueList = JSON.parse(window.sessionStorage.getItem('ueList'));
-      this.dragObject = JSON.parse(window.sessionStorage.getItem('dragObject'));
+      this.calculateForm = data.calculateForm;
+      this.obstacleList = data.obstacleList;
+      this.defaultBSList = data.defaultBSList;
+      this.newBSList = data.newBSList;
+      this.ueList = data.ueList;
+      this.dragObject = data.dragObject;
+
+      console.log(this.defaultBSList)
     }
 
   calculateForm: CalculateForm;
@@ -44,55 +48,36 @@ export class View3dComponent implements OnInit {
   }
 
   draw() {
-    const reader = new FileReader();
-    reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
-    reader.onload = (e) => {
-      // draw background image chart
-      const defaultPlotlyConfiguration = {
-        displaylogo: false,
-        showTips: false,
-        editable: false,
-        scrollZoom: false,
-        displayModeBar: false
-      };
-
-      const layout = {
-        autosize: true,
-        scene: {
-          xaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.width]
-          },
-          yaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.height]
-          },
-        },
-        
-        margin: { t: 0, b: 60, l: 40},
-        // images: [{
-        //   source: reader.result,
-        //   x: 0,
-        //   y: 0,
-        //   sizex: this.calculateForm.width,
-        //   sizey: this.calculateForm.height,
-        //   xref: 'x',
-        //   yref: 'y',
-        //   xanchor: 'left',
-        //   yanchor: 'bottom',
-        //   sizing: 'stretch',
-        //   hover: 'x+y'
-        // }]
-      };
-
-      Plotly.newPlot('chart', {
-        data: this.getTraces(),
-        layout: layout,
-        config: defaultPlotlyConfiguration
-      });
+    const defaultPlotlyConfiguration = {
+      displaylogo: false,
+      showTips: false,
+      editable: false,
+      scrollZoom: false,
+      displayModeBar: false
     };
+
+    const layout = {
+      autosize: true,
+      scene: {
+        xaxis: {
+          linewidth: 1,
+          mirror: 'all',
+          range: [0, this.calculateForm.width]
+        },
+        yaxis: {
+          linewidth: 1,
+          mirror: 'all',
+          range: [0, this.calculateForm.height]
+        },
+      },
+      margin: { t: 0, b: 0, l: 0, r: 0}
+    };
+
+    Plotly.newPlot('chart3D', {
+      data: this.getTraces(),
+      layout: layout,
+      config: defaultPlotlyConfiguration
+    });
   }
 
   /**
@@ -116,12 +101,27 @@ export class View3dComponent implements OnInit {
     return new Blob([ia], {type: mimeString});
   }
 
+  /** 3d物件 */
   getTraces() {
 
     const traces = [];
-    for (const item of this.obstacleList) {
-      console.log(this.dragObject[item])
-      if (this.dragObject[item].element === 'rect') {
+    const ary = [].concat(this.obstacleList, this.defaultBSList, this.newBSList, this.ueList);
+    let obstacleCount = 1;
+    let defaultBSCount = 1;
+    let newBSCount = 1;
+    let ueCount = 1;
+    for (const item of ary) {
+      let text = '';
+      if (this.dragObject[item].type === 'obstacle') {
+        text = `障礙物 ${obstacleCount}`;
+      } else if (this.dragObject[item].type === 'defaultBS') {
+        text = `現有基站 ${defaultBSCount}`;
+      } else if (this.dragObject[item].type === 'newBS') {
+        text = `新增基站 ${newBSCount}`;
+      } else if (this.dragObject[item].type === 'UE') {
+        text = `新增ＵＥ ${ueCount}`;
+      }
+      if (this.dragObject[item].type === 'obstacle') {
         const trace = {
           x: [this.dragObject[item].x, Number(this.dragObject[item].x) + Number(this.dragObject[item].width)],
           y: [this.dragObject[item].y, Number(this.dragObject[item].y) + Number(this.dragObject[item].height)],
@@ -129,28 +129,58 @@ export class View3dComponent implements OnInit {
           mode: 'lines',
           line: {
             color: this.dragObject[item].color,
-            opacity: 0.8
+            opacity: 0.8,
+            width: 20
           },
+          name: text,
+          text: text,
           type: 'scatter3d',
+          hoverinfo: 'text+x+y+z'
         };
         traces.push(trace);
-      } else if (this.dragObject[item].element === 'ellipse') {
+        obstacleCount++;
+      } else {
         const trace = {
           x: [this.dragObject[item].x],
           y: [this.dragObject[item].y],
-          z: [this.dragObject[item].altitude],
-          // line: {
-          //   color: this.dragObject[item].color,
-          //   opacity: 0.8,
-          //   width: this.dragObject[item].width
-          // },
+          z: [this.dragObject[item].z],
+          line: {
+            color: this.dragObject[item].color,
+            opacity: 0.8
+          },
+          name: text,
+          text: text,
           type: 'scatter3d',
+          hoverinfo: 'text+x+y+z'
         };
         traces.push(trace);
+        if (this.dragObject[item].type === 'defaultBS') {
+          defaultBSCount++;
+        } else if (this.dragObject[item].type === 'newBS') {
+          newBSCount++;
+        } else if (this.dragObject[item].type === 'UE') {
+          ueCount++;
+        }
       }
     }
 
     return traces;
+  }
+
+  parseType(type) {
+    if (type === 'obstacle') {
+      return '障礙物';
+    } else if (type === 'defaultBS') {
+      return '現有基站';
+    } else if (type === 'newBS') {
+      return '新增基站';
+    } else if (type === 'UE') {
+      return '新增ＵＥ';
+    }
+  }
+
+  close() {
+    this.matDialog.closeAll();
   }
 
 }
