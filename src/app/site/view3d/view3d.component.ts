@@ -49,10 +49,6 @@ export class View3dComponent implements OnInit {
 
   draw() {
     const defaultPlotlyConfiguration = {
-      displaylogo: false,
-      showTips: false,
-      editable: false,
-      scrollZoom: false,
       displayModeBar: false
     };
 
