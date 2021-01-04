@@ -171,6 +171,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   heightList = [];
   plotLayout;
   view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
+  // tooltip
+  tooltipStyle = {
+    left: '0px',
+    top: '0px'
+  };
+
 
   @ViewChild('msgLabel') label: ElementRef;
   @ViewChild('tooltip') tooltip: MatTooltip;
@@ -415,8 +421,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         transform: {
           rotate: '0deg',
           scaleX: 1,
-          scaleY: 1,
-          // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+          scaleY: 1
         }
       });
 
@@ -431,6 +436,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.target = span[span.length - 1];
         this.target.bounds = this.bounds;
         this.target.dragArea = document.getElementById('chart');
+        this.target.querySelector('svg').setAttribute('style', 'display: inherit');
 
         // 還原來源顏色 & class
         if (event.target.tagName !== 'svg') {
@@ -452,6 +458,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setDragData();
         this.tooltip.show();
         this.moveNumber();
+        const obj = this.target.getBoundingClientRect();
+        this.tooltipStyle.left = `${obj.left}px`;
+        this.tooltipStyle.top = `${obj.top + obj.height + 10}px`;
 
       }, 0);
     } else {
@@ -466,10 +475,30 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.moveable.rotatable = false;
         this.moveable.resizable = false;
       }
+
+      const rect = this.target.getBoundingClientRect();
+      this.frame = new Frame({
+        width: `${rect.width}px`,
+        height: `${rect.height}px`,
+        left: `${rect.left}px`,
+        top: `${rect.top}px`,
+        transform: {
+          rotate: `${this.dragObject[this.svgId].rotate}deg`,
+          scaleX: 1,
+          scaleY: 1
+        }
+      });
+
       this.moveable.ngOnInit();
       this.setDragData();
       this.tooltip.show();
+
+      const obj = this.target.getBoundingClientRect();
+      this.tooltipStyle.left = `${obj.left}px`;
+      this.tooltipStyle.top = `${obj.top + obj.height + 10}px`;
     }
+
+    
   }
 
   onWindowReisze = () => {
@@ -500,7 +529,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       `display: block; transform: translate(${clientX}px,
       ${clientY - 10}px) translate(-100%, -100%) translateZ(-100px);`;
 
-    this.label.nativeElement.innerHTML = text;
+    this.label.nativeElement.innerHTML = this.getTooltip();
   }
 
   onPinch({ target, clientX, clientY }: OnPinch) {
@@ -553,8 +582,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** set drag object data */
   setDragData() {
-    const span = this.target.closest('span');
-    const rect = span.getBoundingClientRect();
+    // const span = this.target.closest('span');
+    const rect = this.target.getBoundingClientRect();
     const rectLeft = rect.left - this.chartLeft;
     const rectBottom = this.chartBottom - rect.bottom;
     let xVal = this.roundFormat(this.xLinear(rectLeft));
@@ -589,6 +618,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
 
+    this.target = target;
     const rect = target.getBoundingClientRect();
     const rectLeft = rect.left;
     const rectRight = rect.right;
@@ -666,11 +696,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 縮放 */
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
-    if (width < 1) {
-      width = 1;
+    if (width < 5) {
+      width = 5;
     }
-    if (height < 1) {
-      height = 1;
+    if (height < 5) {
+      height = 5;
     }
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
@@ -683,6 +713,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     svg.setAttribute('height', height.toString());
     const dragRect = svg.querySelector('.drag_rect');
     const type = this.dragObject[this.svgId].element;
+
     if (type === 'rect') {
       // 方形
       dragRect.setAttribute('width', width.toString());

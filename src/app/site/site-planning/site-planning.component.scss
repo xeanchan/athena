@@ -192,6 +192,11 @@ ol.inline-block li input[type="text"] {
 }
 .msg_label {
     z-index: 9999;
+    border: 1px solid #338aee;
+    padding: 1em;
+    position: fixed;
+    background-color: #fff;
+    opacity: 0.8;
 }
 input[type="file"] {
     display: inline-block;

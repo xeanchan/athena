@@ -135,8 +135,10 @@
       <span *ngFor="let item of newBSList; let i=index" id="{{item}}_circle" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
       <span *ngFor="let item of ueList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="UE" [matTooltip]="getTooltip()" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of ueList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
-      <div class="msg_label" #msgLabel></div>
+      <!-- <div class="msg_label" #msgLabel></div> -->
+      <span *ngIf="live" class="msg_label" [ngStyle]="tooltipStyle" #msgLabel></span>
     </div>
+    
 
   </div>
 
