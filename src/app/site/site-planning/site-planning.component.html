@@ -127,16 +127,16 @@
       
     </div> -->
     <div #chart id="chart">
-      <span *ngFor="let item of obstacleList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="obstacle" [matTooltip]="getTooltip()" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of obstacleList" id="{{item}}" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="obstacle" (click)="moveClick($event, 'obstacle');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
-      <span *ngFor="let item of defaultBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="defaultBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of defaultBSList" id="{{item}}" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="defaultBS" (click)="moveClick($event, 'defaultBS');" (contextmenu)="onRightClick($event, item)" ></span>
       <span *ngFor="let item of defaultBSList; let i=index" id="{{item}}_circle" class="rounded-circle blue_circle" >{{ (i + 1) }}</span>
-      <span *ngFor="let item of newBSList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="newBS" [matTooltip]="getTooltip()" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of newBSList" id="{{item}}" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="newBS" (click)="moveClick($event, 'newBS');" (contextmenu)="onRightClick($event, item)" ></span>
       <span *ngFor="let item of newBSList; let i=index" id="{{item}}_circle" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
-      <span *ngFor="let item of ueList" id="{{item}}" #tooltip="matTooltip" (mouseover)="hover($event)" class="UE" [matTooltip]="getTooltip()" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
+      <span *ngFor="let item of ueList" id="{{item}}" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="UE" (click)="moveClick($event, 'UE');" (contextmenu)="onRightClick($event, item)" ></span>
       <!-- <span *ngFor="let item of ueList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
       <!-- <div class="msg_label" #msgLabel></div> -->
-      <span *ngIf="live" class="msg_label" [ngStyle]="tooltipStyle" #msgLabel></span>
+      <span *ngIf="live" class="msg_label" [ngStyle]="tooltipStyle" [innerHTML]="tooltipStr"></span>
     </div>
     
 
@@ -159,16 +159,10 @@
     [throttleResize]="1"
     (drag)="onDrag($event)"
     (resize)="onResize($event)"
-    (scale)="onScale($event)"
-    (warp)="onWarp($event)"
     (rotate)="onRotate($event)"
-    (pinch)="onPinch($event)"
     (dragEnd)="onEnd()"
     (resizeEnd)="onEnd()"
-    (scaleEnd)="onEnd()"
-    (warpEnd)="onEnd()"
     (rotateEnd)="onEnd()"
-    (pinchEnd)="onEnd()"
   ></ngx-moveable>
 
   <!-- an hidden div is created to set the position of appearance of the menu-->

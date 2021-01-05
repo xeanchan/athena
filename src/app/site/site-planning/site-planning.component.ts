@@ -177,9 +177,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     top: '0px'
   };
 
-
-  @ViewChild('msgLabel') label: ElementRef;
-  @ViewChild('tooltip') tooltip: MatTooltip;
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
 
@@ -426,6 +423,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       window.setTimeout(() => {
+        this.live = true;
 
         const span = document.querySelectorAll(`.${typeName}`);
         const rect = svg.querySelector('.target');
@@ -456,17 +454,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this.moveable.ngOnInit();
         this.setDragData();
-        this.tooltip.show();
+        // this.tooltip.show();
         this.moveNumber();
-        const obj = this.target.getBoundingClientRect();
-        this.tooltipStyle.left = `${obj.left}px`;
-        this.tooltipStyle.top = `${obj.top + obj.height + 10}px`;
+        this.hoverObj = this.target;
+        this.setLabel();
 
       }, 0);
     } else {
 
       this.target = event.target.closest('span');
       this.svgId = this.target.id;
+      this.live = true;
 
       if (typeName === 'obstacle') {
         this.moveable.rotatable = true;
@@ -491,14 +489,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.moveable.ngOnInit();
       this.setDragData();
-      this.tooltip.show();
-
-      const obj = this.target.getBoundingClientRect();
-      this.tooltipStyle.left = `${obj.left}px`;
-      this.tooltipStyle.top = `${obj.top + obj.height + 10}px`;
+      this.hoverObj = this.target;
+      this.setLabel();
     }
-
-    
   }
 
   onWindowReisze = () => {
@@ -524,60 +517,41 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     target.style.cssText = this.frame.toCSS();
   }
 
-  setLabel(clientX, clientY, text) {
-    this.label.nativeElement.style.cssText =
-      `display: block; transform: translate(${clientX}px,
-      ${clientY - 10}px) translate(-100%, -100%) translateZ(-100px);`;
-
-    this.label.nativeElement.innerHTML = this.getTooltip();
+  /** set tooltip position */
+  setLabel() {
+    this.live = true;
+    window.setTimeout(() => {
+      const obj = this.hoverObj.getBoundingClientRect();
+      this.tooltipStyle.left = `${obj.left}px`;
+      this.tooltipStyle.top = `${obj.top + obj.height + 5}px`;
+      this.tooltipStr = this.getTooltip();
+    }, 0);
   }
 
-  onPinch({ target, clientX, clientY }: OnPinch) {
-    setTimeout(() => {
-      this.setLabel(
-        clientX,
-        clientY,
-          `X: ${this.frame.get('left')}
-          <br/>Y: ${this.frame.get('top')}
-          <br/>W: ${this.frame.get('width')}
-          <br/>H: ${this.frame.get('height')}
-          <br/>S: ${this.frame.get('transform', 'scaleX').toFixed(2)}, ${this.frame.get('transform', 'scaleY').toFixed(2)}
-          <br/>R: ${parseFloat(this.frame.get('transform', 'rotate')).toFixed(1)}deg`
-      );
-    });
-  }
-
-  /** mat-tooltip 文字 */
+  /** tooltip 文字 */
   getTooltip() {
-    if (typeof this.hoverObj !== 'undefined') {
-      const span = this.hoverObj.closest('span');
-      const id = span.id;
-      const rect = span.getBoundingClientRect();
-      const rectLeft = rect.left - this.chartLeft;
-      const rectBottom = this.chartBottom - rect.bottom;
-      let xVal = this.roundFormat(this.xLinear(rectLeft));
-      if (xVal < 0) {
-        xVal = 0;
-      }
-      const yVal = this.roundFormat(this.yLinear(rectBottom));
-      const wVal = this.roundFormat(this.xLinear(rect.width));
-      const hVal = this.roundFormat(this.yLinear(rect.height));
-      let title = `${this.dragObject[id].title}
-        X: ${xVal}
-        Y: ${yVal}\n`;
-      if (this.dragObject[id].type === 'obstacle') {
-        title += `長: ${wVal}
-        寬: ${hVal}\n`;
-      }
-      title += `高: ${this.dragObject[id].altitude}\n`;
-      if (this.dragObject[id].type === 'obstacle') {
-        title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
-      }
-      return title;
-
-    } else {
-      return '';
+    const rect = this.target.getBoundingClientRect();
+    const rectLeft = rect.left - this.chartLeft;
+    const rectBottom = this.chartBottom - rect.bottom;
+    let xVal = this.roundFormat(this.xLinear(rectLeft));
+    if (xVal < 0) {
+      xVal = 0;
     }
+    const yVal = this.roundFormat(this.yLinear(rectBottom));
+    const wVal = this.roundFormat(this.xLinear(rect.width));
+    const hVal = this.roundFormat(this.yLinear(rect.height));
+    let title = `${this.dragObject[this.svgId].title}<br>`;
+    title += `X: ${xVal}<br>`;
+    title += `Y: ${yVal}<br>`;
+    if (this.dragObject[this.svgId].type === 'obstacle') {
+      title += `長: ${wVal}<br>`;
+      title += `寬: ${hVal}<br>`;
+    }
+    title += `高: ${this.dragObject[this.svgId].altitude}<br>`;
+    if (this.dragObject[this.svgId].type === 'obstacle') {
+      title += `材質: ${this.parseMaterial(this.dragObject[this.svgId].material)}`;
+    }
+    return title;
   }
 
   /** set drag object data */
@@ -630,9 +604,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.frame.set('left', `${left}px`);
       this.frame.set('top', `${top}px`);
       this.setTransform(target);
-      if (!isPinch) {
-        this.setLabel(clientX, clientY, `X: ${left}px<br/>Y: ${top}px`);
-      }
 
     } else {
       if (rectLeft < this.chartLeft) {
@@ -660,6 +631,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
       this.moveNumber();
     }
+    this.setLabel();
   }
 
   /** 縮放 */
@@ -670,11 +642,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('transform', 'scaleY', scaleY);
     this.setTransform(target);
     if (!isPinch) {
-      this.setLabel(
-        clientX,
-        clientY,
-        `S: ${scaleX.toFixed(2)}, ${scaleY.toFixed(2)}`
-      );
+      this.setLabel();
     }
     this.scalex = scaleX;
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
@@ -685,13 +653,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** 旋轉角度 */
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
-
     this.frame.set('transform', 'rotate', `${deg}deg`);
     this.setTransform(target);
-    if (!isPinch) {
-      this.setLabel(clientX, clientY, `R: ${deg.toFixed(1)}`);
-    }
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
+    this.setLabel();
   }
 
   /** 縮放 */
@@ -705,9 +670,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
     this.setTransform(target);
-    if (!isPinch) {
-      this.setLabel(clientX, clientY, `W: ${width}px<br/>H: ${height}px`);
-    }
+    
     const svg = target.querySelector('svg');
     svg.setAttribute('width', width.toString());
     svg.setAttribute('height', height.toString());
@@ -735,20 +698,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
       this.moveNumber();
     }
-  }
-
-  onWarp({ target, clientX, clientY, delta, multiply }: OnWarp) {
-    this.frame.set(
-      'transform',
-      'matrix3d',
-      multiply(this.frame.get('transform', 'matrix3d'), delta)
-    );
-    this.setTransform(target);
-    this.setLabel(clientX, clientY, `X: ${clientX}px<br/>Y: ${clientY}px`);
+    this.setLabel();
   }
 
   onEnd() {
-    this.label.nativeElement.style.display = 'none';
+    this.live = false;
   }
 
   moveableDestroy() {
@@ -825,8 +779,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** get mat-tooltip object */
-  hover(event) {
-    this.hoverObj = event.target;
+  hover(event, svgId) {
+    this.live = true;
+    this.svgId = svgId;
+    this.hoverObj = event.target.closest('span');
+    this.setLabel();
+  }
+
+  hoverout(event) {
+    this.live = false;
   }
 
   /** file change */
