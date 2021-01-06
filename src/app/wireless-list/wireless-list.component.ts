@@ -4,6 +4,9 @@ import { AuthService } from '../service/auth.service';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
+
+declare var Plotly: any;
 
 @Component({
   selector: 'app-wireless-list',
@@ -23,6 +26,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   timeInterval;
   dialogRef;
   matDialogConfig: MatDialogConfig;
+  // round
+  roundFormat = Plotly.d3.format('.1f');
 
 
   ngOnInit(): void {
@@ -75,6 +80,22 @@ export class WirelessListComponent implements OnInit, OnDestroy {
       timeInterval: this.timeInterval
     };
     this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
+  }
+
+  export() {
+    const data = [
+      ['1', 'a', 'aa'],
+      ['2', 'b', 'bb'],
+      ['3', 'c', 'cc']
+    ];
+    /* generate worksheet */
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    console.log(wb);
+    /* save to file */
+    XLSX.writeFile(wb, 'SheetJS.xlsx');
   }
 
 }
