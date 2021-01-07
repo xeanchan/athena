@@ -114,9 +114,10 @@
     <h2 class="inline-block">場域 wifi 規劃({{ calculateForm.taskName }})</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="save" selected>儲存</mat-button-toggle>
-      <mat-button-toggle value="import">匯入</mat-button-toggle>
-      <mat-button-toggle value="export">匯出</mat-button-toggle>
+      <mat-button-toggle value="import" (click)="file.click()">匯入</mat-button-toggle>
+      <mat-button-toggle value="export" (click)="export()">匯出</mat-button-toggle>
     </mat-button-toggle-group>
+    <input type="file" #file style="display: none;" (change)="import($event)" multiple="false" accept=".xlsx" />
 
     <mat-button-toggle-group class="inline-block ml_5">
       <mat-button-toggle value="go" (click)="calculate()">開始運算</mat-button-toggle>
@@ -356,10 +357,10 @@
                 <span>
                   <label>材質</label>
                   <select class="w7em" [(ngModel)]="dragObject[item].material">
-                    <option value="1">木頭</option>
-                    <option value="2">水泥</option>
-                    <option value="3">輕鋼架</option>
-                    <option value="4">玻璃</option>
+                    <option value="0">木頭</option>
+                    <option value="1">水泥</option>
+                    <option value="2">輕鋼架</option>
+                    <option value="3">玻璃</option>
                     <option value="4">不鏽鋼/其它金屬類</option>
                   </select>
                 </span>
@@ -559,10 +560,10 @@
       <li class="mt-2">
         <mat-label>{{ 'material.setting' | translate }}</mat-label>
         <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
-          <mat-radio-button value="1">木頭</mat-radio-button>
-          <mat-radio-button class="ml-2" value="2">水泥</mat-radio-button>
-          <mat-radio-button class="ml-2" value="3">輕鋼架</mat-radio-button>
-          <mat-radio-button class="ml-2" value="4">玻璃</mat-radio-button>
+          <mat-radio-button value="0">木頭</mat-radio-button>
+          <mat-radio-button class="ml-2" value="1">水泥</mat-radio-button>
+          <mat-radio-button class="ml-2" value="2">輕鋼架</mat-radio-button>
+          <mat-radio-button class="ml-2" value="3">玻璃</mat-radio-button>
           <mat-radio-button class="ml-2" value="4">不鏽鋼/其它金屬類</mat-radio-button>
         </mat-radio-group>
       </li>

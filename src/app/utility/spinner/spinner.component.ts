@@ -32,6 +32,7 @@ export class SpinnerComponent {
   home() {
     this.spinner.hide();
     this.router.navigate([`/wireless-list`]);
+    this.router.navigate([`/wireless-list`]);
   }
 
 }

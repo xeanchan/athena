@@ -8,12 +8,11 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import * as _ from 'lodash';
-import { MatTooltip } from '@angular/material/tooltip';
 import { MatMenuTrigger } from '@angular/material/menu';
 import html2canvas from 'html2canvas';
 import { AuthService } from '../../service/auth.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { View3dComponent } from '../view3d/view3d.component';
+import * as XLSX from 'xlsx';
 
 declare var Plotly: any;
 
@@ -228,6 +227,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
+    this.authService.spinnerShowAsHome();
 
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
@@ -406,7 +406,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         title: titleName,
         type: typeName,
         color: 'green',
-        material: '1',
+        material: '0',
         element: shape
       };
 
@@ -862,7 +862,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let obstacleInfo = '';
       for (let i = 0; i < this.obstacleList.length; i++) {
         const obj = this.dragObject[this.obstacleList[i]];
-        obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate}]`;
+        obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate},${obj.material}]`;
         if (i < this.obstacleList.length - 1) {
           obstacleInfo += '|';
         }
@@ -874,7 +874,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let ueCoordinate = '';
       for (let i = 0; i < this.ueList.length; i++) {
         const obj = this.dragObject[this.ueList[i]];
-        ueCoordinate += `[${obj.x},${obj.y},${obj.z}]`;
+        ueCoordinate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
         if (i < this.ueList.length - 1) {
           ueCoordinate += '|';
         }
@@ -886,7 +886,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let defaultBs = '';
       for (let i = 0; i < this.defaultBSList.length; i++) {
         const obj = this.dragObject[this.defaultBSList[i]];
-        defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
+        defaultBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
         if (i < this.defaultBSList.length - 1) {
           defaultBs += '|';
         }
@@ -898,7 +898,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let newBs = '';
       for (let i = 0; i < this.newBSList.length; i++) {
         const obj = this.dragObject[this.newBSList[i]];
-        newBs += `[${obj.x},${obj.y},${obj.z}]`;
+        newBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
         if (i < this.newBSList.length - 1) {
           newBs += '|';
         }
@@ -1077,6 +1077,121 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
 
     // this.router.navigate(['/site/view3d']);
+  }
+
+  /** export xlsx */
+  export() {
+    /* generate worksheet */
+    // map
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    const mapData = [
+      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName'],
+      [
+        this.calculateForm.mapImage, this.calculateForm.width,
+        this.calculateForm.height, this.calculateForm.altitude,
+        1, this.calculateForm.mapName
+      ]
+    ];
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(mapData);
+    XLSX.utils.book_append_sheet(wb, ws, 'map');
+    // defaultBS
+    const baseStationData = [['x', 'y', 'z', 'material']];
+    for (const item of this.defaultBSList) {
+      baseStationData.push([
+        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+      ]);
+    }
+    const baseStationWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(baseStationData);
+    XLSX.utils.book_append_sheet(wb, baseStationWS, 'base_station');
+    // candidate
+    const candidateData = [['x', 'y', 'z', 'material']];
+    for (const item of this.newBSList) {
+      baseStationData.push([
+        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+      ]);
+    }
+    const candidateWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(candidateData);
+    XLSX.utils.book_append_sheet(wb, candidateWS, 'candidate');
+    // UE
+    const ueData = [['x', 'y', 'z', 'material']];
+    for (const item of this.ueList) {
+      ueData.push([
+        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+      ]);
+    }
+    const ueWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(ueData);
+    XLSX.utils.book_append_sheet(wb, ueWS, 'ue');
+    // obstacle
+    const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'material']];
+    for (const item of this.obstacleList) {
+      obstacleData.push([
+        this.dragObject[item].x, this.dragObject[item].y,
+        this.dragObject[item].width, this.dragObject[item].height,
+        this.dragObject[item].rotate, this.dragObject[item].material
+      ]);
+    }
+    const obstacleWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(obstacleData);
+    XLSX.utils.book_append_sheet(wb, obstacleWS, 'obstacle');
+    // bs parameters
+    const bsData = [
+      ['bsPowerMax', 'bsPowerMin', 'bsBeamIdMax', 'bsBeamIdMin', 'bandwidth', 'frequency'],
+      [
+        this.calculateForm.powerMaxRange, this.calculateForm.powerMinRange,
+        this.calculateForm.beamMaxId, this.calculateForm.beamMinId,
+        this.calculateForm.bandwidth, this.calculateForm.Frequency
+      ]
+    ];
+    const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
+    XLSX.utils.book_append_sheet(wb, bsWS, 'bs parameters');
+    // algorithm parameters
+    const algorithmData = [
+      ['crossover', 'mutation', 'iteration', 'seed', 'computeRound', 'useUeCoordinate', 'pathLossModel'],
+      [
+        this.calculateForm.crossover, this.calculateForm.mutation,
+        this.calculateForm.iteration, this.calculateForm.seed,
+        1, this.calculateForm.useUeCoordinate, this.calculateForm.pathLossModelId
+      ]
+    ];
+    const algorithmWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(algorithmData);
+    XLSX.utils.book_append_sheet(wb, algorithmWS, 'algorithm parameters');
+    // objective parameters
+    const objectiveData = [
+      ['objective', 'objectiveStopCondition', 'newBsNum'],
+      [this.calculateForm.objectiveIndex, this.calculateForm.obstacleInfo, this.calculateForm.availableNewBsNumber]
+    ];
+    const objectiveWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(objectiveData);
+    XLSX.utils.book_append_sheet(wb, objectiveWS, 'objective parameters');
+    console.log(wb);
+    /* save to file */
+    XLSX.writeFile(wb, `${this.calculateForm.taskName}.xlsx`);
+  }
+
+  /** import xlsx */
+  import(event) {
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer> (event.target);
+    if (target.files.length !== 1) {
+      throw new Error('Cannot use multiple files');
+    }
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+
+      /* grab map sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+      /* save data */
+      const mapData = (XLSX.utils.sheet_to_json(ws, {header: 1}))[0];
+      this.calculateForm.mapImage = mapData[0];
+      this.calculateForm.width = mapData[1];
+      this.calculateForm.altitude = mapData[2];
+      this.calculateForm.mapName = target.files[0].name;
+
+      event.target.value = ''; // 清空
+    };
+    reader.readAsBinaryString(target.files[0]);
   }
 
 }
