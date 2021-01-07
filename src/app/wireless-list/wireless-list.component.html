@@ -35,7 +35,7 @@
 					<tr *ngFor="let item of taskList">
 						<td>{{ item.taskName }}</td>
 						<td>
-							<span>{{ item.progress * 100 }}%</span> 
+							<span>{{ roundFormat(item.progress * 100) }}%</span> 
 							<mat-progress-bar mode="determinate" value="{{ item.progress * 100 }}"></mat-progress-bar>
 						</td>
 						<td>{{ item.createTime }}</td>

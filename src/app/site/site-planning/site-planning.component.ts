@@ -830,7 +830,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.moveable.destroy();
     } catch (error) {}
 
-
+    this.authService.spinnerShowAsHome();
     if (typeof this.calculateForm.isAverageSinr === 'undefined') {
       this.calculateForm.isAverageSinr = false;
     }
@@ -849,90 +849,86 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof this.calculateForm.isUeTpByDistance === 'undefined') {
       this.calculateForm.isUeTpByDistance = false;
     }
+
+    // 組form
     this.calculateForm.sessionid = this.authService.userToken;
-
-    html2canvas(this.chart.nativeElement).then(canvas => {
-      const src = canvas.toDataURL();
-      // 組form
-      this.calculateForm.mapImage = src;
-      const zValue = this.zValues.filter(
-        option => option !== ''
-      );
-      this.calculateForm.zValue = `[${zValue.toString()}]`;
-      this.calculateForm.availableNewBsNumber = this.newBSList.length;
-      if (this.obstacleList.length > 0) {
-        // 障礙物資訊
-        let obstacleInfo = '';
-        for (let i = 0; i < this.obstacleList.length; i++) {
-          const obj = this.dragObject[this.obstacleList[i]];
-          obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate}]`;
-          if (i < this.obstacleList.length - 1) {
-            obstacleInfo += '|';
-          }
+    const zValue = this.zValues.filter(
+      option => option !== ''
+    );
+    this.calculateForm.zValue = `[${zValue.toString()}]`;
+    this.calculateForm.availableNewBsNumber = this.newBSList.length;
+    if (this.obstacleList.length > 0) {
+      // 障礙物資訊
+      let obstacleInfo = '';
+      for (let i = 0; i < this.obstacleList.length; i++) {
+        const obj = this.dragObject[this.obstacleList[i]];
+        obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate}]`;
+        if (i < this.obstacleList.length - 1) {
+          obstacleInfo += '|';
         }
-        this.calculateForm.obstacleInfo = obstacleInfo;
       }
-      if (this.ueList.length > 0) {
-        // UE設定
-        let ueCoordinate = '';
-        for (let i = 0; i < this.ueList.length; i++) {
-          const obj = this.dragObject[this.ueList[i]];
-          ueCoordinate += `[${obj.x},${obj.y},${obj.z}]`;
-          if (i < this.ueList.length - 1) {
-            ueCoordinate += '|';
-          }
+      this.calculateForm.obstacleInfo = obstacleInfo;
+    }
+    if (this.ueList.length > 0) {
+      // UE設定
+      let ueCoordinate = '';
+      for (let i = 0; i < this.ueList.length; i++) {
+        const obj = this.dragObject[this.ueList[i]];
+        ueCoordinate += `[${obj.x},${obj.y},${obj.z}]`;
+        if (i < this.ueList.length - 1) {
+          ueCoordinate += '|';
         }
-        this.calculateForm.ueCoordinate = ueCoordinate;
       }
-      if (this.defaultBSList.length > 0) {
-        // 現有基站
-        let defaultBs = '';
-        for (let i = 0; i < this.defaultBSList.length; i++) {
-          const obj = this.dragObject[this.defaultBSList[i]];
-          defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
-          if (i < this.defaultBSList.length - 1) {
-            defaultBs += '|';
-          }
+      this.calculateForm.ueCoordinate = ueCoordinate;
+    }
+    if (this.defaultBSList.length > 0) {
+      // 現有基站
+      let defaultBs = '';
+      for (let i = 0; i < this.defaultBSList.length; i++) {
+        const obj = this.dragObject[this.defaultBSList[i]];
+        defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
+        if (i < this.defaultBSList.length - 1) {
+          defaultBs += '|';
         }
-        this.calculateForm.defaultBs = defaultBs;
       }
-      if (this.newBSList.length > 0) {
-        // 新增基站
-        let newBs = '';
-        for (let i = 0; i < this.newBSList.length; i++) {
-          const obj = this.dragObject[this.newBSList[i]];
-          newBs += `[${obj.x},${obj.y},${obj.z}]`;
-          if (i < this.newBSList.length - 1) {
-            newBs += '|';
-          }
+      this.calculateForm.defaultBs = defaultBs;
+    }
+    if (this.newBSList.length > 0) {
+      // 新增基站
+      let newBs = '';
+      for (let i = 0; i < this.newBSList.length; i++) {
+        const obj = this.dragObject[this.newBSList[i]];
+        newBs += `[${obj.x},${obj.y},${obj.z}]`;
+        if (i < this.newBSList.length - 1) {
+          newBs += '|';
         }
-        this.calculateForm.candidateBs = newBs;
       }
-      this.calculateForm.availableNewBsNumber = this.newBSList.length;
+      this.calculateForm.candidateBs = newBs;
+    }
+    this.calculateForm.availableNewBsNumber = this.newBSList.length;
 
-      // number type to number
-      Object.keys(this.calculateForm).forEach((key) => {
-        if (this.numColumnList.includes(key)) {
-          console.log('tonumber = ' + key)
-          this.calculateForm[key] = Number(this.calculateForm[key]);
-        }
-      });
-
-      const url = `${this.authService.API_URL}/calculate`;
-      this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
-        res => {
-          this.taskid = res['taskid'];
-          this.getProgress();
-        },
-        err => {
-          this.authService.spinnerHide();
-          console.log(err);
-        }
-      );
-
-
-      console.log(this.calculateForm);
+    // number type to number
+    Object.keys(this.calculateForm).forEach((key) => {
+      if (this.numColumnList.includes(key)) {
+        console.log('tonumber = ' + key)
+        this.calculateForm[key] = Number(this.calculateForm[key]);
+      }
     });
+
+    const url = `${this.authService.API_URL}/calculate`;
+    this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
+      res => {
+        this.taskid = res['taskid'];
+        this.getProgress();
+      },
+      err => {
+        this.authService.spinnerHide();
+        console.log(err);
+      }
+    );
+
+
+    console.log(this.calculateForm);
   }
 
   /** 查詢進度 */
