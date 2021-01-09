@@ -21,7 +21,8 @@ export class NewPlanningComponent implements OnInit {
     private http: HttpClient,
     private taskFormService: TaskFormService,
     @Inject(MAT_DIALOG_DATA) public data) {
-      sessionStorage.removeItem('sessionStorage');
+      sessionStorage.removeItem('calculateForm');
+      sessionStorage.removeItem('importFile');
       this.timeInterval = data.timeInterval;
     }
 
@@ -49,7 +50,7 @@ export class NewPlanningComponent implements OnInit {
       const width = control.get('width');
       const height = control.get('height');
       const altitude = control.get('altitude');
-      
+
       if (width.valid && height.valid && altitude.valid) {
         return null;
       } else {
@@ -93,6 +94,18 @@ export class NewPlanningComponent implements OnInit {
     this.taskFormService.calculateForm = this.calculateForm;
     this.matDialog.closeAll();
     this.router.navigate(['/site/site-planning']);
+  }
+
+  import(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      sessionStorage.setItem('importFile', reader.result.toString());
+      window.clearInterval(this.timeInterval);
+      this.matDialog.closeAll();
+      this.router.navigate(['/site/site-planning']);
+    };
   }
 
 }

@@ -1,9 +1,8 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, TemplateRef } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, TemplateRef, OnChanges } from '@angular/core';
 import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp, MoveableGroupInterface, BeforeRenderableProps } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
-import { TaskFormService } from '../task-form.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
@@ -28,11 +27,35 @@ interface PlotHTMLElement extends HTMLElement {
 export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
-    private taskFormService: TaskFormService,
     private authService: AuthService,
     private router: Router,
     private matDialog: MatDialog,
-    private http: HttpClient) { }
+    private http: HttpClient) {
+    //   router.events.subscribe((val) => {
+    //     // if (typeof this.progressInterval !== 'undefined') {
+    //     //   window.clearInterval(this.progressInterval);
+    //     // }
+    //     try {
+    //       this.moveable.ngOnInit();
+    //       // this.moveable.ngOnDestroy();
+    //     } catch (error) {}
+    //     // console.log(222)
+    //     // see also 
+    //     if (val instanceof NavigationEnd) {
+    //       try {
+            
+    //         window.setTimeout(() => {
+    //           console.log(22)
+    //           this.moveable.destroy();
+    //         },0)
+            
+    //       } catch (error) {
+            
+    //       }
+          
+    //     }
+    // });
+    }
 
   @ViewChild('moveable') moveable: NgxMoveableComponent;
   // @ViewChildren(TemplateRef) templateList: QueryList<TemplateRef<any>>;
@@ -239,9 +262,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
     }
-    this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
-    // console.log(this.taskFormService.calculateForm);
-    this.initData(false);
+    if (sessionStorage.getItem('importFile') != null) {
+      // from new-planning import file
+      this.calculateForm = new CalculateForm();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.readXls(e.target.result);
+      };
+      reader.readAsBinaryString(this.dataURLtoBlob(sessionStorage.getItem('importFile')));
+
+    } else {
+      this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+      this.initData(false);
+    }
   }
 
   ngOnDestroy(): void {
@@ -1219,18 +1252,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** 圖區縮放 */
   plotResize() {
     window.setTimeout(() => {
-      const dArea = document.getElementById('d_area').clientWidth;
-      Plotly.relayout('chart', {
-        width: dArea
-      }).then((gd) => {
-        // 重新計算比例尺
-        this.calScale(gd);
-        // 物件移動
-        const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
-        for (const item of ary) {
-          this.changePosition(item);
-        }
-      });
+      const dArea = document.getElementById('d_area');
+      if (dArea != null) {
+        const dWidth = dArea.clientWidth;
+        Plotly.relayout('chart', {
+          width: dWidth
+        }).then((gd) => {
+          // 重新計算比例尺
+          this.calScale(gd);
+          // 物件移動
+          const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
+          for (const item of ary) {
+            this.changePosition(item);
+          }
+        });
+      }
     }, 300);
   }
 
@@ -1360,27 +1396,33 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     reader.onload = (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
-      this.wb = XLSX.read(bstr, {type: 'binary'});
-
-      /* map sheet */
-      const map: string = this.wb.SheetNames[0];
-      const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
-      const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
-      this.calculateForm.mapImage = '';
-      for (let i = 1; i < mapData.length; i++) {
-        this.calculateForm.mapImage += mapData[i][0];
-      }
-      this.calculateForm.width = mapData[1][1];
-      this.calculateForm.height = mapData[1][2];
-      this.calculateForm.altitude = mapData[1][3];
-      this.calculateForm.mapName = mapData[1][5];
-      this.calculateForm.zValue = mapData[1][6].toString().split(',');
-
-      this.initData(true);
+      this.readXls(bstr);
 
       event.target.value = ''; // 清空
     };
     reader.readAsBinaryString(target.files[0]);
+  }
+
+  /** read xls */
+  readXls(result) {
+    this.wb = XLSX.read(result, {type: 'binary'});
+
+    /* map sheet */
+    const map: string = this.wb.SheetNames[0];
+    const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
+    const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
+
+    this.calculateForm.mapImage = '';
+    for (let i = 1; i < mapData.length; i++) {
+      this.calculateForm.mapImage += mapData[i][0];
+    }
+    this.calculateForm.width = mapData[1][1];
+    this.calculateForm.height = mapData[1][2];
+    this.calculateForm.altitude = mapData[1][3];
+    this.calculateForm.mapName = mapData[1][5];
+    this.calculateForm.zValue = mapData[1][6].toString().split(',');
+
+    this.initData(true);
   }
 
   setImportData() {

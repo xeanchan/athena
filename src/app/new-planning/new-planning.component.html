@@ -1,6 +1,7 @@
 <h3>新專案規劃
   <span class="example-button-row">
-      <button mat-button>匯入舊檔(.csv)</button>
+      <button mat-button (click)="importFile.click()">匯入舊檔(.xlsx)</button>
+      <input type="file" #importFile style="display: none;" (change)="import($event)" accept=".xlsx">
   </span>
 </h3>
 <div class="modalContent">

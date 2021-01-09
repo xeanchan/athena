@@ -21,6 +21,10 @@ export class LayoutComponent implements OnInit {
   ngOnInit() {
   }
 
+  home() {
+    location.href = '';
+  }
+
   logout() {
     // window.clearInterval(this.timeInterval);
     this.authService.logout();
