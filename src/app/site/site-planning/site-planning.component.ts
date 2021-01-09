@@ -43,8 +43,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   resizable = true;
   warpable = false;
   frame = new Frame({
-    width: '50px',
-    height: '50px',
+    width: '30px',
+    height: '30px',
     left: '0px',
     top: '0px',
     transform: {
@@ -78,7 +78,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** 現有基站 */
   defaultBSList = [];
   /** 新增基站 */
-  newBSList = [];
+  candidateList = [];
   /** 新增ＵＥ */
   ueList = [];
   // 比例尺公式
@@ -92,37 +92,37 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   chartTop = 0;
   chartBottom = 0;
   svgMap = {
-    svg_01: {
+    rect: {
       id: 'svg_1',
       title: '障礙物',
       type: 'obstacle',
       element: 'rect'
     },
-    svg_02: {
+    ellipse: {
       id: 'svg_2',
       title: '障礙物',
       type: 'obstacle',
       element: 'ellipse'
     },
-    svg_03: {
+    polygon: {
       id: 'svg_3',
       title: '障礙物',
       type: 'obstacle',
       element: 'polygon'
     },
-    svg_04: {
+    defaultBS: {
       id: 'svg_4',
       title: '現有基站',
       type: 'defaultBS',
       element: ''
     },
-    svg_05: {
+    candidate: {
       id: 'svg_5',
       title: '新增基站',
-      type: 'newBS',
+      type: 'candidate',
       element: ''
     },
-    svg_06: {
+    UE: {
       id: 'svg_6',
       title: '新增ＵＥ',
       type: 'UE',
@@ -175,6 +175,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     left: '0px',
     top: '0px'
   };
+  spanStyle = {};
+  rectStyle = {};
+  ellipseStyle = {};
+  polygonStyle = {};
+  svgStyle = {};
+  pathStyle = {};
+  /** workbook */
+  wb: XLSX.WorkBook;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -185,7 +193,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   clickout(event) {
-    if (typeof this.target !== 'undefined') {
+    if (typeof this.target !== 'undefined' && this.target != null) {
       if (this.target.contains(event.target)) {
         this.live = true;
       } else {
@@ -214,8 +222,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             this.obstacleList.splice(this.obstacleList.indexOf(id), 1);
           } else if (obj.type === 'defaultBS') {
             this.defaultBSList.splice(this.defaultBSList.indexOf(id), 1);
-          } else if (obj.type === 'newBS') {
-            this.newBSList.splice(this.newBSList.indexOf(id), 1);
+          } else if (obj.type === 'candidate') {
+            this.candidateList.splice(this.candidateList.indexOf(id), 1);
           } else if (obj.type === 'UE') {
             this.ueList.splice(this.ueList.indexOf(id), 1);
           }
@@ -227,14 +235,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
-    this.authService.spinnerShowAsHome();
 
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
     }
     this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
     // console.log(this.taskFormService.calculateForm);
-    this.initData();
+    this.initData(false);
   }
 
   ngOnDestroy(): void {
@@ -254,7 +261,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * init data
    */
-  initData() {
+  initData(isImport) {
     if (this.calculateForm.mapImage != null) {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
@@ -309,6 +316,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((gd) => {
           // 計算比例尺
           this.calScale(gd);
+          // import xlsx
+          if (isImport) {
+            this.setImportData();
+          }
         });
       };
     }
@@ -361,8 +372,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Blob([ia], {type: mimeString});
   }
 
-  /** moveable init */
-  moveClick(event, typeName) {
+  /** add moveable */
+  addMoveable(id) {
     try {
       this.moveable.destroy();
     } catch (error) {}
@@ -371,127 +382,267 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.live = true;
     }, 0);
 
-    if (event.target.closest('span').querySelector('.drag_rect') == null) {
-      let svg = event.target;
-      if (event.target.tagName !== 'svg') {
-        svg = event.target.closest('svg');
-      }
-      this.svgId = svg.id;
-      const titleName = this.svgMap[this.svgId].title;
-      // element形狀
-      let shape = '';
-      if (this.svgMap[this.svgId].type === 'obstacle') {
-        shape = this.svgMap[this.svgId].element;
-        this.svgId = `${this.svgId}_${this.obstacleList.length}`;
-        this.obstacleList.push(this.svgId);
-      } else if (this.svgMap[this.svgId].type === 'defaultBS') {
-        this.svgId = `${this.svgId}_${this.defaultBSList.length}`;
-        this.defaultBSList.push(this.svgId);
-      } else if (this.svgMap[this.svgId].type === 'newBS') {
-        this.svgId = `${this.svgId}_${this.newBSList.length}`;
-        this.newBSList.push(this.svgId);
-      } else if (this.svgMap[this.svgId].type === 'UE') {
-        this.svgId = `${this.svgId}_${this.ueList.length}`;
-        this.ueList.push(this.svgId);
-      }
-
-      this.dragObject[this.svgId] = {
-        x: 0,
-        y: 0,
-        z: this.zValues[0],
-        width: 0,
-        height: 0,
-        altitude: 50,
-        rotate: 0,
-        title: titleName,
-        type: typeName,
-        color: 'green',
-        material: '0',
-        element: shape
+    if (id === 'rect') {
+      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.obstacleList.push(this.svgId);
+      this.rectStyle[this.svgId] = {
+        width: 30,
+        height: 30,
+        fill: 'green'
       };
+    } else if (id === 'ellipse') {
+      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.obstacleList.push(this.svgId);
+      this.ellipseStyle[this.svgId] = {
+        ry: 15,
+        rx: 15,
+        cx: 15,
+        cy: 15,
+        fill: 'green'
+      };
+    } else if (id === 'polygon') {
+      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.obstacleList.push(this.svgId);
+      this.polygonStyle[this.svgId] = {
+        points: '15,0 30,30 0,30',
+        fill: 'green'
+      };
+    } else if (id === 'defaultBS') {
+      this.svgId = `${id}_${this.defaultBSList.length}`;
+      this.defaultBSList.push(this.svgId);
+      this.pathStyle[this.svgId] = {
+        fill: 'green'
+      };
+    } else if (id === 'candidate') {
+      this.svgId = `${id}_${this.candidateList.length}`;
+      this.candidateList.push(this.svgId);
+      this.pathStyle[this.svgId] = {
+        fill: 'green'
+      };
+    } else if (id === 'UE') {
+      this.svgId = `${id}_${this.ueList.length}`;
+      this.ueList.push(this.svgId);
+      this.pathStyle[this.svgId] = {
+        fill: 'green'
+      };
+    }
+    this.spanStyle[this.svgId] = {
+      left: 200,
+      top: 250,
+      width: 30,
+      height: 30
+    };
+    this.svgStyle[this.svgId] = {
+      display: 'inherit',
+      width: 30,
+      height: 30
+    };
 
-      this.frame = new Frame({
-        width: '30px',
-        height: '30px',
-        left: '200px',
-        top: '250px',
-        transform: {
-          rotate: '0deg',
-          scaleX: 1,
-          scaleY: 1
-        }
-      });
+    this.dragObject[this.svgId] = {
+      x: 0,
+      y: 0,
+      z: this.zValues[0],
+      width: 30,
+      height: 30,
+      altitude: 50,
+      rotate: 0,
+      title: this.svgMap[id].title,
+      type: this.svgMap[id].type,
+      color: 'green',
+      material: '0',
+      element: id
+    };
 
-      window.setTimeout(() => {
-        this.live = true;
+    // this.frame = new Frame({
+    //   width: '30px',
+    //   height: '30px',
+    //   left: '200px',
+    //   top: '250px',
+    //   transform: {
+    //     rotate: '0deg',
+    //     scaleX: 1,
+    //     scaleY: 1
+    //   }
+    // });
 
-        const span = document.querySelectorAll(`.${typeName}`);
-        const rect = svg.querySelector('.target');
-        rect.setAttribute('fill', this.dragObject[this.svgId].color);
-        rect.setAttribute('class', 'drag_rect');
-        span[span.length - 1].innerHTML += svg.outerHTML;
-
-        this.target = span[span.length - 1];
-        this.target.bounds = this.bounds;
-        this.target.dragArea = document.getElementById('chart');
-        this.target.querySelector('svg').setAttribute('style', 'display: inherit');
-
-        // 還原來源顏色 & class
-        if (event.target.tagName !== 'svg') {
-          event.target.setAttribute('fill', '#ffffff');
-          event.target.setAttribute('class', 'target');
-        } else {
-          event.target.querySelector('.drag_rect').setAttribute('fill', '#ffffff');
-          event.target.querySelector('.drag_rect').setAttribute('class', 'target');
-        }
-
-        if (typeName === 'obstacle') {
-          this.moveable.rotatable = true;
-          this.moveable.resizable = true;
-        } else {
-          this.moveable.rotatable = false;
-          this.moveable.resizable = false;
-        }
-        this.moveable.ngOnInit();
-        this.setDragData();
-        // this.tooltip.show();
-        this.moveNumber();
-        this.hoverObj = this.target;
-        this.setLabel();
-
-      }, 0);
-    } else {
-
-      this.target = event.target.closest('span');
-      this.svgId = this.target.id;
+    window.setTimeout(() => {
+      this.target = document.getElementById(`${this.svgId}`);
       this.live = true;
-
-      if (typeName === 'obstacle') {
+      if (this.svgMap[id].type === 'obstacle') {
         this.moveable.rotatable = true;
         this.moveable.resizable = true;
       } else {
         this.moveable.rotatable = false;
         this.moveable.resizable = false;
       }
-
-      const rect = this.target.getBoundingClientRect();
-      this.frame = new Frame({
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-        left: `${rect.left}px`,
-        top: `${rect.top}px`,
-        transform: {
-          rotate: `${this.dragObject[this.svgId].rotate}deg`,
-          scaleX: 1,
-          scaleY: 1
-        }
-      });
-
       this.moveable.ngOnInit();
       this.setDragData();
+      this.moveNumber();
       this.hoverObj = this.target;
       this.setLabel();
+    }, 0);
+  }
+
+  /** moveable init */
+  moveClick(id) {
+    try {
+      this.moveable.destroy();
+    } catch (error) {}
+    // delete keycode生效
+    window.setTimeout(() => {
+      this.live = true;
+    }, 0);
+    this.target = document.getElementById(id);
+    this.svgId = id;
+    this.live = true;
+    if (this.dragObject[id].type === 'obstacle') {
+      this.moveable.rotatable = true;
+      this.moveable.resizable = true;
+    } else {
+      this.moveable.rotatable = false;
+      this.moveable.resizable = false;
     }
+
+    const rect = this.target.getBoundingClientRect();
+    this.frame = new Frame({
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      left: `${rect.left}px`,
+      top: `${rect.top}px`,
+      transform: {
+        rotate: `${this.dragObject[this.svgId].rotate}deg`,
+        scaleX: 1,
+        scaleY: 1
+      }
+    });
+
+    this.moveable.ngOnInit();
+    this.setDragData();
+    this.hoverObj = this.target;
+    this.setLabel();
+
+
+    // if (event.target.closest('span').querySelector('.drag_rect') == null) {
+    //   let svg = event.target;
+    //   if (event.target.tagName !== 'svg') {
+    //     svg = event.target.closest('svg');
+    //   }
+    //   this.svgId = svg.id;
+    //   const titleName = this.svgMap[this.svgId].title;
+    //   // element形狀
+    //   let shape = '';
+    //   if (this.svgMap[this.svgId].type === 'obstacle') {
+    //     shape = this.svgMap[this.svgId].element;
+    //     this.svgId = `${this.svgId}_${this.obstacleList.length}`;
+    //     this.obstacleList.push(this.svgId);
+    //   } else if (this.svgMap[this.svgId].type === 'defaultBS') {
+    //     this.svgId = `${this.svgId}_${this.defaultBSList.length}`;
+    //     this.defaultBSList.push(this.svgId);
+    //   } else if (this.svgMap[this.svgId].type === 'candidate') {
+    //     this.svgId = `${this.svgId}_${this.candidateList.length}`;
+    //     this.candidateList.push(this.svgId);
+    //   } else if (this.svgMap[this.svgId].type === 'UE') {
+    //     this.svgId = `${this.svgId}_${this.ueList.length}`;
+    //     this.ueList.push(this.svgId);
+    //   }
+
+    //   this.dragObject[this.svgId] = {
+    //     x: 0,
+    //     y: 0,
+    //     z: this.zValues[0],
+    //     width: 0,
+    //     height: 0,
+    //     altitude: 50,
+    //     rotate: 0,
+    //     title: titleName,
+    //     type: typeName,
+    //     color: 'green',
+    //     material: '0',
+    //     element: shape
+    //   };
+
+    //   this.frame = new Frame({
+    //     width: '30px',
+    //     height: '30px',
+    //     left: '200px',
+    //     top: '250px',
+    //     transform: {
+    //       rotate: '0deg',
+    //       scaleX: 1,
+    //       scaleY: 1
+    //     }
+    //   });
+
+    //   window.setTimeout(() => {
+    //     this.live = true;
+
+    //     const span = document.querySelectorAll(`.${typeName}`);
+    //     const rect = svg.querySelector('.target');
+    //     rect.setAttribute('fill', this.dragObject[this.svgId].color);
+    //     rect.setAttribute('class', 'drag_rect');
+    //     span[span.length - 1].innerHTML += svg.outerHTML;
+
+    //     this.target = span[span.length - 1];
+    //     this.target.bounds = this.bounds;
+    //     this.target.dragArea = document.getElementById('chart');
+    //     this.target.querySelector('svg').setAttribute('style', 'display: inherit');
+
+    //     // 還原來源顏色 & class
+    //     if (event.target.tagName !== 'svg') {
+    //       event.target.setAttribute('fill', '#ffffff');
+    //       event.target.setAttribute('class', 'target');
+    //     } else {
+    //       event.target.querySelector('.drag_rect').setAttribute('fill', '#ffffff');
+    //       event.target.querySelector('.drag_rect').setAttribute('class', 'target');
+    //     }
+
+    //     if (typeName === 'obstacle') {
+    //       this.moveable.rotatable = true;
+    //       this.moveable.resizable = true;
+    //     } else {
+    //       this.moveable.rotatable = false;
+    //       this.moveable.resizable = false;
+    //     }
+    //     this.moveable.ngOnInit();
+    //     this.setDragData();
+    //     // this.tooltip.show();
+    //     this.moveNumber();
+    //     this.hoverObj = this.target;
+    //     this.setLabel();
+
+    //   }, 0);
+    // } else {
+
+    //   this.target = event.target.closest('span');
+    //   this.svgId = this.target.id;
+    //   this.live = true;
+
+    //   if (typeName === 'obstacle') {
+    //     this.moveable.rotatable = true;
+    //     this.moveable.resizable = true;
+    //   } else {
+    //     this.moveable.rotatable = false;
+    //     this.moveable.resizable = false;
+    //   }
+
+    //   const rect = this.target.getBoundingClientRect();
+    //   this.frame = new Frame({
+    //     width: `${rect.width}px`,
+    //     height: `${rect.height}px`,
+    //     left: `${rect.left}px`,
+    //     top: `${rect.top}px`,
+    //     transform: {
+    //       rotate: `${this.dragObject[this.svgId].rotate}deg`,
+    //       scaleX: 1,
+    //       scaleY: 1
+    //     }
+    //   });
+
+    //   this.moveable.ngOnInit();
+    //   this.setDragData();
+    //   this.hoverObj = this.target;
+    //   this.setLabel();
+    // }
   }
 
   onWindowReisze = () => {
@@ -530,26 +681,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** tooltip 文字 */
   getTooltip() {
-    const rect = this.target.getBoundingClientRect();
-    const rectLeft = rect.left - this.chartLeft;
-    const rectBottom = this.chartBottom - rect.bottom;
-    let xVal = this.roundFormat(this.xLinear(rectLeft));
-    if (xVal < 0) {
-      xVal = 0;
+    const id = this.hoverObj.id;
+    let title = `${this.dragObject[id].title}<br>`;
+    title += `X: ${this.dragObject[id].x}<br>`;
+    title += `Y: ${this.dragObject[id].y}<br>`;
+    if (this.dragObject[id].type === 'obstacle') {
+      title += `長: ${this.dragObject[id].width}<br>`;
+      title += `寬: ${this.dragObject[id].height}<br>`;
     }
-    const yVal = this.roundFormat(this.yLinear(rectBottom));
-    const wVal = this.roundFormat(this.xLinear(rect.width));
-    const hVal = this.roundFormat(this.yLinear(rect.height));
-    let title = `${this.dragObject[this.svgId].title}<br>`;
-    title += `X: ${xVal}<br>`;
-    title += `Y: ${yVal}<br>`;
-    if (this.dragObject[this.svgId].type === 'obstacle') {
-      title += `長: ${wVal}<br>`;
-      title += `寬: ${hVal}<br>`;
-    }
-    title += `高: ${this.dragObject[this.svgId].altitude}<br>`;
-    if (this.dragObject[this.svgId].type === 'obstacle') {
-      title += `材質: ${this.parseMaterial(this.dragObject[this.svgId].material)}`;
+    title += `高: ${this.dragObject[id].altitude}<br>`;
+    if (this.dragObject[id].type === 'obstacle') {
+      title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
     }
     return title;
   }
@@ -574,14 +716,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parseMaterial(val) {
-    if (val === '1') {
+    if (val === '0') {
       return '木頭';
-    } else if (val === '2') {
+    } else if (val === '1') {
       return '水泥';
-    } else if (val === '3') {
+    } else if (val === '2') {
       return '輕鋼架';
-    } else if (val === '4') {
+    } else if (val === '3') {
       return '玻璃';
+    } else if (val === '4') {
+      return '不鏽鋼/其它金屬類';
     }
   }
 
@@ -628,7 +772,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     this.setDragData();
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber();
     }
     this.setLabel();
@@ -645,7 +789,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setLabel();
     }
     this.scalex = scaleX;
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber();
     }
   }
@@ -670,32 +814,42 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
     this.setTransform(target);
+
+    this.svgStyle[this.svgId].width = width;
+    this.svgStyle[this.svgId].height = height;
     
     const svg = target.querySelector('svg');
-    svg.setAttribute('width', width.toString());
-    svg.setAttribute('height', height.toString());
-    const dragRect = svg.querySelector('.drag_rect');
+    // svg.setAttribute('width', width.toString());
+    // svg.setAttribute('height', height.toString());
+    // const dragRect = svg.querySelector('.drag_rect');
     const type = this.dragObject[this.svgId].element;
 
     if (type === 'rect') {
       // 方形
-      dragRect.setAttribute('width', width.toString());
-      dragRect.setAttribute('height', height.toString());
+      this.rectStyle[this.svgId].width = width;
+      this.rectStyle[this.svgId].height = height;
+      // dragRect.setAttribute('width', width.toString());
+      // dragRect.setAttribute('height', height.toString());
     } else if (type === 'ellipse') {
       // 圓形
       const x = (width / 2).toString();
       const y = (height / 2).toString();
-      dragRect.setAttribute('rx', x);
-      dragRect.setAttribute('ry', y);
-      dragRect.setAttribute('cx', x);
-      dragRect.setAttribute('cy', y);
+      this.ellipseStyle[this.svgId].rx = x;
+      this.ellipseStyle[this.svgId].ry = y;
+      this.ellipseStyle[this.svgId].cx = x;
+      this.ellipseStyle[this.svgId].cy = y;
+      // dragRect.setAttribute('rx', x);
+      // dragRect.setAttribute('ry', y);
+      // dragRect.setAttribute('cx', x);
+      // dragRect.setAttribute('cy', y);
     } else if (type === 'polygon') {
       // 三角形
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
-      dragRect.setAttribute('points', points);
+      this.polygonStyle[this.svgId].points = points;
+      // dragRect.setAttribute('points', points);
     }
     this.setDragData();
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber();
     }
     this.setLabel();
@@ -747,10 +901,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           this.defaultBSList.splice(i, 1);
         }
       }
-    } else if (this.dragObject[this.svgId].type === 'newBS') {
-      for (let i = this.newBSList.length - 1; i >= 0; i--) {
-        if (this.newBSList[i] === this.svgId) {
-          this.newBSList.splice(i, 1);
+    } else if (this.dragObject[this.svgId].type === 'candidate') {
+      for (let i = this.candidateList.length - 1; i >= 0; i--) {
+        if (this.candidateList[i] === this.svgId) {
+          this.candidateList.splice(i, 1);
         }
       }
     } else if (this.dragObject[this.svgId].type === 'UE') {
@@ -765,8 +919,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** change color */
   colorChange() {
     this.dragObject[this.svgId].color = this.color;
-    document.querySelector(`#${this.svgId}`)
-    .querySelector('.drag_rect').setAttribute('fill', this.color);
+    if (this.dragObject[this.svgId].type === 'obstacle') {
+      if (this.dragObject[this.svgId].element === 'rect') {
+        this.rectStyle[this.svgId].fill = this.color;
+      } else if (this.dragObject[this.svgId].element === 'ellipse') {
+        this.ellipseStyle[this.svgId].fill = this.color;
+      } else if (this.dragObject[this.svgId].element === 'polygon') {
+        this.polygonStyle[this.svgId].fill = this.color;
+      }
+    } else {
+      this.pathStyle[this.svgId].fill = this.color;
+    }
   }
 
   openHeightSetting() {
@@ -799,7 +962,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     reader.readAsDataURL(file);
     reader.onload = () => {
       this.calculateForm.mapImage = reader.result.toString();
-      this.initData();
+      this.initData(false);
     };
   }
 
@@ -831,6 +994,24 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (error) {}
 
     this.authService.spinnerShowAsHome();
+    this.setForm();
+
+    const url = `${this.authService.API_URL}/calculate`;
+    this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
+      res => {
+        this.taskid = res['taskid'];
+        this.getProgress();
+      },
+      err => {
+        this.authService.spinnerHide();
+        console.log(err);
+      }
+    );
+  }
+
+  /** 組form */
+  setForm() {
+    this.authService.spinnerShowAsHome();
     if (typeof this.calculateForm.isAverageSinr === 'undefined') {
       this.calculateForm.isAverageSinr = false;
     }
@@ -850,13 +1031,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.isUeTpByDistance = false;
     }
 
-    // 組form
     this.calculateForm.sessionid = this.authService.userToken;
     const zValue = this.zValues.filter(
       option => option !== ''
     );
     this.calculateForm.zValue = `[${zValue.toString()}]`;
-    this.calculateForm.availableNewBsNumber = this.newBSList.length;
+    this.calculateForm.availableNewBsNumber = this.candidateList.length;
     if (this.obstacleList.length > 0) {
       // 障礙物資訊
       let obstacleInfo = '';
@@ -893,42 +1073,26 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.calculateForm.defaultBs = defaultBs;
     }
-    if (this.newBSList.length > 0) {
+    if (this.candidateList.length > 0) {
       // 新增基站
-      let newBs = '';
-      for (let i = 0; i < this.newBSList.length; i++) {
-        const obj = this.dragObject[this.newBSList[i]];
-        newBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
-        if (i < this.newBSList.length - 1) {
-          newBs += '|';
+      let candidate = '';
+      for (let i = 0; i < this.candidateList.length; i++) {
+        const obj = this.dragObject[this.candidateList[i]];
+        candidate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        if (i < this.candidateList.length - 1) {
+          candidate += '|';
         }
       }
-      this.calculateForm.candidateBs = newBs;
+      this.calculateForm.candidateBs = candidate;
     }
-    this.calculateForm.availableNewBsNumber = this.newBSList.length;
+    this.calculateForm.availableNewBsNumber = this.candidateList.length;
 
     // number type to number
     Object.keys(this.calculateForm).forEach((key) => {
       if (this.numColumnList.includes(key)) {
-        console.log('tonumber = ' + key)
         this.calculateForm[key] = Number(this.calculateForm[key]);
       }
     });
-
-    const url = `${this.authService.API_URL}/calculate`;
-    this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
-      res => {
-        this.taskid = res['taskid'];
-        this.getProgress();
-      },
-      err => {
-        this.authService.spinnerHide();
-        console.log(err);
-      }
-    );
-
-
-    console.log(this.calculateForm);
   }
 
   /** 查詢進度 */
@@ -987,7 +1151,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       dragRect.setAttribute('points', points);
     }
     // this.setDragData();
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber();
     }
   }
@@ -1004,12 +1168,23 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const yPos = bottom - height;
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${yPos}px`);
+    if (this.dragObject[svgId].type === 'obstacle') {
+      if (this.dragObject[svgId].element === 'rect') {
+        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width)}px`);
+      } else {
+        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width) / 2}px`);  
+      }
+      this.frame.set('height', `${this.pixelYLinear(this.dragObject[svgId].height)}px`);
+    }
     this.setTransform(this.target);
 
-    this.target.style.top = `${yPos}px`;
-    this.target.style.left = `${left}px`;
+    this.spanStyle[svgId].left = left;
+    this.spanStyle[svgId].top = yPos;
 
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'newBS') {
+    // this.target.style.top = `${yPos}px`;
+    // this.target.style.left = `${left}px`;
+
+    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber();
     }
   }
@@ -1034,8 +1209,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.obstacleList.length = 0;
     } else if (type === 'defaultBS') {
       this.defaultBSList.length = 0;
-    } else if (type === 'newBS') {
-      this.newBSList.length = 0;
+    } else if (type === 'candidate') {
+      this.candidateList.length = 0;
     } else if (type === 'UE') {
       this.ueList.length = 0;
     }
@@ -1051,7 +1226,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         // 重新計算比例尺
         this.calScale(gd);
         // 物件移動
-        const ary = _.concat(this.obstacleList, this.defaultBSList, this.newBSList, this.ueList);
+        const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
         for (const item of ary) {
           this.changePosition(item);
         }
@@ -1064,7 +1239,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       calculateForm: this.calculateForm,
       obstacleList: this.obstacleList,
       defaultBSList: this.defaultBSList,
-      newBSList: this.newBSList,
+      candidateList: this.candidateList,
       ueList: this.ueList,
       dragObject: this.dragObject
     };
@@ -1072,7 +1247,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
     // sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
     // sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
-    // sessionStorage.setItem('newBSList', JSON.stringify(this.newBSList));
+    // sessionStorage.setItem('candidateList', JSON.stringify(this.candidateList));
     // sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
     // sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
 
@@ -1085,49 +1260,57 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // map
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     const mapData = [
-      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName'],
+      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName', 'zValue'],
       [
         this.calculateForm.mapImage, this.calculateForm.width,
         this.calculateForm.height, this.calculateForm.altitude,
-        1, this.calculateForm.mapName
+        1, this.calculateForm.mapName, this.calculateForm.zValue
       ]
     ];
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(mapData);
     XLSX.utils.book_append_sheet(wb, ws, 'map');
     // defaultBS
-    const baseStationData = [['x', 'y', 'z', 'material']];
+    const baseStationData = [['x', 'y', 'z', 'material', 'color']];
     for (const item of this.defaultBSList) {
       baseStationData.push([
-        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+        this.dragObject[item].x, this.dragObject[item].y,
+        this.dragObject[item].z, this.dragObject[item].material,
+        this.dragObject[item].color
       ]);
     }
     const baseStationWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(baseStationData);
     XLSX.utils.book_append_sheet(wb, baseStationWS, 'base_station');
     // candidate
-    const candidateData = [['x', 'y', 'z', 'material']];
-    for (const item of this.newBSList) {
+    const candidateData = [['x', 'y', 'z', 'material', 'color']];
+    for (const item of this.candidateList) {
       baseStationData.push([
-        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+        this.dragObject[item].x, this.dragObject[item].y,
+        this.dragObject[item].z, this.dragObject[item].material,
+        this.dragObject[item].color
       ]);
     }
     const candidateWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(candidateData);
     XLSX.utils.book_append_sheet(wb, candidateWS, 'candidate');
     // UE
-    const ueData = [['x', 'y', 'z', 'material']];
+    const ueData = [['x', 'y', 'z', 'material', 'color']];
     for (const item of this.ueList) {
       ueData.push([
-        this.dragObject[item].x, this.dragObject[item].y, this.dragObject[item].z, this.dragObject[item].material
+        this.dragObject[item].x, this.dragObject[item].y,
+        this.dragObject[item].z, this.dragObject[item].material,
+        this.dragObject[item].color
       ]);
     }
     const ueWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(ueData);
     XLSX.utils.book_append_sheet(wb, ueWS, 'ue');
     // obstacle
-    const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'material']];
+    const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
     for (const item of this.obstacleList) {
       obstacleData.push([
         this.dragObject[item].x, this.dragObject[item].y,
         this.dragObject[item].width, this.dragObject[item].height,
-        this.dragObject[item].rotate, this.dragObject[item].material
+        this.dragObject[item].altitude, this.dragObject[item].rotate,
+        this.dragObject[item].material, this.dragObject[item].color,
+        this.dragObject[item].element
       ]);
     }
     const obstacleWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(obstacleData);
@@ -1177,21 +1360,308 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     reader.onload = (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, {type: 'binary'});
+      this.wb = XLSX.read(bstr, {type: 'binary'});
 
-      /* grab map sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-      /* save data */
-      const mapData = (XLSX.utils.sheet_to_json(ws, {header: 1}))[0];
-      this.calculateForm.mapImage = mapData[0];
-      this.calculateForm.width = mapData[1];
-      this.calculateForm.altitude = mapData[2];
-      this.calculateForm.mapName = target.files[0].name;
+      /* map sheet */
+      const map: string = this.wb.SheetNames[0];
+      const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
+      const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
+      this.calculateForm.mapImage = '';
+      for (let i = 1; i < mapData.length; i++) {
+        this.calculateForm.mapImage += mapData[i][0];
+      }
+      this.calculateForm.width = mapData[1][1];
+      this.calculateForm.height = mapData[1][2];
+      this.calculateForm.altitude = mapData[1][3];
+      this.calculateForm.mapName = mapData[1][5];
+      this.calculateForm.zValue = mapData[1][6].toString().split(',');
+
+      this.initData(true);
 
       event.target.value = ''; // 清空
     };
     reader.readAsBinaryString(target.files[0]);
+  }
+
+  setImportData() {
+    /* base station sheet */
+    const baseStation: string = this.wb.SheetNames[1];
+    const baseStationWS: XLSX.WorkSheet = this.wb.Sheets[baseStation];
+    const baseStationData = (XLSX.utils.sheet_to_json(baseStationWS, {header: 1}));
+    if (baseStationData.length > 1) {
+      this.defaultBSList.length = 0;
+      for (let i = 1; i < baseStationData.length; i++) {
+        const id = `defaultBS_${(i - 1)}`;
+        this.dragObject[id] = {
+          x: baseStationData[i][0],
+          y: baseStationData[i][1],
+          z: baseStationData[i][2],
+          width: 0,
+          height: 0,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['defaultBS'].title,
+          type: this.svgMap['defaultBS'].type,
+          color: baseStationData[i][4],
+          material: baseStationData[i][3],
+          element: this.svgMap['defaultBS'].element
+        };
+        this.defaultBSList.push(id);
+        this.spanStyle[id] = {
+          left: this.pixelXLinear(baseStationData[i][0]),
+          top: this.pixelYLinear(baseStationData[i][1]),
+          width: `${30}px`,
+          height: 30
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 30,
+          height: 30
+        };
+        this.pathStyle[id] = {
+          fill: baseStationData[i][4]
+        };
+        window.setTimeout(() => {
+          this.changePosition(id);
+        }, 0);
+      }
+    }
+    /* candidate sheet */
+    const candidate: string = this.wb.SheetNames[2];
+    const candidateWS: XLSX.WorkSheet = this.wb.Sheets[candidate];
+    const candidateData = (XLSX.utils.sheet_to_json(candidateWS, {header: 1}));
+    if (candidateData.length > 1) {
+      this.candidateList.length = 0;
+      for (let i = 1; i < candidateData.length; i++) {
+        const id = `candidate_${(i - 1)}`;
+        this.candidateList.push(id);
+        this.dragObject[id] = {
+          x: candidateData[i][0],
+          y: candidateData[i][1],
+          z: candidateData[i][2],
+          width: 30,
+          height: 30,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['candidate'].title,
+          type: this.svgMap['candidate'].type,
+          color: candidateData[i][4],
+          material: candidateData[i][3],
+          element: this.svgMap['candidate'].element
+        };
+        this.spanStyle[id] = {
+          left: this.pixelXLinear(candidateData[i][0]),
+          top: this.pixelYLinear(candidateData[i][1]),
+          width: 30,
+          height: 30
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 30,
+          height: 30
+        };
+        this.pathStyle[id] = {
+          fill: candidateData[i][4]
+        };
+        window.setTimeout(() => {
+          this.changePosition(id);
+        }, 0);
+      }
+    }
+    /* UE sheet */
+    const ue: string = this.wb.SheetNames[3];
+    const ueWS: XLSX.WorkSheet = this.wb.Sheets[ue];
+    const ueData = (XLSX.utils.sheet_to_json(ueWS, {header: 1}));
+    if (ueData.length > 1) {
+      this.ueList.length = 0;
+      for (let i = 1; i < ueData.length; i++) {
+        const id = `UE_${(i - 1)}`;
+        this.ueList.push(id);
+        this.dragObject[id] = {
+          x: ueData[i][0],
+          y: ueData[i][1],
+          z: ueData[i][2],
+          width: 30,
+          height: 30,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['UE'].title,
+          type: this.svgMap['UE'].type,
+          color: ueData[i][4],
+          material: ueData[i][3],
+          element: this.svgMap['UE'].element
+        };
+        this.spanStyle[id] = {
+          left: this.pixelXLinear(ueData[i][0]),
+          top: this.pixelYLinear(ueData[i][1]),
+          width: 30,
+          height: 30
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 30,
+          height: 30
+        };
+        this.pathStyle[id] = {
+          fill: ueData[i][4]
+        };
+        window.setTimeout(() => {
+          this.changePosition(id);
+        }, 0);
+      }
+    }
+    /* obstacle sheet */
+    const obstacle: string = this.wb.SheetNames[4];
+    const obstacleWS: XLSX.WorkSheet = this.wb.Sheets[obstacle];
+    const obstacleData = (XLSX.utils.sheet_to_json(obstacleWS, {header: 1}));
+    if (obstacleData.length > 1) {
+      this.obstacleList.length = 0;
+      let rect = 0;
+      let ellipse = 0;
+      let polygon = 0;
+      for (let i = 1; i < obstacleData.length; i++) {
+        if ((<Array<any>> obstacleData[i]).length === 0) {
+          continue;
+        }
+        let id;
+        let type;
+        const shape = obstacleData[i][8];
+        if (shape === 'rect') {
+          id = `rect_${rect}`;
+          type = 'rect';
+          rect++;
+        } else if (shape === 'ellipse') {
+          id = `ellipse_${ellipse}`;
+          type = 'ellipse';
+          ellipse++;
+        } else if (shape === 'polygon') {
+          id = `polygon_${polygon}`;
+          type = 'polygon';
+          polygon++;
+        }
+        this.dragObject[id] = {
+          x: obstacleData[i][0],
+          y: obstacleData[i][1],
+          z: 0,
+          width: obstacleData[i][2],
+          height: obstacleData[i][3],
+          altitude: obstacleData[i][4],
+          rotate: obstacleData[i][5],
+          title: this.svgMap[type].title,
+          type: this.svgMap[type].type,
+          color: obstacleData[i][7],
+          material: obstacleData[i][6],
+          element: shape
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: this.pixelYLinear(this.dragObject[id].width),
+          height: this.pixelYLinear(this.dragObject[id].height)
+        };
+        if (shape === 'rect') {
+          this.spanStyle[id] = {
+            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
+            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
+            width: this.pixelXLinear(obstacleData[i][2]),
+            height: this.pixelXLinear(obstacleData[i][3])
+          };
+          this.rectStyle[id] = {
+            width: this.pixelYLinear(this.dragObject[id].width),
+            height: this.pixelYLinear(this.dragObject[id].height),
+            fill: this.dragObject[id].color
+          };
+        } else if (shape === 'ellipse') {
+          this.spanStyle[id] = {
+            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
+            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
+            width: this.pixelXLinear(obstacleData[i][2] / 2),
+            height: this.pixelXLinear(obstacleData[i][3 / 2])
+          };
+          const x = (this.pixelYLinear(this.dragObject[id].width) / 2).toString();
+          const y = (this.pixelYLinear(this.dragObject[id].height) / 2).toString();
+          this.ellipseStyle[id] = {
+            cx: x,
+            cy: y,
+            rx: x,
+            ry: y,
+            fill: this.dragObject[id].color
+          };
+        } else if (shape === 'polygon') {
+          this.spanStyle[id] = {
+            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
+            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
+            width: this.pixelXLinear(obstacleData[i][2] / 2),
+            height: this.pixelXLinear(obstacleData[i][3 / 2])
+          };
+          const width = this.pixelYLinear(this.dragObject[id].width);
+          const height = this.pixelYLinear(this.dragObject[id].height);
+          const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+          this.polygonStyle[id] = {
+            points: points,
+            fill: this.dragObject[id].color
+          };
+        }
+        this.obstacleList.push(id);
+        window.setTimeout(() => {
+          this.changePosition(id);
+        }, 0);
+      }
+    }
+    /* bs parameters sheet */
+    const bsParameters: string = this.wb.SheetNames[5];
+    const bsParametersWS: XLSX.WorkSheet = this.wb.Sheets[bsParameters];
+    const bsParametersData = (XLSX.utils.sheet_to_json(bsParametersWS, {header: 1}));
+    if (bsParametersData.length > 1) {
+      this.calculateForm.powerMaxRange = Number(bsParameters[1][0]);
+      this.calculateForm.powerMinRange = Number(bsParameters[1][1]);
+      this.calculateForm.beamMaxId = Number(bsParameters[1][2]);
+      this.calculateForm.beamMinId = Number(bsParameters[1][3]);
+      this.calculateForm.bandwidth = Number(bsParameters[1][4]);
+      this.calculateForm.Frequency = Number(bsParameters[1][5]);
+    }
+    /* algorithm parameters sheet */
+    const algorithmParameters: string = this.wb.SheetNames[6];
+    const algorithmParametersWS: XLSX.WorkSheet = this.wb.Sheets[algorithmParameters];
+    const algorithmParametersData = (XLSX.utils.sheet_to_json(algorithmParametersWS, {header: 1}));
+    if (algorithmParametersData.length > 1) {
+      this.calculateForm.crossover = Number(algorithmParameters[1][0]);
+      this.calculateForm.mutation = Number(algorithmParameters[1][1]);
+      this.calculateForm.iteration = Number(algorithmParameters[1][2]);
+      this.calculateForm.seed = Number(algorithmParameters[1][3]);
+      // this.calculateForm.computeRound = Number(algorithmParameters[1][4]);
+      this.calculateForm.useUeCoordinate = Number(algorithmParameters[1][5]);
+      this.calculateForm.pathLossModelId = Number(algorithmParameters[1][6]);
+    }
+    /* objective parameters sheet */
+    const objectiveParameters: string = this.wb.SheetNames[7];
+    const objectiveParametersWS: XLSX.WorkSheet = this.wb.Sheets[objectiveParameters];
+    const objectiveParametersData = (XLSX.utils.sheet_to_json(objectiveParametersWS, {header: 1}));
+    if (objectiveParametersData.length > 1) {
+      this.calculateForm.objectiveIndex = objectiveParameters[1][0];
+      this.calculateForm.obstacleInfo = objectiveParameters[1][1];
+      this.calculateForm.availableNewBsNumber = Number(objectiveParameters[1][2]);
+    }
+
+    window.setTimeout(() => {
+      this.moveable.destroy();
+    }, 0);
+  }
+
+  save() {
+    this.authService.spinnerShowAsHome();
+    this.setForm();
+
+    const url = `${this.authService.API_URL}/calculate`;
+    this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
+      res => {
+        this.taskid = res['taskid'];
+        this.authService.spinnerHide();
+      },
+      err => {
+        this.authService.spinnerHide();
+        console.log(err);
+      }
+    );
   }
 
 }
