@@ -1,24 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
-import { MatDialog } from '@angular/material/dialog';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 
 @Component({
-  selector: 'app-result',
-  templateUrl: './result.component.html',
-  styleUrls: ['./result.component.scss']
+  selector: 'app-pdf',
+  templateUrl: './pdf.component.html',
+  styleUrls: ['./pdf.component.scss']
 })
-export class ResultComponent implements OnInit {
+export class PdfComponent implements OnInit {
 
   constructor(
-    private route: ActivatedRoute,
     private authService: AuthService,
-    private router: Router,
-    private matDialog: MatDialog,
-    public spinner: NgxSpinnerService,
     private http: HttpClient) { }
 
   taskId = 'task_sel_26cc4b6e-7096-4202-aa39-500a1214df85_0';

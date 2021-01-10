@@ -31,7 +31,11 @@
 							<mat-button-toggle  value="RSRP">訊號強度圖</mat-button-toggle>
 						</mat-button-toggle-group>
 						<!-- 訊號品質圖 -->
-						<app-signal-quality></app-signal-quality>
+            <app-signal-quality [result]="result"></app-signal-quality>
+            <!-- 訊號覆蓋圖 -->
+            <app-signal-cover [result]="result"></app-signal-cover>
+            <!-- 訊號強度圖 -->
+            <app-signal-strength [result]="result"></app-signal-strength>
 					</td>
 				</tr>
 			</tbody>
