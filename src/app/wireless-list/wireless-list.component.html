@@ -26,9 +26,9 @@
 					<th class="stat">狀況</th>
 					<th class="date">建立時間</th>
 					<th class="min">規劃報告</th>
+					<th class="min">匯出</th>
 					<th class="min">編輯</th>
 					<th class="min">刪除</th>
-					<th class="min">匯出</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -40,9 +40,9 @@
 						</td>
 						<td>{{ item.createTime }}</td>
 						<td><i class="far fa-file-pdf"></i></td>
+						<td><i class="fas fa-file-download"></i></td>
 						<td><i class="fas fa-pencil-alt"></i></td>
 						<td><i class="far fa-trash-alt"></i></td>
-						<td><i class="fas fa-file-download"></i></td>
 					</tr>
 					<tr *ngIf="taskList.length === 0">
 						<td colspan="7" class="text-center">{{ 'notaskList' | translate }}</td>
