@@ -2,14 +2,14 @@ export class CalculateForm {
 
   sessionid: string = null;
   taskName: string = null;
-  totalRound: number = null;
+  totalRound: number = 1;
   mapName: string = null;
   mapImage: string = null;
   // createTime = null;
-  crossover: number = null;
-  mutation: number = null;
-  iteration: number = null;
-  seed: number = null;
+  crossover: number = 0.8;
+  mutation: number = 0.4;
+  iteration: number = 100;
+  seed: number = 10;
   defaultBs: string = null;
   candidateBs: string = null;
   width: number = null;
@@ -18,12 +18,12 @@ export class CalculateForm {
   zValue: string = null;
   pathLossModelId: number = 0;
   ueCoordinate: string = null;
-  useUeCoordinate: number = null;
+  useUeCoordinate: number = 1;
   powerMaxRange: number = null;
   powerMinRange: number = null;
   beamMaxId: number = null;
   beamMinId: number = null;
-  objectiveIndex = '0';
+  objectiveIndex = '2';
   // threshold = null;
   obstacleInfo: string = null;
   availableNewBsNumber: number = 0;
