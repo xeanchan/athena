@@ -10,9 +10,9 @@
 	<div class="leftArea">
 
 		<!-- 建議方案 -->
-		<app-propose [result]="result" ></app-propose>
+		<app-propose #propose></app-propose>
         
-		<table>
+		<table id="signal">
 			<tbody>
 				<tr>
 					<th colspan="2" class="panel center"><label>圖面資訊</label></th>
@@ -31,25 +31,25 @@
 							<mat-button-toggle  value="RSRP">訊號強度圖</mat-button-toggle>
 						</mat-button-toggle-group>
 						<!-- 訊號品質圖 -->
-            <app-signal-quality [result]="result"></app-signal-quality>
-            <!-- 訊號覆蓋圖 -->
-            <app-signal-cover [result]="result"></app-signal-cover>
+						<app-signal-quality #quality></app-signal-quality>
+						<!-- 訊號覆蓋圖 -->
+            <app-signal-cover #cover></app-signal-cover>
             <!-- 訊號強度圖 -->
-            <app-signal-strength [result]="result"></app-signal-strength>
+            <app-signal-strength #strength></app-signal-strength>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<!-- 預估效能 -->
-		<app-performance [result]="result"></app-performance>
+		<app-performance #performance></app-performance>
 		
 		<!-- 統計資訊 -->
-		<app-statistics [result]="result"></app-statistics>
+		<app-statistics #statistics></app-statistics>
 
 	</div>
     
 	<div class="rightArea ds">
 		<!-- 場域設定資訊 -->
-		<app-site-info [result]="result" [calculateForm]="calculateForm"></app-site-info>
+		<app-site-info #siteInfo></app-site-info>
   </div>
 </div>

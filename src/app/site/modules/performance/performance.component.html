@@ -1,4 +1,4 @@
-<table class="thCenter">
+<table id="performace" class="thCenter">
   <tbody>
       <tr>
           <th class="panel" colspan="4"><label class="bold">預估效能</label></th>
@@ -24,10 +24,10 @@
           <th>UE 平均 Throughput</th>
       </tr>
       <tr>
-          <td>13.9dB</td>
-          <td>100%</td>
-          <td>-60.16dBm</td>
-          <td>0Mb/s</td>
+          <td>{{ result['ueCoverage'] }}%</td>
+          <td>{{ result['ueAverageSinr'] }}</td>
+          <td>{{ result['ueAverageRsrp'] }}</td>
+          <td>{{ result['throughput'] }}</td>
       </tr>
   </tbody>
   <tbody>

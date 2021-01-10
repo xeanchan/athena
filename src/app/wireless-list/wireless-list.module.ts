@@ -11,6 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { NewPlanningModule } from '../new-planning/new-planning.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { PdfModule } from '../site/pdf/pdf.module';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { RouterModule } from '@angular/router';
     MatProgressBarModule,
     MatDialogModule,
     NewPlanningModule,
-    TranslateModule
+    TranslateModule,
+    PdfModule
   ],
   providers: [ ]
 })

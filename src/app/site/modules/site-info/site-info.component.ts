@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CalculateForm } from '../../../form/CalculateForm';
 
 @Component({
   selector: 'app-site-info',
@@ -9,8 +10,8 @@ export class SiteInfoComponent implements OnInit {
 
   constructor() { }
 
-  @Input('result') result;
-  @Input('calculateForm') calculateForm;
+  result = {};
+  calculateForm = new CalculateForm();
 
   ngOnInit(): void {
   }

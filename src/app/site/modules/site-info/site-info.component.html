@@ -1,26 +1,28 @@
-<h5><i class="fas fa-info-circle"></i>場域設定資訊</h5>
-<ul>
-  <li>
-    <span><label>專案名稱</label>{{ calculateForm['taskName'] }}</span>
-    <span><label>規劃時間</label>{{ result['createTime'] }}</span>
-  </li>
-  <li>
-    <span><label>規劃目標</label>
-    <span>不限制增加基站數量，以達到UE平均下行throughput最大.</span>
-    </span>
-  </li>
-  <li>
-    <span><label>場域大小</label>長 {{ result['inputWidth'] }} 公尺/ 寬 {{ result['inputHeight'] }} 公尺／高 {{ calculateForm['altitude'] }} 公尺</span>
-    <span><label>切面高度</label>50 公分</span>
-  </li>
-  <hr>
-  <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
-  <li>
-    <span><label>待選基站位置</label>(共6處)</span>
-    <span><label>現有基站</label>(共0台)</span>
-    <span><label>發射功率範圍</label>	-5 dBm ~ 21 dBm</span>
-    <span><label>可分配波束編號範圍</label>	0 ~ 30</span>
-    <span><label>LTE系統頻寬(MHz)</label>	20 MHz</span>
-    <span><label>LTE系統頻率(MHz)</label>	1900 MHz</span>
-  </li>
-</ul>
+<div id="site_info">
+  <h5><i class="fas fa-info-circle"></i>場域設定資訊</h5>
+  <ul>
+    <li>
+      <span><label>專案名稱</label>{{ calculateForm['taskName'] }}</span>
+      <span><label>規劃時間</label>{{ result['createTime'] }}</span>
+    </li>
+    <li>
+      <span><label>規劃目標</label>
+      <span>不限制增加基站數量，以達到UE平均下行throughput最大.</span>
+      </span>
+    </li>
+    <li>
+      <span><label>場域大小</label>長 {{ result['inputWidth'] }} 公尺/ 寬 {{ result['inputHeight'] }} 公尺／高 {{ calculateForm['altitude'] }} 公尺</span>
+      <span><label>切面高度</label>50 公分</span>
+    </li>
+    <hr>
+    <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
+    <li>
+      <span><label>待選基站位置</label>(共6處)</span>
+      <span><label>現有基站</label>(共0台)</span>
+      <span><label>發射功率範圍</label>	-5 dBm ~ 21 dBm</span>
+      <span><label>可分配波束編號範圍</label>	0 ~ 30</span>
+      <span><label>LTE系統頻寬(MHz)</label>	20 MHz</span>
+      <span><label>LTE系統頻率(MHz)</label>	1900 MHz</span>
+    </li>
+  </ul>
+</div>

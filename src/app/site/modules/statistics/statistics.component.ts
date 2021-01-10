@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { CalculateForm } from '../../../form/CalculateForm';
 
 @Component({
   selector: 'app-statistics',
@@ -9,7 +10,8 @@ export class StatisticsComponent implements OnInit {
 
   constructor() { }
 
-  @Input('result') result;
+  result = {};
+  calculateForm = new CalculateForm();
 
   ngOnInit(): void {
   }

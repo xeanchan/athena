@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../service/auth.service';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
+import { PdfService } from '../service/pdf.service';
+import { PdfComponent } from '../site/pdf/pdf.component';
 
 declare var Plotly: any;
 
@@ -20,6 +22,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private dialog: MatDialog,
     private router: Router,
+    private pdfService: PdfService
   ) { }
 
   taskList: any = [];
@@ -29,6 +32,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   // round
   roundFormat = Plotly.d3.format('.1f');
 
+  @ViewChild('pdf')
+  pdf: PdfComponent;
 
   ngOnInit(): void {
     this.matDialogConfig = new MatDialogConfig();
@@ -96,6 +101,11 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     console.log(wb);
     /* save to file */
     XLSX.writeFile(wb, 'SheetJS.xlsx');
+  }
+
+  /** export PDF */
+  async exportPDF(taskId) {
+    this.pdf.export(taskId);
   }
 
 }

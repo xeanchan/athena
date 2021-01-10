@@ -3,14 +3,14 @@
 <mat-button-toggle-group class="inline-block">
   <mat-button-toggle [routerLink]="['/site/site-planning']" value="back">回上頁</mat-button-toggle>
 	<mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
-	<mat-button-toggle value="export">匯出</mat-button-toggle>
+	<mat-button-toggle value="export" (click)="exportPDF()">匯出</mat-button-toggle>
 </mat-button-toggle-group>
 
 <div class="box">
 	<div class="leftArea">
 
 		<!-- 建議方案 -->
-		<app-propose [result]="result" ></app-propose>
+		<app-propose #propose></app-propose>
         
 		<table>
 			<tbody>
@@ -26,26 +26,34 @@
 			
 						<label class="mL_1">分布圖切換</label>
 						<mat-button-toggle-group>
-							<mat-button-toggle  value="SINR" selected>訊號品質圖</mat-button-toggle>
-							<mat-button-toggle  value="PCI">訊號覆蓋圖</mat-button-toggle>
-							<mat-button-toggle  value="RSRP">訊號強度圖</mat-button-toggle>
+							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>訊號品質圖</mat-button-toggle>
+							<mat-button-toggle  value="PCI" (click)="drawCover()">訊號覆蓋圖</mat-button-toggle>
+							<mat-button-toggle  value="RSRP" (click)="drawStrength()">訊號強度圖</mat-button-toggle>
 						</mat-button-toggle-group>
 						<!-- 訊號品質圖 -->
-						<app-signal-quality></app-signal-quality>
+						<app-signal-quality *ngIf="showQuality" #quality></app-signal-quality>
+						<!-- 訊號覆蓋圖 -->
+            <app-signal-cover *ngIf="showCover" #cover></app-signal-cover>
+            <!-- 訊號強度圖 -->
+            <app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<!-- 預估效能 -->
-		<app-performance [result]="result"></app-performance>
+		<app-performance #performance></app-performance>
 		
 		<!-- 統計資訊 -->
-		<app-statistics [result]="result"></app-statistics>
+		<app-statistics #statistics></app-statistics>
 
 	</div>
     
 	<div class="rightArea ds">
 		<!-- 場域設定資訊 -->
-		<app-site-info [result]="result" [calculateForm]="calculateForm"></app-site-info>
+		<app-site-info #siteInfo></app-site-info>
   </div>
+</div>
+
+<div id="pdf_area" style="display: none;" >
+	<app-pdf #pdf></app-pdf>
 </div>
