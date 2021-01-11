@@ -31,30 +31,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private matDialog: MatDialog,
     private http: HttpClient) {
-    //   router.events.subscribe((val) => {
-    //     // if (typeof this.progressInterval !== 'undefined') {
-    //     //   window.clearInterval(this.progressInterval);
-    //     // }
-    //     try {
-    //       this.moveable.ngOnInit();
-    //       // this.moveable.ngOnDestroy();
-    //     } catch (error) {}
-    //     // console.log(222)
-    //     // see also 
-    //     if (val instanceof NavigationEnd) {
-    //       try {
-            
-    //         window.setTimeout(() => {
-    //           console.log(22)
-    //           this.moveable.destroy();
-    //         },0)
-            
-    //       } catch (error) {
-            
-    //       }
-          
-    //     }
-    // });
     }
 
   @ViewChild('moveable') moveable: NgxMoveableComponent;
@@ -537,6 +513,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     const rect = this.target.getBoundingClientRect();
+    console.log(id, rect)
     this.frame = new Frame({
       width: `${rect.width}px`,
       height: `${rect.height}px`,
@@ -1319,7 +1296,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // candidate
     const candidateData = [['x', 'y', 'z', 'material', 'color']];
     for (const item of this.candidateList) {
-      baseStationData.push([
+      candidateData.push([
         this.dragObject[item].x, this.dragObject[item].y,
         this.dragObject[item].z, this.dragObject[item].material,
         this.dragObject[item].color
@@ -1356,13 +1333,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       ['bsPowerMax', 'bsPowerMin', 'bsBeamIdMax', 'bsBeamIdMin', 'bandwidth', 'frequency'],
       [
         this.calculateForm.powerMaxRange, this.calculateForm.powerMinRange,
-        this.calculateForm.beamMaxId, this.calculateForm.beamMinId,
+        // this.calculateForm.beamMaxId, this.calculateForm.beamMinId,
+        '', '',
         this.calculateForm.bandwidth, this.calculateForm.Frequency
       ]
     ];
     const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
     XLSX.utils.book_append_sheet(wb, bsWS, 'bs parameters');
     // algorithm parameters
+console.log(this.calculateForm.crossover, this.calculateForm.mutation)    
     const algorithmData = [
       ['crossover', 'mutation', 'iteration', 'seed', 'computeRound', 'useUeCoordinate', 'pathLossModel'],
       [
@@ -1654,34 +1633,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const bsParametersWS: XLSX.WorkSheet = this.wb.Sheets[bsParameters];
     const bsParametersData = (XLSX.utils.sheet_to_json(bsParametersWS, {header: 1}));
     if (bsParametersData.length > 1) {
-      this.calculateForm.powerMaxRange = Number(bsParameters[1][0]);
-      this.calculateForm.powerMinRange = Number(bsParameters[1][1]);
-      this.calculateForm.beamMaxId = Number(bsParameters[1][2]);
-      this.calculateForm.beamMinId = Number(bsParameters[1][3]);
-      this.calculateForm.bandwidth = Number(bsParameters[1][4]);
-      this.calculateForm.Frequency = Number(bsParameters[1][5]);
+      this.calculateForm.powerMaxRange = Number(bsParametersData[1][0]);
+      this.calculateForm.powerMinRange = Number(bsParametersData[1][1]);
+      this.calculateForm.beamMaxId = Number(bsParametersData[1][2]);
+      this.calculateForm.beamMinId = Number(bsParametersData[1][3]);
+      this.calculateForm.bandwidth = Number(bsParametersData[1][4]);
+      this.calculateForm.Frequency = Number(bsParametersData[1][5]);
     }
     /* algorithm parameters sheet */
     const algorithmParameters: string = this.wb.SheetNames[6];
     const algorithmParametersWS: XLSX.WorkSheet = this.wb.Sheets[algorithmParameters];
     const algorithmParametersData = (XLSX.utils.sheet_to_json(algorithmParametersWS, {header: 1}));
     if (algorithmParametersData.length > 1) {
-      this.calculateForm.crossover = Number(algorithmParameters[1][0]);
-      this.calculateForm.mutation = Number(algorithmParameters[1][1]);
-      this.calculateForm.iteration = Number(algorithmParameters[1][2]);
-      this.calculateForm.seed = Number(algorithmParameters[1][3]);
-      // this.calculateForm.computeRound = Number(algorithmParameters[1][4]);
-      this.calculateForm.useUeCoordinate = Number(algorithmParameters[1][5]);
-      this.calculateForm.pathLossModelId = Number(algorithmParameters[1][6]);
+      this.calculateForm.crossover = Number(algorithmParametersData[1][0]);
+      this.calculateForm.mutation = Number(algorithmParametersData[1][1]);
+      this.calculateForm.iteration = Number(algorithmParametersData[1][2]);
+      this.calculateForm.seed = Number(algorithmParametersData[1][3]);
+      // this.calculateForm.computeRound = Number(algorithmParametersData[1][4]);
+      this.calculateForm.useUeCoordinate = Number(algorithmParametersData[1][5]);
+      this.calculateForm.pathLossModelId = Number(algorithmParametersData[1][6]);
     }
     /* objective parameters sheet */
     const objectiveParameters: string = this.wb.SheetNames[7];
     const objectiveParametersWS: XLSX.WorkSheet = this.wb.Sheets[objectiveParameters];
     const objectiveParametersData = (XLSX.utils.sheet_to_json(objectiveParametersWS, {header: 1}));
     if (objectiveParametersData.length > 1) {
-      this.calculateForm.objectiveIndex = objectiveParameters[1][0];
-      this.calculateForm.obstacleInfo = objectiveParameters[1][1];
-      this.calculateForm.availableNewBsNumber = Number(objectiveParameters[1][2]);
+      this.calculateForm.objectiveIndex = objectiveParametersData[1][0];
+      this.calculateForm.obstacleInfo = objectiveParametersData[1][1];
+      this.calculateForm.availableNewBsNumber = Number(objectiveParametersData[1][2]);
     }
 
     window.setTimeout(() => {

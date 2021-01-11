@@ -35,8 +35,8 @@ export class ResultComponent implements OnInit {
     private pdfService: PdfService,
     private http: HttpClient) { }
 
-  // taskId;
-  taskId = 'task_sel_26cc4b6e-7096-4202-aa39-500a1214df85_0';
+  taskId;
+  // taskId = 'task_sel_26cc4b6e-7096-4202-aa39-500a1214df85_0';
   result = {};
   calculateForm: CalculateForm = new CalculateForm();
   plotLayout;
@@ -56,11 +56,11 @@ export class ResultComponent implements OnInit {
 
 
   ngOnInit() {
-    // this.route.queryParams.subscribe(params => {
-    //   this.taskId = params['taskId'];
-    //   this.getResult();
-    // });
-    this.getResult();
+    this.route.queryParams.subscribe(params => {
+      this.taskId = params['taskId'];
+      this.getResult();
+    });
+    // this.getResult();
 
   }
 
