@@ -255,3 +255,19 @@ input[type="file"] {
     font-size: 18px;
     vertical-align: middle;
 }
+p.sub_title {
+    margin-bottom: .5em;
+    display: block;
+    cursor: pointer;
+}
+p.sub_title + .sub_content {
+    margin-left: 2em!important;
+    transition: all .25s;
+    /*display: none;*/
+  }
+  p.sub_title.active + .sub_content {
+      display: block;
+  }
+ul {
+    margin-bottom: 0;
+}

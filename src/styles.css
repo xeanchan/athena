@@ -9,7 +9,7 @@ body {
 }
 
 .inline-block {
-    display: inline-block;
+    display: inline-block!important;
   }
 h1 {
     display: inline-block;
