@@ -245,8 +245,7 @@
 
   <!-- an hidden div is created to set the position of appearance of the menu-->
   <div style="visibility: hidden; position: fixed;"
-    [style.left]="menuTopLeftPosition.x"
-    [style.top]="menuTopLeftPosition.y"
+    [ngStyle]="menuTopLeftStyle"
     [matMenuTriggerFor]="rightMenu"></div>
 
   <!-- standard material menu -->
