@@ -280,7 +280,8 @@
         <mat-expansion-panel-header>
           <mat-panel-title>規劃目標</mat-panel-title>
         </mat-expansion-panel-header>
-        <div class="pannel-content">
+        <div>目標設定</div>
+        <ul class="pannel-content">
           <div>
             <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均 SINR</mat-checkbox>
             <input type="text" [(ngModel)]="calculateForm.sinrRatio" (keyup)="calculateForm.isAverageSinr = setCheckbox(calculateForm.sinrRatio)" >
@@ -305,13 +306,40 @@
             <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">UE平均Throughput最大(依距離)</mat-checkbox>
             <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
           </div>
-          <div>
-            <label>規劃基站數量</label>
-            <span>
-              <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
-            </span>
-          </div>
+        </ul>
+        <div>欲佈建的無線基站數量</div>
+        <div class="pannel-content inline-block">
+            <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
         </div>
+        <div>基站參數設定</div>
+        <div class="pannel-content">
+          <ul>
+            <li>
+              <label>傳輸功率</label>
+              <span>
+                <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
+              </span>
+            </li>
+            
+            <li>
+              <label>系統頻寬</label>
+              <span>
+                <select [(ngModel)]="calculateForm.bandwidth">
+                  <option value="3">3</option>
+                  <option value="5">5</option>
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20">20</option>
+                </select>
+                /
+                <label>頻率</label>
+                <input type="text" [(ngModel)]="calculateForm.Frequency">
+              </span>
+            </li>
+          
+        </ul>
+        </div>
+
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
