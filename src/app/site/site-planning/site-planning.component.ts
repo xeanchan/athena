@@ -145,7 +145,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   // };
 
   // we create an object that contains coordinates
-  menuTopLeftPosition =  {x: '0', y: '0'};
+  menuTopLeftStyle = {top: '0', left: '0'};
   public color;
   // mouseover target
   hoverObj;
@@ -187,7 +187,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
 
   @HostListener('window:resize') windowResize() {
-    this.plotResize();
+    // this.plotResize();
   }
 
   @HostListener('document:click', ['$event'])
@@ -462,17 +462,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       element: id
     };
 
-    // this.frame = new Frame({
-    //   width: '30px',
-    //   height: '30px',
-    //   left: '200px',
-    //   top: '250px',
-    //   transform: {
-    //     rotate: '0deg',
-    //     scaleX: 1,
-    //     scaleY: 1
-    //   }
-    // });
+    this.frame = new Frame({
+      width: '30px',
+      height: '30px',
+      left: '200px',
+      top: '250px',
+      transform: {
+        rotate: '0deg',
+        scaleX: 1,
+        scaleY: 1
+      }
+    });
 
     window.setTimeout(() => {
       this.target = document.getElementById(`${this.svgId}`);
@@ -503,17 +503,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
     this.target = document.getElementById(id);
     this.svgId = id;
-    this.live = true;
-    if (this.dragObject[id].type === 'obstacle') {
-      this.moveable.rotatable = true;
-      this.moveable.resizable = true;
-    } else {
-      this.moveable.rotatable = false;
-      this.moveable.resizable = false;
-    }
-
     const rect = this.target.getBoundingClientRect();
-    console.log(id, rect)
     this.frame = new Frame({
       width: `${rect.width}px`,
       height: `${rect.height}px`,
@@ -526,133 +516,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    this.live = true;
+    if (this.dragObject[id].type === 'obstacle') {
+      this.moveable.rotatable = true;
+      this.moveable.resizable = true;
+    } else {
+      this.moveable.rotatable = false;
+      this.moveable.resizable = false;
+    }
+
     this.moveable.ngOnInit();
     this.setDragData();
     this.hoverObj = this.target;
     this.setLabel();
-
-
-    // if (event.target.closest('span').querySelector('.drag_rect') == null) {
-    //   let svg = event.target;
-    //   if (event.target.tagName !== 'svg') {
-    //     svg = event.target.closest('svg');
-    //   }
-    //   this.svgId = svg.id;
-    //   const titleName = this.svgMap[this.svgId].title;
-    //   // element形狀
-    //   let shape = '';
-    //   if (this.svgMap[this.svgId].type === 'obstacle') {
-    //     shape = this.svgMap[this.svgId].element;
-    //     this.svgId = `${this.svgId}_${this.obstacleList.length}`;
-    //     this.obstacleList.push(this.svgId);
-    //   } else if (this.svgMap[this.svgId].type === 'defaultBS') {
-    //     this.svgId = `${this.svgId}_${this.defaultBSList.length}`;
-    //     this.defaultBSList.push(this.svgId);
-    //   } else if (this.svgMap[this.svgId].type === 'candidate') {
-    //     this.svgId = `${this.svgId}_${this.candidateList.length}`;
-    //     this.candidateList.push(this.svgId);
-    //   } else if (this.svgMap[this.svgId].type === 'UE') {
-    //     this.svgId = `${this.svgId}_${this.ueList.length}`;
-    //     this.ueList.push(this.svgId);
-    //   }
-
-    //   this.dragObject[this.svgId] = {
-    //     x: 0,
-    //     y: 0,
-    //     z: this.zValues[0],
-    //     width: 0,
-    //     height: 0,
-    //     altitude: 50,
-    //     rotate: 0,
-    //     title: titleName,
-    //     type: typeName,
-    //     color: 'green',
-    //     material: '0',
-    //     element: shape
-    //   };
-
-    //   this.frame = new Frame({
-    //     width: '30px',
-    //     height: '30px',
-    //     left: '200px',
-    //     top: '250px',
-    //     transform: {
-    //       rotate: '0deg',
-    //       scaleX: 1,
-    //       scaleY: 1
-    //     }
-    //   });
-
-    //   window.setTimeout(() => {
-    //     this.live = true;
-
-    //     const span = document.querySelectorAll(`.${typeName}`);
-    //     const rect = svg.querySelector('.target');
-    //     rect.setAttribute('fill', this.dragObject[this.svgId].color);
-    //     rect.setAttribute('class', 'drag_rect');
-    //     span[span.length - 1].innerHTML += svg.outerHTML;
-
-    //     this.target = span[span.length - 1];
-    //     this.target.bounds = this.bounds;
-    //     this.target.dragArea = document.getElementById('chart');
-    //     this.target.querySelector('svg').setAttribute('style', 'display: inherit');
-
-    //     // 還原來源顏色 & class
-    //     if (event.target.tagName !== 'svg') {
-    //       event.target.setAttribute('fill', '#ffffff');
-    //       event.target.setAttribute('class', 'target');
-    //     } else {
-    //       event.target.querySelector('.drag_rect').setAttribute('fill', '#ffffff');
-    //       event.target.querySelector('.drag_rect').setAttribute('class', 'target');
-    //     }
-
-    //     if (typeName === 'obstacle') {
-    //       this.moveable.rotatable = true;
-    //       this.moveable.resizable = true;
-    //     } else {
-    //       this.moveable.rotatable = false;
-    //       this.moveable.resizable = false;
-    //     }
-    //     this.moveable.ngOnInit();
-    //     this.setDragData();
-    //     // this.tooltip.show();
-    //     this.moveNumber();
-    //     this.hoverObj = this.target;
-    //     this.setLabel();
-
-    //   }, 0);
-    // } else {
-
-    //   this.target = event.target.closest('span');
-    //   this.svgId = this.target.id;
-    //   this.live = true;
-
-    //   if (typeName === 'obstacle') {
-    //     this.moveable.rotatable = true;
-    //     this.moveable.resizable = true;
-    //   } else {
-    //     this.moveable.rotatable = false;
-    //     this.moveable.resizable = false;
-    //   }
-
-    //   const rect = this.target.getBoundingClientRect();
-    //   this.frame = new Frame({
-    //     width: `${rect.width}px`,
-    //     height: `${rect.height}px`,
-    //     left: `${rect.left}px`,
-    //     top: `${rect.top}px`,
-    //     transform: {
-    //       rotate: `${this.dragObject[this.svgId].rotate}deg`,
-    //       scaleX: 1,
-    //       scaleY: 1
-    //     }
-    //   });
-
-    //   this.moveable.ngOnInit();
-    //   this.setDragData();
-    //   this.hoverObj = this.target;
-    //   this.setLabel();
-    // }
   }
 
   onWindowReisze = () => {
@@ -891,8 +767,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // preventDefault avoids to show the visualization of the right-click menu of the browser
     event.preventDefault();
     // we record the mouse position in our object
-    this.menuTopLeftPosition.x = event.clientX + 'px';
-    this.menuTopLeftPosition.y = event.clientY + 'px';
+    this.menuTopLeftStyle.left = event.clientX + 'px';
+    this.menuTopLeftStyle.top = event.clientY + 'px';
     // we open the menu
     this.matMenuTrigger.openMenu();
   }
@@ -1182,7 +1058,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.dragObject[svgId].element === 'rect') {
         this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width)}px`);
       } else {
-        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width) / 2}px`);  
+        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width) / 2}px`);
       }
       this.frame.set('height', `${this.pixelYLinear(this.dragObject[svgId].height)}px`);
     }
@@ -1190,7 +1066,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.spanStyle[svgId].left = left;
     this.spanStyle[svgId].top = yPos;
-
+console.log(svgId, this.spanStyle[svgId])
     // this.target.style.top = `${yPos}px`;
     // this.target.style.left = `${left}px`;
 
@@ -1228,23 +1104,23 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 圖區縮放 */
   plotResize() {
-    window.setTimeout(() => {
-      const dArea = document.getElementById('d_area');
-      if (dArea != null) {
-        const dWidth = dArea.clientWidth;
-        Plotly.relayout('chart', {
-          width: dWidth
-        }).then((gd) => {
-          // 重新計算比例尺
-          this.calScale(gd);
-          // 物件移動
-          const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
-          for (const item of ary) {
-            this.changePosition(item);
-          }
-        });
-      }
-    }, 300);
+    // window.setTimeout(() => {
+    //   const dArea = document.getElementById('d_area');
+    //   if (dArea != null) {
+    //     const dWidth = dArea.clientWidth;
+    //     Plotly.relayout('chart', {
+    //       width: dWidth
+    //     }).then((gd) => {
+    //       // 重新計算比例尺
+    //       this.calScale(gd);
+    //       // 物件移動
+    //       const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
+    //       for (const item of ary) {
+    //         this.changePosition(item);
+    //       }
+    //     });
+    //   }
+    // }, 300);
   }
 
   view3D() {
@@ -1341,7 +1217,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
     XLSX.utils.book_append_sheet(wb, bsWS, 'bs parameters');
     // algorithm parameters
-console.log(this.calculateForm.crossover, this.calculateForm.mutation)    
+
     const algorithmData = [
       ['crossover', 'mutation', 'iteration', 'seed', 'computeRound', 'useUeCoordinate', 'pathLossModel'],
       [
@@ -1405,20 +1281,23 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
   }
 
   setImportData() {
+    this.obstacleList.length = 0;
+    this.defaultBSList.length = 0;
+    this.candidateList.length = 0;
+    this.ueList.length = 0;
     /* base station sheet */
     const baseStation: string = this.wb.SheetNames[1];
     const baseStationWS: XLSX.WorkSheet = this.wb.Sheets[baseStation];
     const baseStationData = (XLSX.utils.sheet_to_json(baseStationWS, {header: 1}));
     if (baseStationData.length > 1) {
-      this.defaultBSList.length = 0;
       for (let i = 1; i < baseStationData.length; i++) {
         const id = `defaultBS_${(i - 1)}`;
         this.dragObject[id] = {
           x: baseStationData[i][0],
           y: baseStationData[i][1],
           z: baseStationData[i][2],
-          width: 0,
-          height: 0,
+          width: this.xLinear(30),
+          height: this.yLinear(30),
           altitude: 50,
           rotate: 0,
           title: this.svgMap['defaultBS'].title,
@@ -1431,8 +1310,8 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
         this.spanStyle[id] = {
           left: this.pixelXLinear(baseStationData[i][0]),
           top: this.pixelYLinear(baseStationData[i][1]),
-          width: `${30}px`,
-          height: 30
+          width: 30,
+          height: 30,
         };
         this.svgStyle[id] = {
           display: 'inherit',
@@ -1452,7 +1331,6 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
     const candidateWS: XLSX.WorkSheet = this.wb.Sheets[candidate];
     const candidateData = (XLSX.utils.sheet_to_json(candidateWS, {header: 1}));
     if (candidateData.length > 1) {
-      this.candidateList.length = 0;
       for (let i = 1; i < candidateData.length; i++) {
         const id = `candidate_${(i - 1)}`;
         this.candidateList.push(id);
@@ -1460,8 +1338,8 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
           x: candidateData[i][0],
           y: candidateData[i][1],
           z: candidateData[i][2],
-          width: 30,
-          height: 30,
+          width: this.xLinear(30),
+          height: this.yLinear(30),
           altitude: 50,
           rotate: 0,
           title: this.svgMap['candidate'].title,
@@ -1494,7 +1372,6 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
     const ueWS: XLSX.WorkSheet = this.wb.Sheets[ue];
     const ueData = (XLSX.utils.sheet_to_json(ueWS, {header: 1}));
     if (ueData.length > 1) {
-      this.ueList.length = 0;
       for (let i = 1; i < ueData.length; i++) {
         const id = `UE_${(i - 1)}`;
         this.ueList.push(id);
@@ -1536,7 +1413,6 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
     const obstacleWS: XLSX.WorkSheet = this.wb.Sheets[obstacle];
     const obstacleData = (XLSX.utils.sheet_to_json(obstacleWS, {header: 1}));
     if (obstacleData.length > 1) {
-      this.obstacleList.length = 0;
       let rect = 0;
       let ellipse = 0;
       let polygon = 0;
@@ -1596,7 +1472,7 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
             top: `${this.pixelXLinear(this.dragObject[id].y)}`,
             width: this.pixelXLinear(obstacleData[i][2] / 2),
-            height: this.pixelXLinear(obstacleData[i][3 / 2])
+            height: this.pixelXLinear(obstacleData[i][3] / 2)
           };
           const x = (this.pixelYLinear(this.dragObject[id].width) / 2).toString();
           const y = (this.pixelYLinear(this.dragObject[id].height) / 2).toString();
@@ -1612,7 +1488,7 @@ console.log(this.calculateForm.crossover, this.calculateForm.mutation)
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
             top: `${this.pixelXLinear(this.dragObject[id].y)}`,
             width: this.pixelXLinear(obstacleData[i][2] / 2),
-            height: this.pixelXLinear(obstacleData[i][3 / 2])
+            height: this.pixelXLinear(obstacleData[i][3] / 2)
           };
           const width = this.pixelYLinear(this.dragObject[id].width);
           const height = this.pixelYLinear(this.dragObject[id].height);

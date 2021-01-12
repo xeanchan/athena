@@ -40,7 +40,8 @@ export class AuthService {
     this.http.post(`${this.API_URL}/logout`, JSON.stringify(form)).subscribe(
       res => {
         this.setUserToken(null);
-        this.router.navigate(['/logon']);
+        // this.router.navigate(['/logon']);
+        location.href = '/logon';
       }
     );
   }
