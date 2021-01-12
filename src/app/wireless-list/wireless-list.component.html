@@ -1,24 +1,12 @@
-<!-- <div class="wrap">
-	<div class="header">
-		<h1>Athena Planning Portal</h1>
-		<span class="headerRightarea"> 
-			<mat-button-toggle-group name="fontStyle" [(value)]="authService.lang" aria-label="Font Style">
-				<mat-button-toggle value="zh-TW" (change)="authService.changeLanguage('zh-TW')" selected>{{ 'language.tw' | translate }}</mat-button-toggle>
-				<mat-button-toggle value="en" (change)="authService.changeLanguage('en')">{{ 'language.en' | translate }}</mat-button-toggle>
-			</mat-button-toggle-group>
-			<a href="javascript:void(0)" (click)="logout()"><i class="fas fa-sign-out-alt logout"></i></a>
-		</span>
-	</div>
-	<div class="content"> -->
-		<h2>無限網路規劃  專案列表
-			<span class="example-button-row">
-					<button mat-button (click)="openDialog()"> 新增</button>
-			</span>
-			
-		</h2>
-			
-		<div class="planningList">
+<h2>無限網路規劃  專案列表
+	<span class="example-button-row">
+		<button mat-button (click)="openDialog()"> 新增</button>
+	</span>
+</h2>
+	
+<div class="planningList">
 
+<<<<<<< HEAD
 			<table>
 				<thead>
 					<tr>
@@ -49,11 +37,44 @@
 					</tr>
 				</tbody>
 			</table>
+=======
+	<table>
+		<thead>
+			<tr>
+			<th>名稱</th>
+			<th class="stat">狀況</th>
+			<th class="date">建立時間</th>
+			<th class="min">規劃報告</th>
+			<th class="min">編輯</th>
+			<th class="min">刪除</th>
+			<th class="min">匯出</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr *ngFor="let item of taskList">
+				<td>{{ item.taskName }}</td>
+				<td>
+					<span>{{ roundFormat(item.progress * 100) }}%</span> 
+					<mat-progress-bar mode="determinate" value="{{ item.progress * 100 }}"></mat-progress-bar>
+				</td>
+				<td>{{ item.createTime }}</td>
+				<td><i class="far fa-file-pdf" (click)="exportPDF(item.taskId)" ></i></td>
+				<td><i class="fas fa-pencil-alt"></i></td>
+				<td><i class="far fa-trash-alt"></i></td>
+				<td><i class="fas fa-file-download"></i></td>
+			</tr>
+			<tr *ngIf="taskList.length === 0">
+				<td colspan="7" class="text-center">{{ 'notaskList' | translate }}</td>
+			</tr>
+		</tbody>
+	</table>
+>>>>>>> cbfe3bd0cdd68f3ad97843b0e54cac9c497d6af8
 
-		</div>
+</div>
 
-		<h2>操作說明</h2>
-				
-	<!-- </div>
-</div> -->
+<h2>操作說明</h2>
+
+<div id="pdf_area" style="display: none;" >
+	<app-pdf #pdf></app-pdf>
+</div>
 

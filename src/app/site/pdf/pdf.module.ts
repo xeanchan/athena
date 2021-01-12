@@ -1,8 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ResultComponent } from './result.component';
-import { RouterModule } from '@angular/router';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PerformanceModule } from '../modules/performance/performance.module';
 import { ProposeModule } from '../modules/propose/propose.module';
 import { SignalCoverModule } from '../modules/signal-cover/signal-cover.module';
@@ -10,13 +7,19 @@ import { SignalQualityModule } from '../modules/signal-quality/signal-quality.mo
 import { SignalStrengthModule } from '../modules/signal-strength/signal-strength.module';
 import { SiteInfoModule } from '../modules/site-info/site-info.module';
 import { StatisticsModule } from '../modules/statistics/statistics.module';
-import { PdfModule } from '../pdf/pdf.module';
+import { PdfComponent } from './pdf.component';
+import { RouterModule } from '@angular/router';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
+import { PdfRoutingModule } from './pdf-routing.module';
+
 
 
 @NgModule({
+  declarations: [PdfComponent],
   imports: [
     CommonModule,
+    PdfRoutingModule,
     RouterModule,
     MatButtonToggleModule,
     PerformanceModule,
@@ -26,10 +29,8 @@ import { TranslateModule } from '@ngx-translate/core';
     SignalStrengthModule,
     SiteInfoModule,
     StatisticsModule,
-    PdfModule,
     TranslateModule
   ],
-  declarations: [ResultComponent]
+  exports: [PdfComponent]
 })
-export class ResultModule {
-}
+export class PdfModule { }

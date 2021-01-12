@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from './service/auth-guard.service';
 import { LayoutComponent } from './layout/layout.component';
+import { PdfComponent } from './site/pdf/pdf.component';
 
 
 export const routes: Routes = [
@@ -45,6 +46,16 @@ export const routes: Routes = [
       {
         path: '',
         loadChildren: () => import('./site/site.module').then(m => m.SiteModule),
+        canActivate: [AuthGuardService]
+      }
+    ]
+  },
+  {
+    path: 'pdf',
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./site/pdf/pdf.module').then(m => m.PdfModule),
         canActivate: [AuthGuardService]
       }
     ]

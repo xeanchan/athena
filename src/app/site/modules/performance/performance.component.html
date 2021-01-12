@@ -1,0 +1,53 @@
+<table id="performace" class="thCenter">
+  <tbody>
+      <tr>
+          <th class="panel" colspan="4"><label class="bold">預估效能</label></th>
+      </tr>
+      <tr>
+          <th>場域覆蓋率</th>
+          <th>場域平均 SINR</th>
+          <th>場域平均 RSRP</th>
+          <th></th>
+      </tr>
+      <tr>
+          <td>100%</td>
+          <td>13.66dB</td>
+          <td>-68.17dBm</td>
+          <td></td>
+      </tr>
+  </tbody>
+  <tbody>
+      <tr>
+          <th>UE 覆蓋率</th>
+          <th>UE 平均 SINR</th>
+          <th>UE 平均 RSRP</th>
+          <th>UE 平均 Throughput</th>
+      </tr>
+      <tr>
+          <td>{{ result['ueCoverage'] }}%</td>
+          <td>{{ result['ueAverageSinr'] }}</td>
+          <td>{{ result['ueAverageRsrp'] }}</td>
+          <td>{{ result['throughput'] }}</td>
+      </tr>
+  </tbody>
+  <tbody>
+      <tr>
+          <th>地圖切面(高度)</th>
+          <th>切面覆蓋率</th>
+          <th>切面平均 SINR</th>
+          <th>切面平均 RSRP</th>
+      </tr>
+      <tr>
+          <td>1公尺</td>
+          <td>98%</td>
+          <td>12.38dB</td>
+          <td>-83.58dBm</td>
+      </tr>
+      <tr>
+          <td>1.5公尺</td>
+          <td>98%</td>
+          <td>12.38dB</td>
+          <td>-83.58dBm</td>
+      </tr>
+  </tbody>
+</table>

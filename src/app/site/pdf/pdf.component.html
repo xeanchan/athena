@@ -3,7 +3,7 @@
 <mat-button-toggle-group class="inline-block">
   <mat-button-toggle [routerLink]="['/site/site-planning']" value="back">回上頁</mat-button-toggle>
 	<mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
-	<mat-button-toggle value="export" (click)="exportPDF()">匯出</mat-button-toggle>
+	<mat-button-toggle value="export">匯出</mat-button-toggle>
 </mat-button-toggle-group>
 
 <div class="box">
@@ -12,7 +12,7 @@
 		<!-- 建議方案 -->
 		<app-propose #propose></app-propose>
         
-		<table>
+		<table id="signal">
 			<tbody>
 				<tr>
 					<th colspan="2" class="panel center"><label>圖面資訊</label></th>
@@ -26,16 +26,16 @@
 			
 						<label class="mL_1">分布圖切換</label>
 						<mat-button-toggle-group>
-							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>訊號品質圖</mat-button-toggle>
-							<mat-button-toggle  value="PCI" (click)="drawCover()">訊號覆蓋圖</mat-button-toggle>
-							<mat-button-toggle  value="RSRP" (click)="drawStrength()">訊號強度圖</mat-button-toggle>
+							<mat-button-toggle  value="SINR" selected>訊號品質圖</mat-button-toggle>
+							<mat-button-toggle  value="PCI">訊號覆蓋圖</mat-button-toggle>
+							<mat-button-toggle  value="RSRP">訊號強度圖</mat-button-toggle>
 						</mat-button-toggle-group>
 						<!-- 訊號品質圖 -->
-						<app-signal-quality *ngIf="showQuality" #quality></app-signal-quality>
+						<app-signal-quality #quality></app-signal-quality>
 						<!-- 訊號覆蓋圖 -->
-            <app-signal-cover *ngIf="showCover" #cover></app-signal-cover>
+            <app-signal-cover #cover></app-signal-cover>
             <!-- 訊號強度圖 -->
-            <app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
+            <app-signal-strength #strength></app-signal-strength>
 					</td>
 				</tr>
 			</tbody>
@@ -52,8 +52,4 @@
 		<!-- 場域設定資訊 -->
 		<app-site-info #siteInfo></app-site-info>
   </div>
-</div>
-
-<div id="pdf_area" style="display: none;" >
-	<app-pdf #pdf></app-pdf>
 </div>
