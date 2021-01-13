@@ -110,7 +110,8 @@ p.subitem.active + ol {
 :host ::ng-deep .mat-expansion-panel-body ul > li div {
     margin-left: 1em;
 }
-:host ::ng-deep .mat-expansion-panel-body p::before {
+:host ::ng-deep .mat-expansion-panel-body p::before,
+.algorithm ul li span::before {
     font-family: "Material Icons";
     content:"\e5df";
     font-size: 1.5em;
@@ -301,7 +302,13 @@ ul {
 .areaSetting .mat-expansion-panel {
     color: initial!important;
 }
+
 :host ::ng-deep .mat-expansion-panel-body {
+    padding: 0;
+    border-radius: 0;
+    border-top: 1px solid #527198;
+}
+:host ::ng-deep .areaSetting .mat-expansion-panel-body {
     padding: 0;
     border-radius: 0;
     border-top: 1px solid #c2ccd6;

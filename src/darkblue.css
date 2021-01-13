@@ -13,11 +13,11 @@ body {
     border-bottom: 1px solid #2b3346;
 }
 .mat-expansion-panel {
-    background: #35363a;
-    color: #c3c8ce;
+    background: #2e5480;
+    color: #b5dfec;
 }
 .mat-expansion-panel-body p {
-    color: #8bbcf8!important;
+    color: #8ae29f!important;
     display: inline-block;
     margin: 0;
 }
@@ -33,10 +33,10 @@ body {
 }
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
     box-shadow: none;
-    border-bottom: 1px solid #4a4d5a;
+    border-bottom: 1px solid #527198;
 }
 .mat-drawer {
-    background-color: #35363a;
+    background-color: #2e5480;
     color: rgba(255,255,255,.87);
 }
 .tool {
@@ -97,18 +97,18 @@ h3 button {
 }
 /* check box */
 .mat-checkbox-frame {
-    border-color: #185ea9!important;
+    border-color: #b5dfec!important;
 }
 .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
 .mat-checkbox-checked.mat-accent .mat-checkbox-background {
-    background-color: #185ea9!important;
+    /*background-color: #185ea9!important;*/
 }
 /* setting select */
 .mat-expansion-panel-body input[type=text] ,
 .mat-expansion-panel-body ul li select ,
 .mat-expansion-panel-body ol li select {
-    border-bottom: 1px solid #185ea9!important;
-    color: #5cabff!important;
+    border-bottom: 1px solid #b5dfec!important;
+    color: #fff!important;
 }
 
 
