@@ -112,3 +112,9 @@ h3 button {
 }
 
 
+.areaSetting .mat-expansion-panel-body input[type=text] ,
+.areaSetting .mat-expansion-panel-body ul li select ,
+.areaSetting .mat-expansion-panel-body ol li select {
+    border-bottom: 1px solid #2e5480!important;
+    color: #fff!important;
+}
