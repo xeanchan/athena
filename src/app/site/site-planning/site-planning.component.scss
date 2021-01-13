@@ -111,7 +111,10 @@ p.subitem.active + ol {
     margin-left: 1em;
 }
 :host ::ng-deep .mat-expansion-panel-body p::before {
-    content: '。';
+    font-family: "Material Icons";
+    content:"\e5df";
+    font-size: 1.5em;
+    vertical-align: middle;
 }
 :host ::ng-deep .mat-expansion-panel-body li input[type="text"]{
     width: 5em;
@@ -238,27 +241,28 @@ input[type="file"] {
 }
 .clearAll {
     cursor: pointer;
-    display: inline-block;
-    margin: 0 0 .5em;
-    font-weight: normal;
-    color: #659cd8;
-    vertical-align: middle;
-    transition: all 0.25s;
-    background-color: #4c5661;
-    padding: .2em .8em .2em .6em;
-    border-radius: 10px;
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    color: #86abd4;
+    font-size: .6em;
+    line-height: 1;
+
 }
-.clearAll:hover {
-    color: #fff;
-}
+
 .clearAll .material-icons {
     font-size: 18px;
-    vertical-align: middle;
+    display: block;
+    margin: 0 auto 2px;
+    width: 1em;
+    height: 1em;
+    background-color: #4a86c5;
+    color: #fff;
+    border-radius: 5em;
 }
 p.sub_title {
     margin-bottom: .5em;
     display: block;
-    cursor: pointer;
 }
 p.sub_title + .sub_content {
     margin-left: 2em!important;
@@ -269,5 +273,52 @@ p.sub_title + .sub_content {
       display: block;
   }
 ul {
-    margin-bottom: 0;
+    margin: 0;
+}
+:host ::ng-deep #d_area mat-button-toggle-group mat-button-toggle button {
+    width: initial!important;
+}
+:host ::ng-deep .mat-expansion-panel-header {
+    padding: 0 24px 0 16px;
+}
+
+.areaSetting mat-expansion-panel {
+    background-color: #ddd;
+    border-color: #c2ccd6;
+
+}
+.areaSetting .mat-expansion-panel-header-title {
+    color: #476a90;
+}
+:host ::ng-deep .areaSetting .mat-expansion-panel-body p {
+    color: #516c8c!important;
+}
+.areaSetting .mat-expansion-panel-header {
+    padding-left: 30px;
+}
+.areaSetting input[type=text],
+.areaSetting select ,
+.areaSetting .mat-expansion-panel {
+    color: initial!important;
+}
+:host ::ng-deep .mat-expansion-panel-body {
+    padding: 0;
+    border-radius: 0;
+    border-top: 1px solid #c2ccd6;
+}
+:host ::ng-deep .areaSetting .mat-expansion-panel-body {
+    padding: 1em 1em 0 2em;
+}
+:host ::ng-deep .mat-accordion .mat-expansion-panel:not(.mat-expanded), .mat-accordion .mat-expansion-panel:not(.mat-expansion-panel-spacing) {
+    border-radius: 0!important;
+}
+ 
+:host ::ng-deep .areaSetting .mat-expansion-indicator::after {
+    color: #7997b7;
+}
+.panel_content {
+    padding: 1em 0 1em 2em;
+}
+.mat-button-toggle-appearance-standard {
+    background: transparent!important;
 }

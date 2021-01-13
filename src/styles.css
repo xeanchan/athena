@@ -4,8 +4,8 @@
 
 body {
     /*background-color: #33373c;
-    color: #fff;
-    overflow: hidden;*/
+    color: #fff;*/
+    overflow: hidden;
 }
 
 .inline-block {
@@ -18,6 +18,7 @@ h1 {
 }
 h2 {
     font-size: 1.1em;
+    vertical-align: text-bottom;
 }
 .headerRightarea {
     position: absolute;

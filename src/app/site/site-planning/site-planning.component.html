@@ -279,117 +279,329 @@
         <mat-expansion-panel-header>
           <mat-panel-title>規劃目標</mat-panel-title>
         </mat-expansion-panel-header>
-        <p class="sub_title active">目標設定</p>
-        <div class="sub_content">
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均 SINR</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.sinrRatio" (keyup)="calculateForm.isAverageSinr = setCheckbox(calculateForm.sinrRatio)" >
+        <div class="panel_content">
+          <p class="sub_title active">目標設定</p>
+          <div class="sub_content">
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均 SINR</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.sinrRatio" (keyup)="calculateForm.isAverageSinr = setCheckbox(calculateForm.sinrRatio)" >
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isAvgThroughput">平均 Throughput</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.throughputRatio" (keyup)="calculateForm.isAvgThroughput = setCheckbox(calculateForm.throughputRatio)">
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isCoverage">場域Coverage</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.coverageRatio"  (keyup)="calculateForm.isCoverage = setCheckbox(calculateForm.coverageRatio)">
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr">UE 平均 SINR</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.ueAvgSinrRatio" (keyup)="calculateForm.isUeAvgSinr = setCheckbox(calculateForm.ueAvgSinrRatio)">
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput">UE平均Throughput</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.ueAvgThroughputRatio" (keyup)="calculateForm.isUeAvgThroughput = setCheckbox(calculateForm.ueAvgThroughputRatio)">
+            </div>
+            <div>
+              <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">UE平均Throughput最大(依距離)</mat-checkbox>
+              <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
+            </div>
           </div>
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isAvgThroughput">平均 Throughput</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.throughputRatio" (keyup)="calculateForm.isAvgThroughput = setCheckbox(calculateForm.throughputRatio)">
+          
+          <p class="sub_title inline-block">欲佈建的無線基站數量</p>
+          <div class="sub_content inline-block">
+              <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
           </div>
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isCoverage">場域Coverage</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.coverageRatio" (keyup)="calculateForm.isCoverage = setCheckbox(calculateForm.coverageRatio)">
-          </div>
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr">UE 平均 SINR</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.ueAvgSinrRatio" (keyup)="calculateForm.isUeAvgSinr = setCheckbox(calculateForm.ueAvgSinrRatio)">
-          </div>
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput">UE平均Throughput</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.ueAvgThroughputRatio" (keyup)="calculateForm.isUeAvgThroughput = setCheckbox(calculateForm.ueAvgThroughputRatio)">
-          </div>
-          <div>
-            <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">UE平均Throughput最大(依距離)</mat-checkbox>
-            <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
-          </div>
-        </div>
-        
-        <p class="sub_title inline-block">欲佈建的無線基站數量</p>
-        <div class="sub_content inline-block">
-            <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
-        </div>
-        <p class="sub_title">佈建使用的無線基站規格</p>
-        <div class="sub_content">
-          <ul>
-            <li>
-              <label>傳輸功率</label>
-              <span>
-                <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
-              </span>
-            </li>
+          <p class="sub_title">佈建使用的無線基站規格</p>
+          <div class="sub_content">
+            <ul>
+              <li>
+                <label>傳輸功率</label>
+                <span>
+                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
+                </span>
+              </li>
+              
+              <li>
+                <label>系統頻寬</label>
+                <span>
+                  <select [(ngModel)]="calculateForm.bandwidth">
+                    <option value="3">3</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                  </select>
+                  /
+                  <label>頻率</label>
+                  <input type="text" [(ngModel)]="calculateForm.Frequency">
+                </span>
+              </li>
             
-            <li>
-              <label>系統頻寬</label>
-              <span>
-                <select [(ngModel)]="calculateForm.bandwidth">
-                  <option value="3">3</option>
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20">20</option>
-                </select>
-                /
-                <label>頻率</label>
-                <input type="text" [(ngModel)]="calculateForm.Frequency">
-              </span>
-            </li>
-          
-        </ul>
+          </ul>
+          </div>
         </div>
-
       </mat-expansion-panel>
-      <mat-expansion-panel>
+      
+      <mat-expansion-panel (opened)="panelOpenState = true"
+      (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title>場域基本資訊</mat-panel-title>
+        <mat-panel-title>場域設定</mat-panel-title>
         </mat-expansion-panel-header>
-        <ul>
-          <li>
-            <p>場域名稱</p>
-            <input type="text" [(ngModel)]="calculateForm.taskName" class="w18">
-          </li>
-          <li>
-            <p>上傳圖檔</p><input type="file" (change)="fileChange($event)">
-            <span *ngIf="showFileName">{{ calculateForm.mapName }}</span>
-          </li>
-          <li>
-            <p>場域尺寸</p>
-            <ul class="inline-block">
-              <li class="inline-block">
-                <label>長</label>
-                <input type="text" [(ngModel)]="calculateForm.width" (change)="initData(false)">
-              </li>
-              <li class="inline-block">
-                <label>寬</label>
-                <input type="text" [(ngModel)]="calculateForm.height" (change)="initData(false)">
-              </li>
-              <li class="inline-block">
-                <label>高</label>
-                <input type="text" [(ngModel)]="calculateForm.altitude" (change)="initData(false)">
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>網路種類	</p>
-            <select [(ngModel)]="calculateForm.objectiveIndex">
-              <option value="0">4G</option>
-              <option value="1">5G</option>
-              <option value="2">Wifi</option>
-            </select>
-          </li>
-          
-          <li>
-            <p>切面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
-            <ol class="inline-block">
-              <li><input type="text" [(ngModel)]="zValues[0]"></li>
-              <li><input type="text" [(ngModel)]="zValues[1]"></li>
-              <li><input type="text" [(ngModel)]="zValues[2]"></li>
-            </ol>
-          </li>
-        </ul>
+          <div class="areaSetting">
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>場域基本資訊</mat-panel-title>
+              </mat-expansion-panel-header>
+              <ul>
+                <li>
+                  <p>場域名稱</p>
+                  <input type="text" [(ngModel)]="calculateForm.taskName" class="w18">
+                </li>
+                <li>
+                  <p>上傳圖檔</p><input type="file" (change)="fileChange($event)">
+                  <span *ngIf="showFileName">{{ calculateForm.mapName }}</span>
+                </li>
+                <li>
+                  <p>場域尺寸</p>
+                  <ul class="inline-block">
+                    <li class="inline-block">
+                      <label>長</label>
+                      <input type="text" [(ngModel)]="calculateForm.width" (change)="initData(false)">
+                    </li>
+                    <li class="inline-block">
+                      <label>寬</label>
+                      <input type="text" [(ngModel)]="calculateForm.height" (change)="initData(false)">
+                    </li>
+                    <li class="inline-block">
+                      <label>高</label>
+                      <input type="text" [(ngModel)]="calculateForm.altitude" (change)="initData(false)">
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p>網路種類	</p>
+                  <select [(ngModel)]="calculateForm.objectiveIndex">
+                    <option value="0">4G</option>
+                    <option value="1">5G</option>
+                    <option value="2">Wifi</option>
+                  </select>
+                </li>
+                
+                <li>
+                  <p>切面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
+                  <ol class="inline-block">
+                    <li><input type="text" [(ngModel)]="zValues[0]"></li>
+                    <li><input type="text" [(ngModel)]="zValues[1]"></li>
+                    <li><input type="text" [(ngModel)]="zValues[2]"></li>
+                  </ol>
+                </li>
+              </ul>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title [class]="subitemClass['obstacle']">場域障礙物資訊
+                  <label class="matBadge">{{ obstacleList.length }}</label>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <span *ngIf="obstacleList.length > 0" class="clearAll" (click)="clearAll('obstacle')">
+                <span class="material-icons">clear</span>Clear All
+              </span>
+                  <!--<p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
+                    <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
+                  </p>-->
+                  <ol>
+                    <li *ngFor="let item of obstacleList">
+                      <span>
+                        <label>X</label>
+                        <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>Y</label>
+                        <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>角度</label>
+                        <input type="text" [(ngModel)]="dragObject[item].rotate" (change)="changeRotate(item)">
+                      </span>
+                      <br>
+                      <span>
+                        <label>長</label>
+                        <input type="text" [(ngModel)]="dragObject[item].width" (change)="changeSize(item)">
+                      </span>
+                      <span>
+                        <label>寬</label>
+                        <input type="text" [(ngModel)]="dragObject[item].height" (change)="changeSize(item)">
+                      </span>
+                      <span>
+                        <label>高</label>
+                        <input type="text" [(ngModel)]="dragObject[item].altitude">
+                      </span>
+                      <span>
+                        <label>材質</label>
+                        <select class="w7em" [(ngModel)]="dragObject[item].material">
+                          <option value="0">木頭</option>
+                          <option value="1">水泥</option>
+                          <option value="2">輕鋼架</option>
+                          <option value="3">玻璃</option>
+                          <option value="4">不鏽鋼/其它金屬類</option>
+                        </select>
+                      </span>
+                    </li>
+                  </ol>
+            </mat-expansion-panel>
+            
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>場域內原有無線基站位置
+                  <label class="matBadge">{{ defaultBSList.length }}</label>
+                  
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <span *ngIf="defaultBSList.length > 0" class="clearAll" (click)="clearAll('defaultBS')">
+                <span class="material-icons">clear</span>Clear All
+              </span>
+              <ul>
+                      <!--<label>基站頻率</label>
+                      <span>
+                        <select [(ngModel)]="calculateForm.objectiveIndex">
+                          <option value="1">3.5</option>
+                          <option value="2">3</option>
+                          <option value="3">5</option>
+                          <option value="3">10</option>
+                          <option value="3">15</option>
+                        </select>
+                      </span>-->
+                    
+                <li>
+                  <!--<p>現有基站</p>-->
+                  <ol>
+                    <li *ngFor="let item of defaultBSList">
+                      <span>
+                        <label>X</label>
+                        <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>Y</label>
+                        <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>Z</label>
+                        <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                          <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                        </select>
+                      </span>
+                    </li>
+                  </ol>
+                </li>
+              </ul>
+            </mat-expansion-panel>
+      
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title [class]="subitemClass['ue']">場域內無線終端分佈資訊
+                  <label class="matBadge">{{ ueList.length }}</label>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <span *ngIf="ueList.length > 0" class="clearAll" (click)="clearAll('UE')">
+                <span class="material-icons">clear</span>Clear All
+              </span>
+              <ul>
+                <li>
+                  <!--<p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
+                    <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
+                  </p>-->
+                  <ol>
+                    <li *ngFor="let item of ueList">
+                      <span>
+                        <label>X</label>
+                        <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>Y</label>
+                        <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                      </span>
+                      <span>
+                        <label>Z</label>
+                        <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                          <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                        </select>
+                      </span>
+                    </li>
+                  </ol>
+                </li>
+              </ul>
+            </mat-expansion-panel>
+      
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>場域內可安裝無線基站的位置
+                  <label class="matBadge">{{ candidateList.length }}</label>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <span *ngIf="candidateList.length > 0" class="clearAll" (click)="clearAll('candidate')">
+                <span class="material-icons">clear</span>Clear All
+              </span>
+                <ol>
+                  <li *ngFor="let item of candidateList">
+                    <span>
+                      <label>X</label>
+                      <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                    </span>
+                    <span>
+                      <label>Y</label>
+                      <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                    </span>
+                    <span>
+                      <label>Z</label>
+                      <select class="zAxis" [(ngModel)]="dragObject[item].z">
+                        <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+                      </select>
+                    </span>
+                  </li>
+                </ol>
+            </mat-expansion-panel>
+      
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>場域內無線訊號衰減模型</mat-panel-title>
+              </mat-expansion-panel-header>
+              <ul>
+                <li>
+                  <p>
+                    <span>Path Loss Model</span>
+                    <select class="widthAuto">
+                      <option>台中智機場域</option>
+                    </select>
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    <label>預設無線模型</label>
+                    <span>
+                      <select [(ngModel)]="calculateForm.pathLossModelId">
+                        <option *ngFor="let i of pathLossModelIdList" value="{{i}}">{{ i }}</option>
+                      </select>
+                    </span>
+                  </p>
+                </li>
+                <!-- <li>
+                  <label>自訂無線模型(@jane要再給)</label>
+                  <span class="block spCell">
+                    a<input type="text" [(ngModel)]="calculateForm.modelname">
+                    b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
+                    c<input type="text" [(ngModel)]="calculateForm.contantFactor">
+                  </span>
+                </li> -->
+                
+              </ul>
+            </mat-expansion-panel>
+        </div>        
       </mat-expansion-panel>
+
+
+      
       <!--<mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>基站參數設定</mat-panel-title>
@@ -421,202 +633,14 @@
           </ul>
       </mat-expansion-panel>-->
 
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title [class]="subitemClass['obstacle']">場域障礙物資訊
-            <label class="matBadge">{{ obstacleList.length }}</label>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <span *ngIf="obstacleList.length > 0" class="clearAll" (click)="clearAll('obstacle')">
-          <span class="material-icons">clear</span>Clear All
-        </span>
-            <!--<p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
-              <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
-            </p>-->
-            <ol>
-              <li *ngFor="let item of obstacleList">
-                <span>
-                  <label>X</label>
-                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>角度</label>
-                  <input type="text" [(ngModel)]="dragObject[item].rotate" (change)="changeRotate(item)">
-                </span>
-                <br>
-                <span>
-                  <label>長</label>
-                  <input type="text" [(ngModel)]="dragObject[item].width" (change)="changeSize(item)">
-                </span>
-                <span>
-                  <label>寬</label>
-                  <input type="text" [(ngModel)]="dragObject[item].height" (change)="changeSize(item)">
-                </span>
-                <span>
-                  <label>高</label>
-                  <input type="text" [(ngModel)]="dragObject[item].altitude">
-                </span>
-                <span>
-                  <label>材質</label>
-                  <select class="w7em" [(ngModel)]="dragObject[item].material">
-                    <option value="0">木頭</option>
-                    <option value="1">水泥</option>
-                    <option value="2">輕鋼架</option>
-                    <option value="3">玻璃</option>
-                    <option value="4">不鏽鋼/其它金屬類</option>
-                  </select>
-                </span>
-              </li>
-            </ol>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>場域內原有無線基站位置
-            <label class="matBadge">{{ defaultBSList.length }}</label>
-            
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <span *ngIf="defaultBSList.length > 0" class="clearAll" (click)="clearAll('defaultBS')">
-          <span class="material-icons">clear</span>Clear All
-        </span>
-        <ul>
-                <!--<label>基站頻率</label>
-                <span>
-                  <select [(ngModel)]="calculateForm.objectiveIndex">
-                    <option value="1">3.5</option>
-                    <option value="2">3</option>
-                    <option value="3">5</option>
-                    <option value="3">10</option>
-                    <option value="3">15</option>
-                  </select>
-                </span>-->
-              
-          <li>
-            <!--<p>現有基站</p>-->
-            <ol>
-              <li *ngFor="let item of defaultBSList">
-                <span>
-                  <label>X</label>
-                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                  </select>
-                </span>
-              </li>
-            </ol>
-          </li>
-        </ul>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title [class]="subitemClass['ue']">場域內無線終端分佈資訊
-            <label class="matBadge">{{ ueList.length }}</label>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <span *ngIf="ueList.length > 0" class="clearAll" (click)="clearAll('UE')">
-          <span class="material-icons">clear</span>Clear All
-        </span>
-        <ul>
-          <li>
-            <!--<p [class]="subitemClass['ue']">UE 設定<label class="matBadge">{{ ueList.length }}</label>
-              <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
-            </p>-->
-            <ol>
-              <li *ngFor="let item of ueList">
-                <span>
-                  <label>X</label>
-                  <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Y</label>
-                  <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                </span>
-                <span>
-                  <label>Z</label>
-                  <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                    <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                  </select>
-                </span>
-              </li>
-            </ol>
-          </li>
-        </ul>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>場域內可安裝無線基站的位置
-            <label class="matBadge">{{ candidateList.length }}</label>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <span *ngIf="candidateList.length > 0" class="clearAll" (click)="clearAll('candidate')">
-          <span class="material-icons">clear</span>Clear All
-        </span>
-          <ol>
-            <li *ngFor="let item of candidateList">
-              <span>
-                <label>X</label>
-                <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-              </span>
-              <span>
-                <label>Y</label>
-                <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-              </span>
-              <span>
-                <label>Z</label>
-                <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                  <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                </select>
-              </span>
-            </li>
-          </ol>
-      </mat-expansion-panel>
+      
+
 
       <mat-expansion-panel>
         <mat-expansion-panel-header>
-          <mat-panel-title>場域內無線訊號衰減模型</mat-panel-title>
-        </mat-expansion-panel-header>
-        <ul>
-          <li>
-            <span>Path Loss Model</span>
-            <select class="widthAuto">
-              <option>台中智機場域</option>
-            </select>
-          </li>
-          <li>
-            <label>預設無線模型</label>
-            <span>
-              <select [(ngModel)]="calculateForm.pathLossModelId">
-                <option *ngFor="let i of pathLossModelIdList" value="{{i}}">{{ i }}</option>
-              </select>
-            </span>
-          </li>
-          <!-- <li>
-            <label>自訂無線模型(@jane要再給)</label>
-            <span class="block spCell">
-              a<input type="text" [(ngModel)]="calculateForm.modelname">
-              b<input type="text" [(ngModel)]="calculateForm.distanceFactor">
-              c<input type="text" [(ngModel)]="calculateForm.contantFactor">
-            </span>
-          </li> -->
-          
-        </ul>
-      </mat-expansion-panel>
-      <mat-expansion-panel>
-        
-        <mat-expansion-panel-header>
           <mat-panel-title>規劃演算法設定</mat-panel-title>
         </mat-expansion-panel-header>
+        <div class="panel_content">
         <ul>
           <li>
             <span>C值</span>
@@ -643,6 +667,7 @@
             <input type="text" [(ngModel)]="calculateForm.mctsTotalTime">
           </li>
         </ul>
+      </div>
       </mat-expansion-panel>
  
     </mat-accordion>    

@@ -28,8 +28,8 @@ body {
     color: #fff;
 }
 .mat-accordion .mat-expansion-panel:first-of-type {
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
+    /*border-top-right-radius: 0;
+    border-top-left-radius: 0;*/
 }
 .mat-expansion-panel:not([class*=mat-elevation-z]) {
     box-shadow: none;
