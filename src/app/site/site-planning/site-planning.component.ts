@@ -922,7 +922,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       option => option !== ''
     );
     this.calculateForm.zValue = `[${zValue.toString()}]`;
-    this.calculateForm.availableNewBsNumber = this.candidateList.length;
     if (this.obstacleList.length > 0) {
       // 障礙物資訊
       let obstacleInfo = '';
@@ -1224,7 +1223,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // objective parameters
     const objectiveData = [
       ['objective', 'objectiveStopCondition', 'newBsNum'],
-      [this.calculateForm.objectiveIndex, this.calculateForm.obstacleInfo, this.calculateForm.availableNewBsNumber]
+      [this.calculateForm.objectiveIndex, '', this.calculateForm.availableNewBsNumber]
     ];
     const objectiveWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(objectiveData);
     XLSX.utils.book_append_sheet(wb, objectiveWS, 'objective parameters');
