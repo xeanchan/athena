@@ -145,15 +145,15 @@ button {
     vertical-align: text-bottom;
 }
 ::placeholder { /* CSS 3 標準 */
-    color: #162a47;
+    color: #6a8f9e;
   }
   ::-webkit-input-placeholder { /* Chrome, Safari */
-    color: #162a47;
+    color: #6a8f9e;
   }
   :-ms-input-placeholder { /* IE 10+ */
-    color: #162a47;
+    color: #6a8f9e;
   }
   ::-moz-placeholder { /* Firefox 19+ */
-    color: #162a47;
+    color: #6a8f9e;
     opacity: 1;
   }
