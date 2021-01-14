@@ -486,7 +486,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.moveable.ngOnInit();
       this.setDragData();
-      this.moveNumber();
+      this.moveNumber(this.svgId);
       this.hoverObj = this.target;
       this.setLabel();
     }, 0);
@@ -659,7 +659,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber();
+      this.moveNumber(this.svgId);
     }
     this.setLabel();
   }
@@ -676,7 +676,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.scalex = scaleX;
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber();
+      this.moveNumber(this.svgId);
     }
   }
 
@@ -736,7 +736,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber();
+      this.moveNumber(this.svgId);
     }
     this.setLabel();
   }
@@ -853,10 +853,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** 數量物件移動 */
-  moveNumber() {
-    const circleElement: HTMLSpanElement = document.querySelector(`#${this.svgId}_circle`);
+  moveNumber(svgId) {
+    const circleElement: HTMLSpanElement = document.querySelector(`#${svgId}_circle`);
     if (circleElement != null) {
-      const targetElement: HTMLSpanElement = document.querySelector(`#${this.svgId}`);
+      const targetElement: HTMLSpanElement = document.querySelector(`#${svgId}`);
       const targetRect = targetElement.getBoundingClientRect();
       circleElement.style.top = `${targetRect.top - 20}px`;
       circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
@@ -922,7 +922,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       option => option !== ''
     );
     this.calculateForm.zValue = `[${zValue.toString()}]`;
-    this.calculateForm.availableNewBsNumber = this.candidateList.length;
     if (this.obstacleList.length > 0) {
       // 障礙物資訊
       let obstacleInfo = '';
@@ -1038,13 +1037,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     // this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber();
+      this.moveNumber(svgId);
     }
   }
 
   /** change X,Y */
   changePosition(svgId) {
-    this.svgId = svgId;
+    // this.svgId = svgId;
     this.target = document.querySelector(`#${svgId}`);
     const rect = this.target.getBoundingClientRect();
     const height = rect.height;
@@ -1055,23 +1054,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${yPos}px`);
     if (this.dragObject[svgId].type === 'obstacle') {
-      if (this.dragObject[svgId].element === 'rect') {
-        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width)}px`);
-      } else {
-        this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width) / 2}px`);
-      }
+      this.frame.set('width', `${this.pixelXLinear(this.dragObject[svgId].width)}px`);
       this.frame.set('height', `${this.pixelYLinear(this.dragObject[svgId].height)}px`);
     }
     this.setTransform(this.target);
 
     this.spanStyle[svgId].left = left;
     this.spanStyle[svgId].top = yPos;
-console.log(svgId, this.spanStyle[svgId])
-    // this.target.style.top = `${yPos}px`;
-    // this.target.style.left = `${left}px`;
 
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber();
+    if (this.dragObject[svgId].type === 'defaultBS' || this.dragObject[svgId].type === 'candidate') {
+      this.moveNumber(svgId);
     }
   }
 
@@ -1231,7 +1223,7 @@ console.log(svgId, this.spanStyle[svgId])
     // objective parameters
     const objectiveData = [
       ['objective', 'objectiveStopCondition', 'newBsNum'],
-      [this.calculateForm.objectiveIndex, this.calculateForm.obstacleInfo, this.calculateForm.availableNewBsNumber]
+      [this.calculateForm.objectiveIndex, '', this.calculateForm.availableNewBsNumber]
     ];
     const objectiveWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(objectiveData);
     XLSX.utils.book_append_sheet(wb, objectiveWS, 'objective parameters');
@@ -1436,6 +1428,7 @@ console.log(svgId, this.spanStyle[svgId])
           type = 'polygon';
           polygon++;
         }
+
         this.dragObject[id] = {
           x: obstacleData[i][0],
           y: obstacleData[i][1],
@@ -1452,29 +1445,30 @@ console.log(svgId, this.spanStyle[svgId])
         };
         this.svgStyle[id] = {
           display: 'inherit',
-          width: this.pixelYLinear(this.dragObject[id].width),
+          width: this.pixelXLinear(this.dragObject[id].width),
           height: this.pixelYLinear(this.dragObject[id].height)
         };
         if (shape === 'rect') {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
-            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
+            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
             width: this.pixelXLinear(obstacleData[i][2]),
-            height: this.pixelXLinear(obstacleData[i][3])
+            height: this.pixelYLinear(obstacleData[i][3])
           };
           this.rectStyle[id] = {
-            width: this.pixelYLinear(this.dragObject[id].width),
+            width: this.pixelXLinear(this.dragObject[id].width),
             height: this.pixelYLinear(this.dragObject[id].height),
             fill: this.dragObject[id].color
           };
         } else if (shape === 'ellipse') {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
-            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
-            width: this.pixelXLinear(obstacleData[i][2] / 2),
-            height: this.pixelXLinear(obstacleData[i][3] / 2)
+            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
+            width: this.pixelXLinear(this.dragObject[id].width * 2),
+            height: this.pixelYLinear(this.dragObject[id].height * 2)
           };
-          const x = (this.pixelYLinear(this.dragObject[id].width) / 2).toString();
+          console.log(this.dragObject[id], this.spanStyle[id])
+          const x = (this.pixelXLinear(this.dragObject[id].width) / 2).toString();
           const y = (this.pixelYLinear(this.dragObject[id].height) / 2).toString();
           this.ellipseStyle[id] = {
             cx: x,
@@ -1486,11 +1480,11 @@ console.log(svgId, this.spanStyle[svgId])
         } else if (shape === 'polygon') {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
-            top: `${this.pixelXLinear(this.dragObject[id].y)}`,
+            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
             width: this.pixelXLinear(obstacleData[i][2] / 2),
-            height: this.pixelXLinear(obstacleData[i][3] / 2)
+            height: this.pixelYLinear(obstacleData[i][3] / 2)
           };
-          const width = this.pixelYLinear(this.dragObject[id].width);
+          const width = this.pixelXLinear(this.dragObject[id].width);
           const height = this.pixelYLinear(this.dragObject[id].height);
           const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
           this.polygonStyle[id] = {
