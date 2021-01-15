@@ -367,7 +367,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   dataURLtoBlob(dataURI) {
     let byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0) {
-      byteString = atob(dataURI.split(',')[1]);
+      byteString = atob(dataURI.split(',')[1]); // atob(dataURI.split(',')[1]);
+      // decodeURIComponent(escape(window.atob(("eyJzdWIiOiJ0ZXN0MyIsInVzZXJJZCI6IjEwMTY5MiIsIm5hbWUiOiLmtYvor5V0ZXN0M-a1i-ivlSIsImV4cCI6MTU3OTUxMTY0OH0").replace(/-/g, "+").replace(/_/g, "/"))));
     } else {
       byteString = unescape(dataURI.split(',')[1]);
     }
@@ -1258,16 +1259,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const map: string = this.wb.SheetNames[0];
     const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
     const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
-
     this.calculateForm.mapImage = '';
+    const keyMap = {};
+    Object.keys(mapData[0]).forEach((key) => {
+      keyMap[mapData[0][key]] = key;
+    });
     for (let i = 1; i < mapData.length; i++) {
       this.calculateForm.mapImage += mapData[i][0];
     }
-    this.calculateForm.width = mapData[1][1];
-    this.calculateForm.height = mapData[1][2];
-    this.calculateForm.altitude = mapData[1][3];
-    this.calculateForm.mapName = mapData[1][5];
-    this.calculateForm.zValue = mapData[1][6].toString().split(',');
+    this.calculateForm.width = mapData[1][keyMap['width']];
+    this.calculateForm.height = mapData[1][keyMap['height']];
+    this.calculateForm.altitude = mapData[1][keyMap['altitude']];
+    this.calculateForm.mapName = mapData[1][keyMap['mapName']];
+    if (typeof mapData[1][keyMap['zValue']] !== 'undefined') {
+      this.calculateForm.zValue = mapData[1][keyMap['zValue']].toString().split(',');
+    }
 
     this.initData(true);
   }
@@ -1284,6 +1290,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (baseStationData.length > 1) {
       for (let i = 1; i < baseStationData.length; i++) {
         const id = `defaultBS_${(i - 1)}`;
+        const material = (typeof baseStationData[i][3] === 'undefined' ? '0' : baseStationData[i][3]);
+        const color = (typeof baseStationData[i][4] === 'undefined' ? 'green' : baseStationData[i][4]);
+
         this.dragObject[id] = {
           x: baseStationData[i][0],
           y: baseStationData[i][1],
@@ -1294,8 +1303,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           rotate: 0,
           title: this.svgMap['defaultBS'].title,
           type: this.svgMap['defaultBS'].type,
-          color: baseStationData[i][4],
-          material: baseStationData[i][3],
+          color: color,
+          material: material,
           element: this.svgMap['defaultBS'].element
         };
         this.defaultBSList.push(id);
@@ -1311,10 +1320,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           height: 30
         };
         this.pathStyle[id] = {
-          fill: baseStationData[i][4]
+          fill: color
         };
         window.setTimeout(() => {
-          this.changePosition(id);
+          // this.changePosition(id);
+          this.moveNumber(id);
         }, 0);
       }
     }
@@ -1326,6 +1336,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       for (let i = 1; i < candidateData.length; i++) {
         const id = `candidate_${(i - 1)}`;
         this.candidateList.push(id);
+        const material = (typeof candidateData[i][3] === 'undefined' ? '0' : candidateData[i][3]);
+        const color = (typeof candidateData[i][4] === 'undefined' ? 'green' : candidateData[i][4]);
+
         this.dragObject[id] = {
           x: candidateData[i][0],
           y: candidateData[i][1],
@@ -1336,10 +1349,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           rotate: 0,
           title: this.svgMap['candidate'].title,
           type: this.svgMap['candidate'].type,
-          color: candidateData[i][4],
-          material: candidateData[i][3],
+          color: color,
+          material: material,
           element: this.svgMap['candidate'].element
         };
+        console.log(this.pixelXLinear(candidateData[i][0]))
         this.spanStyle[id] = {
           left: this.pixelXLinear(candidateData[i][0]),
           top: this.pixelYLinear(candidateData[i][1]),
@@ -1352,8 +1366,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           height: 30
         };
         this.pathStyle[id] = {
-          fill: candidateData[i][4]
+          fill: color
         };
+        
         window.setTimeout(() => {
           this.changePosition(id);
         }, 0);
@@ -1367,6 +1382,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       for (let i = 1; i < ueData.length; i++) {
         const id = `UE_${(i - 1)}`;
         this.ueList.push(id);
+
+        const material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
+        const color = (typeof ueData[i][4] === 'undefined' ? 'green' : ueData[i][4]);
+
         this.dragObject[id] = {
           x: ueData[i][0],
           y: ueData[i][1],
@@ -1377,8 +1396,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           rotate: 0,
           title: this.svgMap['UE'].title,
           type: this.svgMap['UE'].type,
-          color: ueData[i][4],
-          material: ueData[i][3],
+          color: color,
+          material: material,
           element: this.svgMap['UE'].element
         };
         this.spanStyle[id] = {
@@ -1393,7 +1412,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           height: 30
         };
         this.pathStyle[id] = {
-          fill: ueData[i][4]
+          fill: color
         };
         window.setTimeout(() => {
           this.changePosition(id);
@@ -1414,7 +1433,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         let id;
         let type;
-        const shape = obstacleData[i][8];
+        let shape = obstacleData[i][8];
         if (shape === 'rect') {
           id = `rect_${rect}`;
           type = 'rect';
@@ -1427,7 +1446,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           id = `polygon_${polygon}`;
           type = 'polygon';
           polygon++;
+        } else {
+          // default
+          shape = 'rect';
+          id = `rect_${rect}`;
+          type = 'rect';
+          rect++;
         }
+
+        const material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6]);
+        const color = (typeof obstacleData[i][7] === 'undefined' ? 'green' : obstacleData[i][7]);
 
         this.dragObject[id] = {
           x: obstacleData[i][0],
@@ -1439,8 +1467,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           rotate: obstacleData[i][5],
           title: this.svgMap[type].title,
           type: this.svgMap[type].type,
-          color: obstacleData[i][7],
-          material: obstacleData[i][6],
+          color: color,
+          material: material,
           element: shape
         };
         this.svgStyle[id] = {
@@ -1467,7 +1495,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             width: this.pixelXLinear(this.dragObject[id].width * 2),
             height: this.pixelYLinear(this.dragObject[id].height * 2)
           };
-          console.log(this.dragObject[id], this.spanStyle[id])
+
           const x = (this.pixelXLinear(this.dragObject[id].width) / 2).toString();
           const y = (this.pixelYLinear(this.dragObject[id].height) / 2).toString();
           this.ellipseStyle[id] = {
