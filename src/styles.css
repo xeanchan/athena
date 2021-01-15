@@ -4,8 +4,8 @@
 
 body {
     /*background-color: #33373c;
-    color: #fff;*/
-    overflow: hidden;
+    color: #fff;
+    overflow: hidden;*/
 }
 
 .inline-block {
@@ -157,3 +157,17 @@ button {
     color: #6a8f9e;
     opacity: 1;
   }
+
+
+  .map {
+      width: 100%;
+  }
+  .rightArea {
+    font-size: .9em;
+    width: 25%;
+}
+
+.mat-button-toggle-group button {
+    width: initial!important;
+    
+}
