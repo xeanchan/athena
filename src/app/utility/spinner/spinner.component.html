@@ -3,6 +3,6 @@
   size="medium"
   color="#fff"
   type="ball-scale-multiple">
-  <p style="font-size: 20px; color: white">運算中...</p>
+  <p style="font-size: 20px; color: white">運算中...<span *ngIf="showHome"><span id="percentageVal">0</span>%</span></p>
   <p *ngIf="showHome"><a href="javascript:void(0)" (click)="home()">返回場域清單{{ 'home' | translate }}</a></p>
 </ngx-spinner>

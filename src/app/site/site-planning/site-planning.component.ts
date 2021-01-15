@@ -887,6 +887,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
       res => {
         this.taskid = res['taskid'];
+        document.getElementById('percentageVal').innerHTML = '0';
         this.getProgress();
       },
       err => {
@@ -992,11 +993,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.http.get(url).subscribe(
       res => {
         window.clearInterval(this.progressInterval);
+        document.getElementById('percentageVal').innerHTML = (res['progress'] * 100).toString();
         if (res['progress'] === 1) {
           // done
           this.authService.spinnerHide();
-          location.href = `#/site/result?taskId=${this.taskid}`;
-          // this.router.navigate([`/site/result`], { queryParams: { taskId: this.taskid }});
+          location.replace(`#/site/result?taskId=${this.taskid}`);
+          location.reload();
         } else {
           // query again
           window.clearInterval(this.progressInterval);
