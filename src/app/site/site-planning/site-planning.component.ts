@@ -156,9 +156,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   numColumnList = ['totalRound', 'crossover', 'mutation', 'iteration', 'seed',
     'width', 'height', 'altitude', 'pathLossModelId', 'useUeCoordinate',
     'powerMaxRange', 'powerMinRange', 'beamMaxId', 'beamMinId', 'objectiveIndex',
-    'availableNewBsNumber', 'addFixedBsNumber', 'bandwidth', 'Frequency', 'sinrRatio',
+    'availableNewBsNumber', 'addFixedBsNumber', 'bandwidth', 'frequency', 'sinrRatio',
     'throughputRatio', 'coverageRatio', 'ueAvgSinrRatio', 'ueAvgThroughputRatio', 'ueTpByDistanceRatio',
-    'mctsC', 'mctsMimo',
+    'mctsC', 'mctsMimo', 'ueCoverageRatio', 'ueTpByRsrpRatio',
     'mctsTemperature', 'mctsTime', 'mctsTestTime', 'mctsTotalTime'];
     // 'distanceFactor', 'contantFactor',
   @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
@@ -882,7 +882,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.authService.spinnerShowAsHome();
     this.setForm();
-
+    console.log(this.calculateForm);
     const url = `${this.authService.API_URL}/calculate`;
     this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
       res => {
@@ -917,15 +917,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof this.calculateForm.isUeTpByDistance === 'undefined') {
       this.calculateForm.isUeTpByDistance = false;
     }
+    this.calculateForm.useUeCoordinate = 1;
 
     this.calculateForm.sessionid = this.authService.userToken;
     const zValue = this.zValues.filter(
       option => option !== ''
     );
     this.calculateForm.zValue = `[${zValue.toString()}]`;
+    let obstacleInfo = '';
+    this.calculateForm.obstacleInfo = obstacleInfo;
     if (this.obstacleList.length > 0) {
       // 障礙物資訊
-      let obstacleInfo = '';
       for (let i = 0; i < this.obstacleList.length; i++) {
         const obj = this.dragObject[this.obstacleList[i]];
         obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate},${obj.material}]`;
@@ -935,21 +937,23 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.calculateForm.obstacleInfo = obstacleInfo;
     }
+    let ueCoordinate = '';
+    this.calculateForm.ueCoordinate = ueCoordinate;
     if (this.ueList.length > 0) {
-      // UE設定
-      let ueCoordinate = '';
       for (let i = 0; i < this.ueList.length; i++) {
         const obj = this.dragObject[this.ueList[i]];
-        ueCoordinate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        // ueCoordinate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        ueCoordinate += `[${obj.x},${obj.y},${obj.z}]`;
         if (i < this.ueList.length - 1) {
           ueCoordinate += '|';
         }
       }
       this.calculateForm.ueCoordinate = ueCoordinate;
     }
+    let defaultBs = '';
+    this.calculateForm.defaultBs = defaultBs;
     if (this.defaultBSList.length > 0) {
       // 現有基站
-      let defaultBs = '';
       for (let i = 0; i < this.defaultBSList.length; i++) {
         const obj = this.dragObject[this.defaultBSList[i]];
         defaultBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
@@ -959,19 +963,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.calculateForm.defaultBs = defaultBs;
     }
+    let candidate = '';
+    this.calculateForm.candidateBs = candidate;
     if (this.candidateList.length > 0) {
       // 新增基站
-      let candidate = '';
       for (let i = 0; i < this.candidateList.length; i++) {
         const obj = this.dragObject[this.candidateList[i]];
-        candidate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        // candidate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        candidate += `[${obj.x},${obj.y},${obj.z}]`;
         if (i < this.candidateList.length - 1) {
           candidate += '|';
         }
       }
       this.calculateForm.candidateBs = candidate;
     }
-    this.calculateForm.availableNewBsNumber = this.candidateList.length;
 
     // number type to number
     Object.keys(this.calculateForm).forEach((key) => {
@@ -990,7 +995,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         if (res['progress'] === 1) {
           // done
           this.authService.spinnerHide();
-          this.router.navigate([`/site/result`], { queryParams: { taskId: this.taskid }});
+          location.href = `#/site/result?taskId=${this.taskid}`;
+          // this.router.navigate([`/site/result`], { queryParams: { taskId: this.taskid }});
         } else {
           // query again
           window.clearInterval(this.progressInterval);
@@ -1204,7 +1210,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.calculateForm.powerMaxRange, this.calculateForm.powerMinRange,
         // this.calculateForm.beamMaxId, this.calculateForm.beamMinId,
         '', '',
-        this.calculateForm.bandwidth, this.calculateForm.Frequency
+        this.calculateForm.bandwidth, this.calculateForm.frequency
       ]
     ];
     const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
@@ -1270,7 +1276,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculateForm.width = mapData[1][keyMap['width']];
     this.calculateForm.height = mapData[1][keyMap['height']];
     this.calculateForm.altitude = mapData[1][keyMap['altitude']];
-    this.calculateForm.mapName = mapData[1][keyMap['mapName']];
+    if (typeof mapData[1][keyMap['mapName']] === 'undefined') {
+      this.calculateForm.mapName = mapData[1][keyMap['imageName']];
+    } else {
+      this.calculateForm.mapName = mapData[1][keyMap['mapName']];
+    }
     if (typeof mapData[1][keyMap['zValue']] !== 'undefined') {
       this.calculateForm.zValue = mapData[1][keyMap['zValue']].toString().split(',');
     }
@@ -1464,7 +1474,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           width: obstacleData[i][2],
           height: obstacleData[i][3],
           altitude: obstacleData[i][4],
-          rotate: obstacleData[i][5],
+          rotate: (typeof obstacleData[i][5] === 'undefined' ? 0 : obstacleData[i][5]),
           title: this.svgMap[type].title,
           type: this.svgMap[type].type,
           color: color,
@@ -1536,7 +1546,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.beamMaxId = Number(bsParametersData[1][2]);
       this.calculateForm.beamMinId = Number(bsParametersData[1][3]);
       this.calculateForm.bandwidth = Number(bsParametersData[1][4]);
-      this.calculateForm.Frequency = Number(bsParametersData[1][5]);
+      this.calculateForm.frequency = Number(bsParametersData[1][5]);
     }
     /* algorithm parameters sheet */
     const algorithmParameters: string = this.wb.SheetNames[6];
@@ -1570,7 +1580,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.authService.spinnerShowAsHome();
     this.setForm();
 
-    const url = `${this.authService.API_URL}/calculate`;
+    const url = `${this.authService.API_URL}/storeResult`;
     this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
       res => {
         this.taskid = res['taskid'];

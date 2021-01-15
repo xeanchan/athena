@@ -99,9 +99,18 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
 
+  exportHstExcel(taskId) {
+    const url = `${this.authService.API_URL}/historyDetail/${taskId}/${this.authService.userToken}`;
+    this.http.get(url).subscribe(
+      res => {
+        this.excelService.export(res['input']);
+      }
+    );
+  }
+
   /** export excel */
   exportExcel(taskId) {
-    const url = `${this.authService.API_URL}/completeCalcResult/${taskId}/${this.authService.userToken}`;
+    const url = `${this.authService.API_URL}/historyDetail/${taskId}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
         this.excelService.export(res['input']);

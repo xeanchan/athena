@@ -3,7 +3,7 @@ export class CalculateForm {
   sessionid: string = null;
   taskName: string = null;
   totalRound: number = 1;
-  mapName: string = null;
+  mapName: string = '';
   mapImage: string = null;
   // createTime = null;
   crossover: number = 0.8;
@@ -29,28 +29,32 @@ export class CalculateForm {
   availableNewBsNumber: number = 0;
   addFixedBsNumber: number = 0;
   bandwidth: number = null;
-  Frequency: number = null;
+  frequency: number = null;
   isAverageSinr = false;
-  sinrRatio: number = null;
+  sinrRatio: number = 5;
   isAvgThroughput = false;
-  throughputRatio: number = null;
+  throughputRatio: number = 5;
   isCoverage: boolean = false;
-  coverageRatio: number = null;
-  isUeAvgSinr: boolean = false;
-  ueAvgSinrRatio: number = null;
-  isUeAvgThroughput: boolean = false;
-  ueAvgThroughputRatio: number = null;
+  coverageRatio: number = 0.95;
+  isUeCoverage = true;
+  ueCoverageRatio: number = 0.95;
+  isUeAvgSinr: boolean = true;
+  ueAvgSinrRatio: number = 16;
+  isUeAvgThroughput: boolean = true;
+  ueAvgThroughputRatio: number = 100;
   isUeTpByDistance: boolean = false;
-  ueTpByDistanceRatio: number = null;
+  ueTpByDistanceRatio: number = 100;
+  isUeTpByRsrp: boolean = false;
+  ueTpByRsrpRatio: number = 100;
   // modelname: string = null;
   // distanceFactor: number = null;
   // contantFactor: number = null;
-  mctsC: number = null;
-  mctsMimo: number = null;
-  mctsTemperature: number = null;
-  mctsTime: number = null;
-  mctsTestTime: number = null;
-  mctsTotalTime: number = null;
+  mctsC: number = 1.2;
+  mctsMimo: number = 2;
+  mctsTemperature: number = 300;
+  mctsTime: number = 30;
+  mctsTestTime: number = 300;
+  mctsTotalTime: number = 500;
 
   // constructor(options: {
   //   sessionid?: string,

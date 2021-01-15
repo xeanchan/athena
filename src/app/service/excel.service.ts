@@ -88,7 +88,7 @@ export class ExcelService {
         calculateForm.powerMaxRange, calculateForm.powerMinRange,
         // calculateForm.beamMaxId, calculateForm.beamMinId,
         '', '',
-        calculateForm.bandwidth, calculateForm.Frequency
+        calculateForm.bandwidth, calculateForm.frequency
       ]
     ];
     const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
