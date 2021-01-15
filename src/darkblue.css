@@ -58,10 +58,14 @@ h3 button {
     border-top: 3px solid #0f4e82!important;
 }
 .rightArea h5 {
-    color: #3978ab!important;
+    color: #8d9daf!important;
+    border-bottom:1px solid #5b6c80;
+    line-height: 2;
+    margin-bottom: 0;
 }
 .ds h5 i {
     color: #8d9daf;
+    margin-right: .5em;
 }
 
 .rightArea ul li > span {

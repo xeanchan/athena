@@ -1,6 +1,4 @@
-.mat-button-toggle-group {
-    margin-left: 1em;
-}
+
 .box {
     display: inline-block;
     vertical-align: top;
@@ -144,29 +142,6 @@
     font-size: .9em;
     width: 25%;
 }
-.rightArea h5 {
-    font-size: 1.1em;
-    color: #1760af;
-}
-.rightArea ul li {
-    display: block;
-}
-.rightArea ul li > span {
-    display: block;
-    font-size: .9;
-    line-height: 1.5;
-    margin: 0 0 .4em 1.5em;
-    padding: .4em 0;
-    vertical-align: middle;
-}
-.rightArea ul li span > span {
-    display: inline;
-}
-.rightArea ul li span label {
-    font-weight: bold;
-    font-size: .95em;
-    margin-right: .2em;
-}
 .rightArea ul li span label::after {
     content: " :";
 }
@@ -199,4 +174,10 @@
     margin-left: .3em;
     vertical-align: middle;
     font-size: 16px;
+}
+.mat-button-toggle-group {
+    margin-left: 1em;
+}
+.mat-button-toggle-group button {
+    width: initial!important;
 }
