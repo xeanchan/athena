@@ -71,6 +71,7 @@ export class PdfComponent implements OnInit {
 
           this.performance.calculateForm = this.calculateForm;
           this.performance.result = this.result;
+          this.performance.setData();
           this.statistics.calculateForm = this.calculateForm;
           this.statistics.result = this.result;
           this.siteInfo.calculateForm = this.calculateForm;

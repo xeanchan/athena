@@ -10,9 +10,9 @@
           <th></th>
       </tr>
       <tr>
-          <td>100%</td>
-          <td>13.66dB</td>
-          <td>-68.17dBm</td>
+          <td>{{ result['coverage'] }}%</td>
+          <td>{{ result['averageSinr'] | number }}dB</td>
+          <td>{{ result['averageRsrp'] | number }}dBm</td>
           <td></td>
       </tr>
   </tbody>
@@ -25,9 +25,9 @@
       </tr>
       <tr>
           <td>{{ result['ueCoverage'] }}%</td>
-          <td>{{ result['ueAverageSinr'] }}</td>
-          <td>{{ result['ueAverageRsrp'] }}</td>
-          <td>{{ result['throughput'] }}</td>
+          <td>{{ result['ueAverageSinr'] | number }}</td>
+          <td>{{ result['ueAverageRsrp'] | number }}</td>
+          <td>{{ result['ueThroughput'] | number }}</td>
       </tr>
   </tbody>
   <tbody>
@@ -37,17 +37,11 @@
           <th>切面平均 SINR</th>
           <th>切面平均 RSRP</th>
       </tr>
-      <tr>
-          <td>1公尺</td>
-          <td>98%</td>
-          <td>12.38dB</td>
-          <td>-83.58dBm</td>
-      </tr>
-      <tr>
-          <td>1.5公尺</td>
-          <td>98%</td>
-          <td>12.38dB</td>
-          <td>-83.58dBm</td>
+      <tr *ngFor="let item of zValueList">
+          <td>{{ item[0] }}公尺</td>
+          <td>{{ item[1] }}%</td>
+          <td>{{ item[2] | number }}dB</td>
+          <td>{{ item[3] | number }}dBm</td>
       </tr>
   </tbody>
 </table>

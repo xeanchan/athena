@@ -14,13 +14,17 @@ export class ProposeComponent implements OnInit {
   constructor(private authService: AuthService) { }
 
   plotLayout;
-
+  /** result output */
   result = {};
+  /** result input */
   calculateForm = new CalculateForm();
+  /** 建議方案 list */
+  candidateList = [];
 
   ngOnInit(): void {
   }
 
+  /** draw layout */
   drawLayout(isPDF) {
     const reader = new FileReader();
     reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
@@ -80,6 +84,25 @@ export class ProposeComponent implements OnInit {
         layout: this.plotLayout,
         config: defaultPlotlyConfiguration
       });
+
+      // candidateBs
+      let index = 1;
+      const numMap = {};
+      for (const item of this.result['inputBsList']) {
+        numMap[item] = index;
+        index++;
+      }
+      // 建議方案 list
+      for (let i = 0; i < this.result['candidateBsPower'].length; i++) {
+        if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
+          this.candidateList.push([
+            numMap[this.result['chosenCandidate'][i].toString()],
+            this.result['candidateBsPower'][i],
+            this.result['candidateBeamId'][i]
+          ]);
+        }
+      }
+      
     };
   }
 

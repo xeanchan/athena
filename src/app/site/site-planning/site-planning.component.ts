@@ -1150,13 +1150,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // map
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     const mapData = [
-      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName', 'zValue'],
+      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName'],
       [
         this.calculateForm.mapImage, this.calculateForm.width,
         this.calculateForm.height, this.calculateForm.altitude,
-        1, this.calculateForm.mapName, this.calculateForm.zValue
+        this.zValues[0], this.calculateForm.mapName
       ]
     ];
+    if (this.zValues.length > 1) {
+      for (let i = 1; i < this.zValues.length; i++) {
+        mapData.push([
+          '', '', '', '', this.zValues[i], ''
+        ]);
+      }
+    }
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(mapData);
     XLSX.utils.book_append_sheet(wb, ws, 'map');
     // defaultBS
@@ -1274,17 +1281,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     for (let i = 1; i < mapData.length; i++) {
       this.calculateForm.mapImage += mapData[i][0];
+      if (typeof mapData[i][keyMap['mapLayer']] !== 'undefined') {
+        if (mapData[i][keyMap['mapLayer']] !== '') {
+          this.zValues.push(mapData[i][keyMap['mapLayer']]);
+        }
+      }
     }
     this.calculateForm.width = mapData[1][keyMap['width']];
     this.calculateForm.height = mapData[1][keyMap['height']];
     this.calculateForm.altitude = mapData[1][keyMap['altitude']];
+    // mapName or imageName
     if (typeof mapData[1][keyMap['mapName']] === 'undefined') {
       this.calculateForm.mapName = mapData[1][keyMap['imageName']];
     } else {
       this.calculateForm.mapName = mapData[1][keyMap['mapName']];
-    }
-    if (typeof mapData[1][keyMap['zValue']] !== 'undefined') {
-      this.calculateForm.zValue = mapData[1][keyMap['zValue']].toString().split(',');
     }
 
     this.initData(true);
