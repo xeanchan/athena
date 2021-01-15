@@ -28,6 +28,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   ) { }
 
   taskList: any = [];
+  hstList: any = [];
   timeInterval;
   dialogRef;
   matDialogConfig: MatDialogConfig;
@@ -45,6 +46,15 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     window.setTimeout(() => {
       this.startInterval();
     }, 5000);
+
+    this.http.get(`${this.authService.API_URL}/history/sel/${this.authService.userToken}`).subscribe(
+      res => {
+        this.hstList = res['history'];
+      }, err => {
+        console.log(err);
+        this.router.navigate(['/logon']);
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -99,19 +109,19 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     );
 
 
-    const data = [
-      ['1', 'a', 'aa'],
-      ['2', 'b', 'bb'],
-      ['3', 'c', 'cc']
-    ];
-    /* generate worksheet */
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
-    /* generate workbook and add the worksheet */
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    console.log(wb);
-    /* save to file */
-    XLSX.writeFile(wb, 'SheetJS.xlsx');
+    // const data = [
+    //   ['1', 'a', 'aa'],
+    //   ['2', 'b', 'bb'],
+    //   ['3', 'c', 'cc']
+    // ];
+    // /* generate worksheet */
+    // const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
+    // /* generate workbook and add the worksheet */
+    // const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    // console.log(wb);
+    // /* save to file */
+    // XLSX.writeFile(wb, 'SheetJS.xlsx');
   }
 
   /** export PDF */
