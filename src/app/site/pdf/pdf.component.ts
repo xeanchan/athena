@@ -61,7 +61,7 @@ export class PdfComponent implements OnInit {
           this.propose.drawLayout(true);
           // 訊號品質圖
           this.quality.calculateForm = this.calculateForm;
-          this.quality.draw(true);
+          this.quality.draw(true, '');
           // 訊號覆蓋圖
           this.cover.calculateForm = this.calculateForm;
           this.cover.draw(true);
@@ -78,6 +78,10 @@ export class PdfComponent implements OnInit {
 
           this.siteInfo.calculateForm = this.calculateForm;
           this.siteInfo.result = this.result;
+          window.setTimeout(() => {
+            this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
+            this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
+          }, 0);
           console.log(this.result);
           window.setTimeout(() => {
             this.genericPDF(this.calculateForm.taskName);

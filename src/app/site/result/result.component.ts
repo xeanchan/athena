@@ -43,6 +43,8 @@ export class ResultComponent implements OnInit {
   showQuality = true;
   showCover = false;
   showStrength = false;
+  zValues = [];
+  zValue;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -75,7 +77,11 @@ export class ResultComponent implements OnInit {
         this.propose.result = this.result;
         this.propose.drawLayout(false);
         // 訊號品質圖
+        this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+        this.zValue = this.zValues[0];
+        console.log(this.zValues)
         this.drawQuality();
+        // 預估效能
         this.performance.calculateForm = this.calculateForm;
         this.performance.result = this.result;
         this.performance.setData();
@@ -86,6 +92,11 @@ export class ResultComponent implements OnInit {
 
         this.siteInfo.calculateForm = this.calculateForm;
         this.siteInfo.result = this.result;
+        window.setTimeout(() => {
+          this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
+          this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
+        }, 0);
+        
         console.log(this.result)
       }
     );
@@ -105,7 +116,8 @@ export class ResultComponent implements OnInit {
     this.showStrength = false;
     window.setTimeout(() => {
       this.quality.calculateForm = this.calculateForm;
-      this.quality.draw(false);
+      this.quality.result = this.result;
+      this.quality.draw(false, this.zValue);
     }, 0);
   }
 

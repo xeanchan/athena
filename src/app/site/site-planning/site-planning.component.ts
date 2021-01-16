@@ -1279,6 +1279,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     Object.keys(mapData[0]).forEach((key) => {
       keyMap[mapData[0][key]] = key;
     });
+    this.zValues.length = 0;
     for (let i = 1; i < mapData.length; i++) {
       this.calculateForm.mapImage += mapData[i][0];
       if (typeof mapData[i][keyMap['mapLayer']] !== 'undefined') {

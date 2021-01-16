@@ -12,12 +12,14 @@ import { SiteInfoModule } from '../modules/site-info/site-info.module';
 import { StatisticsModule } from '../modules/statistics/statistics.module';
 import { PdfModule } from '../pdf/pdf.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     MatButtonToggleModule,
     PerformanceModule,
     ProposeModule,

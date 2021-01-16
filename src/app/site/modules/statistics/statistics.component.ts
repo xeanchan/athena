@@ -93,7 +93,7 @@ export class StatisticsComponent implements OnInit {
       paper_bgcolor: this.bgColor,
       plot_bgcolor: this.bgColor,
     };
-console.log(this.bgColor)
+
     let id;
     if (isPDF) {
       id = document.querySelector('#pdf_area').querySelector('#UE_Modulation');

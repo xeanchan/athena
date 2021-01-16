@@ -12,6 +12,8 @@ export class SiteInfoComponent implements OnInit {
 
   result = {};
   calculateForm = new CalculateForm();
+  inputBsListCount = 0;
+  defaultBsCount = 0;
 
   ngOnInit(): void {
   }

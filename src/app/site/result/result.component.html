@@ -20,8 +20,8 @@
 				<tr>
 					<td class="mapType">
 						<label>切面高度</label>
-						<mat-button-toggle-group>
-							<mat-button-toggle  value="" selected>50 公分</mat-button-toggle>
+						<mat-button-toggle-group [(ngModel)]="zValue">
+							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} 公分</mat-button-toggle>
 						</mat-button-toggle-group>
 			
 						<label class="mL_1">分布圖切換</label>
