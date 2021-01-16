@@ -68,8 +68,9 @@ export class ProposeComponent implements OnInit {
           xanchor: 'left',
           yanchor: 'bottom',
           sizing: 'stretch',
-          hover: 'x+y'
-        }]
+          layer: 'below'
+        }],
+        hovermode: 'closest'
       };
 
       let id;
@@ -79,12 +80,6 @@ export class ProposeComponent implements OnInit {
         id = document.querySelector('#layout_chart');
       }
 
-      Plotly.newPlot(id, {
-        data: [],
-        layout: this.plotLayout,
-        config: defaultPlotlyConfiguration
-      });
-
       // candidateBs
       let index = 1;
       const numMap = {};
@@ -92,6 +87,10 @@ export class ProposeComponent implements OnInit {
         numMap[item] = index;
         index++;
       }
+      const traces = [];
+      const x = [];
+      const y = [];
+      const text = [];
       // 建議方案 list
       for (let i = 0; i < this.result['candidateBsPower'].length; i++) {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
@@ -100,9 +99,34 @@ export class ProposeComponent implements OnInit {
             this.result['candidateBsPower'][i],
             this.result['candidateBeamId'][i]
           ]);
+          x.push(this.result['chosenCandidate'][i][0]);
+          y.push(this.result['chosenCandidate'][i][1]);
+          text.push(numMap[this.result['chosenCandidate'][i]]);
         }
       }
-      
+      traces.push({
+        type: 'scatter',
+        mode: 'markers+text',
+        x: x,
+        y: y,
+        text: text,
+        marker: {
+          size: 27,
+          color: 'red'
+        },
+        textfont: {
+          size: 14,
+          color: '#ffffff'
+        },
+        hoverinfo: 'x+y'
+      });
+
+      Plotly.newPlot(id, {
+        data: traces,
+        layout: this.plotLayout,
+        config: defaultPlotlyConfiguration
+      });
+
     };
   }
 

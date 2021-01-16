@@ -68,12 +68,14 @@ export class PdfComponent implements OnInit {
           // 訊號強度圖
           this.strength.calculateForm = this.calculateForm;
           this.strength.draw(true);
-
+          // 統計資訊
           this.performance.calculateForm = this.calculateForm;
           this.performance.result = this.result;
           this.performance.setData();
           this.statistics.calculateForm = this.calculateForm;
           this.statistics.result = this.result;
+          this.statistics.drawChart(true);
+
           this.siteInfo.calculateForm = this.calculateForm;
           this.siteInfo.result = this.result;
           console.log(this.result);

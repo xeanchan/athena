@@ -79,8 +79,11 @@ export class ResultComponent implements OnInit {
         this.performance.calculateForm = this.calculateForm;
         this.performance.result = this.result;
         this.performance.setData();
+        // 統計資訊
         this.statistics.calculateForm = this.calculateForm;
         this.statistics.result = this.result;
+        this.statistics.drawChart(false);
+
         this.siteInfo.calculateForm = this.calculateForm;
         this.siteInfo.result = this.result;
         console.log(this.result)
