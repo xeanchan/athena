@@ -1376,7 +1376,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           material: material,
           element: this.svgMap['candidate'].element
         };
-        console.log(this.pixelXLinear(candidateData[i][0]))
+
         this.spanStyle[id] = {
           left: this.pixelXLinear(candidateData[i][0]),
           top: this.pixelYLinear(candidateData[i][1]),
@@ -1579,14 +1579,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const objectiveParametersWS: XLSX.WorkSheet = this.wb.Sheets[objectiveParameters];
     const objectiveParametersData = (XLSX.utils.sheet_to_json(objectiveParametersWS, {header: 1}));
     if (objectiveParametersData.length > 1) {
-      this.calculateForm.objectiveIndex = objectiveParametersData[1][0];
-      this.calculateForm.obstacleInfo = objectiveParametersData[1][1];
+      // this.calculateForm.objectiveIndex = objectiveParametersData[1][0];
+      // this.calculateForm.obstacleInfo = objectiveParametersData[1][1];
       this.calculateForm.availableNewBsNumber = Number(objectiveParametersData[1][2]);
     }
     if (this.calculateForm.objectiveIndex === '') {
       this.calculateForm.objectiveIndex = '2';
     }
-
+    console.log(this.calculateForm.objectiveIndex)
     window.setTimeout(() => {
       this.moveable.destroy();
     }, 0);
