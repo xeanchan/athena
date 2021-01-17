@@ -993,7 +993,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.http.get(url).subscribe(
       res => {
         window.clearInterval(this.progressInterval);
-        document.getElementById('percentageVal').innerHTML = (res['progress'] * 100).toString();
+        document.getElementById('percentageVal').innerHTML = Math.ceil(res['progress'] * 100).toString();
         if (res['progress'] === 1) {
           // done
           this.authService.spinnerHide();
@@ -1391,7 +1391,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.pathStyle[id] = {
           fill: color
         };
-        
+
         window.setTimeout(() => {
           this.changePosition(id);
         }, 0);
@@ -1582,6 +1582,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.objectiveIndex = objectiveParametersData[1][0];
       this.calculateForm.obstacleInfo = objectiveParametersData[1][1];
       this.calculateForm.availableNewBsNumber = Number(objectiveParametersData[1][2]);
+    }
+    if (this.calculateForm.objectiveIndex === '') {
+      this.calculateForm.objectiveIndex = '2';
     }
 
     window.setTimeout(() => {

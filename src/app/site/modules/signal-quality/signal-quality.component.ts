@@ -11,16 +11,34 @@ declare var Plotly: any;
 })
 export class SignalQualityComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService
+  ) { }
 
   // plotLayout;
   calculateForm = new CalculateForm();
   result = {};
+  rectList = [];
+  ellipseList = [];
+  polygonList = [];
+  candidateList = [];
+  defaultBsList = [];
+  ueList = [];
+  style = {};
+  isPDF = false;
+  zValue = '';
 
   ngOnInit(): void {
   }
 
   draw(isPDF, zValue) {
+    this.zValue = zValue;
+    // this.resultMapService.draw(
+    //   isPDF, zValue, this.calculateForm, this.result,
+    //   'SINR', this.style, this.rectList, this.ellipseList, this.polygonList,
+    //   this.defaultBsList, this.candidateList, this.ueList
+    // );
+
     const reader = new FileReader();
     reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
     reader.onload = (e) => {
@@ -32,6 +50,13 @@ export class SignalQualityComponent implements OnInit {
         scrollZoom: false,
         displayModeBar: false
       };
+
+      this.rectList.length = 0;
+      this.ellipseList.length = 0;
+      this.polygonList.length = 0;
+      this.defaultBsList.length = 0;
+      this.candidateList.length = 0;
+      this.ueList.length = 0;
 
       const images = [];
       const bgImg = {
@@ -57,7 +82,8 @@ export class SignalQualityComponent implements OnInit {
           range: [0, this.calculateForm.width],
           showgrid: false,
           zeroline: false,
-          fixedrange: true
+          fixedrange: true,
+          ticks: 'inside',
         },
         yaxis: {
           linewidth: 1,
@@ -65,33 +91,36 @@ export class SignalQualityComponent implements OnInit {
           range: [0, this.calculateForm.height],
           showgrid: false,
           zeroline: false,
-          fixedrange: true
+          fixedrange: true,
+          ticks: 'inside',
         },
         margin: { t: 20, b: 20, l: 40},
         images: images
       };
 
+      const zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+
       let id;
       if (isPDF) {
-        id = document.querySelector('#pdf_area').querySelector('#quality_chart');
+        id = document.querySelector('#pdf_area').querySelectorAll(`.quality_chart`)[zValues.indexOf(zValue)];
       } else {
-        id = document.querySelector('#quality_chart');
+        id = document.querySelectorAll(`.quality_chart`)[0];
       }
 
       const zLen = this.calculateForm.zValue.split(',').length;
-      const zValues = [];
+      const zData = [];
       for (let i = 0; i < zLen; i++) {
-        zValues.push([]);
+        zData.push([]);
       }
       let xIndex = 0;
       for (const item of this.result['sinrMap']) {
         for (let i = 0; i < zLen; i++) {
           let yIndex = 0;
           for (const yData of item) {
-            if (typeof zValues[i][yIndex] === 'undefined') {
-              zValues[i][yIndex] = [];
+            if (typeof zData[i][yIndex] === 'undefined') {
+              zData[i][yIndex] = [];
             }
-            zValues[i][yIndex][xIndex] = yData[i];
+            zData[i][yIndex][xIndex] = yData[i];
             yIndex++;
           }
         }
@@ -110,7 +139,7 @@ export class SignalQualityComponent implements OnInit {
       const trace = {
         x: x,
         y: y,
-        z: zValues[0],
+        z: zData[zValues.indexOf(zValue)],
         type: 'heatmap',
         opacity: 0.8,
         hoverinfo: 'none'
@@ -125,40 +154,71 @@ export class SignalQualityComponent implements OnInit {
           const oData = item.split(',');
           const xdata = Number(oData[0]);
           const ydata = Number(oData[1]);
-          const width = Number(oData[2]);
-          const height = Number(oData[3]);
           let oColor = oData[7];
-          const ox = [xdata, xdata + width, xdata + width, xdata, xdata];
-          const oy = [ydata, ydata, ydata + height, ydata + height, ydata];
-          let text = `障礙物資訊<br>`;
-          text += `X: ${xdata}<br>`;
-          text += `Y: ${ydata}<br>`;
-          text += `長: ${oData[2]}<br>`;
-          text += `寬: ${oData[3]}<br>`;
-          text += `高度: ${oData[4]}<br>`;
+          let text = `障礙物資訊
+          X: ${xdata}
+          Y: ${ydata}
+          長: ${oData[2]}
+          寬: ${oData[3]}
+          高度: ${oData[4]}
+          `;
           if (typeof oData[6] !== 'undefined') {
             text += `材質: ${this.authService.parseMaterial(oData[6])}`;
           }
           if (typeof oData[7] === 'undefined') {
             oColor = 'green';
           }
-          const oTrace = {
-            x: ox,
-            y: oy,
-            type: 'scatter',
-            mode: 'lines',
-            line: {
-              color: oColor
+          this.rectList.push({
+            x: xdata,
+            y: ydata,
+            style: {
+              left: 0,
+              bottom: 0,
+              width: oData[2],
+              height: oData[3],
+              position: 'absolute'
             },
-            fill: 'toself',
-            fillcolor: oColor,
-            showlegend: false,
-            text: text,
-            hoverinfo: 'text'
-          };
-          traces.push(oTrace);
+            svgStyle: {
+              width: oData[2],
+              height: oData[3],
+              fill: oColor,
+            },
+            hover: text
+          });
+
         }
       }
+
+      // 現有基站
+      if (this.calculateForm.defaultBs !== '') {
+        const list = this.calculateForm.defaultBs
+        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const cx = [];
+        const cy = [];
+        const ctext = [];
+        for (const item of list) {
+          const oData = item.split(',');
+          const xdata = Number(oData[0]);
+          const ydata = Number(oData[1]);
+          const zdata = Number(oData[2]);
+          cx.push(xdata);
+          cy.push(ydata);
+
+          const text = `新增基站
+          X: ${xdata}
+          Y: ${ydata}
+          高度: ${zdata}`;
+          ctext.push(text);
+          this.defaultBsList.push({
+            x: xdata,
+            y: ydata,
+            color: 'green',
+            hover: text
+          });
+
+        }
+      }
+
       // 新增基站
       if (this.calculateForm.candidateBs !== '') {
         const list = this.calculateForm.candidateBs
@@ -174,32 +234,119 @@ export class SignalQualityComponent implements OnInit {
           cx.push(xdata);
           cy.push(ydata);
 
-          let text = `新增基站<br>`;
-          text += `X: ${xdata}<br>`;
-          text += `Y: ${ydata}<br>`;
-          text += `高度: ${zdata}<br>`;
+          const text = `新增基站
+          X: ${xdata}
+          Y: ${ydata}
+          高度: ${zdata}`;
           ctext.push(text);
+          this.candidateList.push({
+            x: xdata,
+            y: ydata,
+            color: 'green',
+            hover: text
+          });
+
         }
-        const oTrace = {
-          x: cx,
-          y: cy,
-          type: 'scatter',
-          mode: 'markers',
-          marker: {
-            size: 30
-          },
-          text: ctext,
-          hoverinfo: 'text',
-          opacity: 0
-        };
-        traces.push(oTrace);
       }
-      console.log(traces);
+
+      // UE
+      if (this.calculateForm.ueCoordinate !== '') {
+        const list = this.calculateForm.ueCoordinate
+        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+
+        for (const item of list) {
+          const oData = item.split(',');
+          const xdata = oData[0];
+          const ydata = oData[1];
+          const zdata = oData[2];
+          if (zdata !== zValue) {
+            continue;
+          }
+
+          const text = `新增ＵＥ
+          X: ${xdata}
+          Y: ${ydata}
+          高度: ${zdata}`;
+          this.ueList.push({
+            x: xdata,
+            y: ydata,
+            color: 'green',
+            hover: text
+          });
+
+        }
+      }
 
       Plotly.newPlot(id, {
         data: traces,
         layout: layout,
         config: defaultPlotlyConfiguration
+      }).then((gd) => {
+        const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+        const rect = xy.getBoundingClientRect();
+        this.style = {
+          left: `${xy.getAttribute('x')}px`,
+          top: `${xy.getAttribute('y')}px`,
+          width: `${rect.width}px`,
+          height: `${rect.height}px`,
+          position: 'absolute'
+        };
+
+        const pixelXLinear = Plotly.d3.scale.linear()
+          .domain([0, this.calculateForm.width])
+          .range([0, rect.width]);
+
+        const pixelYLinear = Plotly.d3.scale.linear()
+          .domain([0, this.calculateForm.height])
+          .range([0, rect.height]);
+
+        for (const item of this.rectList) {
+          item['style'].left = `${pixelXLinear(item.x)}px`;
+          item['style'].bottom = `${pixelYLinear(item.y)}px`;
+          item['style'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
+          item['style'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+          item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
+          item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+        }
+
+        for (const item of this.defaultBsList) {
+          item['style'] = {
+            left: `${pixelXLinear(item.x)}px`,
+            bottom: `${pixelYLinear(item.y)}px`,
+            position: 'absolute'
+          };
+          item['circleStyle'] = {
+            left: `${pixelXLinear(item.x) + 15}px`,
+            bottom: `${pixelYLinear(item.y) + 25}px`,
+            position: 'absolute'
+          };
+        }
+
+        for (const item of this.candidateList) {
+          item['style'] = {
+            left: `${pixelXLinear(item.x)}px`,
+            bottom: `${pixelYLinear(item.y)}px`,
+            position: 'absolute'
+          };
+          item['circleStyle'] = {
+            left: `${pixelXLinear(item.x) + 15}px`,
+            bottom: `${pixelYLinear(item.y) + 25}px`,
+            position: 'absolute'
+          };
+        }
+
+        for (const item of this.ueList) {
+          item['style'] = {
+            left: `${pixelXLinear(item.x)}px`,
+            bottom: `${pixelYLinear(item.y)}px`,
+            position: 'absolute'
+          };
+          item['circleStyle'] = {
+            left: `${pixelXLinear(item.x) + 15}px`,
+            bottom: `${pixelYLinear(item.y) + 25}px`,
+            position: 'absolute'
+          };
+        }
       });
     };
   }

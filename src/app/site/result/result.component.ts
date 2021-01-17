@@ -45,6 +45,7 @@ export class ResultComponent implements OnInit {
   showStrength = false;
   zValues = [];
   zValue;
+  chartType = 'SINR';
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -79,7 +80,7 @@ export class ResultComponent implements OnInit {
         // 訊號品質圖
         this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
         this.zValue = this.zValues[0];
-        console.log(this.zValues)
+
         this.drawQuality();
         // 預估效能
         this.performance.calculateForm = this.calculateForm;
@@ -96,8 +97,8 @@ export class ResultComponent implements OnInit {
           this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
           this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
         }, 0);
-        
-        console.log(this.result)
+
+        console.log(this.result);
       }
     );
   }
@@ -127,7 +128,8 @@ export class ResultComponent implements OnInit {
     this.showStrength = false;
     window.setTimeout(() => {
       this.cover.calculateForm = this.calculateForm;
-      this.cover.draw(false);
+      this.cover.result = this.result;
+      this.cover.draw(false, this.zValue);
     }, 0);
   }
 
@@ -137,8 +139,13 @@ export class ResultComponent implements OnInit {
     this.showStrength = true;
     window.setTimeout(() => {
       this.strength.calculateForm = this.calculateForm;
-      this.strength.draw(false);
+      this.strength.result = this.result;
+      this.strength.draw(false, this.zValue);
     }, 0);
+  }
+
+  changeZvalue() {
+    this.drawQuality();
   }
 
 }

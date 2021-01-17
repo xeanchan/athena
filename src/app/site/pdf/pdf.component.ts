@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, QueryList } from '@angular/core';
 import { AuthService } from '../../service/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
@@ -23,14 +23,19 @@ export class PdfComponent implements OnInit {
     private authService: AuthService,
     private http: HttpClient) { }
 
-  taskId = 'task_sel_26cc4b6e-7096-4202-aa39-500a1214df85_0';
+  taskId = 'task_sel_8945fa38-2f24-41be-986e-c98c3d920492_1';
   result = {};
   calculateForm: CalculateForm = new CalculateForm();
+  zValues = [];
+  defaultBs = [];
+  inputBsList = [];
+  obstacleList = [];
+  ueList = [];
 
   @ViewChild('propose') propose: ProposeComponent;
-  @ViewChild('quality') quality: SignalQualityComponent;
-  @ViewChild('cover') cover: SignalCoverComponent;
-  @ViewChild('strength') strength: SignalStrengthComponent;
+  @ViewChildren('quality') quality: QueryList<SignalQualityComponent>;
+  @ViewChildren('cover') cover: QueryList<SignalCoverComponent>;
+  @ViewChildren('strength') strength: QueryList<SignalStrengthComponent>;
   @ViewChild('performance') performance: PerformanceComponent;
   @ViewChild('statistics') statistics: StatisticsComponent;
   @ViewChild('siteInfo') siteInfo: SiteInfoComponent;
@@ -40,52 +45,91 @@ export class PdfComponent implements OnInit {
     //   this.taskId = params['taskId'];
     //   this.getResult();
     // });
-    // this.getResult();
+    // this.export(this.taskId);
 
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
 
   async export(taskId) {
     this.taskId = taskId;
+    this.authService.spinnerShow();
     if (typeof this.taskId !== 'undefined') {
       const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
       this.http.get(url).subscribe(
         res => {
-          document.getElementById('pdf_area').style.display = 'block';
+          if (document.getElementById('pdf_area') != null) {
+            document.getElementById('pdf_area').style.display = 'block';
+          }
+
           // console.log(res)
           this.calculateForm = res['input'];
           this.result = res['output'];
+          this.defaultBs = this.result['defaultBs'];
+          this.inputBsList = this.result['inputBsList'];
+          // 障礙物資訊
+          const obstacle = this.calculateForm.obstacleInfo
+          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          for (const item of obstacle) {
+            this.obstacleList.push(item.split(','));
+          }
+          // 行動終端分佈
+          const ueCoordinate = this.calculateForm.ueCoordinate
+          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          for (const item of ueCoordinate) {
+            this.ueList.push(item.split(','));
+          }
 
-          this.propose.calculateForm = this.calculateForm;
-          this.propose.result = this.result;
-          this.propose.drawLayout(true);
-          // 訊號品質圖
-          this.quality.calculateForm = this.calculateForm;
-          this.quality.draw(true, '');
-          // 訊號覆蓋圖
-          this.cover.calculateForm = this.calculateForm;
-          this.cover.draw(true);
-          // 訊號強度圖
-          this.strength.calculateForm = this.calculateForm;
-          this.strength.draw(true);
-          // 統計資訊
-          this.performance.calculateForm = this.calculateForm;
-          this.performance.result = this.result;
-          this.performance.setData();
-          this.statistics.calculateForm = this.calculateForm;
-          this.statistics.result = this.result;
-          this.statistics.drawChart(true);
-
-          this.siteInfo.calculateForm = this.calculateForm;
-          this.siteInfo.result = this.result;
+          this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
           window.setTimeout(() => {
-            this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
-            this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
+            this.propose.calculateForm = this.calculateForm;
+            this.propose.result = this.result;
+            this.propose.drawLayout(true);
+            // 訊號品質圖
+            let index = 0;
+            this.quality.forEach(element => {
+              element.calculateForm = this.calculateForm;
+              element.result = this.result;
+              element.draw(true, this.zValues[index]);
+              index++;
+            });
+
+            // 訊號覆蓋圖
+            index = 0;
+            this.cover.forEach(element => {
+              element.calculateForm = this.calculateForm;
+              element.result = this.result;
+              element.draw(true, this.zValues[index]);
+              index++;
+            });
+
+            // 訊號強度圖
+            index = 0;
+            this.strength.forEach(element => {
+              element.calculateForm = this.calculateForm;
+              element.result = this.result;
+              element.draw(true, this.zValues[index]);
+              index++;
+            });
+
+            // 統計資訊
+            this.performance.calculateForm = this.calculateForm;
+            this.performance.result = this.result;
+            this.performance.setData();
+            this.statistics.calculateForm = this.calculateForm;
+            this.statistics.result = this.result;
+            this.statistics.drawChart(true);
+
+            this.siteInfo.calculateForm = this.calculateForm;
+            this.siteInfo.result = this.result;
+            window.setTimeout(() => {
+              this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
+              this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
+            }, 0);
+            console.log(this.result);
+            window.setTimeout(() => {
+              this.genericPDF(this.calculateForm.taskName);
+            }, 500);
           }, 0);
-          console.log(this.result);
-          window.setTimeout(() => {
-            this.genericPDF(this.calculateForm.taskName);
-          }, 500);
         }
       );
     }
@@ -93,10 +137,15 @@ export class PdfComponent implements OnInit {
 
   /** export PDF */
   async genericPDF(taskName) {
-    this.authService.spinnerShow();
+    // this.authService.spinnerShow();
     const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
     const area = document.querySelector('#pdf_area');
-    const list = ['site_info', 'propose', 'signal', 'performace', 'statistics'];
+    const list = ['site_info', 'defaultBs_list', 'inputBs_list', 'obstacle_list', 'ue_list', 'propose'];
+    for (let k = 0; k < this.zValues.length; k++) {
+      list.push(`signal_${k}`);
+    }
+    list.push('performace');
+    list.push('statistics');
     let i = 0;
     for (const id of list) {
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
@@ -116,7 +165,7 @@ export class PdfComponent implements OnInit {
     }
     document.getElementById('pdf_area').style.display = 'none';
     this.authService.spinnerHide();
-    pdf.save(`${taskName}.pdf`); // Generated PDF
+    pdf.save(`${taskName}_report.pdf`); // Generated PDF
   }
 
 }

@@ -20,12 +20,12 @@
 				<tr>
 					<td class="mapType">
 						<label>切面高度</label>
-						<mat-button-toggle-group [(ngModel)]="zValue">
+						<mat-button-toggle-group [(ngModel)]="zValue" (change)="changeZvalue()" >
 							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} 公分</mat-button-toggle>
 						</mat-button-toggle-group>
 			
 						<label class="mL_1">分布圖切換</label>
-						<mat-button-toggle-group>
+						<mat-button-toggle-group [(ngModel)]="chartType">
 							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>訊號品質圖</mat-button-toggle>
 							<mat-button-toggle  value="PCI" (click)="drawCover()">訊號覆蓋圖</mat-button-toggle>
 							<mat-button-toggle  value="RSRP" (click)="drawStrength()">訊號強度圖</mat-button-toggle>
