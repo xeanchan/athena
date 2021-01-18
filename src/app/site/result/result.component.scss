@@ -25,31 +25,31 @@
 .panel label {
     font-size: 1.1em;
 }
-.box table {
+ .leftArea .leftArea table {
     margin: 0 0 2em 0;
     display: table;
     width: 100%;
     border:1.5px solid #5aa5e2;
     vertical-align: top;
-    background-color: #202633;
+    background-color: #fff;
 }
-.box table th,
-.box table td {
+.leftArea table th,
+.leftArea table td {
     border-right:1px solid #5aa5e2;
     line-height: 1.5;
 }
 
-.box table td {
+.leftArea table td {
     text-align: center;
 }
-.box table th:last-child,
-.box table td:last-child {
+.leftArea table th:last-child,
+.leftArea table td:last-child {
     border-right:none;
 }
 .mapType {
     border-right:1px solid #5aa5e2!important;
 }
-.box table th {
+.leftArea table th {
     background-color: #eaf3f8;
     border-top: 1.5px solid #5aa5e2;
     font-size: .95em;
@@ -57,10 +57,10 @@
     text-align: center;
 
 }
-.box table tr {
+.leftArea table tr {
     border-bottom: 1.5px solid #5aa5e2;
 }
-.box table tr:last-child {
+.leftArea table tr:last-child {
     border-bottom: none;
 }
 .res_1 {
@@ -149,7 +149,7 @@
     text-align: center;
 }
 .choose {
-    background-color: #edd31c;
+    background-color: #fff;
     color: #333;
     position: relative;
 }
@@ -180,4 +180,9 @@
 }
 .mat-button-toggle-group button {
     width: initial!important;
+}
+:host ::ng-deep #performace,
+:host ::ng-deep #propose {
+    background-color: #fff;
+    color: #333;
 }
