@@ -86,9 +86,9 @@ h3 button {
     border-bottom: 1.5px solid #0f4e82!important;
 }
 .box table th {
-    background-color: transparent!important;
+    background-color: rgb(208, 234, 245)!important;
     border-top: 1.5px solid #0f4e82!important;
-    color: #4da3ff!important;
+    color: rgb(51, 88, 129)!important;
 }
 .box table th, .box table td {
     border-right: 1px solid #0f4e82!important;

@@ -1,3 +1,6 @@
+#pdf_area {
+  padding: 1em;
+}
 .mat-button-toggle-group {
   margin-left: 1em;
 }
@@ -33,7 +36,8 @@
   width: 100%;
   border:1.5px solid #5aa5e2;
   vertical-align: top;
-  background-color: #202633;
+  /*background-color: #202633;*/
+  background-color: #fff;
 }
 .box table th,
 .box table td {
@@ -135,14 +139,15 @@
   vertical-align: top;
 }
 .leftArea {
-  width: 75%;
+  width: 80%;
   padding: 0.5em 1em 0 0;
 
 }
 .rightArea {
   padding: 1em;
   font-size: .9em;
-  width: 25%;
+  width: 20%;
+  margin-top: 2.8em;
 }
 .rightArea h5 {
   font-size: 1.1em;
@@ -174,7 +179,8 @@
   text-align: center;
 }
 .choose {
-  background-color: #edd31c;
+  /*background-color: #edd31c;*/
+  background-color: transparent;
   color: #333;
   position: relative;
 }
