@@ -1021,7 +1021,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           window.clearInterval(this.progressInterval);
           this.progressInterval = window.setTimeout(() => {
             this.getProgress();
-          }, 5000);
+          }, 3000);
         }
 
       }, err => {
