@@ -23,7 +23,7 @@ export class PdfComponent implements OnInit {
     private authService: AuthService,
     private http: HttpClient) { }
 
-  taskId = 'task_sel_8945fa38-2f24-41be-986e-c98c3d920492_1';
+  taskId = 'task_sel_cfc18976-af02-48ae-8d0e-1cdd7745c039_1';
   result = {};
   calculateForm: CalculateForm = new CalculateForm();
   zValues = [];
