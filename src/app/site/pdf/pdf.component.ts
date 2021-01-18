@@ -45,14 +45,14 @@ export class PdfComponent implements OnInit {
     //   this.taskId = params['taskId'];
     //   this.getResult();
     // });
-    // this.export(this.taskId);
+    this.export(this.taskId);
 
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
 
   async export(taskId) {
     this.taskId = taskId;
-    this.authService.spinnerShow();
+    //this.authService.spinnerShow();
     if (typeof this.taskId !== 'undefined') {
       const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
       this.http.get(url).subscribe(
@@ -127,7 +127,7 @@ export class PdfComponent implements OnInit {
             }, 0);
             console.log(this.result);
             window.setTimeout(() => {
-              this.genericPDF(this.calculateForm.taskName);
+              //this.genericPDF(this.calculateForm.taskName);
             }, 500);
           }, 0);
         }
