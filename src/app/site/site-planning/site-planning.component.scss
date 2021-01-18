@@ -186,7 +186,7 @@ ol.inline-block li input[type="text"] {
     position: relative;
 }
 .obstacle, .defaultBS, .candidate, .UE {
-    position: fixed;
+    position: absolute;
     left: 200px;
     top: 250px;
     z-index: 9999;
@@ -225,14 +225,14 @@ input[type="file"] {
     padding: 0px 7px;
     color: #fff;
     z-index: 99999;
-    position: fixed;
+    position: absolute;
 }
 .blue_circle {
     background-color: #338aee!important;
     padding: 0px 7px;
     color: #fff;
     z-index: 99999;
-    position: fixed;
+    position: absolute;
 }
 
 .highset input {

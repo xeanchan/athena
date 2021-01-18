@@ -45,14 +45,14 @@ export class PdfComponent implements OnInit {
     //   this.taskId = params['taskId'];
     //   this.getResult();
     // });
-    this.export(this.taskId);
+    // this.export(this.taskId);
 
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
 
   async export(taskId) {
     this.taskId = taskId;
-    //this.authService.spinnerShow();
+    this.authService.spinnerShow();
     if (typeof this.taskId !== 'undefined') {
       const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
       this.http.get(url).subscribe(
@@ -64,7 +64,11 @@ export class PdfComponent implements OnInit {
           // console.log(res)
           this.calculateForm = res['input'];
           this.result = res['output'];
-          this.defaultBs = this.result['defaultBs'];
+          const defaultBsAry = this.calculateForm.defaultBs
+          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          for (const item of defaultBsAry) {
+            this.defaultBs.push(item.split(','));
+          }
           this.inputBsList = this.result['inputBsList'];
           // 障礙物資訊
           const obstacle = this.calculateForm.obstacleInfo
@@ -127,7 +131,7 @@ export class PdfComponent implements OnInit {
             }, 0);
             console.log(this.result);
             window.setTimeout(() => {
-              //this.genericPDF(this.calculateForm.taskName);
+              this.genericPDF(this.calculateForm.taskName);
             }, 500);
           }, 0);
         }

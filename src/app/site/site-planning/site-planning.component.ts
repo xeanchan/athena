@@ -151,7 +151,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   hoverObj;
   // show image file name
   showFileName = true;
-  circleStyle = {};
   // number column list
   numColumnList = ['totalRound', 'crossover', 'mutation', 'iteration', 'seed',
     'width', 'height', 'altitude', 'pathLossModelId', 'useUeCoordinate',
@@ -180,8 +179,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   polygonStyle = {};
   svgStyle = {};
   pathStyle = {};
+  circleStyle = {};
   /** workbook */
   wb: XLSX.WorkBook;
+  dragStyle = {};
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -343,6 +344,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartTop = rect.top;
     this.chartBottom = rect.bottom;
 
+    this.dragStyle = {
+      left: `${xy.getAttribute('x')}px`,
+      top: `${xy.getAttribute('y')}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      position: 'absolute'
+    };
+
     this.xLinear = Plotly.d3.scale.linear()
       .domain([0, rect.width])
       .range([0, this.calculateForm.width]);
@@ -437,10 +446,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     }
     this.spanStyle[this.svgId] = {
-      left: 200,
-      top: 250,
-      width: 30,
-      height: 30
+      left: `200px`,
+      top: `250px`,
+      width: `30px`,
+      height: `30px`
     };
     this.svgStyle[this.svgId] = {
       display: 'inherit',
@@ -658,6 +667,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         target.closest('span').style.top = `${t - 1}px`;
       }
     }
+    this.spanStyle[this.svgId].left = `${left}px`;
+    this.spanStyle[this.svgId].top = `${top}px`;
     this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber(this.svgId);
@@ -857,10 +868,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   moveNumber(svgId) {
     const circleElement: HTMLSpanElement = document.querySelector(`#${svgId}_circle`);
     if (circleElement != null) {
-      const targetElement: HTMLSpanElement = document.querySelector(`#${svgId}`);
-      const targetRect = targetElement.getBoundingClientRect();
-      circleElement.style.top = `${targetRect.top - 20}px`;
-      circleElement.style.left = `${targetRect.left + targetRect.width - 10}px`;
+      const top = `${Number(this.spanStyle[svgId].top.replace('px', '')) - 20}px`;
+      const width = Number(this.spanStyle[svgId].width.replace('px', ''));
+      const left = Number(this.spanStyle[svgId].left.replace('px', ''));
+      this.circleStyle[svgId] = {
+        top: top,
+        left: `${left + width - 10}px`
+      };
+
+      console.log(this.spanStyle[svgId], this.circleStyle[svgId])
     }
   }
 
@@ -957,7 +973,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // 現有基站
       for (let i = 0; i < this.defaultBSList.length; i++) {
         const obj = this.dragObject[this.defaultBSList[i]];
-        defaultBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        // defaultBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
+        defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
         if (i < this.defaultBSList.length - 1) {
           defaultBs += '|';
         }
@@ -1332,10 +1349,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.defaultBSList.push(id);
         this.spanStyle[id] = {
-          left: this.pixelXLinear(baseStationData[i][0]),
-          top: this.pixelYLinear(baseStationData[i][1]),
-          width: 30,
-          height: 30,
+          left: `${this.pixelXLinear(baseStationData[i][0])}px`,
+          top: `${this.pixelYLinear(baseStationData[i][1])}px`,
+          width: `30px`,
+          height: `30px`,
         };
         this.svgStyle[id] = {
           display: 'inherit',
@@ -1346,7 +1363,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           fill: color
         };
         window.setTimeout(() => {
-          // this.changePosition(id);
           this.moveNumber(id);
         }, 0);
       }
@@ -1378,10 +1394,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         this.spanStyle[id] = {
-          left: this.pixelXLinear(candidateData[i][0]),
-          top: this.pixelYLinear(candidateData[i][1]),
-          width: 30,
-          height: 30
+          left: `${this.pixelXLinear(candidateData[i][0])}px`,
+          top: `${this.pixelYLinear(candidateData[i][1])}px`,
+          width: `30px`,
+          height: `30px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
@@ -1393,7 +1409,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
 
         window.setTimeout(() => {
-          this.changePosition(id);
+          this.moveNumber(id);
         }, 0);
       }
     }
@@ -1424,10 +1440,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           element: this.svgMap['UE'].element
         };
         this.spanStyle[id] = {
-          left: this.pixelXLinear(ueData[i][0]),
-          top: this.pixelYLinear(ueData[i][1]),
-          width: 30,
-          height: 30
+          left: `${this.pixelXLinear(ueData[i][0])}px`,
+          top: `${this.pixelYLinear(ueData[i][1])}px`,
+          width: `20px`,
+          height: `30px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
@@ -1437,9 +1453,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.pathStyle[id] = {
           fill: color
         };
-        window.setTimeout(() => {
-          this.changePosition(id);
-        }, 0);
       }
     }
     /* obstacle sheet */
@@ -1501,10 +1514,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         if (shape === 'rect') {
           this.spanStyle[id] = {
-            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
-            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
-            width: this.pixelXLinear(obstacleData[i][2]),
-            height: this.pixelYLinear(obstacleData[i][3])
+            left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
+            top: `${this.pixelYLinear(this.dragObject[id].y)}px`,
+            width: `${this.pixelXLinear(obstacleData[i][2])}px`,
+            height: `${this.pixelYLinear(obstacleData[i][3])}px`
           };
           this.rectStyle[id] = {
             width: this.pixelXLinear(this.dragObject[id].width),
@@ -1513,10 +1526,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           };
         } else if (shape === 'ellipse') {
           this.spanStyle[id] = {
-            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
-            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
-            width: this.pixelXLinear(this.dragObject[id].width * 2),
-            height: this.pixelYLinear(this.dragObject[id].height * 2)
+            left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
+            top: `${this.pixelYLinear(this.dragObject[id].y)}px`,
+            width: `${this.pixelXLinear(this.dragObject[id].width * 2)}px`,
+            height: `${this.pixelYLinear(this.dragObject[id].height * 2)}px`
           };
 
           const x = (this.pixelXLinear(this.dragObject[id].width) / 2).toString();
@@ -1544,9 +1557,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           };
         }
         this.obstacleList.push(id);
-        window.setTimeout(() => {
-          this.changePosition(id);
-        }, 0);
       }
     }
     /* bs parameters sheet */
@@ -1586,10 +1596,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.calculateForm.objectiveIndex === '') {
       this.calculateForm.objectiveIndex = '2';
     }
-    console.log(this.calculateForm.objectiveIndex)
-    window.setTimeout(() => {
-      this.moveable.destroy();
-    }, 0);
   }
 
   save() {

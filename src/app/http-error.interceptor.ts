@@ -26,7 +26,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
           if (err != null) {
             console.log(err);
             if (err.status === 401) {
-              this.router.navigate(['/logon']);
+              location.replace('#/logon');
+              location.reload();
+              // this.router.navigate(['/logon']);
             }
           }
           return throwError(err);
