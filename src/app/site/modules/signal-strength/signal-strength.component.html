@@ -4,7 +4,7 @@
     <div class="quality_img" [ngStyle]="style" >
       <!-- 障礙物 -->
       <span *ngFor="let item of rectList" [ngStyle]="item.style">
-        <svg [attr.style.width]="item.style.width"  [attr.style.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+        <svg [attr.width]="item.style.width"  [attr.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g><rect [ngStyle]="item.svgStyle" stroke-width="1.5" x="0" y="0" /></g>
         </svg>
       </span>

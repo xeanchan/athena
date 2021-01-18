@@ -447,7 +447,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.spanStyle[this.svgId] = {
       left: `200px`,
-      top: `250px`,
+      top: `100px`,
       width: `30px`,
       height: `30px`
     };
@@ -476,7 +476,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       width: '30px',
       height: '30px',
       left: '200px',
-      top: '250px',
+      top: '100px',
       transform: {
         rotate: '0deg',
         scaleX: 1,
