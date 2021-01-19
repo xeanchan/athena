@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { PdfService } from '../service/pdf.service';
 import { PdfComponent } from '../site/pdf/pdf.component';
 import { ExcelService } from '../service/excel.service';
+import { MsgDialogComponent } from '../utility/msg-dialog/msg-dialog.component';
 
 declare var Plotly: any;
 
@@ -32,6 +33,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   timeInterval;
   dialogRef;
   matDialogConfig: MatDialogConfig;
+  msgDialogConfig: MatDialogConfig;
   // round
   roundFormat = Plotly.d3.format('.1f');
 
@@ -41,6 +43,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.matDialogConfig = new MatDialogConfig();
     this.matDialogConfig.autoFocus = false;
+    this.msgDialogConfig = new MatDialogConfig();
+    this.msgDialogConfig.autoFocus = false;
 
     this.getList();
     window.setTimeout(() => {
@@ -104,38 +108,41 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.http.get(url).subscribe(
       res => {
         this.excelService.export(res['input']);
+      }, err => {
+        this.msgDialogConfig.data = {
+          type: 'error',
+          infoMessage: '無法取得計算結果!'
+        };
+        this.dialog.open(MsgDialogComponent, this.msgDialogConfig);
       }
     );
   }
 
   /** export excel */
   exportExcel(taskId) {
-    const url = `${this.authService.API_URL}/historyDetail/${taskId}/${this.authService.userToken}`;
+    const url = `${this.authService.API_URL}/completeCalcResult/${taskId}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
         this.excelService.export(res['input']);
+      },
+      err => {
+        this.msgDialogConfig.data = {
+          type: 'error',
+          infoMessage: '無法取得計算結果!'
+        };
+        this.dialog.open(MsgDialogComponent, this.msgDialogConfig);
       }
     );
-
-
-    // const data = [
-    //   ['1', 'a', 'aa'],
-    //   ['2', 'b', 'bb'],
-    //   ['3', 'c', 'cc']
-    // ];
-    // /* generate worksheet */
-    // const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(data);
-    // /* generate workbook and add the worksheet */
-    // const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    // XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    // console.log(wb);
-    // /* save to file */
-    // XLSX.writeFile(wb, 'SheetJS.xlsx');
   }
 
   /** export PDF */
   async exportPDF(taskId) {
     this.pdf.export(taskId);
+  }
+
+  edit(taskId) {
+    window.clearInterval(this.timeInterval);
+    this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
   }
 
 }

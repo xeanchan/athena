@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, 
 import { OnPinch, OnScale, OnDrag, OnRotate, OnResize, OnWarp, MoveableGroupInterface, BeforeRenderableProps } from 'moveable';
 import { Frame } from 'scenejs';
 import { NgxMoveableComponent } from 'ngx-moveable';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
@@ -12,6 +12,7 @@ import html2canvas from 'html2canvas';
 import { AuthService } from '../../service/auth.service';
 import { View3dComponent } from '../view3d/view3d.component';
 import * as XLSX from 'xlsx';
+import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
 
 declare var Plotly: any;
 
@@ -29,6 +30,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private matDialog: MatDialog,
     private http: HttpClient) {
     }
@@ -90,6 +92,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   chartRight = 0;
   chartTop = 0;
   chartBottom = 0;
+  chartHeight = 0;
   svgMap = {
     rect: {
       id: 'svg_1',
@@ -168,6 +171,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   heightList = [];
   plotLayout;
   view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
+  msgDialogConfig: MatDialogConfig = new MatDialogConfig();
   // tooltip
   tooltipStyle = {
     left: '0px',
@@ -235,10 +239,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
+    this.msgDialogConfig.autoFocus = false;
 
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
     }
+
+    this.route.queryParams.subscribe(params => {
+      if (typeof params['taskId'] !== 'undefined') {
+        this.taskid = params['taskId'];
+      }
+    });
+
     if (sessionStorage.getItem('importFile') != null) {
       // from new-planning import file
       this.calculateForm = new CalculateForm();
@@ -249,8 +261,26 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       reader.readAsBinaryString(this.dataURLtoBlob(sessionStorage.getItem('importFile')));
 
     } else {
-      this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
-      this.initData(false);
+      if (typeof this.taskid !== 'undefined') {
+        // 編輯
+        const url = `${this.authService.API_URL}/completeCalcResult/${this.taskid}/${this.authService.userToken}`;
+        this.http.get(url).subscribe(
+          res => {
+            this.calculateForm = res['input'];
+            this.initData(false);
+          },
+          err => {
+            this.msgDialogConfig.data = {
+              type: 'error',
+              infoMessage: '無法取得計算結果!'
+            };
+            this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+          }
+        );
+      } else {
+        // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+        // this.initData(false);
+      }
     }
   }
 
@@ -272,7 +302,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
    * init data
    */
   initData(isImport) {
-    if (this.calculateForm.mapImage != null) {
+    // if (this.calculateForm.mapImage != null) {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
@@ -329,10 +359,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // import xlsx
           if (isImport) {
             this.setImportData();
+          } else if (typeof this.taskid !== 'undefined') {
+            // 編輯
+            this.edit();
+          } else {
+            this.edit();
           }
         });
       };
-    }
+    // }
   }
 
   /** 計算比例尺 */
@@ -343,6 +378,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.chartRight = rect.right;
     this.chartTop = rect.top;
     this.chartBottom = rect.bottom;
+    this.chartHeight = rect.height;
 
     this.dragStyle = {
       left: `${xy.getAttribute('x')}px`,
@@ -1350,7 +1386,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.defaultBSList.push(id);
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(baseStationData[i][0])}px`,
-          top: `${this.pixelYLinear(baseStationData[i][1])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(baseStationData[i][1])}px`,
           width: `30px`,
           height: `30px`,
         };
@@ -1395,7 +1431,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(candidateData[i][0])}px`,
-          top: `${this.pixelYLinear(candidateData[i][1])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(candidateData[i][1])}px`,
           width: `30px`,
           height: `30px`
         };
@@ -1441,7 +1477,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(ueData[i][0])}px`,
-          top: `${this.pixelYLinear(ueData[i][1])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(ueData[i][1])}px`,
           width: `20px`,
           height: `30px`
         };
@@ -1515,7 +1551,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         if (shape === 'rect') {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
-            top: `${this.pixelYLinear(this.dragObject[id].y)}px`,
+            top: `${this.chartHeight - this.pixelYLinear(this.dragObject[id].height) - this.pixelYLinear(obstacleData[i][1])}px`,
             width: `${this.pixelXLinear(obstacleData[i][2])}px`,
             height: `${this.pixelYLinear(obstacleData[i][3])}px`
           };
@@ -1613,6 +1649,166 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log(err);
       }
     );
+  }
+
+  edit() {
+    // obstacleInfo
+    const obstacle = this.calculateForm.obstacleInfo
+    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const obstacleLen = obstacle.length;
+    for (let i = 0; i < obstacleLen; i++) {
+      const item = obstacle[i].split(',');
+      const id = `rect_${i}`;
+      this.obstacleList.push(id);
+      this.dragObject[id] = {
+        x: item[0],
+        y: item[1],
+        z: 0,
+        width: item[2],
+        height: item[3],
+        altitude: item[4],
+        rotate: item[5],
+        title: this.svgMap['rect'].title,
+        type: this.svgMap['rect'].type,
+        color: 'green',
+        material: item[6],
+        element: 'rect'
+      };
+      this.spanStyle[id] = {
+        left: `${this.pixelXLinear(item[0])}px`,
+        top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
+        width: `${this.pixelXLinear(item[2])}px`,
+        height: `${this.pixelYLinear(item[3])}px`
+      };
+      this.svgStyle[id] = {
+        display: 'inherit',
+        width: this.pixelXLinear(item[2]),
+        height: this.pixelYLinear(item[3])
+      };
+      this.rectStyle[id] = {
+        width: this.pixelXLinear(item[2]),
+        height: this.pixelYLinear(item[3]),
+        fill: 'green'
+      };
+    }
+    // defaultBs
+    if (this.calculateForm.defaultBs !== '') {
+      const defaultBS = this.calculateForm.defaultBs
+      .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+      const defaultBSLen = defaultBS.length;
+      for (let i = 0; i < defaultBSLen; i++) {
+        const item = defaultBS[i].split(',');
+        const id = `defaultBS_${i}`;
+        this.defaultBSList.push(id);
+        this.dragObject[id] = {
+          x: item[0],
+          y: item[1],
+          z: item[2],
+          width: 30,
+          height: 30,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['defaultBS'].title,
+          type: this.svgMap['defaultBS'].type,
+          color: 'green',
+          material: '0',
+          element: 'defaultBS'
+        };
+        this.spanStyle[id] = {
+          left: `${this.pixelXLinear(item[0])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
+          width: `30px`,
+          height: `30px`
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 30,
+          height: 30
+        };
+        this.pathStyle[id] = {
+          fill: 'green'
+        };
+        this.moveNumber(id);
+      }
+    }
+    // candidate
+    const candidate = this.calculateForm.candidateBs
+    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const candidateLen = candidate.length;
+    for (let i = 0; i < candidateLen; i++) {
+      const item = candidate[i].split(',');
+      const id = `candidate_${i}`;
+      this.candidateList.push(id);
+      this.dragObject[id] = {
+        x: item[0],
+        y: item[1],
+        z: item[2],
+        width: 30,
+        height: 30,
+        altitude: 50,
+        rotate: 0,
+        title: this.svgMap['candidate'].title,
+        type: this.svgMap['candidate'].type,
+        color: 'green',
+        material: '0',
+        element: 'candidate'
+      };
+      this.spanStyle[id] = {
+        left: `${this.pixelXLinear(item[0])}px`,
+        top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
+        width: `30px`,
+        height: `30px`
+      };
+      this.svgStyle[id] = {
+        display: 'inherit',
+        width: 30,
+        height: 30
+      };
+      this.pathStyle[id] = {
+        fill: 'green'
+      };
+      window.setTimeout(() => {
+        this.moveNumber(id);
+      }, 0);
+    }
+    // UE
+    const ue = this.calculateForm.ueCoordinate
+    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const ueLen = ue.length;
+    for (let i = 0; i < ueLen; i++) {
+      const item = ue[i].split(',');
+      const id = `ue_${i}`;
+      this.ueList.push(id);
+      this.dragObject[id] = {
+        x: item[0],
+        y: item[1],
+        z: item[2],
+        width: 20,
+        height: 30,
+        altitude: 50,
+        rotate: 0,
+        title: this.svgMap['UE'].title,
+        type: this.svgMap['UE'].type,
+        color: 'green',
+        material: '0',
+        element: 'UE'
+      };
+      this.spanStyle[id] = {
+        left: `${this.pixelXLinear(item[0])}px`,
+        top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
+        width: `20px`,
+        height: `30px`
+      };
+      this.svgStyle[id] = {
+        display: 'inherit',
+        width: 20,
+        height: 30
+      };
+      this.pathStyle[id] = {
+        fill: 'green'
+      };
+    }
+
   }
 
 }

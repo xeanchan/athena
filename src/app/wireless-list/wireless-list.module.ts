@@ -12,6 +12,7 @@ import { NewPlanningModule } from '../new-planning/new-planning.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { PdfModule } from '../site/pdf/pdf.module';
+import { MsgDialogModule } from '../utility/msg-dialog/msg-dialog.module';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { PdfModule } from '../site/pdf/pdf.module';
     MatDialogModule,
     NewPlanningModule,
     TranslateModule,
+    MsgDialogModule,
     PdfModule
   ],
   providers: [ ]

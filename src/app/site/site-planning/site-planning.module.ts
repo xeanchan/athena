@@ -17,6 +17,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
 import { MatRadioModule } from '@angular/material/radio';
 import {MatInputModule} from '@angular/material/input';
+import { MsgDialogModule } from '../../utility/msg-dialog/msg-dialog.module';
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import {MatInputModule} from '@angular/material/input';
     TranslateModule,
     ColorPickerModule,
     MatRadioModule,
-    MatInputModule
+    MatInputModule,
+    MsgDialogModule
   ],
   declarations: [SitePlanningComponent],
   exports: [SitePlanningComponent],
