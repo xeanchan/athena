@@ -140,12 +140,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   roundFormat = Plotly.d3.format('.1f');
   // 預設無線模型 list
   pathLossModelIdList = [];
-  // bounds = {
-  //   left: 150,
-  //   top: 0,
-  //   right: 300,
-  //   bottom: 500
-  // };
+  bounds = {
+    left: 150,
+    top: 0,
+    right: 300,
+    bottom: 500
+  };
 
   // we create an object that contains coordinates
   menuTopLeftStyle = {top: '0', left: '0'};
@@ -163,7 +163,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     'mctsC', 'mctsMimo', 'ueCoverageRatio', 'ueTpByRsrpRatio',
     'mctsTemperature', 'mctsTime', 'mctsTestTime', 'mctsTotalTime'];
     // 'distanceFactor', 'contantFactor',
-  @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
+  // @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
   // task id
   taskid;
   // progress interval
@@ -190,6 +190,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
+  @ViewChild('dragArea') dragArea: ElementRef;
 
   @HostListener('window:resize') windowResize() {
     // this.plotResize();
@@ -254,6 +255,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (sessionStorage.getItem('importFile') != null) {
       // from new-planning import file
       this.calculateForm = new CalculateForm();
+      this.calculateForm.taskName = sessionStorage.getItem('taskName');
       const reader = new FileReader();
       reader.onload = (e) => {
         this.readXls(e.target.result);
@@ -354,17 +356,29 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           layout: this.plotLayout,
           config: defaultPlotlyConfiguration
         }).then((gd) => {
-          // 計算比例尺
-          this.calScale(gd);
-          // import xlsx
-          if (isImport) {
-            this.setImportData();
-          } else if (typeof this.taskid !== 'undefined') {
-            // 編輯
-            this.edit();
-          } else {
-            this.edit();
-          }
+          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+          const rect = xy.getBoundingClientRect();
+          const image = new Image();
+          image.src = reader.result.toString();
+          image.onload = () => {
+            const height = (image.height / (image.width * 0.9)) * rect.width;
+
+            Plotly.relayout('chart', {
+              height: height
+            }).then((gd2) => {
+              // 計算比例尺
+              this.calScale(gd2);
+              // import xlsx
+              if (isImport) {
+                this.setImportData();
+              } else if (typeof this.taskid !== 'undefined') {
+                // 編輯
+                this.edit();
+              } else {
+                this.edit();
+              }
+            });
+          };
         });
       };
     // }
@@ -403,6 +417,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pixelYLinear = Plotly.d3.scale.linear()
       .domain([0, this.calculateForm.height])
       .range([0, rect.height]);
+
   }
 
   /**
@@ -549,12 +564,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
     this.target = document.getElementById(id);
     this.svgId = id;
-    const rect = this.target.getBoundingClientRect();
     this.frame = new Frame({
-      width: `${rect.width}px`,
-      height: `${rect.height}px`,
-      left: `${rect.left}px`,
-      top: `${rect.top}px`,
+      width: this.svgStyle[id].width,
+      height: this.svgStyle[id].height,
+      left: this.svgStyle[id].left,
+      top: this.svgStyle[id].top,
       transform: {
         rotate: `${this.dragObject[this.svgId].rotate}deg`,
         scaleX: 1,
@@ -570,6 +584,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.moveable.rotatable = false;
       this.moveable.resizable = false;
     }
+    // this.moveable.container = document.getElementById('dragArea');
 
     this.moveable.ngOnInit();
     this.setDragData();
@@ -661,7 +676,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  dragStart(moveable: MoveableGroupInterface<BeforeRenderableProps>, e: any) {
+  dragStart(e: any) {
     e.bounds = this.bounds;
   }
 
@@ -683,9 +698,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
     } else {
       if (rectLeft < this.chartLeft) {
+        console.log(this.chartLeft)
         this.frame.set('left', `${this.chartLeft}px`);
         this.setTransform(target);
-        target.closest('span').style.left = `${152}px`;
+        this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
       } else if (rectTop <= this.chartTop) {
         this.frame.set('top', `${this.chartTop + 1}px`);
         this.setTransform(target);
@@ -732,6 +748,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
     this.frame.set('transform', 'rotate', `${deg}deg`);
+    this.frame.set('left', this.spanStyle[this.svgId].left);
+    this.frame.set('top', this.spanStyle[this.svgId].top);
     this.setTransform(target);
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
     this.setLabel();
@@ -747,15 +765,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
+    this.frame.set('left', this.spanStyle[this.svgId].left);
+    this.frame.set('top', this.spanStyle[this.svgId].top);
     this.setTransform(target);
 
     this.svgStyle[this.svgId].width = width;
     this.svgStyle[this.svgId].height = height;
-    
-    const svg = target.querySelector('svg');
-    // svg.setAttribute('width', width.toString());
-    // svg.setAttribute('height', height.toString());
-    // const dragRect = svg.querySelector('.drag_rect');
+
     const type = this.dragObject[this.svgId].element;
 
     if (type === 'rect') {
@@ -791,6 +807,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onEnd() {
     this.live = false;
+    if (this.spanStyle[this.svgId].left.replace('px', '') < this.chartLeft) {
+      this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
+    }
   }
 
   moveableDestroy() {
@@ -1388,7 +1407,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           left: `${this.pixelXLinear(baseStationData[i][0])}px`,
           top: `${this.chartHeight - 30 - this.pixelYLinear(baseStationData[i][1])}px`,
           width: `30px`,
-          height: `30px`,
+          height: `30px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
@@ -1525,8 +1544,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           type = 'rect';
           rect++;
         }
-
-        const material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6]);
+        const material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6].toString());
         const color = (typeof obstacleData[i][7] === 'undefined' ? 'green' : obstacleData[i][7]);
 
         this.dragObject[id] = {
@@ -1553,7 +1571,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
             top: `${this.chartHeight - this.pixelYLinear(this.dragObject[id].height) - this.pixelYLinear(obstacleData[i][1])}px`,
             width: `${this.pixelXLinear(obstacleData[i][2])}px`,
-            height: `${this.pixelYLinear(obstacleData[i][3])}px`
+            height: `${this.pixelYLinear(obstacleData[i][3])}px`,
+            transform: `rotate(${this.dragObject[id].rotate}deg)`
           };
           this.rectStyle[id] = {
             width: this.pixelXLinear(this.dragObject[id].width),

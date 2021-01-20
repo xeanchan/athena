@@ -128,7 +128,7 @@
       
     </div> -->
     <div #chart id="chart" style="position: relative;">
-      <div [ngStyle]="dragStyle">
+      <div #dragArea [ngStyle]="dragStyle">
         <span *ngFor="let item of obstacleList" id="{{item}}" [ngStyle]="spanStyle[item]" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="obstacle" (click)="moveClick(item);" (contextmenu)="onRightClick($event, item)" >
           <svg *ngIf="dragObject[item].element === 'rect'" [ngStyle]="svgStyle[item]" xmlns="http://www.w3.org/2000/svg">
             <g>
@@ -225,6 +225,7 @@
   <ngx-moveable
     #moveable
     [target]="target"
+    [container]="dragArea.nativeElement"
     [draggable]="true"
     [origin]="false"
     [rotatable]="true"
@@ -240,6 +241,7 @@
     (drag)="onDrag($event)"
     (resize)="onResize($event)"
     (rotate)="onRotate($event)"
+    (dragStart)="dragStart($event)"
     (dragEnd)="onEnd()"
     (resizeEnd)="onEnd()"
     (rotateEnd)="onEnd()"

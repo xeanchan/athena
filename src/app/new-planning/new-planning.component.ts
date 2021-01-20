@@ -23,6 +23,7 @@ export class NewPlanningComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data) {
       sessionStorage.removeItem('calculateForm');
       sessionStorage.removeItem('importFile');
+      sessionStorage.removeItem('taskName');
       this.timeInterval = data.timeInterval;
     }
 
@@ -102,6 +103,8 @@ export class NewPlanningComponent implements OnInit {
     reader.readAsDataURL(file);
     reader.onload = () => {
       sessionStorage.setItem('importFile', reader.result.toString());
+      const name = file.name.substring(0, file.name.lastIndexOf('.'));
+      sessionStorage.setItem('taskName', name);
       window.clearInterval(this.timeInterval);
       this.matDialog.closeAll();
       this.router.navigate(['/site/site-planning']);
