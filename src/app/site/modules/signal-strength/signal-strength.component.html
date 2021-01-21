@@ -1,16 +1,16 @@
 <!-- <img id="signal_strength" class="map" src="assets/img/map.png"> -->
 <div style="position: relative;">
   <div class="signal_strength">
-    <div class="quality_img" [ngStyle]="style" >
+    <div class="quality_img" [ngStyle]="style" style="z-index: -1;">
       <!-- 障礙物 -->
       <span *ngFor="let item of rectList" [ngStyle]="item.style">
-        <svg [attr.width]="item.style.width"  [attr.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+        <svg class="drag_obj" [attr.width]="item.style.width"  [attr.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g><rect [ngStyle]="item.svgStyle" stroke-width="1.5" x="0" y="0" /></g>
         </svg>
       </span>
       <!-- 現有基站 -->
       <span *ngFor="let item of defaultBsList" [ngStyle]="item.style">
-        <svg width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+        <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g>
             <rect fill="none" id="canvas_background" height="32" width="32" y="-1" x="-1"/>
           </g>
@@ -23,7 +23,7 @@
       <span *ngFor="let item of defaultBsList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle blue_circle" >{{ (i + 1) }}</span>
       <!-- 新增基站 -->
       <span *ngFor="let item of candidateList" [ngStyle]="item.style">
-        <svg  width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+        <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g>
             <rect fill="none" height="32" width="32" y="-1" x="-1"/>
           </g>
@@ -44,7 +44,7 @@
       <span *ngFor="let item of candidateList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
       <!-- UE -->
       <span *ngFor="let item of ueList" [ngStyle]="item.style">
-        <svg width="20" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+        <svg class="drag_obj" width="20" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g><rect fill="none" height="20" width="30" y="-1" x="-1"/></g>
           <g>
             <path [attr.fill]="item.color" d="M15.88,0H3.12C1.4,0,0,1.47,0,3.27v22.46C0,27.53,1.4,29,3.12,29h12.76C17.6,29,19,27.53,19,25.73V3.27

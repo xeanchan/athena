@@ -83,14 +83,19 @@ export class ProposeComponent implements OnInit {
       // candidateBs
       let index = 1;
       const numMap = {};
-      for (const item of this.result['inputBsList']) {
-        numMap[item] = index;
-        index++;
-      }
-      const traces = [];
       const x = [];
       const y = [];
       const text = [];
+      const color = [];
+      for (let i = 0; i < this.result['inputBsList'].length; i++) {
+        numMap[this.result['inputBsList'][i]] = index;
+        x.push(this.result['inputBsList'][i][0]);
+        y.push(this.result['inputBsList'][i][1]);
+        text.push(index);
+        color.push('#7083d6');
+        index++;
+      }
+      const traces = [];
       // 建議方案 list
       for (let i = 0; i < this.result['candidateBsPower'].length; i++) {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
@@ -99,11 +104,10 @@ export class ProposeComponent implements OnInit {
             this.result['candidateBsPower'][i],
             this.result['candidateBeamId'][i]
           ]);
-          x.push(this.result['chosenCandidate'][i][0]);
-          y.push(this.result['chosenCandidate'][i][1]);
-          text.push(numMap[this.result['chosenCandidate'][i]]);
+          color[numMap[this.result['chosenCandidate'][i]] - 1] = 'red';
         }
       }
+
       traces.push({
         type: 'scatter',
         mode: 'markers+text',
@@ -112,7 +116,7 @@ export class ProposeComponent implements OnInit {
         text: text,
         marker: {
           size: 27,
-          color: 'red'
+          color: color
         },
         textfont: {
           size: 14,

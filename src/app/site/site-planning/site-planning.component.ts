@@ -141,9 +141,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   // 預設無線模型 list
   pathLossModelIdList = [];
   bounds = {
-    left: 150,
+    left: 0,
     top: 0,
-    right: 300,
+    right: 400,
     bottom: 500
   };
 
@@ -190,7 +190,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
-  @ViewChild('dragArea') dragArea: ElementRef;
 
   @HostListener('window:resize') windowResize() {
     // this.plotResize();
@@ -358,6 +357,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((gd) => {
           const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
           const rect = xy.getBoundingClientRect();
+
           const image = new Image();
           image.src = reader.result.toString();
           image.onload = () => {
@@ -366,6 +366,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             Plotly.relayout('chart', {
               height: height
             }).then((gd2) => {
+              const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
+              const rect2 = xy2.getBoundingClientRect();
+              // drag範圍
+              this.bounds = {
+                left: rect2.left,
+                top: rect2.top,
+                right: rect2.right,
+                bottom: rect2.top + rect2.height
+              };
+
               // 計算比例尺
               this.calScale(gd2);
               // import xlsx
@@ -528,6 +538,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       height: '30px',
       left: '200px',
       top: '100px',
+      'z-index': 99999,
       transform: {
         rotate: '0deg',
         scaleX: 1,
@@ -569,6 +580,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       height: this.svgStyle[id].height,
       left: this.svgStyle[id].left,
       top: this.svgStyle[id].top,
+      'z-index': 99999,
       transform: {
         rotate: `${this.dragObject[this.svgId].rotate}deg`,
         scaleX: 1,
@@ -584,7 +596,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.moveable.rotatable = false;
       this.moveable.resizable = false;
     }
-    // this.moveable.container = document.getElementById('dragArea');
 
     this.moveable.ngOnInit();
     this.setDragData();
@@ -677,7 +688,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   dragStart(e: any) {
-    e.bounds = this.bounds;
+    // e.bounds = this.bounds;
   }
 
   /** drag */
@@ -690,35 +701,39 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const rectTop = rect.top;
     const rectBottom = rect.bottom;
 
-    if (rectLeft > this.chartLeft - 1 && rectRight < this.chartRight
-      && rectTop > this.chartTop && rectBottom < this.chartBottom) {
-      this.frame.set('left', `${left}px`);
-      this.frame.set('top', `${top}px`);
-      this.setTransform(target);
+    this.frame.set('left', `${left}px`);
+    this.frame.set('top', `${top}px`);
+    this.setTransform(target);
 
-    } else {
-      if (rectLeft < this.chartLeft) {
-        console.log(this.chartLeft)
-        this.frame.set('left', `${this.chartLeft}px`);
-        this.setTransform(target);
-        this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
-      } else if (rectTop <= this.chartTop) {
-        this.frame.set('top', `${this.chartTop + 1}px`);
-        this.setTransform(target);
-        const t = Number(target.closest('span').style.top.replace('px', ''));
-        target.closest('span').style.top = `${t + 1}px`;
-      } else if (rectRight >= this.chartRight) {
-        this.frame.set('left', `${rectLeft - 1}px`);
-        this.setTransform(target);
-        const t = Number(target.closest('span').style.left.replace('px', ''));
-        target.closest('span').style.left = `${t - 1}px`;
-      } else if (rectBottom >= this.chartBottom) {
-        this.frame.set('top', `${rectTop - 1}px`);
-        this.setTransform(target);
-        const t = Number(target.closest('span').style.top.replace('px', ''));
-        target.closest('span').style.top = `${t - 1}px`;
-      }
-    }
+    // if (rectLeft > this.chartLeft - 1 && rectRight < this.chartRight
+    //   && rectTop > this.chartTop && rectBottom < this.chartBottom) {
+    //   this.frame.set('left', `${left}px`);
+    //   this.frame.set('top', `${top}px`);
+    //   this.setTransform(target);
+
+    // } else {
+    //   if (rectLeft < this.chartLeft) {
+    //     console.log(this.chartLeft)
+    //     this.frame.set('left', `${this.chartLeft}px`);
+    //     this.setTransform(target);
+    //     this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
+    //   } else if (rectTop <= this.chartTop) {
+    //     this.frame.set('top', `${this.chartTop + 1}px`);
+    //     this.setTransform(target);
+    //     const t = Number(target.closest('span').style.top.replace('px', ''));
+    //     target.closest('span').style.top = `${t + 1}px`;
+    //   } else if (rectRight >= this.chartRight) {
+    //     this.frame.set('left', `${rectLeft - 1}px`);
+    //     this.setTransform(target);
+    //     const t = Number(target.closest('span').style.left.replace('px', ''));
+    //     target.closest('span').style.left = `${t - 1}px`;
+    //   } else if (rectBottom >= this.chartBottom) {
+    //     this.frame.set('top', `${rectTop - 1}px`);
+    //     this.setTransform(target);
+    //     const t = Number(target.closest('span').style.top.replace('px', ''));
+    //     target.closest('span').style.top = `${t - 1}px`;
+    //   }
+    // }
     this.spanStyle[this.svgId].left = `${left}px`;
     this.spanStyle[this.svgId].top = `${top}px`;
     this.setDragData();

@@ -129,9 +129,7 @@ export class SignalStrengthComponent implements OnInit {
         x: x,
         y: y,
         z: zData[zValues.indexOf(zValue)],
-        type: 'heatmap',
-        opacity: 0.8,
-        hoverinfo: 'none'
+        type: 'heatmap'
       };
       traces.push(trace);
 
@@ -274,69 +272,85 @@ export class SignalStrengthComponent implements OnInit {
       }).then((gd) => {
         const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
         const rect = xy.getBoundingClientRect();
-        this.style = {
-          left: `${xy.getAttribute('x')}px`,
-          top: `${xy.getAttribute('y')}px`,
-          width: `${rect.width}px`,
-          height: `${rect.height}px`,
-          position: 'absolute'
+        const image = new Image();
+        image.src = reader.result.toString();
+        image.onload = () => {
+          const height = (image.height / (image.width * 0.9)) * rect.width;
+
+          Plotly.relayout(id, {
+            height: height
+          }).then((gd2) => {
+            const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
+            const rect2 = xy2.getBoundingClientRect();
+            gd2.style.opacity = 0.85;
+            gd2.querySelectorAll('.plotly')[0].style.opacity = 0.85;
+
+            this.style = {
+              left: `${xy2.getAttribute('x')}px`,
+              top: `${xy2.getAttribute('y')}px`,
+              width: `${rect2.width}px`,
+              height: `${rect2.height}px`,
+              position: 'absolute'
+            };
+
+            const pixelXLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.width])
+              .range([0, rect2.width]);
+
+            const pixelYLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.height])
+              .range([0, rect2.height]);
+
+            for (const item of this.rectList) {
+              item['style'].left = `${pixelXLinear(item.x)}px`;
+              item['style'].bottom = `${pixelYLinear(item.y)}px`;
+              item['style'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
+              item['style'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+              item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
+              item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+            }
+
+            for (const item of this.defaultBsList) {
+              item['style'] = {
+                left: `${pixelXLinear(item.x)}px`,
+                bottom: `${pixelYLinear(item.y)}px`,
+                position: 'absolute'
+              };
+              item['circleStyle'] = {
+                left: `${pixelXLinear(item.x) + 15}px`,
+                bottom: `${pixelYLinear(item.y) + 25}px`,
+                position: 'absolute'
+              };
+            }
+
+            for (const item of this.candidateList) {
+              item['style'] = {
+                left: `${pixelXLinear(item.x)}px`,
+                bottom: `${pixelYLinear(item.y)}px`,
+                position: 'absolute'
+              };
+              item['circleStyle'] = {
+                left: `${pixelXLinear(item.x) + 15}px`,
+                bottom: `${pixelYLinear(item.y) + 25}px`,
+                position: 'absolute'
+              };
+            }
+
+            for (const item of this.ueList) {
+              item['style'] = {
+                left: `${pixelXLinear(item.x)}px`,
+                bottom: `${pixelYLinear(item.y)}px`,
+                position: 'absolute'
+              };
+              item['circleStyle'] = {
+                left: `${pixelXLinear(item.x) + 15}px`,
+                bottom: `${pixelYLinear(item.y) + 25}px`,
+                position: 'absolute'
+              };
+            }
+          });
         };
 
-        const pixelXLinear = Plotly.d3.scale.linear()
-          .domain([0, this.calculateForm.width])
-          .range([0, rect.width]);
-
-        const pixelYLinear = Plotly.d3.scale.linear()
-          .domain([0, this.calculateForm.height])
-          .range([0, rect.height]);
-
-        for (const item of this.rectList) {
-          item['style'].left = `${pixelXLinear(item.x)}px`;
-          item['style'].bottom = `${pixelYLinear(item.y)}px`;
-          item['style'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-          item['style'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
-          item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-          item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
-        }
-
-        for (const item of this.defaultBsList) {
-          item['style'] = {
-            left: `${pixelXLinear(item.x)}px`,
-            bottom: `${pixelYLinear(item.y)}px`,
-            position: 'absolute'
-          };
-          item['circleStyle'] = {
-            left: `${pixelXLinear(item.x) + 15}px`,
-            bottom: `${pixelYLinear(item.y) + 25}px`,
-            position: 'absolute'
-          };
-        }
-
-        for (const item of this.candidateList) {
-          item['style'] = {
-            left: `${pixelXLinear(item.x)}px`,
-            bottom: `${pixelYLinear(item.y)}px`,
-            position: 'absolute'
-          };
-          item['circleStyle'] = {
-            left: `${pixelXLinear(item.x) + 15}px`,
-            bottom: `${pixelYLinear(item.y) + 25}px`,
-            position: 'absolute'
-          };
-        }
-
-        for (const item of this.ueList) {
-          item['style'] = {
-            left: `${pixelXLinear(item.x)}px`,
-            bottom: `${pixelYLinear(item.y)}px`,
-            position: 'absolute'
-          };
-          item['circleStyle'] = {
-            left: `${pixelXLinear(item.x) + 15}px`,
-            bottom: `${pixelYLinear(item.y) + 25}px`,
-            position: 'absolute'
-          };
-        }
 
       });
     };

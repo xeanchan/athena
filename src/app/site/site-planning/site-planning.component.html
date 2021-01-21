@@ -225,7 +225,6 @@
   <ngx-moveable
     #moveable
     [target]="target"
-    [container]="dragArea.nativeElement"
     [draggable]="true"
     [origin]="false"
     [rotatable]="true"
@@ -234,6 +233,9 @@
     [resizable]="resizable"
     [warpable]="warpable"
     [keepRatio]="false"
+    [snappable]="true"
+    [bounds]="bounds"
+    [snapCenter]="false"
     [throttleDrag]="1"
     [throttleScale]="0.01"
     [throttleRotate]="0.2"

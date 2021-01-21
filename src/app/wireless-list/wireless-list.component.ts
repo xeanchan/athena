@@ -26,7 +26,11 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     private router: Router,
     private excelService: ExcelService,
     private pdfService: PdfService
-  ) { }
+  ) {
+    sessionStorage.removeItem('calculateForm');
+    sessionStorage.removeItem('importFile');
+    sessionStorage.removeItem('taskName');
+  }
 
   taskList: any = [];
   hstList: any = [];
