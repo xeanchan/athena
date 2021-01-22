@@ -71,16 +71,17 @@ export class ResultComponent implements OnInit {
     const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
-        // console.log(res)
+        // console.log(res);
         this.calculateForm = res['input'];
         this.result = res['output'];
+        console.log(this.result);
+        // 建議方案
         this.propose.calculateForm = this.calculateForm;
         this.propose.result = this.result;
         this.propose.drawLayout(false);
         // 訊號品質圖
         this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
         this.zValue = this.zValues[0];
-
         this.drawQuality();
         // 預估效能
         this.performance.calculateForm = this.calculateForm;
@@ -97,8 +98,6 @@ export class ResultComponent implements OnInit {
           this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
           this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
         }, 0);
-
-        console.log(this.result);
       }
     );
   }
@@ -111,6 +110,7 @@ export class ResultComponent implements OnInit {
     // document.getElementById('pdf_area').style.display = 'none';
   }
 
+  /** 訊號品質圖 */
   drawQuality() {
     this.showQuality = true;
     this.showCover = false;
@@ -122,6 +122,7 @@ export class ResultComponent implements OnInit {
     }, 0);
   }
 
+  /** 訊號覆蓋圖 */
   drawCover() {
     this.showQuality = false;
     this.showCover = true;
@@ -133,6 +134,7 @@ export class ResultComponent implements OnInit {
     }, 0);
   }
 
+  /** 訊號強度圖 */
   drawStrength() {
     this.showQuality = false;
     this.showCover = false;
@@ -144,8 +146,20 @@ export class ResultComponent implements OnInit {
     }, 0);
   }
 
+  /** change 高度 */
   changeZvalue() {
-    this.drawQuality();
+    if (this.chartType === 'SINR') {
+      this.drawQuality();
+    } else if (this.chartType === 'PCI') {
+      this.drawCover();
+    } else if (this.chartType === 'RSRP') {
+      this.drawStrength();
+    }
+  }
+
+  /** 回上頁 */
+  back() {
+    this.router.navigate(['/site/site-planning'], { queryParams: { taskId: this.taskId }});
   }
 
 }

@@ -121,7 +121,7 @@
 
     <mat-button-toggle-group class="inline-block ml_5">
       <mat-button-toggle value="go" (click)="calculate()">開始運算</mat-button-toggle>
-      <mat-button-toggle value="result" [routerLink]="['/site/result']">運算結果</mat-button-toggle>
+      <mat-button-toggle *ngIf="taskid !== ''" value="result" (click)="result()">運算結果</mat-button-toggle>
       <mat-button-toggle (click)="view3D()">3Ｄ顯示</mat-button-toggle>
     </mat-button-toggle-group>
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">

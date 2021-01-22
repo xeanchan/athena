@@ -165,7 +165,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // 'distanceFactor', 'contantFactor',
   // @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
   // task id
-  taskid;
+  taskid = '';
   // progress interval
   progressInterval;
   heightList = [];
@@ -1843,6 +1843,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     }
 
+  }
+
+  /** 運算結果 */
+  result() {
+    // location.replace(`#/site/result?taskId=${this.taskid}`);
+    // location.reload();
+    this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
   }
 
 }

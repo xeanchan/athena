@@ -1,7 +1,7 @@
 <h2 class="inline-block">規劃結果</h2>
 
 <mat-button-toggle-group class="inline-block widthAuto">
-  <mat-button-toggle [routerLink]="['/site/site-planning']" value="back">回上頁</mat-button-toggle>
+  <mat-button-toggle (click)="back()" value="back">回上頁</mat-button-toggle>
 	<mat-button-toggle  value="3d">3D 顯示</mat-button-toggle>
 	<mat-button-toggle value="export" (click)="exportPDF()">匯出</mat-button-toggle>
 </mat-button-toggle-group>

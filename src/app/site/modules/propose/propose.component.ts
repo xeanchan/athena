@@ -129,6 +129,19 @@ export class ProposeComponent implements OnInit {
         data: traces,
         layout: this.plotLayout,
         config: defaultPlotlyConfiguration
+      }).then((gd) => {
+        const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+        const rect = xy.getBoundingClientRect();
+
+        const image = new Image();
+        image.src = reader.result.toString();
+        image.onload = () => {
+          const height = (image.height / image.width) * rect.width;
+
+          Plotly.relayout(id, {
+            height: height
+          });
+        };
       });
 
     };
