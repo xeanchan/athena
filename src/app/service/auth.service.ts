@@ -20,10 +20,12 @@ export class AuthService {
   public API_URL = 'http://211.20.94.210:3000/son';
   public userToken = null;
   public lang = 'zh-TW';
+  public userId;
 
   public setUserToken(sonSession: string) {
     if (sonSession == null) {
       window.sessionStorage.removeItem('son_session');
+      window.sessionStorage.removeItem('son_userId');
     } else {
       window.sessionStorage.setItem('son_session', sonSession);
     }

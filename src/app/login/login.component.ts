@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         if (typeof res['session'] !== 'undefined') {
           this.showMsg = false;
           this.authService.setUserToken(res['session']);
+          sessionStorage.setItem('son_userId', this.loginForm.id);
           this.router.navigate(['/']);
         } else {
           this.showMsg = true;

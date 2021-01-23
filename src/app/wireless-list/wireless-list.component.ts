@@ -145,7 +145,26 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   edit(taskId) {
     window.clearInterval(this.timeInterval);
-    this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
+    // this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
+
+    const form = {
+      taskId: taskId,
+      sessionId: this.authService.userToken,
+      id: sessionStorage.getItem('son_userId')
+    };
+    const url = `${this.authService.API_URL}/storeResult`;
+    this.http.post(url, JSON.stringify(form)).subscribe(
+      res => {
+        console.log(res)
+      },
+      err => {
+        this.msgDialogConfig.data = {
+          type: 'error',
+          infoMessage: '無法取得計算結果!'
+        };
+        this.dialog.open(MsgDialogComponent, this.msgDialogConfig);
+      }
+    );
   }
 
 }

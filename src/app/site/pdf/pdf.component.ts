@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
 import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import { ProposeComponent } from '../modules/propose/propose.component';
 import { SignalQualityComponent } from '../modules/signal-quality/signal-quality.component';
 import { SignalCoverComponent } from '../modules/signal-cover/signal-cover.component';
@@ -11,6 +12,7 @@ import { SignalStrengthComponent } from '../modules/signal-strength/signal-stren
 import { PerformanceComponent } from '../modules/performance/performance.component';
 import { StatisticsComponent } from '../modules/statistics/statistics.component';
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
+import { JsPDFFontService } from '../../service/js-pdffont.service';
 
 @Component({
   selector: 'app-pdf',
@@ -21,6 +23,7 @@ export class PdfComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private jsPDFFontService: JsPDFFontService,
     private http: HttpClient) { }
 
   taskId = 'task_sel_d2f81cef-01c8-4444-9352-f4a1ffb5ccca_1';
@@ -143,15 +146,125 @@ export class PdfComponent implements OnInit {
   async genericPDF(taskName) {
     // this.authService.spinnerShow();
     const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
+    // 設定字型
+    this.jsPDFFontService.AddFontArimo(pdf);
+
     const area = document.querySelector('#pdf_area');
-    const list = ['site_info', 'defaultBs_list', 'inputBs_list', 'obstacle_list', 'ue_list', 'propose'];
+    const list = ['propose'];
     for (let k = 0; k < this.zValues.length; k++) {
       list.push(`signal_${k}`);
     }
     list.push('performace');
     list.push('statistics');
-    let i = 0;
+
+    const options = {
+      pagesplit: true,
+      background: '#ffffff'
+    };
+    const siteData = <HTMLDivElement> area.querySelector(`#site_info`);
+    await html2canvas(siteData).then(canvas => {
+      // Few necessary setting options
+      const imgWidth = 208;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      const contentDataURL = canvas.toDataURL('image/png');
+      const position = 0;
+      pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+    });
+    pdf.addPage();
+    // 現有基站
+    const defaultBsTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const defaultBsHeader = (data) => {
+      pdf.setFontSize(12);
+      // pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(140, 205, 232);
+      pdf.rect(14, 7, 182, 7, 'F');
+      pdf.text('現有基站', 100, 12);
+    };
+    const defaultBsData = [];
+    for (let k = 0; k < this.defaultBs.length; k++) {
+      if (this.defaultBs[k][0] === '') {
+        defaultBsData.push(['未設置現有基站資訊']);
+        continue;
+      }
+      defaultBsData.push([
+        (k + 1), this.defaultBs[k][0], this.defaultBs[k][1], this.defaultBs[k][2]
+      ]);
+    }
+    pdf.autoTable(defaultBsTitle, defaultBsData, {
+      styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
+      headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
+      beforePageContent: defaultBsHeader,
+      // startY: 40,
+    });
+    // 新增基站
+    pdf.addPage();
+    const candidateHeader = (data) => {
+      pdf.setFontSize(12);
+      // pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(140, 205, 232);
+      pdf.rect(14, 7, 182, 7, 'F');
+      pdf.text('新增基站', 100, 12);
+    };
+    const candidateTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const candidateData = [];
+    for (let k = 0; k < this.inputBsList.length; k++) {
+      candidateData.push([
+        (k + 1), this.inputBsList[k][0], this.inputBsList[k][1], this.inputBsList[k][2]
+      ]);
+    }
+    pdf.autoTable(candidateTitle, candidateData, {
+      styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
+      headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
+      beforePageContent: candidateHeader
+    });
+    // 障礙物資訊
+    pdf.addPage();
+    const obstacleHeader = (data) => {
+      pdf.setFontSize(12);
+      // pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(140, 205, 232);
+      pdf.rect(14, 7, 182, 7, 'F');
+      pdf.text('障礙物資訊', 100, 12);
+    };
+    const obstacleTitle = ['編號', 'X座標', 'Y座標', '水平寬度(公尺)', '垂直長度(公尺)', '高度(公尺)'];
+    const obstacleData = [];
+    for (let k = 0; k < this.obstacleList.length; k++) {
+      const item = this.obstacleList[k];
+      obstacleData.push([(k + 1), item[0], item[1], item[2], item[3], item[4]]);
+    }
+    pdf.autoTable(obstacleTitle, obstacleData, {
+      styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
+      headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
+      beforePageContent: obstacleHeader
+    });
+    // 行動終端分佈
+    pdf.addPage();
+    const ueHeader = (data) => {
+      pdf.setFontSize(12);
+      // pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(140, 205, 232);
+      pdf.rect(14, 7, 182, 7, 'F');
+      pdf.text('行動終端分佈', 100, 12);
+    };
+    const ueTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const ueData = [];
+    for (let k = 0; k < this.ueList.length; k++) {
+      ueData.push([
+        (k + 1), this.ueList[k][0], this.ueList[k][1], this.ueList[k][2]
+      ]);
+    }
+    pdf.autoTable(ueTitle, ueData, {
+      styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
+      headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
+      beforePageContent: ueHeader
+    });
+
     for (const id of list) {
+      pdf.addPage();
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
       await html2canvas(data).then(canvas => {
         // Few necessary setting options
@@ -159,17 +272,14 @@ export class PdfComponent implements OnInit {
         const imgHeight = canvas.height * imgWidth / canvas.width;
         const contentDataURL = canvas.toDataURL('image/png');
         const position = 0;
-        if (i > 0) {
-          pdf.addPage();
-        }
         pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
       });
-
-      i++;
     }
+
     document.getElementById('pdf_area').style.display = 'none';
     this.authService.spinnerHide();
     pdf.save(`${taskName}_report.pdf`); // Generated PDF
+
   }
 
 }
