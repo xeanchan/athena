@@ -262,7 +262,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       reader.readAsBinaryString(this.dataURLtoBlob(sessionStorage.getItem('importFile')));
 
     } else {
-      if (typeof this.taskid !== 'undefined') {
+      if (this.taskid !== '') {
         // 編輯
         const url = `${this.authService.API_URL}/completeCalcResult/${this.taskid}/${this.authService.userToken}`;
         this.http.get(url).subscribe(
@@ -279,8 +279,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         );
       } else {
-        // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
-        // this.initData(false);
+        // from new-planning upload image
+        this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+        this.initData(false);
       }
     }
   }
@@ -381,7 +382,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               // import xlsx
               if (isImport) {
                 this.setImportData();
-              } else if (typeof this.taskid !== 'undefined') {
+              } else if (this.taskid !== '') {
                 // 編輯
                 this.edit();
               } else {

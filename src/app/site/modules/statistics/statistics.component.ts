@@ -41,12 +41,18 @@ export class StatisticsComponent implements OnInit {
       this.textColor = '#ffffff';
     }
     this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+    // 場域Modulation統計
     this.drawLayerModulation(isPDF);
+    // 場域Modulation CDF圖
     this.drawLayerModulationCDF(isPDF);
+    // 場域訊號強度統計
     this.drawLayerSignal(isPDF);
+    // 場域訊號強度CDF圖
     this.drawLayerSignalCDF(isPDF);
-    this.drawModulation(isPDF);
+    // UE Modulation統計
     this.drawUEModulation(isPDF);
+    // UE Modulation CDF圖
+    this.drawUEModulationCDF(isPDF);
     // UE訊號強度統計
     this.drawUESignal(isPDF);
     // UE訊號強度CDF圖
@@ -274,7 +280,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   /** UE Modulation統計 */
-  drawModulation(isPDF) {
+  drawUEModulation(isPDF) {
     const layout = {
       autosize: true,
       title: {
@@ -583,7 +589,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   /** UE Modulation CDF圖 */
-  drawUEModulation(isPDF) {
+  drawUEModulationCDF(isPDF) {
     const layout = {
       autosize: true,
       title: {
