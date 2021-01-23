@@ -1,0 +1,14 @@
+ngx-spinner p a span {
+    vertical-align: middle;
+    margin-right: .5em;
+    display: inline-block;
+    text-decoration: underline;
+}
+ngx-spinner  .material-icons {
+    text-decoration: none!important;
+}
+.going {
+    font-size: 1.2em;
+    color: #aae7ff;
+    margin: 1em 0;
+}

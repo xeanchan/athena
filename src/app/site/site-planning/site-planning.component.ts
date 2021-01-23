@@ -469,7 +469,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.rectStyle[this.svgId] = {
         width: 30,
         height: 30,
-        fill: 'green'
+        fill: '#73805c'
       };
     } else if (id === 'ellipse') {
       this.svgId = `${id}_${this.obstacleList.length}`;
@@ -479,32 +479,32 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         rx: 15,
         cx: 15,
         cy: 15,
-        fill: 'green'
+        fill: '#73805c'
       };
     } else if (id === 'polygon') {
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.polygonStyle[this.svgId] = {
         points: '15,0 30,30 0,30',
-        fill: 'green'
+        fill: '#73805c'
       };
     } else if (id === 'defaultBS') {
       this.svgId = `${id}_${this.defaultBSList.length}`;
       this.defaultBSList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: 'green'
+        fill: '#2958be'
       };
     } else if (id === 'candidate') {
       this.svgId = `${id}_${this.candidateList.length}`;
       this.candidateList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: 'green'
+        fill: '#d00a67'
       };
     } else if (id === 'UE') {
       this.svgId = `${id}_${this.ueList.length}`;
       this.ueList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: 'green'
+        fill: '#6abdd4'
       };
     }
     this.spanStyle[this.svgId] = {

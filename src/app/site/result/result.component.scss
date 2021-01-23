@@ -2,7 +2,7 @@
 .box {
     display: inline-block;
     vertical-align: top;
-    padding: .5em 0 0;
+    padding: 0;
     width: 100%;
 }
 .box label {
@@ -117,7 +117,7 @@
     display: block;
     width: 98.5%;
     font-size: .9em;
-    margin: .5em 0;
+    margin: 0;
     padding: 0 1em;
     background-color: #e9f3f8;
     line-height: 2.5;
@@ -134,8 +134,10 @@
 }
 .leftArea {
     width: 75%;
-    padding: 0.5em 1em 0 0;
-
+    padding: 0 1em 0 0;
+}
+table {
+    margin: 0 0 1.5em 0;
 }
 .rightArea {
     padding: 1em;
@@ -185,4 +187,9 @@
 :host ::ng-deep #propose {
     background-color: #fff;
     color: #333;
+}
+:host ::ng-deep .mat-button-toggle-group button {
+    width: initial!important;
+    background-color: #c9e7ff;
+    font-size: .95em;
 }
