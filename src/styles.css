@@ -29,8 +29,8 @@ h2 {
     margin-left: 1em!important;
 }
 table {
-    margin: 1em 0 3em;
     width: 100%;
+    margin-bottom: 1.5em;
 }
 .modalContent table {
     margin-bottom: 1em;
