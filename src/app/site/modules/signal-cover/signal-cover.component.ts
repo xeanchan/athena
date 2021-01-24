@@ -281,11 +281,20 @@ export class SignalCoverComponent implements OnInit {
         const image = new Image();
         image.src = reader.result.toString();
         image.onload = () => {
-          const height = (image.height / (image.width * 0.9)) * rect.width;
+          let layoutOption;
+          if (image.width > image.height) {
+            const height = (image.height / (image.width * 0.9)) * rect.width;
+            layoutOption = {
+              height: height
+            };
+          } else {
+            const width = (image.width / (image.height * 0.9)) * rect.height;
+            layoutOption = {
+              width: width
+            };
+          }
 
-          Plotly.relayout(id, {
-            height: height
-          }).then((gd2) => {
+          Plotly.relayout(id, layoutOption).then((gd2) => {
             const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
             const rect2 = xy2.getBoundingClientRect();
             gd2.style.opacity = 0.85;

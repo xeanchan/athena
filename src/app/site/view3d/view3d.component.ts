@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
+import { Scene, Engine } from 'babylonjs';
 
 declare var Plotly: any;
 
@@ -25,7 +26,7 @@ export class View3dComponent implements OnInit {
       this.calculateForm = data.calculateForm;
       this.obstacleList = data.obstacleList;
       this.defaultBSList = data.defaultBSList;
-      this.newBSList = data.newBSList;
+      this.candidateList = data.candidateList;
       this.ueList = data.ueList;
       this.dragObject = data.dragObject;
 
@@ -38,7 +39,7 @@ export class View3dComponent implements OnInit {
   /** 現有基站 */
   defaultBSList = [];
   /** 新增基站 */
-  newBSList = [];
+  candidateList = [];
   /** 新增ＵＥ */
   ueList = [];
   dragObject = {};
@@ -48,32 +49,34 @@ export class View3dComponent implements OnInit {
   }
 
   draw() {
-    const defaultPlotlyConfiguration = {
-      displayModeBar: false
-    };
-
-    const layout = {
-      autosize: true,
-      scene: {
-        xaxis: {
-          linewidth: 1,
-          mirror: 'all',
-          range: [0, this.calculateForm.width]
+    window.setTimeout(() => {
+      const defaultPlotlyConfiguration = {
+        displayModeBar: false
+      };
+  
+      const layout = {
+        autosize: true,
+        scene: {
+          xaxis: {
+            linewidth: 1,
+            mirror: 'all',
+            range: [0, this.calculateForm.width]
+          },
+          yaxis: {
+            linewidth: 1,
+            mirror: 'all',
+            range: [0, this.calculateForm.height]
+          },
         },
-        yaxis: {
-          linewidth: 1,
-          mirror: 'all',
-          range: [0, this.calculateForm.height]
-        },
-      },
-      margin: { t: 0, b: 0, l: 0, r: 0}
-    };
-
-    Plotly.newPlot('chart3D', {
-      data: this.getTraces(),
-      layout: layout,
-      config: defaultPlotlyConfiguration
-    });
+        margin: { t: 0, b: 0, l: 0, r: 0}
+      };
+  
+      Plotly.newPlot('chart3D', {
+        data: this.getTraces(),
+        layout: layout,
+        config: defaultPlotlyConfiguration
+      });
+    }, 0);
   }
 
   /**
@@ -101,10 +104,10 @@ export class View3dComponent implements OnInit {
   getTraces() {
 
     const traces = [];
-    const ary = [].concat(this.obstacleList, this.defaultBSList, this.newBSList, this.ueList);
+    const ary = [].concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
     let obstacleCount = 1;
     let defaultBSCount = 1;
-    let newBSCount = 1;
+    let candidateCount = 1;
     let ueCount = 1;
     for (const item of ary) {
       let text = '';
@@ -112,8 +115,8 @@ export class View3dComponent implements OnInit {
         text = `障礙物 ${obstacleCount}`;
       } else if (this.dragObject[item].type === 'defaultBS') {
         text = `現有基站 ${defaultBSCount}`;
-      } else if (this.dragObject[item].type === 'newBS') {
-        text = `新增基站 ${newBSCount}`;
+      } else if (this.dragObject[item].type === 'candidate') {
+        text = `新增基站 ${candidateCount}`;
       } else if (this.dragObject[item].type === 'UE') {
         text = `新增ＵＥ ${ueCount}`;
       }
@@ -152,8 +155,8 @@ export class View3dComponent implements OnInit {
         traces.push(trace);
         if (this.dragObject[item].type === 'defaultBS') {
           defaultBSCount++;
-        } else if (this.dragObject[item].type === 'newBS') {
-          newBSCount++;
+        } else if (this.dragObject[item].type === 'candidate') {
+          candidateCount++;
         } else if (this.dragObject[item].type === 'UE') {
           ueCount++;
         }

@@ -33,11 +33,6 @@ export class SignalQualityComponent implements OnInit {
 
   draw(isPDF, zValue) {
     this.zValue = zValue;
-    // this.resultMapService.draw(
-    //   isPDF, zValue, this.calculateForm, this.result,
-    //   'SINR', this.style, this.rectList, this.ellipseList, this.polygonList,
-    //   this.defaultBsList, this.candidateList, this.ueList
-    // );
 
     const reader = new FileReader();
     reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
@@ -292,11 +287,20 @@ export class SignalQualityComponent implements OnInit {
         const image = new Image();
         image.src = reader.result.toString();
         image.onload = () => {
-          const height = (image.height / (image.width * 0.9)) * rect.width;
+          let layoutOption;
+          if (image.width > image.height) {
+            const height = (image.height / (image.width * 0.9)) * rect.width;
+            layoutOption = {
+              height: height
+            };
+          } else {
+            const width = (image.width / (image.height * 0.9)) * rect.height;
+            layoutOption = {
+              width: width
+            };
+          }
 
-          Plotly.relayout(id, {
-            height: height
-          }).then((gd2) => {
+          Plotly.relayout(id, layoutOption).then((gd2) => {
             const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
             const rect2 = xy2.getBoundingClientRect();
             gd2.style.opacity = 0.85;
@@ -326,45 +330,6 @@ export class SignalQualityComponent implements OnInit {
               item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
               item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
             }
-
-            // for (const item of this.defaultBsList) {
-            //   item['style'] = {
-            //     left: `${pixelXLinear(item.x)}px`,
-            //     bottom: `${pixelYLinear(item.y)}px`,
-            //     position: 'absolute'
-            //   };
-            //   item['circleStyle'] = {
-            //     left: `${pixelXLinear(item.x) + 15}px`,
-            //     bottom: `${pixelYLinear(item.y) + 25}px`,
-            //     position: 'absolute'
-            //   };
-            // }
-
-            // for (const item of this.candidateList) {
-            //   item['style'] = {
-            //     left: `${pixelXLinear(item.x)}px`,
-            //     bottom: `${pixelYLinear(item.y)}px`,
-            //     position: 'absolute'
-            //   };
-            //   item['circleStyle'] = {
-            //     left: `${pixelXLinear(item.x) + 15}px`,
-            //     bottom: `${pixelYLinear(item.y) + 25}px`,
-            //     position: 'absolute'
-            //   };
-            // }
-
-            // for (const item of this.ueList) {
-            //   item['style'] = {
-            //     left: `${pixelXLinear(item.x)}px`,
-            //     bottom: `${pixelYLinear(item.y)}px`,
-            //     position: 'absolute'
-            //   };
-            //   item['circleStyle'] = {
-            //     left: `${pixelXLinear(item.x) + 15}px`,
-            //     bottom: `${pixelYLinear(item.y) + 25}px`,
-            //     position: 'absolute'
-            //   };
-            // }
           });
         };
 

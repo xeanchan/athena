@@ -362,11 +362,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           const image = new Image();
           image.src = reader.result.toString();
           image.onload = () => {
-            const height = (image.height / (image.width * 0.9)) * rect.width;
+            let layoutOption;
+            if (image.width > image.height) {
+              const height = (image.height / (image.width * 0.9)) * rect.width;
+              layoutOption = {
+                height: height
+              };
+            } else {
+              const width = (image.width / (image.height * 0.9)) * rect.height;
+              layoutOption = {
+                width: width
+              };
+            }
 
-            Plotly.relayout('chart', {
-              height: height
-            }).then((gd2) => {
+            Plotly.relayout('chart', layoutOption).then((gd2) => {
               const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
               const rect2 = xy2.getBoundingClientRect();
               // drag範圍

@@ -143,11 +143,20 @@ export class ProposeComponent implements OnInit {
         const image = new Image();
         image.src = reader.result.toString();
         image.onload = () => {
-          const height = (image.height / image.width) * rect.width;
+          let layoutOption;
+          if (image.width > image.height) {
+            const height = (image.height / image.width) * rect.width;
+            layoutOption = {
+              height: height
+            };
+          } else {
+            const width = (image.width / image.height) * rect.height;
+            layoutOption = {
+              width: width
+            };
+          }
 
-          Plotly.relayout(id, {
-            height: height
-          });
+          Plotly.relayout(id, layoutOption);
         };
       });
 

@@ -145,7 +145,7 @@ export class PdfComponent implements OnInit {
   /** export PDF */
   async genericPDF(taskName) {
     // this.authService.spinnerShow();
-    const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF
+    const pdf = new jsPDF('p', 'mm', 'a4', true); // A4 size page of PDF
     // 設定字型
     this.jsPDFFontService.AddFontArimo(pdf);
     let defaultBsCount = 0;
@@ -289,6 +289,7 @@ export class PdfComponent implements OnInit {
     });
     // 行動終端分佈
     pdf.addPage();
+    pdf.page++;
     const ueHeader = (data) => {
       pdf.setFontSize(12);
       pdf.setTextColor(255);
@@ -315,11 +316,11 @@ export class PdfComponent implements OnInit {
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
       await html2canvas(data).then(canvas => {
         // Few necessary setting options
-        const imgWidth = 208;
+        const imgWidth = 182;
         const imgHeight = canvas.height * imgWidth / canvas.width;
         const contentDataURL = canvas.toDataURL('image/png');
-        const position = 0;
-        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        const position = 10;
+        pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');
       });
     }
     // 預估效能
@@ -373,15 +374,24 @@ export class PdfComponent implements OnInit {
     const statisticsList = ['statistics_1', 'statistics_2'];
     for (const id of statisticsList) {
       pdf.addPage();
+      pdf.page++;
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
       await html2canvas(data).then(canvas => {
         // Few necessary setting options
-        const imgWidth = 208;
+        const imgWidth = 182;
         const imgHeight = canvas.height * imgWidth / canvas.width;
         const contentDataURL = canvas.toDataURL('image/png');
-        const position = 0;
-        pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight);
+        const position = 10;
+        pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');
       });
+    }
+
+    const pageCount = pdf.internal.getNumberOfPages();
+    for (let k = 0; k < pageCount; k++) {
+      pdf.setFontSize(12);
+      pdf.setFontStyle({ font: 'NotoSansCJKtc', fontStyle: 'normal' });
+      pdf.setPage(k);
+      pdf.text(170, 285, `Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${pageCount}`);
     }
 
     document.getElementById('pdf_area').style.display = 'none';
