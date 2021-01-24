@@ -83,12 +83,17 @@ export class ProposeComponent implements OnInit {
       // candidateBs
       let index = 1;
       const numMap = {};
+      const xyMap = {};
       const x = [];
       const y = [];
       const text = [];
       const color = [];
       for (let i = 0; i < this.result['inputBsList'].length; i++) {
         numMap[this.result['inputBsList'][i]] = index;
+        xyMap[this.result['inputBsList'][i]] = {
+          x: this.result['inputBsList'][i][0],
+          y: this.result['inputBsList'][i][1]
+        };
         x.push(this.result['inputBsList'][i][0]);
         y.push(this.result['inputBsList'][i][1]);
         text.push(index);
@@ -101,6 +106,8 @@ export class ProposeComponent implements OnInit {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
           this.candidateList.push([
             numMap[this.result['chosenCandidate'][i].toString()],
+            xyMap[this.result['chosenCandidate'][i].toString()].x,
+            xyMap[this.result['chosenCandidate'][i].toString()].y,
             this.result['candidateBsPower'][i],
             this.result['candidateBeamId'][i]
           ]);
