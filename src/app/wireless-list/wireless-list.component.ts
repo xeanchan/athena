@@ -143,19 +143,20 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.pdf.export(taskId);
   }
 
-  edit(taskId) {
+  edit(taskId, isHst) {
     window.clearInterval(this.timeInterval);
     // this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
-
-    const form = {
-      taskId: taskId,
-      sessionId: this.authService.userToken,
-      id: sessionStorage.getItem('son_userId')
-    };
-    const url = `${this.authService.API_URL}/storeResult`;
-    this.http.post(url, JSON.stringify(form)).subscribe(
+    let url;
+    if (isHst) {
+      // 歷史紀錄
+      url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
+      url += `${this.authService.userToken}/${taskId}`;
+    } else {
+      url = `${this.authService.API_URL}/completeCalcResult/${taskId}/${this.authService.userToken}`;
+    }
+    this.http.get(url).subscribe(
       res => {
-        console.log(res)
+        this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId, isHst: isHst }});
       },
       err => {
         this.msgDialogConfig.data = {

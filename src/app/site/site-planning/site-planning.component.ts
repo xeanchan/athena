@@ -63,7 +63,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   matrix;
   live = false;
   /** calculate form */
-  calculateForm: CalculateForm;
+  calculateForm: CalculateForm = new CalculateForm();
   /** upload image src */
   imageSrc;
   /** subitem class */
@@ -187,6 +187,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** workbook */
   wb: XLSX.WorkBook;
   dragStyle = {};
+  /** Wifi頻率 */
+  wifiFrequency = '0';
+  isHst = false;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -248,6 +251,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.queryParams.subscribe(params => {
       if (typeof params['taskId'] !== 'undefined') {
         this.taskid = params['taskId'];
+        if (params['isHst'] === 'true') {
+          this.isHst = true;
+        }
       }
     });
 
@@ -264,10 +270,24 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (this.taskid !== '') {
         // 編輯
-        const url = `${this.authService.API_URL}/completeCalcResult/${this.taskid}/${this.authService.userToken}`;
+        let url;
+        if (this.isHst) {
+          // 歷史紀錄
+          url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
+          url += `${this.authService.userToken}/${this.taskid}`;
+        } else {
+          url = `${this.authService.API_URL}/completeCalcResult/${this.taskid}/${this.authService.userToken}`;
+        }
         this.http.get(url).subscribe(
           res => {
-            this.calculateForm = res['input'];
+            if (this.isHst) {
+              const result = res;
+              delete result['output'];
+              // 大小寫不同，各自塞回form
+              this.setHstToForm(result);
+            } else {
+              this.calculateForm = res['input'];
+            }
             this.initData(false);
           },
           err => {
@@ -1609,7 +1629,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
             top: `${this.pixelYLinear(this.dragObject[id].y)}px`,
             width: `${this.pixelXLinear(this.dragObject[id].width * 2)}px`,
-            height: `${this.pixelYLinear(this.dragObject[id].height * 2)}px`
+            height: `${this.pixelYLinear(this.dragObject[id].height * 2)}px`,
+            transform: `rotate(${this.dragObject[id].rotate}deg)`
           };
 
           const x = (this.pixelXLinear(this.dragObject[id].width) / 2).toString();
@@ -1626,7 +1647,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
             top: `${this.pixelYLinear(this.dragObject[id].y)}`,
             width: this.pixelXLinear(obstacleData[i][2] / 2),
-            height: this.pixelYLinear(obstacleData[i][3] / 2)
+            height: this.pixelYLinear(obstacleData[i][3] / 2),
+            transform: `rotate(${this.dragObject[id].rotate}deg)`
           };
           const width = this.pixelXLinear(this.dragObject[id].width);
           const height = this.pixelYLinear(this.dragObject[id].height);
@@ -1718,11 +1740,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         material: item[6],
         element: 'rect'
       };
+
       this.spanStyle[id] = {
         left: `${this.pixelXLinear(item[0])}px`,
         top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
         width: `${this.pixelXLinear(item[2])}px`,
-        height: `${this.pixelYLinear(item[3])}px`
+        height: `${this.pixelYLinear(item[3])}px`,
+        transform: `rotate(${this.dragObject[id].rotate}deg)`
       };
       this.svgStyle[id] = {
         display: 'inherit',
@@ -1860,6 +1884,38 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // location.replace(`#/site/result?taskId=${this.taskid}`);
     // location.reload();
     this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
+  }
+
+  /** 歷史資料塞回form */
+  setHstToForm(result) {
+    this.calculateForm.addFixedBsNumber = result['addfixedbsnumber'];
+    this.calculateForm.availableNewBsNumber = result['availablenewbsnumber'];
+    this.calculateForm.bandwidth = result['bandwidth'];
+    this.calculateForm.beamMaxId = result['beammaxid'];
+    this.calculateForm.beamMinId = result['beamminid'];
+    this.calculateForm.candidateBs = result['candidatebs'];
+    this.calculateForm.crossover = result['crossover'];
+    this.calculateForm.defaultBs = result['defaultbs'];
+    this.calculateForm.frequency = result['frequency'];
+    this.calculateForm.iteration = result['iteration'];
+    this.calculateForm.zValue = result['mapdepth'];
+    this.calculateForm.altitude = result['mapaltitude'];
+    this.calculateForm.height = result['mapheight'];
+    this.calculateForm.mapImage = result['mapimage'];
+    this.calculateForm.mapName = result['mapname'];
+    this.calculateForm.width = result['mapwidth'];
+    this.calculateForm.mutation = result['mutation'];
+    this.calculateForm.objectiveIndex = result['objectiveindex'];
+    this.calculateForm.obstacleInfo = result['obstacleinfo'];
+    this.calculateForm.pathLossModelId = result['pathlossmodelid'];
+    this.calculateForm.powerMaxRange = result['powermaxrange'];
+    this.calculateForm.powerMinRange = result['powerminrange'];
+    this.calculateForm.seed = result['seed'];
+    this.calculateForm.taskName = result['taskname'];
+    this.calculateForm.totalRound = result['totalround'];
+    this.calculateForm.ueCoordinate = result['uecoordinate'];
+    this.calculateForm.useUeCoordinate = result['useuecoordinate'];
+    this.calculateForm.beamMaxId = result['beammaxid'];
   }
 
 }

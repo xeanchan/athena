@@ -15,21 +15,24 @@ export class AuthService {
     private translateService: TranslateService
   ) {
     this.userToken = window.sessionStorage.getItem('son_session');
+    this.userId = window.sessionStorage.getItem('son_userId');
   }
 
   public API_URL = 'http://211.20.94.210:3000/son';
   public userToken = null;
   public lang = 'zh-TW';
-  public userId;
+  public userId = null;
 
-  public setUserToken(sonSession: string) {
+  public setUserToken(sonSession: string, userId: string) {
     if (sonSession == null) {
       window.sessionStorage.removeItem('son_session');
       window.sessionStorage.removeItem('son_userId');
     } else {
       window.sessionStorage.setItem('son_session', sonSession);
+      sessionStorage.setItem('son_userId', userId);
     }
     this.userToken = sonSession;
+    this.userId = userId;
   }
 
   /**
@@ -41,7 +44,7 @@ export class AuthService {
     };
     this.http.post(`${this.API_URL}/logout`, JSON.stringify(form)).subscribe(
       res => {
-        this.setUserToken(null);
+        this.setUserToken(null, null);
         // this.router.navigate(['/logon']);
         location.href = '/logon';
       }

@@ -27,7 +27,7 @@
 				</td>
 				<td>{{ item.createTime }}</td>
 				<td><i *ngIf="item.progress === 1" class="far fa-file-pdf" (click)="exportPDF(item.taskId)" ></i></td>
-				<td><i class="fas fa-pencil-alt" (click)="edit(item.taskId)"></i></td>
+				<td><i class="fas fa-pencil-alt" (click)="edit(item.taskId, false)"></i></td>
 				<td><i class="far fa-trash-alt"></i></td>
 				<td><i *ngIf="item.progress === 1" class="fas fa-file-download" (click)="exportExcel(item.taskId)"></i></td>
 			</tr>
@@ -39,7 +39,7 @@
 				</td>
 				<td>{{ item.createTime }}</td>
 				<td><i class="far fa-file-pdf" (click)="exportPDF(item.taskId)" ></i></td>
-				<td><i class="fas fa-pencil-alt" (click)="edit(item.taskId)"></i></td>
+				<td><i class="fas fa-pencil-alt" (click)="edit(item.taskId, true)"></i></td>
 				<td><i class="far fa-trash-alt"></i></td>
 				<td><i class="fas fa-file-download" (click)="exportHstExcel(item.taskId)"></i></td>
 			</tr>

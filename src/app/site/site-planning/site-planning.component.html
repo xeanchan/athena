@@ -327,24 +327,7 @@
                   <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
                 </span>
               </li>
-              
-              <li>
-                <label>系統頻寬</label>
-                <span>
-                  <select [(ngModel)]="calculateForm.bandwidth">
-                    <option value="3">3</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                  </select>
-                  /
-                  <label>頻率</label>
-                  <input type="text" [(ngModel)]="calculateForm.frequency">
-                </span>
-              </li>
-            
-          </ul>
+            </ul>
           </div>
         </div>
       </mat-expansion-panel>
@@ -392,6 +375,53 @@
                     <option value="1">5G</option>
                     <option value="2">Wifi</option>
                   </select>
+                </li>
+                <li *ngIf="calculateForm.objectiveIndex === '2'">
+                  <p>Wifi頻率	</p>
+                  <select [(ngModel)]="wifiFrequency" style="width: 100px;" >
+                    <option value="0">sub-1Ghz</option>
+                    <option value="1">2.4Ghz</option>
+                    <option value="2">5Ghz</option>
+                  </select>
+                </li>
+                <li>
+                  <p>系統頻寬</p>
+                  <span>
+                    <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherObjective">
+                      <!-- WIFI -->
+                      <select [(ngModel)]="calculateForm.bandwidth">
+                        <ng-container *ngIf="wifiFrequency === '0'">
+                          <option value="1">1</option>
+                          <option value="4">4</option>
+                          <option value="8">8</option>
+                          <option value="16">16</option>
+                        </ng-container>
+                        <ng-template [ngIf]="wifiFrequency === '1'">
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="80">80</option>
+                        </ng-template>
+                        <ng-template [ngIf]="wifiFrequency === '2'">
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="80">80</option>
+                        </ng-template>
+                      </select>
+                    </ng-container>
+                    <ng-template #otherObjective>
+                      <select [(ngModel)]="calculateForm.bandwidth">
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                      </select>
+                    </ng-template>
+                    
+                    /
+                    <label>頻率</label>
+                    <input type="text" [(ngModel)]="calculateForm.frequency">
+                  </span>
                 </li>
                 
                 <li>
