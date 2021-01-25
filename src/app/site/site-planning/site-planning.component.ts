@@ -513,7 +513,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.svgId = `${id}_${this.ueList.length}`;
       this.ueList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: '#6abdd4'
+        fill: '#0c9ccc'
       };
     }
     this.spanStyle[this.svgId] = {
@@ -1509,8 +1509,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           x: ueData[i][0],
           y: ueData[i][1],
           z: ueData[i][2],
-          width: 30,
-          height: 30,
+          width: 19,
+          height: 29,
           altitude: 50,
           rotate: 0,
           title: this.svgMap['UE'].title,
@@ -1522,13 +1522,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(ueData[i][0])}px`,
           top: `${this.chartHeight - 30 - this.pixelYLinear(ueData[i][1])}px`,
-          width: `20px`,
-          height: `30px`
+          width: `19px`,
+          height: `29px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
-          width: 30,
-          height: 30
+          width: 19,
+          height: 29
         };
         this.pathStyle[id] = {
           fill: color
