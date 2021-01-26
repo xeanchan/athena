@@ -13,6 +13,7 @@ import { PerformanceComponent } from '../modules/performance/performance.compone
 import { StatisticsComponent } from '../modules/statistics/statistics.component';
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { JsPDFFontService } from '../../service/js-pdffont.service';
+import { FormService } from '../../service/form.service';
 
 @Component({
   selector: 'app-pdf',
@@ -23,6 +24,7 @@ export class PdfComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private formService: FormService,
     private jsPDFFontService: JsPDFFontService,
     private http: HttpClient) { }
 
@@ -53,26 +55,51 @@ export class PdfComponent implements OnInit {
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
 
-  async export(taskId) {
+  /**
+   * @param taskId
+   * @param isHst 歷史紀錄
+   */
+  async export(taskId, isHst) {
     this.taskId = taskId;
     this.authService.spinnerShow();
     if (typeof this.taskId !== 'undefined') {
-      const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
+      let url;
+      if (isHst) {
+        url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
+        url += `${this.authService.userToken}/${taskId}`;
+      } else {
+        url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
+      }
       this.http.get(url).subscribe(
         res => {
           if (document.getElementById('pdf_area') != null) {
             document.getElementById('pdf_area').style.display = 'block';
           }
-
-          // console.log(res)
-          this.calculateForm = res['input'];
-          this.result = res['output'];
+          if (isHst) {
+            // 歷史紀錄
+            this.result = this.formService.setHstOutputToResultOutput(res['output']);
+            this.result['createTime'] = res['createtime'];
+            const form = res;
+            delete form['output'];
+            this.calculateForm = this.formService.setHstToForm(form);
+            this.result['inputWidth'] = this.calculateForm.width;
+            this.result['inputHeight'] = this.calculateForm.height;
+          } else {
+            this.calculateForm = res['input'];
+            this.result = res['output'];
+          }
+          // 現有基站
           const defaultBsAry = this.calculateForm.defaultBs
           .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
           for (const item of defaultBsAry) {
             this.defaultBs.push(item.split(','));
           }
-          this.inputBsList = this.result['inputBsList'];
+          // 新增基站
+          const candidateBsAry = this.calculateForm.candidateBs
+          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          for (const item of candidateBsAry) {
+            this.inputBsList.push(item.split(','));
+          }
           // 障礙物資訊
           const obstacle = this.calculateForm.obstacleInfo
           .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
@@ -129,8 +156,8 @@ export class PdfComponent implements OnInit {
             this.siteInfo.calculateForm = this.calculateForm;
             this.siteInfo.result = this.result;
             window.setTimeout(() => {
-              this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
-              this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
+              this.siteInfo.inputBsListCount = this.inputBsList.length;
+              this.siteInfo.defaultBsCount = this.defaultBs.length;
             }, 0);
             console.log(this.result);
             window.setTimeout(() => {
@@ -371,7 +398,7 @@ export class PdfComponent implements OnInit {
     });
 
     // 統計資訊
-    const statisticsList = ['statistics_1', 'statistics_2'];
+    const statisticsList = ['statistics'];
     for (const id of statisticsList) {
       pdf.addPage();
       pdf.page++;
@@ -379,7 +406,7 @@ export class PdfComponent implements OnInit {
       await html2canvas(data).then(canvas => {
         // Few necessary setting options
         const imgWidth = 182;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
+        const imgHeight = 260;
         const contentDataURL = canvas.toDataURL('image/png');
         const position = 10;
         pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');

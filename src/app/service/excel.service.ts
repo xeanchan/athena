@@ -10,22 +10,24 @@ export class ExcelService {
   constructor() { }
 
   export(calculateForm: CalculateForm) {
+    console.log(calculateForm)
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     const mapData = [
       ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName', 'zValue'],
       [
         calculateForm.mapImage, calculateForm.width,
         calculateForm.height, calculateForm.altitude,
-        1, calculateForm.mapName, calculateForm.zValue.replace('[', '').replace('', ']')
+        1, calculateForm.mapName, calculateForm.zValue.replace('[', '').replace(']', '')
       ]
     ];
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(mapData);
     XLSX.utils.book_append_sheet(wb, ws, 'map');
     // defaultBS
     const baseStationData = [['x', 'y', 'z', 'material', 'color']];
-    if (calculateForm.defaultBs != null) {
-      let str = calculateForm.defaultBs.replace(new RegExp('[', 'gi'), '');
-      str = str.replace(new RegExp(']', 'gi'), '');
+
+    if (calculateForm.defaultBs != null && calculateForm.defaultBs !== '') {
+      let str = calculateForm.defaultBs.replace(new RegExp('\\[', 'gi'), '');
+      str = str.replace(new RegExp('\\]', 'gi'), '');
       const ary = str.split('|');
       for (const item of ary) {
         const data = item.split(',');
@@ -39,8 +41,8 @@ export class ExcelService {
     // candidate
     const candidateData = [['x', 'y', 'z', 'material', 'color']];
     if (calculateForm.candidateBs != null) {
-      let str = calculateForm.candidateBs.replace(new RegExp('[', 'gi'), '');
-      str = str.replace(new RegExp(']', 'gi'), '');
+      let str = calculateForm.candidateBs.replace(new RegExp('\\[', 'gi'), '');
+      str = str.replace(new RegExp('\\]', 'gi'), '');
       const ary = str.split('|');
       for (const item of ary) {
         const data = item.split(',');
@@ -54,8 +56,8 @@ export class ExcelService {
     // UE
     const ueData = [['x', 'y', 'z', 'material', 'color']];
     if (calculateForm.ueCoordinate != null) {
-      let str = calculateForm.ueCoordinate.replace(new RegExp('[', 'gi'), '');
-      str = str.replace(new RegExp(']', 'gi'), '');
+      let str = calculateForm.ueCoordinate.replace(new RegExp('\\[', 'gi'), '');
+      str = str.replace(new RegExp('\\]', 'gi'), '');
       const ary = str.split('|');
       for (const item of ary) {
         const data = item.split(',');
@@ -69,8 +71,8 @@ export class ExcelService {
     // obstacle
     const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
     if (calculateForm.obstacleInfo != null) {
-      let str = calculateForm.obstacleInfo.replace(new RegExp('[', 'gi'), '');
-      str = str.replace(new RegExp(']', 'gi'), '');
+      let str = calculateForm.obstacleInfo.replace(new RegExp('\\[', 'gi'), '');
+      str = str.replace(new RegExp('\\]', 'gi'), '');
       const ary = str.split('|');
       for (const item of ary) {
         const data = item.split(',');

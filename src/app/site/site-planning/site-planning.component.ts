@@ -13,6 +13,7 @@ import { AuthService } from '../../service/auth.service';
 import { View3dComponent } from '../view3d/view3d.component';
 import * as XLSX from 'xlsx';
 import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
+import { FormService } from '../../service/form.service';
 
 declare var Plotly: any;
 
@@ -32,6 +33,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private matDialog: MatDialog,
+    private formService: FormService,
     private http: HttpClient) {
     }
 
@@ -284,7 +286,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               const result = res;
               delete result['output'];
               // 大小寫不同，各自塞回form
-              this.setHstToForm(result);
+              this.calculateForm = this.formService.setHstToForm(result);
             } else {
               this.calculateForm = res['input'];
             }

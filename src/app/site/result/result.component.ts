@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../service/auth.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
@@ -16,6 +16,8 @@ import { SignalStrengthComponent } from '../modules/signal-strength/signal-stren
 import { PerformanceComponent } from '../modules/performance/performance.component';
 import { StatisticsComponent } from '../modules/statistics/statistics.component';
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
+import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -33,6 +35,7 @@ export class ResultComponent implements OnInit {
     private matDialog: MatDialog,
     public spinner: NgxSpinnerService,
     private pdfService: PdfService,
+    private translateService: TranslateService,
     private http: HttpClient) { }
 
   taskId;
@@ -46,6 +49,7 @@ export class ResultComponent implements OnInit {
   zValues = [];
   zValue;
   chartType = 'SINR';
+  msgDialogConfig: MatDialogConfig = new MatDialogConfig();
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -59,6 +63,7 @@ export class ResultComponent implements OnInit {
 
 
   ngOnInit() {
+    this.msgDialogConfig.autoFocus = false;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
       this.getResult();
@@ -104,7 +109,7 @@ export class ResultComponent implements OnInit {
 
   /** export PDF */
   async exportPDF() {
-    this.pdf.export(this.taskId);
+    this.pdf.export(this.taskId, false);
     // document.getElementById('pdf_area').style.display = 'block';
     // await this.pdfService.export(this.calculateForm.taskName);
     // document.getElementById('pdf_area').style.display = 'none';
@@ -160,6 +165,32 @@ export class ResultComponent implements OnInit {
   /** 回上頁 */
   back() {
     this.router.navigate(['/site/site-planning'], { queryParams: { taskId: this.taskId }});
+  }
+
+  /** 儲存 */
+  save() {
+    const form = {
+      id: this.authService.userId,
+      taskid: this.taskId,
+      sessionid: this.authService.userToken
+    };
+    const url = `${this.authService.API_URL}/storeResult`;
+    this.http.post(url, JSON.stringify(form)).subscribe(
+      res => {
+        this.msgDialogConfig.data = {
+          type: 'success',
+          infoMessage: this.translateService.instant('save.success')
+        };
+        this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      },
+      err => {
+        this.msgDialogConfig.data = {
+          type: 'error',
+          infoMessage: this.translateService.instant('save.failed')
+        };
+        this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      }
+    );
   }
 
 }

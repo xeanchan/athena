@@ -15,5 +15,9 @@
 	"notaskList": "No Data.",
 	"home": "Home",
 	"timeout": "用戶未授權或是已過期, 請重新登入.",
-	"backto.list": "Back to "
+	"save": "Save",
+	"backto.list": "Back to",
+	"save.success": "Save Success.",
+	"save.failed": "Save Failed."
+	
 }

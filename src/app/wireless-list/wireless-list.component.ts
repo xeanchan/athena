@@ -9,6 +9,8 @@ import { PdfService } from '../service/pdf.service';
 import { PdfComponent } from '../site/pdf/pdf.component';
 import { ExcelService } from '../service/excel.service';
 import { MsgDialogComponent } from '../utility/msg-dialog/msg-dialog.component';
+import { FormService } from '../service/form.service';
+import { CalculateForm } from '../form/CalculateForm';
 
 declare var Plotly: any;
 
@@ -25,6 +27,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private router: Router,
     private excelService: ExcelService,
+    private formService: FormService,
     private pdfService: PdfService
   ) {
     sessionStorage.removeItem('calculateForm');
@@ -106,11 +109,17 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
 
+  /** 匯出歷史紀錄excel */
   exportHstExcel(taskId) {
-    const url = `${this.authService.API_URL}/historyDetail/${taskId}/${this.authService.userToken}`;
+    let url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
+    url += `${this.authService.userToken}/${taskId}`;
     this.http.get(url).subscribe(
       res => {
-        this.excelService.export(res['input']);
+        const result = res;
+        delete result['output'];
+        // 回傳資料轉為CalculateForm
+        const calculateForm: CalculateForm = this.formService.setHstToForm(result);
+        this.excelService.export(calculateForm);
       }, err => {
         this.msgDialogConfig.data = {
           type: 'error',
@@ -139,8 +148,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   }
 
   /** export PDF */
-  async exportPDF(taskId) {
-    this.pdf.export(taskId);
+  async exportPDF(taskId, isHst) {
+    this.pdf.export(taskId, isHst);
   }
 
   edit(taskId, isHst) {
