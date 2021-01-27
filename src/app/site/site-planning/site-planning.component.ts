@@ -50,6 +50,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     height: '30px',
     left: '0px',
     top: '0px',
+    'z-index': 99999,
     transform: {
       rotate: '0deg',
       scaleX: 1,
@@ -192,6 +193,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Wifi頻率 */
   wifiFrequency = '0';
   isHst = false;
+  currentLeft;
+  currentTop;
+  ognSpanStyle;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -578,6 +582,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    this.currentLeft = _.cloneDeep(this.spanStyle[this.svgId].left);
+    this.currentTop = _.cloneDeep(this.spanStyle[this.svgId].top);
+    this.ognSpanStyle = _.cloneDeep(this.spanStyle);
+
     window.setTimeout(() => {
       this.target = document.getElementById(`${this.svgId}`);
       this.live = true;
@@ -619,6 +627,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         scaleY: 1
       }
     });
+
+    this.currentLeft = _.cloneDeep(this.spanStyle[this.svgId].left);
+    this.currentTop = _.cloneDeep(this.spanStyle[this.svgId].top);
+    this.ognSpanStyle = _.cloneDeep(this.spanStyle);
 
     this.live = true;
     if (this.dragObject[id].type === 'obstacle') {
@@ -725,49 +737,22 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
+    for (const item of this.obstacleList) {
+      if (item === this.svgId) {
+        // 只移動當前物件
+        this.target = target;
+        this.frame.set('left', `${left}px`);
+        this.frame.set('top', `${top}px`);
+        this.frame.set('z-index', 9999999);
+        this.setTransform(target);
+        this.spanStyle[this.svgId].left = `${left}px`;
+        this.spanStyle[this.svgId].top = `${top}px`;
+      } else {
+        // 其他障礙物有時會跟著動，keep住
+        this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+      }
+    }
 
-    this.target = target;
-    const rect = target.getBoundingClientRect();
-    const rectLeft = rect.left;
-    const rectRight = rect.right;
-    const rectTop = rect.top;
-    const rectBottom = rect.bottom;
-
-    this.frame.set('left', `${left}px`);
-    this.frame.set('top', `${top}px`);
-    this.setTransform(target);
-
-    // if (rectLeft > this.chartLeft - 1 && rectRight < this.chartRight
-    //   && rectTop > this.chartTop && rectBottom < this.chartBottom) {
-    //   this.frame.set('left', `${left}px`);
-    //   this.frame.set('top', `${top}px`);
-    //   this.setTransform(target);
-
-    // } else {
-    //   if (rectLeft < this.chartLeft) {
-    //     console.log(this.chartLeft)
-    //     this.frame.set('left', `${this.chartLeft}px`);
-    //     this.setTransform(target);
-    //     this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
-    //   } else if (rectTop <= this.chartTop) {
-    //     this.frame.set('top', `${this.chartTop + 1}px`);
-    //     this.setTransform(target);
-    //     const t = Number(target.closest('span').style.top.replace('px', ''));
-    //     target.closest('span').style.top = `${t + 1}px`;
-    //   } else if (rectRight >= this.chartRight) {
-    //     this.frame.set('left', `${rectLeft - 1}px`);
-    //     this.setTransform(target);
-    //     const t = Number(target.closest('span').style.left.replace('px', ''));
-    //     target.closest('span').style.left = `${t - 1}px`;
-    //   } else if (rectBottom >= this.chartBottom) {
-    //     this.frame.set('top', `${rectTop - 1}px`);
-    //     this.setTransform(target);
-    //     const t = Number(target.closest('span').style.top.replace('px', ''));
-    //     target.closest('span').style.top = `${t - 1}px`;
-    //   }
-    // }
-    this.spanStyle[this.svgId].left = `${left}px`;
-    this.spanStyle[this.svgId].top = `${top}px`;
     this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber(this.svgId);
@@ -795,8 +780,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
     this.frame.set('transform', 'rotate', `${deg}deg`);
-    this.frame.set('left', this.spanStyle[this.svgId].left);
-    this.frame.set('top', this.spanStyle[this.svgId].top);
+    this.frame.set('left', this.currentLeft);
+    this.frame.set('top', this.currentTop);
     this.setTransform(target);
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
     this.setLabel();
@@ -854,9 +839,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onEnd() {
     this.live = false;
-    if (this.spanStyle[this.svgId].left.replace('px', '') < this.chartLeft) {
-      this.spanStyle[this.svgId].left = `${this.chartLeft}px`;
-    }
   }
 
   moveableDestroy() {
@@ -1425,6 +1407,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.defaultBSList.length = 0;
     this.candidateList.length = 0;
     this.ueList.length = 0;
+    const materialReg = new RegExp('[0-4]');
     /* base station sheet */
     const baseStation: string = this.wb.SheetNames[1];
     const baseStationWS: XLSX.WorkSheet = this.wb.Sheets[baseStation];
@@ -1432,7 +1415,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (baseStationData.length > 1) {
       for (let i = 1; i < baseStationData.length; i++) {
         const id = `defaultBS_${(i - 1)}`;
-        const material = (typeof baseStationData[i][3] === 'undefined' ? '0' : baseStationData[i][3]);
+        let material = (typeof baseStationData[i][3] === 'undefined' ? '0' : baseStationData[i][3]);
+        // 不在清單內，指定為木頭
+        if (!materialReg.test(material)) {
+          material = '0';
+        }
         const color = (typeof baseStationData[i][4] === 'undefined' ? 'green' : baseStationData[i][4]);
 
         this.dragObject[id] = {
@@ -1477,7 +1464,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       for (let i = 1; i < candidateData.length; i++) {
         const id = `candidate_${(i - 1)}`;
         this.candidateList.push(id);
-        const material = (typeof candidateData[i][3] === 'undefined' ? '0' : candidateData[i][3]);
+        let material = (typeof candidateData[i][3] === 'undefined' ? '0' : candidateData[i][3]);
+        if (!materialReg.test(material)) {
+          material = '0';
+        }
         const color = (typeof candidateData[i][4] === 'undefined' ? 'green' : candidateData[i][4]);
 
         this.dragObject[id] = {
@@ -1524,7 +1514,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         const id = `UE_${(i - 1)}`;
         this.ueList.push(id);
 
-        const material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
+        let material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
+        if (!materialReg.test(material)) {
+          material = '0';
+        }
         const color = (typeof ueData[i][4] === 'undefined' ? 'green' : ueData[i][4]);
 
         this.dragObject[id] = {
@@ -1591,9 +1584,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           type = 'rect';
           rect++;
         }
-        const material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6].toString());
+        let material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6].toString());
+        if (!materialReg.test(material)) {
+          material = '0';
+        }
         const color = (typeof obstacleData[i][7] === 'undefined' ? 'green' : obstacleData[i][7]);
-
         this.dragObject[id] = {
           x: obstacleData[i][0],
           y: obstacleData[i][1],
