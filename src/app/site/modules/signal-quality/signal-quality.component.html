@@ -9,7 +9,7 @@
           <g><rect [ngStyle]="item.svgStyle" stroke-width="1.5" x="0" y="0" /></g>
         </svg>
       </span>
-      <!-- 現有基站
+      <!-- 現有基站 -->
       <span *ngFor="let item of defaultBsList" [ngStyle]="item.style">
         <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g>
@@ -22,8 +22,8 @@
         </svg>
       </span>
       <span *ngFor="let item of defaultBsList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle blue_circle" >{{ (i + 1) }}</span>
-       -->
-      <!-- 新增基站 
+       
+      <!-- 新增基站 -->
       <span *ngFor="let item of candidateList" [ngStyle]="item.style">
         <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g>
@@ -44,7 +44,7 @@
         </svg>
       </span>
       <span *ngFor="let item of candidateList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
-      -->
+
       <!-- UE 
       <span *ngFor="let item of ueList" [ngStyle]="item.style">
         <svg class="drag_obj" width="20" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">

@@ -186,42 +186,47 @@ export class SignalStrengthComponent implements OnInit {
       //   });
       // }
 
-      // // UE
-      // if (this.calculateForm.ueCoordinate !== '') {
-      //   const list = this.calculateForm.ueCoordinate
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const text = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     if (oData[2] !== zValue) {
-      //       continue;
-      //     }
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     text.push(`新增ＵＥ<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
+      // UE
+      if (this.calculateForm.ueCoordinate !== '') {
+        const list = this.calculateForm.ueCoordinate
+        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const cx = [];
+        const cy = [];
+        const text = [];
+        for (const item of list) {
+          const oData = item.split(',');
+          if (oData[2] !== zValue) {
+            continue;
+          }
+          cx.push(oData[0]);
+          cy.push(oData[1]);
+          text.push(`新增ＵＥ<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+        }
 
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: text,
-      //     marker: {
-      //       color: 'green',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     opacity: 0.7,
-      //     showlegend: false
-      //   });
-      // }
+        traces.push({
+          x: cx,
+          y: cy,
+          text: text,
+          marker: {
+            color: 'green',
+          },
+          type: 'scatter',
+          mode: 'markers',
+          hoverinfo: 'none',
+          opacity: 0.7,
+          showlegend: false
+        });
+      }
 
       const trace = {
         x: x,
         y: y,
         z: zData[zValues.indexOf(zValue)],
+        colorbar: {
+          tickmode: 'array',
+          tickvals: [-44, -60, -80, -100, -120, -140],
+          ticktext: [-44, -60, -80, -100, -120, -140]
+        },
         colorscale: [
           ['0.0', 'rgb(12,51,131)'],
           ['0.25', 'rgb(10,136,186)'],
@@ -230,6 +235,7 @@ export class SignalStrengthComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
+        opacity: 0.7,
         hoverinfo: 'x+y+z'
       };
       traces.push(trace);
@@ -254,7 +260,7 @@ export class SignalStrengthComponent implements OnInit {
             text += `材質: ${this.authService.parseMaterial(oData[6])}`;
           }
           if (typeof oData[7] === 'undefined') {
-            oColor = 'green';
+            oColor = '#000000';
           }
           this.rectList.push({
             x: xdata,
@@ -264,6 +270,7 @@ export class SignalStrengthComponent implements OnInit {
               bottom: 0,
               width: oData[2],
               height: oData[3],
+              transform: `rotate(${oData[5]}deg)`,
               position: 'absolute'
             },
             svgStyle: {
@@ -338,32 +345,32 @@ export class SignalStrengthComponent implements OnInit {
       }
 
       // UE
-      if (this.calculateForm.ueCoordinate !== '') {
-        const list = this.calculateForm.ueCoordinate
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+      // if (this.calculateForm.ueCoordinate !== '') {
+      //   const list = this.calculateForm.ueCoordinate
+      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
 
-        for (const item of list) {
-          const oData = item.split(',');
-          const xdata = oData[0];
-          const ydata = oData[1];
-          const zdata = oData[2];
-          if (zdata !== zValue) {
-            continue;
-          }
+      //   for (const item of list) {
+      //     const oData = item.split(',');
+      //     const xdata = oData[0];
+      //     const ydata = oData[1];
+      //     const zdata = oData[2];
+      //     if (zdata !== zValue) {
+      //       continue;
+      //     }
 
-          const text = `新增ＵＥ
-          X: ${xdata}
-          Y: ${ydata}
-          高度: ${zdata}`;
-          this.ueList.push({
-            x: xdata,
-            y: ydata,
-            color: 'green',
-            hover: text
-          });
+      //     const text = `新增ＵＥ
+      //     X: ${xdata}
+      //     Y: ${ydata}
+      //     高度: ${zdata}`;
+      //     this.ueList.push({
+      //       x: xdata,
+      //       y: ydata,
+      //       color: 'green',
+      //       hover: text
+      //     });
 
-        }
-      }
+      //   }
+      // }
 
       console.log(traces);
 
@@ -413,12 +420,21 @@ export class SignalStrengthComponent implements OnInit {
               .range([0, rect2.height]);
 
             for (const item of this.rectList) {
+              // 障礙物加粗
+              let width = pixelXLinear(item['svgStyle'].width);
+              if (width < 5) {
+                width = 5;
+              }
+              let height = pixelXLinear(item['svgStyle'].height);
+              if (height < 5) {
+                height = 5;
+              }
               item['style'].left = `${pixelXLinear(item.x)}px`;
               item['style'].bottom = `${pixelYLinear(item.y)}px`;
-              item['style'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-              item['style'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
-              item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-              item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+              item['style'].width = `${width}px`;
+              item['style'].height = `${height}px`;
+              item['svgStyle'].width = `${width}px`;
+              item['svgStyle'].height = `${height}px`;
             }
 
             for (const item of this.defaultBsList) {
@@ -435,19 +451,6 @@ export class SignalStrengthComponent implements OnInit {
             }
 
             for (const item of this.candidateList) {
-              item['style'] = {
-                left: `${pixelXLinear(item.x)}px`,
-                bottom: `${pixelYLinear(item.y)}px`,
-                position: 'absolute'
-              };
-              item['circleStyle'] = {
-                left: `${pixelXLinear(item.x) + 15}px`,
-                bottom: `${pixelYLinear(item.y) + 25}px`,
-                position: 'absolute'
-              };
-            }
-
-            for (const item of this.ueList) {
               item['style'] = {
                 left: `${pixelXLinear(item.x)}px`,
                 bottom: `${pixelYLinear(item.y)}px`,

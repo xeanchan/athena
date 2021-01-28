@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CalculateForm } from '../../../form/CalculateForm';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -10,7 +11,7 @@ declare var Plotly: any;
 })
 export class StatisticsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private translateService: TranslateService) { }
 
   result = {};
   calculateForm = new CalculateForm();
@@ -49,9 +50,9 @@ export class StatisticsComponent implements OnInit {
     this.drawLayerSignal(isPDF);
     // 場域訊號強度CDF圖
     this.drawLayerSignalCDF(isPDF);
-    // UE Modulation統計
+    // 行動終端Modulation統計
     this.drawUEModulation(isPDF);
-    // UE Modulation CDF圖
+    // 行動終端Modulation CDF圖
     this.drawUEModulationCDF(isPDF);
     // UE訊號強度統計
     this.drawUESignal(isPDF);
@@ -64,7 +65,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: '場域Modulation統計',
+        text: this.translateService.instant('statistics.site_modulation'),
         font: {
           color: this.textColor
         }
@@ -169,7 +170,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: '場域Modulation CDF圖',
+        text: this.translateService.instant('statistics.site_modulation_cdf'),
         font: {
           color: this.textColor
         }
@@ -279,12 +280,12 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** UE Modulation統計 */
+  /** 行動終端Modulation統計 */
   drawUEModulation(isPDF) {
     const layout = {
       autosize: true,
       title: {
-        text: 'UE Modulation統計',
+        text: this.translateService.instant('statistics.ue_modulation'),
         font: {
           color: this.textColor
         }
@@ -369,7 +370,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: '場域訊號強度統計',
+        text: this.translateService.instant('statistics.site_signal'),
         font: {
           color: this.textColor
         }
@@ -476,7 +477,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: '場域訊號強度CDF圖',
+        text: this.translateService.instant('statistics.site_signal_cdf'),
         font: {
           color: this.textColor
         }
@@ -588,12 +589,12 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** UE Modulation CDF圖 */
+  /** 行動終端Modulation CDF圖 */
   drawUEModulationCDF(isPDF) {
     const layout = {
       autosize: true,
       title: {
-        text: 'UE Modulation CDF圖',
+        text: this.translateService.instant('statistics.ue_modulation_cdf'),
         font: {
           color: this.textColor
         }
@@ -689,7 +690,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: 'UE訊號強度統計',
+        text: this.translateService.instant('statistics.ue_signal'),
         font: {
           color: this.textColor
         }
@@ -776,7 +777,7 @@ export class StatisticsComponent implements OnInit {
     const layout = {
       autosize: true,
       title: {
-        text: 'UE訊號強度CDF圖',
+        text: this.translateService.instant('statistics.ue_signal_cdf'),
         font: {
           color: this.textColor
         }

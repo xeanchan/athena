@@ -133,58 +133,58 @@ export class SignalQualityComponent implements OnInit {
       const traces = [];
 
       // 現有基站
-      if (this.calculateForm.defaultBs !== '') {
-        const list = this.calculateForm.defaultBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-        const cx = [];
-        const cy = [];
-        const ctext = [];
-        for (const item of list) {
-          const oData = item.split(',');
-          cx.push(oData[0]);
-          cy.push(oData[1]);
-          ctext.push(`現有基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-        }
-        traces.push({
-          x: cx,
-          y: cy,
-          text: ctext,
-          marker: {
-            color: '#338aee',
-          },
-          type: 'scatter',
-          mode: 'markers',
-          hoverinfo: 'none',
-          showlegend: false,
-        });
-      }
+      // if (this.calculateForm.defaultBs !== '') {
+      //   const list = this.calculateForm.defaultBs
+      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+      //   const cx = [];
+      //   const cy = [];
+      //   const ctext = [];
+      //   for (const item of list) {
+      //     const oData = item.split(',');
+      //     cx.push(oData[0]);
+      //     cy.push(oData[1]);
+      //     ctext.push(`現有基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+      //   }
+      //   traces.push({
+      //     x: cx,
+      //     y: cy,
+      //     text: ctext,
+      //     marker: {
+      //       color: '#338aee',
+      //     },
+      //     type: 'scatter',
+      //     mode: 'markers',
+      //     hoverinfo: 'none',
+      //     showlegend: false,
+      //   });
+      // }
 
-      // 新增基站
-      if (this.calculateForm.candidateBs !== '') {
-        const list = this.calculateForm.candidateBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-        const cx = [];
-        const cy = [];
-        const ctext = [];
-        for (const item of list) {
-          const oData = item.split(',');
-          cx.push(oData[0]);
-          cy.push(oData[1]);
-          ctext.push(`新增基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-        }
-        traces.push({
-          x: cx,
-          y: cy,
-          text: ctext,
-          marker: {
-            color: '#f7176a',
-          },
-          type: 'scatter',
-          mode: 'markers',
-          hoverinfo: 'none',
-          showlegend: false,
-        });
-      }
+      // // 新增基站
+      // if (this.calculateForm.candidateBs !== '') {
+      //   const list = this.calculateForm.candidateBs
+      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+      //   const cx = [];
+      //   const cy = [];
+      //   const ctext = [];
+      //   for (const item of list) {
+      //     const oData = item.split(',');
+      //     cx.push(oData[0]);
+      //     cy.push(oData[1]);
+      //     ctext.push(`新增基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+      //   }
+      //   traces.push({
+      //     x: cx,
+      //     y: cy,
+      //     text: ctext,
+      //     marker: {
+      //       color: '#f7176a',
+      //     },
+      //     type: 'scatter',
+      //     mode: 'markers',
+      //     hoverinfo: 'none',
+      //     showlegend: false,
+      //   });
+      // }
 
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
@@ -229,9 +229,70 @@ export class SignalQualityComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
+        opacity: 0.7,
         hoverinfo: 'x+y+z'
       };
       traces.push(trace);
+
+      // 現有基站
+      if (this.calculateForm.defaultBs !== '') {
+        const list = this.calculateForm.defaultBs
+        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const cx = [];
+        const cy = [];
+        const ctext = [];
+        for (const item of list) {
+          const oData = item.split(',');
+          const xdata = Number(oData[0]);
+          const ydata = Number(oData[1]);
+          const zdata = Number(oData[2]);
+          cx.push(xdata);
+          cy.push(ydata);
+
+          const text = `新增基站
+          X: ${xdata}
+          Y: ${ydata}
+          高度: ${zdata}`;
+          ctext.push(text);
+          this.defaultBsList.push({
+            x: xdata,
+            y: ydata,
+            color: 'green',
+            hover: text
+          });
+
+        }
+      }
+
+      // 新增基站
+      if (this.calculateForm.candidateBs !== '') {
+        const list = this.calculateForm.candidateBs
+        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const cx = [];
+        const cy = [];
+        const ctext = [];
+        for (const item of list) {
+          const oData = item.split(',');
+          const xdata = Number(oData[0]);
+          const ydata = Number(oData[1]);
+          const zdata = Number(oData[2]);
+          cx.push(xdata);
+          cy.push(ydata);
+
+          const text = `新增基站
+          X: ${xdata}
+          Y: ${ydata}
+          高度: ${zdata}`;
+          ctext.push(text);
+          this.candidateList.push({
+            x: xdata,
+            y: ydata,
+            color: 'green',
+            hover: text
+          });
+
+        }
+      }
 
       // 障礙物
       if (this.calculateForm.obstacleInfo !== '') {
@@ -253,7 +314,7 @@ export class SignalQualityComponent implements OnInit {
             text += `材質: ${this.authService.parseMaterial(oData[6])}`;
           }
           if (typeof oData[7] === 'undefined') {
-            oColor = 'green';
+            oColor = '#000000';
           }
           this.rectList.push({
             x: xdata,
@@ -263,6 +324,7 @@ export class SignalQualityComponent implements OnInit {
               bottom: 0,
               width: oData[2],
               height: oData[3],
+              transform: `rotate(${oData[5]}deg)`,
               position: 'absolute'
             },
             svgStyle: {
@@ -323,12 +385,47 @@ export class SignalQualityComponent implements OnInit {
               .range([0, rect2.height]);
 
             for (const item of this.rectList) {
+              // 障礙物加粗
+              let width = pixelXLinear(item['svgStyle'].width);
+              if (width < 5) {
+                width = 5;
+              }
+              let height = pixelXLinear(item['svgStyle'].height);
+              if (height < 5) {
+                height = 5;
+              }
               item['style'].left = `${pixelXLinear(item.x)}px`;
               item['style'].bottom = `${pixelYLinear(item.y)}px`;
-              item['style'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-              item['style'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
-              item['svgStyle'].width = `${pixelXLinear(item['svgStyle'].width)}px`;
-              item['svgStyle'].height = `${pixelYLinear(item['svgStyle'].height)}px`;
+              item['style'].width = `${width}px`;
+              item['style'].height = `${height}px`;
+              item['svgStyle'].width = `${width}px`;
+              item['svgStyle'].height = `${height}px`;
+            }
+
+            for (const item of this.defaultBsList) {
+              item['style'] = {
+                left: `${pixelXLinear(item.x)}px`,
+                bottom: `${pixelYLinear(item.y)}px`,
+                position: 'absolute'
+              };
+              item['circleStyle'] = {
+                left: `${pixelXLinear(item.x) + 15}px`,
+                bottom: `${pixelYLinear(item.y) + 25}px`,
+                position: 'absolute'
+              };
+            }
+
+            for (const item of this.candidateList) {
+              item['style'] = {
+                left: `${pixelXLinear(item.x)}px`,
+                bottom: `${pixelYLinear(item.y)}px`,
+                position: 'absolute'
+              };
+              item['circleStyle'] = {
+                left: `${pixelXLinear(item.x) + 15}px`,
+                bottom: `${pixelYLinear(item.y) + 25}px`,
+                position: 'absolute'
+              };
             }
           });
         };

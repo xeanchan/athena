@@ -5,8 +5,8 @@
       </tr>
       <tr>
           <th>場域覆蓋率</th>
-          <th>場域平均 SINR</th>
-          <th>場域平均 RSRP</th>
+          <th>場域平均訊號品質</th>
+          <th>場域平均訊號強度</th>
           <th></th>
       </tr>
       <tr>
@@ -18,10 +18,10 @@
   </tbody>
   <tbody>
       <tr>
-          <th>UE 覆蓋率</th>
-          <th>UE 平均 SINR</th>
-          <th>UE 平均 RSRP</th>
-          <th>UE 平均 Throughput</th>
+          <th>行動終端覆蓋率</th>
+          <th>行動終端平均訊號品質</th>
+          <th>行動終端平均訊號強度</th>
+          <th>行動終端平均 Throughput</th>
       </tr>
       <tr>
           <td>{{ result['ueCoverage'] }}%</td>
@@ -34,8 +34,8 @@
       <tr>
           <th>地圖切面(高度)</th>
           <th>切面覆蓋率</th>
-          <th>切面平均 SINR</th>
-          <th>切面平均 RSRP</th>
+          <th>切面平均訊號品質</th>
+          <th>切面平均訊號強度</th>
       </tr>
       <tr *ngFor="let item of zValueList">
           <td>{{ item[0] }}公尺</td>

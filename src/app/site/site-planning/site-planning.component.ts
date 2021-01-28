@@ -1251,17 +1251,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // map
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     const mapData = [
-      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName'],
+      ['image', 'imageName', 'width', 'height', 'altitude', 'protocol', 'mapLayer'],
       [
-        this.calculateForm.mapImage, this.calculateForm.width,
-        this.calculateForm.height, this.calculateForm.altitude,
-        this.zValues[0], this.calculateForm.mapName
+        this.calculateForm.mapImage,
+        this.calculateForm.mapName,
+        this.calculateForm.width,
+        this.calculateForm.height,
+        this.calculateForm.altitude,
+        this.calculateForm.objectiveIndex,
+        this.zValues[0]
       ]
     ];
     if (this.zValues.length > 1) {
       for (let i = 1; i < this.zValues.length; i++) {
         mapData.push([
-          '', '', '', '', this.zValues[i], ''
+          '', '', '', '', '', '', this.zValues[i]
         ]);
       }
     }
@@ -1340,7 +1344,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // objective parameters
     const objectiveData = [
       ['objective', 'objectiveStopCondition', 'newBsNum'],
-      [this.calculateForm.objectiveIndex, '', this.calculateForm.availableNewBsNumber]
+      ['1', '', this.calculateForm.availableNewBsNumber]
     ];
     const objectiveWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(objectiveData);
     XLSX.utils.book_append_sheet(wb, objectiveWS, 'objective parameters');
@@ -1397,6 +1401,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.mapName = mapData[1][keyMap['imageName']];
     } else {
       this.calculateForm.mapName = mapData[1][keyMap['mapName']];
+    }
+    // excel無protocol時預設wifi
+    if (typeof mapData[1][keyMap['protocol']] === 'undefined') {
+      this.calculateForm.objectiveIndex = '2';
+    } else {
+      this.calculateForm.objectiveIndex = mapData[1][keyMap['protocol']];
     }
 
     this.initData(true);
@@ -1688,12 +1698,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const objectiveParametersWS: XLSX.WorkSheet = this.wb.Sheets[objectiveParameters];
     const objectiveParametersData = (XLSX.utils.sheet_to_json(objectiveParametersWS, {header: 1}));
     if (objectiveParametersData.length > 1) {
-      // this.calculateForm.objectiveIndex = objectiveParametersData[1][0];
-      // this.calculateForm.obstacleInfo = objectiveParametersData[1][1];
       this.calculateForm.availableNewBsNumber = Number(objectiveParametersData[1][2]);
     }
-    if (this.calculateForm.objectiveIndex === '') {
-      this.calculateForm.objectiveIndex = '2';
+    if (this.calculateForm.objectiveIndex === '2') {
+      this.changeWifiFrequency();
+      // 切換到2.4Ghz
+      if (Number(this.calculateForm.bandwidth >= 20)) {
+        this.wifiFrequency = '1';
+      }
     }
   }
 
@@ -1915,4 +1927,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculateForm.beamMaxId = result['beammaxid'];
   }
 
+  /** Wifi頻率切換 */
+  changeWifiFrequency() {
+    if (this.wifiFrequency === '0') {
+      this.calculateForm.frequency = 850;
+    } else if (this.wifiFrequency === '1') {
+      this.calculateForm.frequency = 2400;
+    } else if (this.wifiFrequency === '2') {
+      this.calculateForm.frequency = 5000;
+    }
+  }
 }

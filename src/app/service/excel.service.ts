@@ -12,14 +12,26 @@ export class ExcelService {
   export(calculateForm: CalculateForm) {
     console.log(calculateForm)
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    const zValues = calculateForm.zValue.replace('[', '').replace(']', '').split(',');
     const mapData = [
-      ['image', 'width', 'height', 'altitude', 'mapLayer', 'imageName', 'zValue'],
+      ['image', 'imageName', 'width', 'height', 'altitude', 'protocol', 'mapLayer'],
       [
-        calculateForm.mapImage, calculateForm.width,
-        calculateForm.height, calculateForm.altitude,
-        1, calculateForm.mapName, calculateForm.zValue.replace('[', '').replace(']', '')
+        calculateForm.mapImage,
+        calculateForm.mapName,
+        calculateForm.width,
+        calculateForm.height,
+        calculateForm.altitude,
+        calculateForm.objectiveIndex,
+        zValues[0]
       ]
     ];
+    if (zValues.length > 1) {
+      for (let i = 1; i < zValues.length; i++) {
+        mapData.push([
+          '', '', '', '', '', '', zValues[i]
+        ]);
+      }
+    }
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(mapData);
     XLSX.utils.book_append_sheet(wb, ws, 'map');
     // defaultBS
