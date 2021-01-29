@@ -100,6 +100,7 @@ export class PdfComponent implements OnInit {
           for (const item of candidateBsAry) {
             this.inputBsList.push(item.split(','));
           }
+          this.result['inputBsList'] = this.inputBsList;
           // 障礙物資訊
           const obstacle = this.calculateForm.obstacleInfo
           .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
@@ -182,7 +183,7 @@ export class PdfComponent implements OnInit {
     }
 
     const area = document.querySelector('#pdf_area');
-    const list = ['propose'];
+    const list = [];
     for (let k = 0; k < this.zValues.length; k++) {
       list.push(`signal_${k}`);
     }
@@ -338,13 +339,27 @@ export class PdfComponent implements OnInit {
       beforePageContent: ueHeader
     });
 
+    pdf.addPage();
+    const proposeData = <HTMLDivElement> area.querySelector(`#propose`);
+    await html2canvas(proposeData).then(canvas => {
+      // Few necessary setting options
+      const imgWidth = 182;
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+      const contentDataURL = canvas.toDataURL('image/png');
+      const position = 10;
+      pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');
+    });
+
     for (const id of list) {
       pdf.addPage();
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
       await html2canvas(data).then(canvas => {
         // Few necessary setting options
         const imgWidth = 182;
-        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let imgHeight = canvas.height * imgWidth / canvas.width;
+        if (imgHeight > 260) {
+          imgHeight = 260;
+        }
         const contentDataURL = canvas.toDataURL('image/png');
         const position = 10;
         pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');

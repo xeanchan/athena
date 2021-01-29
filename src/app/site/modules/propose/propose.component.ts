@@ -88,6 +88,7 @@ export class ProposeComponent implements OnInit {
       const y = [];
       const text = [];
       const color = [];
+
       for (let i = 0; i < this.result['inputBsList'].length; i++) {
         numMap[this.result['inputBsList'][i]] = index;
         xyMap[this.result['inputBsList'][i]] = {
@@ -100,9 +101,10 @@ export class ProposeComponent implements OnInit {
         color.push('#7083d6');
         index++;
       }
+
       const traces = [];
       // 建議方案 list
-      for (let i = 0; i < this.result['candidateBsPower'].length; i++) {
+      for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
           this.candidateList.push([
             numMap[this.result['chosenCandidate'][i].toString()],

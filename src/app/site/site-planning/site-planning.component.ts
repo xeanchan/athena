@@ -737,20 +737,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
-    for (const item of this.obstacleList) {
-      if (item === this.svgId) {
-        // 只移動當前物件
-        this.target = target;
-        this.frame.set('left', `${left}px`);
-        this.frame.set('top', `${top}px`);
-        this.frame.set('z-index', 9999999);
-        this.setTransform(target);
-        this.spanStyle[this.svgId].left = `${left}px`;
-        this.spanStyle[this.svgId].top = `${top}px`;
-      } else {
-        // 其他障礙物有時會跟著動，keep住
-        this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+
+    if (this.dragObject[this.svgId].type === 'obstacle') {
+      for (const item of this.obstacleList) {
+        if (item === this.svgId) {
+          // 只移動當前物件
+          this.target = target;
+          this.frame.set('left', `${left}px`);
+          this.frame.set('top', `${top}px`);
+          this.frame.set('z-index', 9999999);
+          this.setTransform(target);
+          this.spanStyle[this.svgId].left = `${left}px`;
+          this.spanStyle[this.svgId].top = `${top}px`;
+        } else {
+          // 其他障礙物有時會跟著動，keep住
+          this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+        }
       }
+    } else {
+      this.target = target;
+      this.frame.set('left', `${left}px`);
+      this.frame.set('top', `${top}px`);
+      this.frame.set('z-index', 9999999);
+      this.setTransform(target);
+      window.setTimeout(() => {
+        // for (const item of this.obstacleList) {
+        //   this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+        // }
+      }, 0);
     }
 
     this.setDragData();

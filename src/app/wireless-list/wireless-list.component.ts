@@ -54,9 +54,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.msgDialogConfig.autoFocus = false;
 
     this.getList();
-    window.setTimeout(() => {
-      this.startInterval();
-    }, 5000);
+    // window.setTimeout(() => {
+    //   this.startInterval();
+    // }, 5000);
   }
 
   ngOnDestroy(): void {

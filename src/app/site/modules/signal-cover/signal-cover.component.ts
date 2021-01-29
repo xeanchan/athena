@@ -23,6 +23,8 @@ export class SignalCoverComponent implements OnInit {
   defaultBsList = [];
   ueList = [];
   style = {};
+  /**  */
+  colorLegend = [];
 
   ngOnInit(): void {
   }
@@ -87,11 +89,11 @@ export class SignalCoverComponent implements OnInit {
         images: images
       };
 
-      const zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+      const zValues = JSON.parse(this.calculateForm.zValue.toString());
 
       let id;
       if (isPDF) {
-        id = document.querySelector('#pdf_area').querySelectorAll(`.signal_cover`)[zValues.indexOf(zValue)];
+        id = document.querySelector('#pdf_area').querySelectorAll(`.signal_cover`)[zValues.indexOf(Number(zValue))];
       } else {
         id = document.querySelectorAll(`.signal_cover`)[0];
       }
@@ -152,32 +154,52 @@ export class SignalCoverComponent implements OnInit {
       //   });
       // }
 
-      // // 新增基站
-      // if (this.calculateForm.candidateBs !== '') {
-      //   const list = this.calculateForm.candidateBs
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const ctext = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     ctext.push(`新增基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: ctext,
-      //     marker: {
-      //       color: '#f7176a',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     showlegend: false,
-      //   });
-      // }
+      // 新增基站
+      if (this.calculateForm.candidateBs !== '') {
+        const list = this.calculateForm.candidateBs.split('|');
+        const cx = [];
+        const cy = [];
+        const ctext = [];
+        const colors = [];
+        let k = 1;
+        for (const item of list) {
+          const oData = JSON.parse(item);
+          cx.push(oData[0]);
+          cy.push(oData[1]);
+
+          const z = zData[zValues.indexOf(Number(zValue))][Math.ceil(oData[1])][Math.ceil(oData[0])];
+          console.log(z)
+          let color;
+          if (z < 0.25) {
+            color = 'rgb(12,51,131)';
+          } else if (z >= 0.25 && z < 0.5) {
+            color = 'rgb(10,136,186)';
+          } else if (z >= 0.5 && z < 0.75) {
+            color = 'rgb(242,211,56)';
+          } else if (z >= 0.75 && z < 1) {
+            color = 'rgb(242,143,56)';
+          } else if (z === 1) {
+            color = 'rgb(217,30,30)';
+          }
+          // ['0.0', 'rgb(12,51,131)'],
+          // ['0.25', 'rgb(10,136,186)'],
+          // ['0.5', 'rgb(242,211,56)'],
+          // ['0.75', 'rgb(242,143,56)'],
+          // ['1', 'rgb(217,30,30)'],
+          traces.push({
+            x: [0],
+            y: [0],
+            name: `AP ${k}`,
+            marker: {
+              color: color,
+            },
+            type: 'bar',
+            hoverinfo: 'none',
+            showlegend: true
+          });
+          k++;
+        }
+      }
 
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
@@ -209,11 +231,11 @@ export class SignalCoverComponent implements OnInit {
           showlegend: false
         });
       }
-
+console.log(zData, zValues, zValue)
       const trace = {
         x: x,
         y: y,
-        z: zData[zValues.indexOf(zValue)],
+        z: zData[zValues.indexOf(Number(zValue))],
         colorscale: [
           ['0.0', 'rgb(12,51,131)'],
           ['0.25', 'rgb(10,136,186)'],
@@ -223,7 +245,8 @@ export class SignalCoverComponent implements OnInit {
         ],
         type: 'heatmap',
         opacity: 0.7,
-        hoverinfo: 'x+y+z'
+        hoverinfo: 'x+y+z',
+        showscale: false
       };
       traces.push(trace);
 

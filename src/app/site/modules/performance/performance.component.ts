@@ -25,8 +25,8 @@ export class PerformanceComponent implements OnInit {
       this.zValueList.push([
         zValues[i],
         this.result['layeredCoverage'][i],
-        this.result['layeredAverageSinr'][i],
-        this.result['layeredAverageRsrp'][i]
+        Number(this.result['layeredAverageSinr'][i]),
+        Number(this.result['layeredAverageRsrp'][i])
       ]);
     }
   }
