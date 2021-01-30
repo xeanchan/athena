@@ -18,6 +18,7 @@ import { StatisticsComponent } from '../modules/statistics/statistics.component'
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ProposeService } from '../../service/propose.service';
 
 declare var Plotly: any;
 
@@ -36,6 +37,7 @@ export class ResultComponent implements OnInit {
     public spinner: NgxSpinnerService,
     private pdfService: PdfService,
     private translateService: TranslateService,
+    private proposeService: ProposeService,
     private http: HttpClient) { }
 
   taskId;
@@ -50,6 +52,8 @@ export class ResultComponent implements OnInit {
   zValue;
   chartType = 'SINR';
   msgDialogConfig: MatDialogConfig = new MatDialogConfig();
+  /** 建議基站 */
+  candidateList = [];
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -81,9 +85,11 @@ export class ResultComponent implements OnInit {
         this.result = res['output'];
         console.log(this.result);
         // 建議方案
-        this.propose.calculateForm = this.calculateForm;
-        this.propose.result = this.result;
-        this.propose.drawLayout(false);
+        this.candidateList = this.proposeService.drawLayout(false, this.calculateForm, this.result);
+        console.log(this.candidateList)
+        // this.propose.calculateForm = this.calculateForm;
+        // this.propose.result = this.result;
+        // this.propose.drawLayout(false);
         // 訊號品質圖
         this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
         this.zValue = this.zValues[0];

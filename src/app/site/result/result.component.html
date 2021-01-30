@@ -11,25 +11,31 @@
 	<div class="leftArea">
 
 		<!-- 建議方案 -->
-		<app-propose #propose></app-propose>
-        
-		<table>
+		<table id="propose">
 			<tbody>
 				<tr>
-					<th colspan="2" class="panel center"><label>訊號覆蓋模擬結果</label></th>
+						<th class="panel center" colspan="5"><label class="bold">建議方案</label>待選基站位置 ( 共{{ candidateList.length }}處 )</th>
 				</tr>
 				<tr>
-					<td class="mapType">
-						<label>切面高度</label>
+					<td colspan="5" class="mapType">
+						<div id="layout_chart"></div>
+					</td>
+				</tr>
+				<tr>
+					<th colspan="5" class="panel center"><label>訊號覆蓋模擬結果</label></th>
+				</tr>
+				<tr>
+					<td colspan="5" class="mapType">
+						<label>{{ 'zValue' | translate }}</label>
 						<mat-button-toggle-group [(ngModel)]="zValue" (change)="changeZvalue()" >
 							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} 公分</mat-button-toggle>
 						</mat-button-toggle-group>
 			
 						<label class="mL_1">分布圖切換</label>
 						<mat-button-toggle-group [(ngModel)]="chartType">
-							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>訊號品質圖</mat-button-toggle>
-							<mat-button-toggle  value="PCI" (click)="drawCover()">訊號覆蓋圖</mat-button-toggle>
-							<mat-button-toggle  value="RSRP" (click)="drawStrength()">訊號強度圖</mat-button-toggle>
+							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>{{ 'sinrMap' | translate }}</mat-button-toggle>
+							<mat-button-toggle  value="PCI" (click)="drawCover()">{{ 'connectionMap' | translate }}</mat-button-toggle>
+							<mat-button-toggle  value="RSRP" (click)="drawStrength()">{{ 'rsrpMap' | translate }}</mat-button-toggle>
 						</mat-button-toggle-group>
 						<!-- 訊號品質圖 -->
 						<app-signal-quality *ngIf="showQuality" #quality></app-signal-quality>
@@ -39,6 +45,27 @@
             <app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
 					</td>
 				</tr>
+				<tr>
+					<th>基站編號</th>
+					<th>X座標</th>
+					<th>Y座標</th>
+					<th>發射功率(dBm)</th>
+					<th>波束編號</th>
+				</tr>
+				<tr *ngFor="let item of candidateList">
+					<td class="choose">{{ item[0] }}</td>
+					<td class="choose">{{ item[1] }}</td>
+					<td class="choose">{{ item[2] }}</td>
+					<td class="choose">{{ item[3] }}</td>
+					<td class="choose">{{ item[4] }}</td>
+				</tr>
+			</tbody>
+		</table>
+		
+    <!-- 訊號覆蓋模擬結果 -->    
+		<table>
+			<tbody>
+				
 			</tbody>
 		</table>
 		<!-- 預估效能 -->

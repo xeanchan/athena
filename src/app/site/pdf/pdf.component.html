@@ -45,15 +45,15 @@
 					</tr>
 					<tr>
 						<td class="mapType">
-							<label>切面高度{{ zValue }}公分</label>
+							<label>{{ 'zValue' | translate }}{{ zValue }}公分</label>
 				
-							<label class="mL_1">訊號品質圖</label>
+							<label class="mL_1">{{ 'sinrMap' | translate }}</label>
 							<app-signal-quality #quality></app-signal-quality>
 
-							<label class="mL_1">訊號覆蓋圖</label>
+							<label class="mL_1">{{ 'connectionMap' | translate }}</label>
 							<app-signal-cover #cover></app-signal-cover>
 
-							<label class="mL_1">訊號強度圖</label>
+							<label class="mL_1">{{ 'rsrpMap' | translate }}</label>
 							<app-signal-strength #strength></app-signal-strength>
 						</td>
 					</tr>

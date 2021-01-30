@@ -136,6 +136,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   };
   // select svg id
   svgId;
+  /** 避免resize時id錯亂用 */
+  realId;
   scalex;
   scaley;
   tooltipStr = '';
@@ -294,6 +296,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             } else {
               this.calculateForm = res['input'];
             }
+            this.zValues = JSON.parse(this.calculateForm.zValue);
+
             this.initData(false);
           },
           err => {
@@ -419,8 +423,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.setImportData();
               } else if (this.taskid !== '') {
                 // 編輯
-                this.edit();
-              } else {
                 this.edit();
               }
             });
@@ -615,11 +617,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
     this.target = document.getElementById(id);
     this.svgId = id;
+    this.realId = _.cloneDeep(id);
     this.frame = new Frame({
-      width: this.svgStyle[id].width,
-      height: this.svgStyle[id].height,
-      left: this.svgStyle[id].left,
-      top: this.svgStyle[id].top,
+      width: this.spanStyle[id].width,
+      height: this.spanStyle[id].height,
+      left: this.spanStyle[id].left,
+      top: this.spanStyle[id].top,
       'z-index': 99999,
       transform: {
         rotate: `${this.dragObject[this.svgId].rotate}deg`,
@@ -627,7 +630,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         scaleY: 1
       }
     });
-
+console.log(this.spanStyle[id])
     this.currentLeft = _.cloneDeep(this.spanStyle[this.svgId].left);
     this.currentTop = _.cloneDeep(this.spanStyle[this.svgId].top);
     this.ognSpanStyle = _.cloneDeep(this.spanStyle);
@@ -690,8 +693,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.dragObject[id].type === 'obstacle') {
       title += `長: ${this.dragObject[id].width}<br>`;
       title += `寬: ${this.dragObject[id].height}<br>`;
+      title += `高: ${this.dragObject[id].altitude}<br>`;
+    } else {
+      title += `高: ${this.dragObject[id].z}<br>`;
     }
-    title += `高: ${this.dragObject[id].altitude}<br>`;
     if (this.dragObject[id].type === 'obstacle') {
       title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
     }
@@ -738,38 +743,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
 
-    if (this.dragObject[this.svgId].type === 'obstacle') {
-      for (const item of this.obstacleList) {
-        if (item === this.svgId) {
-          // 只移動當前物件
-          this.target = target;
-          this.frame.set('left', `${left}px`);
-          this.frame.set('top', `${top}px`);
-          this.frame.set('z-index', 9999999);
-          this.setTransform(target);
-          this.spanStyle[this.svgId].left = `${left}px`;
-          this.spanStyle[this.svgId].top = `${top}px`;
-        } else {
-          // 其他障礙物有時會跟著動，keep住
-          this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
-        }
-      }
-    } else {
-      this.target = target;
-      this.frame.set('left', `${left}px`);
-      this.frame.set('top', `${top}px`);
-      this.frame.set('z-index', 9999999);
-      this.setTransform(target);
-      window.setTimeout(() => {
-        // for (const item of this.obstacleList) {
-        //   this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
-        // }
-      }, 0);
-    }
+    this.target = target;
+    this.frame.set('left', `${left}px`);
+    this.frame.set('top', `${top}px`);
+    this.frame.set('z-index', 9999999);
+    this.setTransform(target);
+
+    this.spanStyle[this.svgId].left = `${left}px`;
+    this.spanStyle[this.svgId].top = `${top}px`;
 
     this.setDragData();
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber(this.svgId);
+      this.circleStyle[this.svgId] = {
+        top: `${top - 20}px`,
+        left: `${left + 20}px`
+      };
     }
     this.setLabel();
   }
@@ -792,17 +780,25 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 旋轉角度 */
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
+    if (this.svgId !== this.realId) {
+      this.svgId = _.cloneDeep(this.realId);
+    }
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
     this.frame.set('transform', 'rotate', `${deg}deg`);
     this.frame.set('left', this.currentLeft);
     this.frame.set('top', this.currentTop);
     this.setTransform(target);
     this.dragObject[this.svgId].rotate = Math.ceil(deg);
+    this.spanStyle[this.svgId].transform = `rotate(${this.dragObject[this.svgId].rotate}deg)`;
     this.setLabel();
   }
 
   /** 縮放 */
   onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
+    if (this.svgId !== this.realId) {
+      // 物件太接近，id有時會錯亂，還原id
+      this.svgId = _.cloneDeep(this.realId);
+    }
     if (width < 5) {
       width = 5;
     }
@@ -813,10 +809,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('height', `${height}px`);
     this.frame.set('left', this.spanStyle[this.svgId].left);
     this.frame.set('top', this.spanStyle[this.svgId].top);
+    this.frame.set('z-index', 9999999);
     this.setTransform(target);
 
     this.svgStyle[this.svgId].width = width;
     this.svgStyle[this.svgId].height = height;
+    this.spanStyle[this.svgId].width = `${width}px`;
+    this.spanStyle[this.svgId].height = `${height}px`;
 
     const type = this.dragObject[this.svgId].element;
 
@@ -845,14 +844,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // dragRect.setAttribute('points', points);
     }
     this.setDragData();
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber(this.svgId);
-    }
     this.setLabel();
   }
 
   onEnd() {
     this.live = false;
+    for (const item of this.obstacleList) {
+      if (item !== this.svgId) {
+        // 其他障礙物有時會跟著動，keep住
+        this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+      }
+    }
   }
 
   moveableDestroy() {
@@ -1715,11 +1717,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.availableNewBsNumber = Number(objectiveParametersData[1][2]);
     }
     if (this.calculateForm.objectiveIndex === '2') {
-      this.changeWifiFrequency();
       // 切換到2.4Ghz
       if (Number(this.calculateForm.bandwidth >= 20)) {
         this.wifiFrequency = '1';
       }
+      this.changeWifiFrequency();
     }
   }
 
@@ -1900,6 +1902,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     }
 
+    if (this.calculateForm.objectiveIndex === '2') {
+      // 切換到2.4Ghz
+      if (Number(this.calculateForm.bandwidth >= 20)) {
+        this.wifiFrequency = '1';
+      }
+      this.changeWifiFrequency();
+    }
+
   }
 
   /** 運算結果 */
@@ -1949,6 +1959,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.frequency = 2400;
     } else if (this.wifiFrequency === '2') {
       this.calculateForm.frequency = 5000;
+    }
+  }
+
+  dragEnd() {
+    for (const item of this.obstacleList) {
+      if (item !== this.svgId) {
+        // 其他障礙物有時會跟著動，keep住
+        this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
+      }
     }
   }
 }

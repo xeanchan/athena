@@ -53,7 +53,7 @@ export class View3dComponent implements OnInit {
       const defaultPlotlyConfiguration = {
         displayModeBar: false
       };
-  
+
       const layout = {
         autosize: true,
         scene: {
@@ -70,7 +70,7 @@ export class View3dComponent implements OnInit {
         },
         margin: { t: 0, b: 0, l: 0, r: 0}
       };
-  
+
       Plotly.newPlot('chart3D', {
         data: this.getTraces(),
         layout: layout,

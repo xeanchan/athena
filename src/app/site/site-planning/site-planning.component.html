@@ -129,7 +129,7 @@
     <div #chart id="chart" style="position: relative;">
       <div #dragArea [ngStyle]="dragStyle">
         <span *ngFor="let item of obstacleList" id="{{item}}" [ngStyle]="spanStyle[item]" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="obstacle" (click)="moveClick(item);" (contextmenu)="onRightClick($event, item)" >
-          <svg *ngIf="dragObject[item].element === 'rect'" [ngStyle]="svgStyle[item]" xmlns="http://www.w3.org/2000/svg">
+          <svg *ngIf="dragObject[item].element === 'rect'" [attr.width]="svgStyle[item].width" [attr.height]="svgStyle[item].height" style="display: inherit;" xmlns="http://www.w3.org/2000/svg">
             <g>
             <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="#fff"/>
             <g id="canvasGrid" display="none">
@@ -384,7 +384,7 @@
                   </select>
                 </li>
                 <li>
-                  <p>系統頻寬</p>
+                  <p>{{ 'bandwidth' | translate }}</p>
                   <span>
                     <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherObjective">
                       <!-- WIFI -->
@@ -418,7 +418,7 @@
                     </ng-template>
                     
                     /
-                    <label>頻率</label>
+                    <label>{{ 'frequency' | translate }}</label>
                     <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherFrequency">
                       {{ calculateForm.frequency }}
                     </ng-container>
@@ -528,9 +528,7 @@
                       </span>
                       <span>
                         <label>Z</label>
-                        <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                          <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                        </select>
+                        <input type="text" [(ngModel)]="dragObject[item].z" >
                       </span>
                     </li>
                   </ol>
@@ -595,9 +593,7 @@
                     </span>
                     <span>
                       <label>Z</label>
-                      <select class="zAxis" [(ngModel)]="dragObject[item].z">
-                        <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
-                      </select>
+                      <input type="text" [(ngModel)]="dragObject[item].z" >
                     </span>
                   </li>
                 </ol>
@@ -729,8 +725,19 @@
   <div mat-dialog-content>
     <ul>
       <li class="highset">
-          {{ 'altitude.setting' | translate }}
+        {{ 'altitude.setting' | translate }}
+        <ng-container *ngIf="dragObject[svgId].type === 'obstacle'">
           <input type="text" [(ngModel)]="dragObject[svgId].altitude">公分
+        </ng-container>
+        <ng-container *ngIf="dragObject[svgId].type === 'defaultBS' || dragObject[svgId].type === 'candidate'">
+          <input type="text" [(ngModel)]="dragObject[svgId].z">公分
+        </ng-container>
+        <ng-container *ngIf="dragObject[svgId].type === 'UE'">
+          <select class="zAxis" [(ngModel)]="dragObject[svgId].z">
+            <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
+          </select>
+        </ng-container>
+        
         <!--<mat-form-field>
           <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
           <input matInput >
