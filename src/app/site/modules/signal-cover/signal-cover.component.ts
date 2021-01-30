@@ -168,7 +168,6 @@ export class SignalCoverComponent implements OnInit {
           cy.push(oData[1]);
 
           const z = zData[zValues.indexOf(Number(zValue))][Math.ceil(oData[1])][Math.ceil(oData[0])];
-          console.log(z)
           let color;
           if (z < 0.25) {
             color = 'rgb(12,51,131)';
@@ -181,11 +180,7 @@ export class SignalCoverComponent implements OnInit {
           } else if (z === 1) {
             color = 'rgb(217,30,30)';
           }
-          // ['0.0', 'rgb(12,51,131)'],
-          // ['0.25', 'rgb(10,136,186)'],
-          // ['0.5', 'rgb(242,211,56)'],
-          // ['0.75', 'rgb(242,143,56)'],
-          // ['1', 'rgb(217,30,30)'],
+
           traces.push({
             x: [0],
             y: [0],
@@ -231,7 +226,7 @@ export class SignalCoverComponent implements OnInit {
           showlegend: false
         });
       }
-console.log(zData, zValues, zValue)
+
       const trace = {
         x: x,
         y: y,
@@ -303,7 +298,7 @@ console.log(zData, zValues, zValue)
           this.candidateList.push({
             x: xdata,
             y: ydata,
-            color: 'green',
+            color: '#f7176a',
             hover: text
           });
 
@@ -353,7 +348,6 @@ console.log(zData, zValues, zValue)
 
         }
       }
-      console.log(traces);
 
       Plotly.newPlot(id, {
         data: traces,
@@ -431,16 +425,25 @@ console.log(zData, zValues, zValue)
                 position: 'absolute'
               };
             }
+            // 新增基站
+            const xy3: SVGRectElement = gd2.querySelector('.xy');
+            const rect3 = xy3.getBoundingClientRect();
+            const candisateXLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.width])
+              .range([0, rect3.width]);
 
+            const candisateYLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.height])
+              .range([0, rect3.height]);
             for (const item of this.candidateList) {
               item['style'] = {
-                left: `${pixelXLinear(item.x)}px`,
-                bottom: `${pixelYLinear(item.y)}px`,
+                left: `${candisateXLinear(item.x)}px`,
+                bottom: `${candisateYLinear(item.y)}px`,
                 position: 'absolute'
               };
               item['circleStyle'] = {
-                left: `${pixelXLinear(item.x) + 15}px`,
-                bottom: `${pixelYLinear(item.y) + 25}px`,
+                left: `${candisateXLinear(item.x) + 15}px`,
+                bottom: `${candisateYLinear(item.y) + 25}px`,
                 position: 'absolute'
               };
             }

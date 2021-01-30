@@ -287,7 +287,7 @@ export class SignalQualityComponent implements OnInit {
           this.candidateList.push({
             x: xdata,
             y: ydata,
-            color: 'green',
+            color: '#f7176a',
             hover: text
           });
 
@@ -414,16 +414,25 @@ export class SignalQualityComponent implements OnInit {
                 position: 'absolute'
               };
             }
+            // 新增基站
+            const xy3: SVGRectElement = gd2.querySelector('.xy');
+            const rect3 = xy3.getBoundingClientRect();
+            const candisateXLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.width])
+              .range([0, rect3.width]);
 
+            const candisateYLinear = Plotly.d3.scale.linear()
+              .domain([0, this.calculateForm.height])
+              .range([0, rect3.height]);
             for (const item of this.candidateList) {
               item['style'] = {
-                left: `${pixelXLinear(item.x)}px`,
-                bottom: `${pixelYLinear(item.y)}px`,
+                left: `${candisateXLinear(item.x)}px`,
+                bottom: `${candisateYLinear(item.y)}px`,
                 position: 'absolute'
               };
               item['circleStyle'] = {
-                left: `${pixelXLinear(item.x) + 15}px`,
-                bottom: `${pixelYLinear(item.y) + 25}px`,
+                left: `${candisateXLinear(item.x) + 15}px`,
+                bottom: `${candisateYLinear(item.y) + 25}px`,
                 position: 'absolute'
               };
             }

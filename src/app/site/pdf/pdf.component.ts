@@ -14,7 +14,6 @@ import { StatisticsComponent } from '../modules/statistics/statistics.component'
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { JsPDFFontService } from '../../service/js-pdffont.service';
 import { FormService } from '../../service/form.service';
-import { ProposeService } from '../../service/propose.service';
 
 @Component({
   selector: 'app-pdf',
@@ -27,7 +26,6 @@ export class PdfComponent implements OnInit {
     private authService: AuthService,
     private formService: FormService,
     private jsPDFFontService: JsPDFFontService,
-    private proposeService: ProposeService,
     private http: HttpClient) { }
 
   taskId = 'task_sel_d2f81cef-01c8-4444-9352-f4a1ffb5ccca_1';
@@ -118,10 +116,9 @@ export class PdfComponent implements OnInit {
 
           this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
           window.setTimeout(() => {
-            
-            // this.propose.calculateForm = this.calculateForm;
-            // this.propose.result = this.result;
-            this.propose.drawLayout(true, this.calculateForm, this.result);
+            this.propose.calculateForm = this.calculateForm;
+            this.propose.result = this.result;
+            this.propose.drawLayout(true);
             // 訊號品質圖
             let index = 0;
             this.quality.forEach(element => {
