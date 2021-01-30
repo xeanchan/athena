@@ -695,7 +695,7 @@ console.log(this.spanStyle[id])
       title += `寬: ${this.dragObject[id].height}<br>`;
       title += `高: ${this.dragObject[id].altitude}<br>`;
     } else {
-      title += `高: ${this.dragObject[id].z}<br>`;
+      title += `Z: ${this.dragObject[id].z}<br>`;
     }
     if (this.dragObject[id].type === 'obstacle') {
       title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
