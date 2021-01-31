@@ -18,6 +18,7 @@ import { StatisticsComponent } from '../modules/statistics/statistics.component'
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { View3dComponent } from '../view3d/view3d.component';
 
 declare var Plotly: any;
 
@@ -50,6 +51,13 @@ export class ResultComponent implements OnInit {
   zValue;
   chartType = 'SINR';
   msgDialogConfig: MatDialogConfig = new MatDialogConfig();
+  view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
+
+  defaultBSList = [];
+  candidateList = [];
+  obstacleList = [];
+  ueList = [];
+  dragObject = {};
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -63,6 +71,9 @@ export class ResultComponent implements OnInit {
 
 
   ngOnInit() {
+    this.view3dDialogConfig.autoFocus = false;
+    this.view3dDialogConfig.width = '80%';
+    this.view3dDialogConfig.hasBackdrop = false;
     this.msgDialogConfig.autoFocus = false;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
@@ -80,12 +91,54 @@ export class ResultComponent implements OnInit {
         this.calculateForm = res['input'];
         this.result = res['output'];
         console.log(this.result);
+
+        if (this.calculateForm.defaultBs !== '') {
+          const defaultBs = this.calculateForm.defaultBs.split('|');
+          for (const item of defaultBs) {
+            const obj = JSON.parse(item);
+            this.defaultBSList.push({
+              x: obj[0],
+              y: obj[1],
+              z: obj[2]
+            });
+          }
+        }
+        const candidateBs = this.calculateForm.candidateBs.split('|');
+        for (const item of candidateBs) {
+          const obj = JSON.parse(item);
+          this.candidateList.push({
+            x: obj[0],
+            y: obj[1],
+            z: obj[2]
+          });
+        }
+        const obstacleInfo = this.calculateForm.obstacleInfo.split('|');
+        for (const item of obstacleInfo) {
+          const obj = JSON.parse(item);
+          this.obstacleList.push({
+            x: obj[0],
+            y: obj[1],
+            width: obj[2],
+            height: obj[3],
+            altitude: obj[4]
+          });
+        }
+        const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
+        for (const item of ueCoordinate) {
+          const obj = JSON.parse(item);
+          this.ueList.push({
+            x: obj[0],
+            y: obj[1],
+            z: obj[2]
+          });
+        }
+
         // 建議方案
         this.propose.calculateForm = this.calculateForm;
         this.propose.result = this.result;
         this.propose.drawLayout(false);
         // 訊號品質圖
-        this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+        this.zValues = JSON.parse(this.calculateForm.zValue);
         this.zValue = this.zValues[0];
         this.drawQuality();
         // 預估效能
@@ -110,9 +163,6 @@ export class ResultComponent implements OnInit {
   /** export PDF */
   async exportPDF() {
     this.pdf.export(this.taskId, false);
-    // document.getElementById('pdf_area').style.display = 'block';
-    // await this.pdfService.export(this.calculateForm.taskName);
-    // document.getElementById('pdf_area').style.display = 'none';
   }
 
   /** 訊號品質圖 */
@@ -191,6 +241,18 @@ export class ResultComponent implements OnInit {
         this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
       }
     );
+  }
+
+  view3D() {
+    this.view3dDialogConfig.data = {
+      calculateForm: this.calculateForm,
+      obstacleList: this.obstacleList,
+      defaultBSList: this.defaultBSList,
+      candidateList: this.candidateList,
+      ueList: this.ueList,
+      zValue: this.zValues
+    };
+    this.matDialog.open(View3dComponent, this.view3dDialogConfig);
   }
 
 }

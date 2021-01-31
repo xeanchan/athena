@@ -250,6 +250,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
+    this.view3dDialogConfig.hasBackdrop = false;
     this.msgDialogConfig.autoFocus = false;
 
     for (let i = 0; i < 9; i++) {
@@ -1242,23 +1243,32 @@ console.log(this.spanStyle[id])
   }
 
   view3D() {
+    const defaultBS = [];
+    for (const item of this.defaultBSList) {
+      defaultBS.push(this.dragObject[item]);
+    }
+    const candidate = [];
+    for (const item of this.candidateList) {
+      candidate.push(this.dragObject[item]);
+    }
+    const obstacle = [];
+    for (const item of this.obstacleList) {
+      obstacle.push(this.dragObject[item]);
+    }
+    const ue = [];
+    for (const item of this.ueList) {
+      ue.push(this.dragObject[item]);
+    }
+
     this.view3dDialogConfig.data = {
       calculateForm: this.calculateForm,
-      obstacleList: this.obstacleList,
-      defaultBSList: this.defaultBSList,
-      candidateList: this.candidateList,
-      ueList: this.ueList,
-      dragObject: this.dragObject
+      obstacleList: obstacle,
+      defaultBSList: defaultBS,
+      candidateList: candidate,
+      ueList: ue,
+      zValue: this.zValues
     };
     this.matDialog.open(View3dComponent, this.view3dDialogConfig);
-    // sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
-    // sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
-    // sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
-    // sessionStorage.setItem('candidateList', JSON.stringify(this.candidateList));
-    // sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
-    // sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
-
-    // this.router.navigate(['/site/view3d']);
   }
 
   /** export xlsx */

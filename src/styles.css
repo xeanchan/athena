@@ -171,3 +171,6 @@ button {
     width: initial!important;
     
 }
+.cdk-overlay-pane {
+    overflow: auto;
+}
