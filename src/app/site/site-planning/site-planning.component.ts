@@ -743,7 +743,10 @@ console.log(this.spanStyle[id])
 
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
-
+    if (this.svgId !== this.realId) {
+      this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
+    }
     this.target = target;
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${top}px`);
@@ -783,6 +786,7 @@ console.log(this.spanStyle[id])
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     if (this.svgId !== this.realId) {
       this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
     }
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
     this.frame.set('transform', 'rotate', `${deg}deg`);
@@ -799,6 +803,7 @@ console.log(this.spanStyle[id])
     if (this.svgId !== this.realId) {
       // 物件太接近，id有時會錯亂，還原id
       this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
     }
     if (width < 5) {
       width = 5;
@@ -1432,7 +1437,13 @@ console.log(this.spanStyle[id])
     if (typeof mapData[1][keyMap['protocol']] === 'undefined') {
       this.calculateForm.objectiveIndex = '2';
     } else {
-      this.calculateForm.objectiveIndex = mapData[1][keyMap['protocol']];
+      if (mapData[1][keyMap['protocol']] === '0' || mapData[1][keyMap['protocol']] === '4G') {
+        this.calculateForm.objectiveIndex = '0';
+      } else if (mapData[1][keyMap['protocol']] === '1' || mapData[1][keyMap['protocol']] === '5G') {
+        this.calculateForm.objectiveIndex = '1';
+      } else if (mapData[1][keyMap['protocol']] === '2' || mapData[1][keyMap['protocol']] === 'wifi') {
+        this.calculateForm.objectiveIndex = '2';
+      }
     }
 
     this.initData(true);

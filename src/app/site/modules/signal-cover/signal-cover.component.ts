@@ -98,10 +98,12 @@ export class SignalCoverComponent implements OnInit {
         id = document.querySelectorAll(`.signal_cover`)[0];
       }
 
-      const zLen = this.calculateForm.zValue.split(',').length;
+      const zLen = zValues.length;
       const zData = [];
+      const allZ = [];
       for (let i = 0; i < zLen; i++) {
         zData.push([]);
+        allZ.push([]);
       }
       let xIndex = 0;
       for (const item of this.result['connectionMapAll']) {
@@ -113,9 +115,15 @@ export class SignalCoverComponent implements OnInit {
             }
             zData[i][yIndex][xIndex] = yData[i];
             yIndex++;
+            allZ[i].push(yData[i]);
           }
         }
         xIndex++;
+      }
+      // 取z的最大值
+      const zMax = [];
+      for (const item of allZ) {
+        zMax.push(Plotly.d3.max(item));
       }
 
       const x = [];
@@ -159,8 +167,6 @@ export class SignalCoverComponent implements OnInit {
         const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
-        const ctext = [];
-        const colors = [];
         let k = 1;
         for (const item of list) {
           const oData = JSON.parse(item);
@@ -168,16 +174,18 @@ export class SignalCoverComponent implements OnInit {
           cy.push(oData[1]);
 
           const z = zData[zValues.indexOf(Number(zValue))][Math.ceil(oData[1])][Math.ceil(oData[0])];
+          const max = zMax[zValues.indexOf(Number(zValue))];
+
           let color;
-          if (z < 0.25) {
+          if (z < max * 0.25) {
             color = 'rgb(12,51,131)';
-          } else if (z >= 0.25 && z < 0.5) {
+          } else if (z >= max * 0.25 && z < max * 0.5) {
             color = 'rgb(10,136,186)';
-          } else if (z >= 0.5 && z < 0.75) {
+          } else if (z >= max * 0.5 && z < max * 0.75) {
             color = 'rgb(242,211,56)';
-          } else if (z >= 0.75 && z < 1) {
+          } else if (z >= max * 0.75 && z < max) {
             color = 'rgb(242,143,56)';
-          } else if (z === 1) {
+          } else if (z === max) {
             color = 'rgb(217,30,30)';
           }
 
@@ -198,13 +206,12 @@ export class SignalCoverComponent implements OnInit {
 
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
-        const list = this.calculateForm.ueCoordinate
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.ueCoordinate.split('|');
         const cx = [];
         const cy = [];
         const text = [];
         for (const item of list) {
-          const oData = item.split(',');
+          const oData = JSON.parse(item);
           if (oData[2] !== zValue) {
             continue;
           }
@@ -244,19 +251,19 @@ export class SignalCoverComponent implements OnInit {
         showscale: false
       };
       traces.push(trace);
+      console.log(traces);
 
       // 現有基站
       if (this.calculateForm.defaultBs !== '') {
-        const list = this.calculateForm.defaultBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.defaultBs.split('|');
         const cx = [];
         const cy = [];
         const ctext = [];
         for (const item of list) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
-          const zdata = Number(oData[2]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
+          const zdata = oData[2];
           cx.push(xdata);
           cy.push(ydata);
 
@@ -277,16 +284,15 @@ export class SignalCoverComponent implements OnInit {
 
       // 新增基站
       if (this.calculateForm.candidateBs !== '') {
-        const list = this.calculateForm.candidateBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
         const ctext = [];
         for (const item of list) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
-          const zdata = Number(oData[2]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
+          const zdata = oData[2];
           cx.push(xdata);
           cy.push(ydata);
 
@@ -307,12 +313,11 @@ export class SignalCoverComponent implements OnInit {
 
       // 障礙物
       if (this.calculateForm.obstacleInfo !== '') {
-        const obstacle = this.calculateForm.obstacleInfo
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const obstacle = this.calculateForm.obstacleInfo.split('|');
         for (const item of obstacle) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
           let oColor = oData[7];
           let text = `障礙物資訊
           X: ${xdata}
