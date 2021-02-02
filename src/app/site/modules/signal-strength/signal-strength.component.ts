@@ -23,11 +23,13 @@ export class SignalStrengthComponent implements OnInit {
   defaultBsList = [];
   ueList = [];
   style = {};
+  colorBars = [];
 
   ngOnInit(): void {
   }
 
   draw(isPDF, zValue) {
+    zValue = Number(zValue);
     const reader = new FileReader();
     reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
     reader.onload = (e) => {
@@ -98,8 +100,10 @@ export class SignalStrengthComponent implements OnInit {
 
       const zLen = zValues.length;
       const zData = [];
+      const allZ = [];
       for (let i = 0; i < zLen; i++) {
         zData.push([]);
+        allZ.push([]);
       }
       let xIndex = 0;
       for (const item of this.result['rsrpMap']) {
@@ -109,13 +113,53 @@ export class SignalStrengthComponent implements OnInit {
             if (typeof zData[i][yIndex] === 'undefined') {
               zData[i][yIndex] = [];
             }
-
             zData[i][yIndex][xIndex] = yData[i];
             yIndex++;
+            allZ[i].push(yData[i]);
           }
         }
         xIndex++;
       }
+
+      // 取z的最大值
+      const zMax = [];
+      const zMin = [];
+      for (const item of allZ) {
+        zMax.push(Plotly.d3.max(item));
+        zMin.push(Plotly.d3.min(item));
+      }
+
+      // 套件的colorbar在pdf會空白，另外產生
+      this.colorBars.length = 0;
+      const max = zMax[zValues.indexOf(Number(zValue))];
+      const min = zMin[zValues.indexOf(Number(zValue))];
+      this.colorBars.push(
+        {
+          val: -44,
+          background: 'rgb(217,30,30)',
+          height: '25%'
+        },
+        {
+          val: -70,
+          background: 'rgb(242,143,56)',
+          height: '25%'
+        },
+        {
+          val: -95,
+          background: 'rgb(242,211,56)',
+          height: '25%'
+        },
+        {
+          val: -120,
+          background: 'rgb(10,136,186)',
+          height: '25%'
+        },
+        {
+          val: -140,
+          background: 'rgb(12,51,131)',
+          height: '25%'
+        }
+      );
 
       const x = [];
       const y = [];
@@ -232,7 +276,8 @@ export class SignalStrengthComponent implements OnInit {
         ],
         type: 'heatmap',
         opacity: 0.7,
-        hoverinfo: 'x+y+z'
+        hoverinfo: 'x+y+z',
+        showscale: false
       };
       traces.push(trace);
 

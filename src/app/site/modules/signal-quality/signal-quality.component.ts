@@ -27,11 +27,13 @@ export class SignalQualityComponent implements OnInit {
   style = {};
   isPDF = false;
   zValue = '';
+  colorBars = [];
 
   ngOnInit(): void {
   }
 
   draw(isPDF, zValue) {
+    zValue = Number(zValue);
     this.zValue = zValue;
 
     const reader = new FileReader();
@@ -104,8 +106,10 @@ export class SignalQualityComponent implements OnInit {
 
       const zLen = zValues.length;
       const zData = [];
+      const allZ = [];
       for (let i = 0; i < zLen; i++) {
         zData.push([]);
+        allZ.push([]);
       }
       let xIndex = 0;
       for (const item of this.result['sinrMap']) {
@@ -117,10 +121,51 @@ export class SignalQualityComponent implements OnInit {
             }
             zData[i][yIndex][xIndex] = yData[i];
             yIndex++;
+            allZ[i].push(yData[i]);
           }
         }
         xIndex++;
       }
+
+      // 取z的最大值
+      const zMax = [];
+      const zMin = [];
+      for (const item of allZ) {
+        zMax.push(Plotly.d3.max(item));
+        zMin.push(Plotly.d3.min(item));
+      }
+
+      // 套件的colorbar在pdf會空白，另外產生
+      this.colorBars.length = 0;
+      const max = zMax[zValues.indexOf(Number(zValue))];
+      const min = zMin[zValues.indexOf(Number(zValue))];
+      this.colorBars.push(
+        {
+          val: Math.round(max),
+          background: 'rgb(217,30,30)',
+          height: '25%'
+        },
+        {
+          val: Math.round(max * 0.75),
+          background: 'rgb(242,143,56)',
+          height: '25%'
+        },
+        {
+          val: Math.round(max * 0.5),
+          background: 'rgb(242,211,56)',
+          height: '25%'
+        },
+        {
+          val: Math.round(max * 0.25),
+          background: 'rgb(10,136,186)',
+          height: '25%'
+        },
+        {
+          val: Math.round(min),
+          background: 'rgb(12,51,131)',
+          height: '25%'
+        }
+      );
 
       const x = [];
       const y = [];
@@ -229,7 +274,8 @@ export class SignalQualityComponent implements OnInit {
         ],
         type: 'heatmap',
         opacity: 0.7,
-        hoverinfo: 'x+y+z'
+        hoverinfo: 'x+y+z',
+        showscale: false
       };
       traces.push(trace);
 

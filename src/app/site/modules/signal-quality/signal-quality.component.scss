@@ -15,3 +15,15 @@
   left: 0px;
   bottom: 0px;
 }
+.color_bar {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  width: 30px;
+  height: 65%;
+  color: #000;
+}
+.color_bar label {
+  margin-left: 32px;
+  font-size: 10px;
+}

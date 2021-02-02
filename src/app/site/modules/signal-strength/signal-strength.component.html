@@ -1,6 +1,9 @@
 <!-- <img id="signal_strength" class="map" src="assets/img/map.png"> -->
 <div style="position: relative;">
   <div class="signal_strength">
+    <div class="color_bar">
+      <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>
+    </div>
     <!-- 新增基站 -->
     <span *ngFor="let item of candidateList" [ngStyle]="item.style" style="z-index: 99999;">
       <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">

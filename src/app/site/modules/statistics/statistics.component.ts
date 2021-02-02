@@ -109,7 +109,8 @@ export class StatisticsComponent implements OnInit {
       barmode: 'group',
       bargroupgap: 0.1,
       legend: {
-        orientation: 'h'
+        orientation: 'h',
+        x: -0.1
       }
     };
 
@@ -214,7 +215,8 @@ export class StatisticsComponent implements OnInit {
       paper_bgcolor: this.bgColor,
       plot_bgcolor: this.bgColor,
       legend: {
-        orientation: 'h'
+        orientation: 'h',
+        x: -0.1
       }
     };
 
@@ -416,7 +418,8 @@ export class StatisticsComponent implements OnInit {
       barmode: 'group',
       bargroupgap: 0.1,
       legend: {
-        orientation: 'h'
+        orientation: 'h',
+        x: -0.1
       }
     };
 
@@ -523,7 +526,8 @@ export class StatisticsComponent implements OnInit {
       paper_bgcolor: this.bgColor,
       plot_bgcolor: this.bgColor,
       legend: {
-        orientation: 'h'
+        orientation: 'h',
+        x: -0.1
       }
     };
 

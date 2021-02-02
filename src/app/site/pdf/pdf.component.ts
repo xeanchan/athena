@@ -28,7 +28,7 @@ export class PdfComponent implements OnInit {
     private jsPDFFontService: JsPDFFontService,
     private http: HttpClient) { }
 
-  taskId = 'task_sel_d2f81cef-01c8-4444-9352-f4a1ffb5ccca_1';
+  taskId = 'task_sel_2debd312-a5aa-48ab-a131-0518fc3c714e_1';
   result = {};
   calculateForm: CalculateForm = new CalculateForm();
   zValues = [];
@@ -50,7 +50,7 @@ export class PdfComponent implements OnInit {
     //   this.taskId = params['taskId'];
     //   this.getResult();
     // });
-    // this.export(this.taskId);
+    // this.export(this.taskId, false);
 
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
