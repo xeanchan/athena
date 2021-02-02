@@ -284,6 +284,39 @@
           <mat-panel-title>規劃目標</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="panel_content">
+          <mat-radio-group>
+            <mat-radio-button class="block" value="1"
+            matTooltip="將場域內所有位置納入演算法計算，適用於以下情境:
+            1.全新場域規劃
+            2.暫無人流或行動終端位置資訊
+            3.偵測場域內訊號不佳的盲區，或對人員難以進入的區域進行分析">
+            以整體場域為主進行規劃</mat-radio-button>
+            <mat-radio-button class="block" value="2"
+            matTooltip="以設定好的行動終端位置進行無線訊號優化，適用於以下情境:
+            1.欲強化特定位置的訊號品質
+            2.人員或重要的無線終端裝置集中於某些區域，並非均勻分布"
+            >以行動終端為主進行規劃</mat-radio-button>
+          </mat-radio-group>
+          <div class="subTarget">
+            <mat-checkbox
+            matTooltip="訊號品質提升，有助於提升平均傳輸速度"
+            >強化整體場域內整體訊號品質</mat-checkbox>
+            <mat-checkbox
+            matTooltip="提升訊號覆蓋率，可以避免場域邊緣或遮蔽物附近的位置沒有訊號可供連網，但有可能造成AP間訊號干擾上升"
+            >強化整體場域內訊號覆蓋</mat-checkbox>
+            <mat-checkbox
+            matTooltip="根據行動終端分布的位置，找出讓這些使用者訊號品質最好的方案，對於這些座標的優化效果會高於以場域為主進行規劃"
+            >強化行動終端整體訊號品質</mat-checkbox>
+            <mat-checkbox
+            matTooltip="根據行動終端分布的位置，提升這些位置的傳輸速度，但可能犧牲其他位置或場域邊緣的訊號品質"
+            >強化行動終端傳輸速率上限</mat-checkbox>
+            <mat-checkbox
+            matTooltip="根據行動終端分布的位置提升訊號覆蓋率，可避免清單中的裝置沒有訊號連網，效果會高於以場域為主進行規劃"
+            >強化行動終端有訊號覆蓋的比率</mat-checkbox>
+          </div>
+        </div>
+        <!--
+        <div class="panel_content">
           <p class="sub_title active">目標設定</p>
           <div class="sub_content">
             <div>
@@ -328,6 +361,7 @@
             </ul>
           </div>
         </div>
+        -->
       </mat-expansion-panel>
       
       <mat-expansion-panel (opened)="panelOpenState = true"

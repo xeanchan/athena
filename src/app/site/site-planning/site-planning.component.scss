@@ -325,6 +325,9 @@ ul {
 :host ::ng-deep .areaSetting .mat-expansion-indicator::after {
     color: #7997b7;
 }
+:host ::ng-deep .mat-radio-outer-circle {
+    border-color: rgb(181 223 236);
+}
 .panel_content {
     padding: 1em 0 1em 2em;
 }
@@ -339,4 +342,7 @@ ul {
 }
 .obstacle {
     background-color: green;
+}
+.subTarget {
+    margin-left: 1.5em;
 }

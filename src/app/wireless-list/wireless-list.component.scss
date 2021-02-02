@@ -5,7 +5,7 @@
 .planningList {
     /*border: 1px solid #5aa5e2;*/
     padding: 2px;
-    margin: .5em 0 3em;
+    margin: .5em 0 1em;
 }
 .planningList table {
     font-size: .9em;
@@ -19,4 +19,13 @@
 }
 .planningList table th {
     color: #236fc3;
+}
+.footer {
+    font-size: 0.8em;
+    width: 100%;
+    padding: 1em .3em 0;
+    color: #787d82;
+}
+.footer span {
+    margin-right: 1em;
 }
