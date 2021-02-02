@@ -28,6 +28,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "babylonjs": "^4.2.0",
     "classlist.js": "^1.1.20150312",
+    "earcut": "^2.2.2",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.0.0-rc.7",
     "jspdf": "^1.5.3",

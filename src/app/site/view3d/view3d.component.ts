@@ -5,9 +5,13 @@ import { Router } from '@angular/router';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import * as _ from 'lodash';
-import { Scene, Engine } from 'babylonjs';
+// import { Scene, Engine } from 'babylonjs';
 
-declare var Plotly: any;
+import * as BABYLON from 'babylonjs';
+import * as Earcut from 'earcut';
+import { Engine } from 'babylonjs';
+
+declare const Plotly: any;
 
 @Component({
   selector: 'app-view3d',
@@ -24,13 +28,18 @@ export class View3dComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data) {
 
       this.calculateForm = data.calculateForm;
-      this.obstacleList = data.obstacleList;
-      this.defaultBSList = data.defaultBSList;
-      this.candidateList = data.candidateList;
-      this.ueList = data.ueList;
-      this.dragObject = data.dragObject;
-
-      console.log(this.defaultBSList)
+      // this.obstacleList = data.obstacleList;
+      // this.defaultBSList = data.defaultBSList;
+      // this.candidateList = data.candidateList;
+      // this.ueList = data.ueList;
+      this.obstacle = data.obstacleList;
+      this.defaultBs = data.defaultBSList;
+      this.candidate = data.candidateList;
+      this.ue = data.ueList;
+      this.width = this.calculateForm.width;
+      this.height = this.calculateForm.height;
+      this.zValue = data.zValue;
+      this.planeHeight = this.zValue[0].toString();
     }
 
   calculateForm: CalculateForm;
@@ -44,138 +53,353 @@ export class View3dComponent implements OnInit {
   ueList = [];
   dragObject = {};
 
+  zValue = [];
+  engine = null;
+  scene = null;
+  obstacleGroup = [];
+  defaultBsGroup = [];
+  candidateGroup = [];
+  ueGroup = [];
+  heatmapGroup = {};
+  showDefaultBs = true;
+  showCandidate = true;
+  showUe = true;
+  showObstacle = true;
+  heatmapType = 0;     // 0 = SINR, 1 = PCI, 2 = RSRP
+  planeHeight;
+  width = 0;
+  height = 0;
+  obstacle = [];
+  defaultBs = [];
+  candidate = [];
+  ue = [];
+  result = {};
+  heatmapConfig = {
+    container: document.getElementById('heatmap'),
+    radius: 5,
+    maxOpacity: .8,
+    minOpacity: .8,
+    blur: 0,
+    gradient: {
+      // plotly js 'portland' setup
+      0: 'rgb(12, 51, 131)',
+      0.25: 'rgb(10,136,186)',
+      0.5: 'rgb(242,211,56)',
+      0.75: 'rgb(242,143,56)',
+      1: 'rgb(217,30,30)'
+    }
+  };
+
   ngOnInit() {
-    this.draw();
+    // this.draw();
+    this.mounted();
   }
 
-  draw() {
-    window.setTimeout(() => {
-      const defaultPlotlyConfiguration = {
-        displayModeBar: false
-      };
+  createScene() {
+    const canvas = <HTMLCanvasElement> document.getElementById('canvas');
+    this.engine = new BABYLON.Engine(canvas, true);
+    const scene = new BABYLON.Scene(this.engine);
+    console.log(canvas.width);
+    console.log(scene.clearColor);
+    scene.clearColor = new BABYLON.Color4(1, 1, 1, 1);
 
-      const layout = {
-        autosize: true,
-        scene: {
-          xaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.width]
-          },
-          yaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.height]
-          },
-        },
-        margin: { t: 0, b: 0, l: 0, r: 0}
-      };
+    const camera = new BABYLON.ArcRotateCamera('Camera', -Math.PI / 2, Math.PI * 0.37, this.width / 1.5, new BABYLON.Vector3(10, 0, 0), scene);
+    camera.position = new BABYLON.Vector3(this.width * 0.4, 35, -60);
+    camera.lowerRadiusLimit = 30;
+    camera.upperRadiusLimit = 100;
+    camera.lowerBetaLimit = 0.00 * (Math.PI / 180);
+    camera.upperBetaLimit = 90.00 * (Math.PI / 180);
+    camera.panningInertia = 0.5;
+    camera.inertia = 0.5;
+    camera.angularSensibilityX = 500;
+    camera.angularSensibilityY = 500;
+    camera.panningSensibility = 50;
+    camera.attachControl(canvas, true);
+    console.log(camera);
 
-      Plotly.newPlot('chart3D', {
-        data: this.getTraces(),
-        layout: layout,
-        config: defaultPlotlyConfiguration
-      });
-    }, 0);
-  }
+    const light = new BABYLON.HemisphericLight('hemiLight', new BABYLON.Vector3(-10, 10, 0), scene);
 
-  /**
-   * dataURI to blob
-   * @param dataURI
-   */
-  dataURLtoBlob(dataURI) {
-    let byteString;
-    if (dataURI.split(',')[0].indexOf('base64') >= 0) {
-      byteString = atob(dataURI.split(',')[1]);
-    } else {
-      byteString = unescape(dataURI.split(',')[1]);
+    // offset
+    const offsetX = this.width / -2;
+    const offsetY = -5;
+    const offsetZ = this.height / -2;
+
+    // floor
+    const floorData = [
+        new BABYLON.Vector3(this.width, 0, 0),
+        new BABYLON.Vector3(this.width, 0, this.height),
+        new BABYLON.Vector3(0, 0, this.height),
+        new BABYLON.Vector3(0, 0, 0)
+    ];
+    const floor = BABYLON.MeshBuilder.ExtrudePolygon('floor', {shape: floorData, depth: 0.3}, scene, Earcut);
+    floor.position.x = offsetX;
+    floor.position.y = offsetY;
+    floor.position.z = offsetZ;
+    const floorMat = new BABYLON.StandardMaterial('floorMaterial', scene);
+    floorMat.diffuseColor = new BABYLON.Color3(248 / 255, 248 / 255, 248 / 255);
+    floor.material = floorMat;
+
+    const obstacleMat = new BABYLON.StandardMaterial('obstacleMaterial', scene);
+    obstacleMat.diffuseColor = new BABYLON.Color3(121 / 255, 221 / 255, 242 / 255);
+    for (const item of this.obstacle) {
+      // const item = this.obstacle[id];
+      // const item = this.dragObject[id];
+      const depth = item.altitude / 2;
+      const obstacleData = [
+          new BABYLON.Vector3(-depth, 0, 0),
+          new BABYLON.Vector3(depth, 0, 0),
+          new BABYLON.Vector3(depth, 0, item.height),
+          new BABYLON.Vector3(-depth, 0, item.height)
+      ];
+      const obstacle = BABYLON.MeshBuilder.ExtrudePolygon('obstacle', {shape: obstacleData, depth: item.width}, scene, Earcut);
+      obstacle.position.x = item.x + offsetX;
+      obstacle.position.y = depth + offsetY;
+      obstacle.position.z = item.y + offsetZ;
+      obstacle.rotation.z = Math.PI / 2;
+      obstacle.material = obstacleMat;
+
+      this.obstacleGroup.push(obstacle);
     }
-    // separate out the mime component
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    // write the bytes of the string to a typed array
-    const ia = new Uint8Array(byteString.length);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
+
+    const defaultBsMat = new BABYLON.StandardMaterial('defaultBsMaterial', scene);
+    defaultBsMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
+    for (const id of this.defaultBs) {
+      // const bs = this.defaultBs[id];
+      const bs = this.dragObject[id];
+      const bsBox = BABYLON.BoxBuilder.CreateBox('defaultBs', {size: 1}, scene);
+      bsBox.position = new BABYLON.Vector3(bs.x + offsetX, 3 + offsetY, bs.y + offsetZ);
+      bsBox.material = defaultBsMat;
+
+      this.defaultBsGroup.push(bsBox);
     }
-    return new Blob([ia], {type: mimeString});
+
+    const candidateMat = new BABYLON.StandardMaterial('candidateMaterial', scene);
+    candidateMat.diffuseColor = new BABYLON.Color3(1, 0, 0);
+    const chosenMat = new BABYLON.StandardMaterial('chosenMaterial', scene);
+    chosenMat.diffuseColor = new BABYLON.Color3(0, 0, 1);
+    for (const candidate of this.candidate) {
+        // const candidate = this.candidate[id];
+        // const candidate = this.dragObject[id];
+        const candBox = BABYLON.BoxBuilder.CreateBox('candidate', {size: 1}, scene);
+        candBox.position = new BABYLON.Vector3(candidate.x + offsetX, candidate.z + offsetY, candidate.y + offsetZ);
+        if (null != this.result['gaResult']) {
+          for (const id2 of this.result['gaResult'].chosenCandidate) {
+            const chosen = this.result['gaResult'].chosenCandidate[id2];
+            if (candidate.x === chosen[0] && candidate.y === chosen[1] && candidate.z === chosen[2]) {
+              candBox.material = chosenMat;
+              break;
+            } else {
+              candBox.material = candidateMat;
+            }
+          }
+
+        } else {
+            candBox.material = candidateMat;
+        }
+
+        this.candidateGroup.push(candBox);
+    }
+
+    const ueMat = new BABYLON.StandardMaterial('ueMaterial', scene);
+    ueMat.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    for (const ue of this.ue) {
+      // const ue = this.ue[id];
+      // const ue = this.dragObject[id];
+      const uePoint = BABYLON.SphereBuilder.CreateSphere('ue', {diameter: 0.5}, scene);
+      uePoint.position = new BABYLON.Vector3(ue.x + offsetX, ue.z + offsetY, ue.y + offsetZ);
+      uePoint.material = ueMat;
+
+      this.ueGroup.push(uePoint);
+    }
+
+    for (let i = 0; i < this.zValue.length; i++) {
+        const z = this.zValue[i];
+        this.heatmapGroup[z] = [];
+
+        const sinrMapPlane = BABYLON.MeshBuilder.CreateGround('sinrmap_' + z, {width: this.width, height: this.height}, scene);
+        sinrMapPlane.position.y = z + offsetY;
+        if (null != this.result['gaResult']) {
+            const heatmapMat = new BABYLON.StandardMaterial('heatmapMaterial', scene);
+            const texture = BABYLON.RawTexture.CreateRGBTexture(this.genSinrMapData(i), this.width, this.height, scene, false, false);
+            heatmapMat.diffuseTexture = texture;
+            sinrMapPlane.material = heatmapMat;
+        }
+        sinrMapPlane.isVisible = false;
+        this.heatmapGroup[z].push(sinrMapPlane);
+
+        const pciMapPlane = BABYLON.MeshBuilder.CreateGround('pcimap_' + z, {width: this.width, height: this.height}, scene);
+        pciMapPlane.position.y = z + offsetY;
+        if (null != this.result['gaResult']) {
+            const heatmapMat = new BABYLON.StandardMaterial('heatmapMaterial', scene);
+            const texture = BABYLON.RawTexture.CreateRGBTexture(this.genPciMapData(i), this.width, this.height, scene, false, false);
+            heatmapMat.diffuseTexture = texture;
+            pciMapPlane.material = heatmapMat;
+        }
+        pciMapPlane.isVisible = false;
+        this.heatmapGroup[z].push(pciMapPlane);
+
+        const rsrpMapPlane = BABYLON.MeshBuilder.CreateGround('rsrpmap_' + z, {width: this.width, height: this.height}, scene);
+        rsrpMapPlane.position.y = z + offsetY;
+        if (null != this.result['gaResult']) {
+            const heatmapMat = new BABYLON.StandardMaterial('heatmapMaterial', scene);
+            const texture = BABYLON.RawTexture.CreateRGBTexture(this.genRsrpMapData(i), this.width, this.height, scene, false, false);
+            heatmapMat.diffuseTexture = texture;
+            rsrpMapPlane.material = heatmapMat;
+        }
+        rsrpMapPlane.isVisible = false;
+        this.heatmapGroup[z].push(rsrpMapPlane);
+    }
+    return scene;
   }
 
-  /** 3d物件 */
-  getTraces() {
+  switchObstacle() {
+    for (const id of this.obstacleGroup){
+      id.isVisible = !id.isVisible;
+    }
+  }
 
-    const traces = [];
-    const ary = [].concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
-    let obstacleCount = 1;
-    let defaultBSCount = 1;
-    let candidateCount = 1;
-    let ueCount = 1;
-    for (const item of ary) {
-      let text = '';
-      if (this.dragObject[item].type === 'obstacle') {
-        text = `障礙物 ${obstacleCount}`;
-      } else if (this.dragObject[item].type === 'defaultBS') {
-        text = `現有基站 ${defaultBSCount}`;
-      } else if (this.dragObject[item].type === 'candidate') {
-        text = `新增基站 ${candidateCount}`;
-      } else if (this.dragObject[item].type === 'UE') {
-        text = `新增ＵＥ ${ueCount}`;
-      }
-      if (this.dragObject[item].type === 'obstacle') {
-        const trace = {
-          x: [this.dragObject[item].x, Number(this.dragObject[item].x) + Number(this.dragObject[item].width)],
-          y: [this.dragObject[item].y, Number(this.dragObject[item].y) + Number(this.dragObject[item].height)],
-          z: [0, this.dragObject[item].altitude],
-          mode: 'lines',
-          line: {
-            color: this.dragObject[item].color,
-            opacity: 0.8,
-            width: 20
-          },
-          name: text,
-          text: text,
-          type: 'scatter3d',
-          hoverinfo: 'text+x+y+z'
-        };
-        traces.push(trace);
-        obstacleCount++;
-      } else {
-        const trace = {
-          x: [this.dragObject[item].x],
-          y: [this.dragObject[item].y],
-          z: [this.dragObject[item].z],
-          line: {
-            color: this.dragObject[item].color,
-            opacity: 0.8
-          },
-          name: text,
-          text: text,
-          type: 'scatter3d',
-          hoverinfo: 'text+x+y+z'
-        };
-        traces.push(trace);
-        if (this.dragObject[item].type === 'defaultBS') {
-          defaultBSCount++;
-        } else if (this.dragObject[item].type === 'candidate') {
-          candidateCount++;
-        } else if (this.dragObject[item].type === 'UE') {
-          ueCount++;
+  switchDefaultBs() {
+    for (const id of this.defaultBsGroup) {
+      id.isVisible = !id.isVisible;
+    }
+  }
+  switchCandidate() {
+    for (const id of this.candidateGroup){
+      id.isVisible = !id.isVisible;
+    }
+  }
+  switchUe() {
+    for (const id of this.ueGroup){
+      id.isVisible = !id.isVisible;
+    }
+  }
+
+  switchHeatMap() {
+    Object.keys(this.heatmapGroup).forEach(id => {
+      for (let i = 0; i < 3; i++) {
+        if (id === this.planeHeight && i === this.heatmapType) {
+          this.heatmapGroup[id][i].isVisible = true;
+        } else {
+          this.heatmapGroup[id][i].isVisible = false;
         }
       }
-    }
-
-    return traces;
+    });
   }
 
-  parseType(type) {
-    if (type === 'obstacle') {
-      return '障礙物';
-    } else if (type === 'defaultBS') {
-      return '現有基站';
-    } else if (type === 'newBS') {
-      return '新增基站';
-    } else if (type === 'UE') {
-      return '新增ＵＥ';
+  genPciMapData(zIndex) {
+    const blockCount = this.defaultBs.length + this.result['gaResult'].chosenCandidate.length;
+    const colorMap = new Uint8Array(this.width * this.height * 3);
+    for (let j = 0; j < this.height; j++) {
+        for (let i = 0; i < this.width; i++) {
+            const n = (j * this.width + i) * 3;
+            const value = this.result['gaResult'].connectionMapAll[i][j][zIndex];
+            const offset = (value + 1) / blockCount;
+            if (offset < 0.25) {
+                const mixRatio = offset / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[1][0] - 255) + 255;
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[1][1] - 255) + 255;
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[1][2] - 255) + 255;
+            } else if (offset < 0.5) {
+                const mixRatio = (offset - 0.25) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[2][0] - this.heatmapConfig[1][0]) + this.heatmapConfig[1][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[2][1] - this.heatmapConfig[1][1]) + this.heatmapConfig[1][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[2][2] - this.heatmapConfig[1][2]) + this.heatmapConfig[1][2];
+            } else if (offset < 0.75) {
+                const mixRatio = (offset - 0.5) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[3][0] - this.heatmapConfig[2][0]) + this.heatmapConfig[2][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[3][1] - this.heatmapConfig[2][1]) + this.heatmapConfig[2][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[3][2] - this.heatmapConfig[2][2]) + this.heatmapConfig[2][2];
+            } else {
+                const mixRatio = (offset - 0.75) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[4][0] - this.heatmapConfig[3][0]) + this.heatmapConfig[3][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[4][1] - this.heatmapConfig[3][1]) + this.heatmapConfig[3][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[4][2] - this.heatmapConfig[3][2]) + this.heatmapConfig[3][2];
+            }
+        }
     }
+    return colorMap;
+  }
+
+  genSinrMapData(zIndex) {
+    const colorMap = new Uint8Array(this.width * this.height * 3);
+    const totalDelta = this.result['sinrMax'] - this.result['sinrMin'];
+    for (let j = 0; j < this.height; j++) {
+        for (let i = 0; i < this.width; i++) {
+            const n = (j * this.width + i) * 3;
+            const value = this.result['gaResult'].sinrMap[i][j][zIndex];
+            const offset = (value - this.result['sinrMin']) / totalDelta;
+            if (offset < 0.25) {
+                const mixRatio = offset / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[1][0] - this.heatmapConfig[0][0]) + this.heatmapConfig[0][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[1][1] - this.heatmapConfig[0][1]) + this.heatmapConfig[0][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[1][2] - this.heatmapConfig[0][2]) + this.heatmapConfig[0][2];
+            } else if (offset < 0.5) {
+                const mixRatio = (offset - 0.25) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[2][0] - this.heatmapConfig[1][0]) + this.heatmapConfig[1][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[2][1] - this.heatmapConfig[1][1]) + this.heatmapConfig[1][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[2][2] - this.heatmapConfig[1][2]) + this.heatmapConfig[1][2];
+            } else if (offset < 0.75) {
+                const mixRatio = (offset - 0.5) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[3][0] - this.heatmapConfig[2][0]) + this.heatmapConfig[2][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[3][1] - this.heatmapConfig[2][1]) + this.heatmapConfig[2][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[3][2] - this.heatmapConfig[2][2]) + this.heatmapConfig[2][2];
+            } else {
+                const mixRatio = (offset - 0.75) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[4][0] - this.heatmapConfig[3][0]) + this.heatmapConfig[3][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[4][1] - this.heatmapConfig[3][1]) + this.heatmapConfig[3][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[4][2] - this.heatmapConfig[3][2]) + this.heatmapConfig[3][2];
+            }
+        }
+    }
+    return colorMap;
+  }
+
+
+  genRsrpMapData(zIndex) {
+    const colorMap = new Uint8Array(this.width * this.height * 3);
+    const totalDelta = this.result['rsrpMax'] - this.result['rsrpMin'];
+    for (let j = 0; j < this.height; j++) {
+        for (let i = 0; i < this.width; i++) {
+            const n = (j * this.width + i) * 3;
+            const value = this.result['gaResult'].rsrpMap[i][j][zIndex];
+            const offset = (value - this.result['rsrpMin']) / totalDelta;
+            if (offset < 0.25) {
+                const mixRatio = offset / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[1][0] - this.heatmapConfig[0][0]) + this.heatmapConfig[0][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[1][1] - this.heatmapConfig[0][1]) + this.heatmapConfig[0][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[1][2] - this.heatmapConfig[0][2]) + this.heatmapConfig[0][2];
+            } else if (offset < 0.5) {
+                const mixRatio = (offset - 0.25) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[2][0] - this.heatmapConfig[1][0]) + this.heatmapConfig[1][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[2][1] - this.heatmapConfig[1][1]) + this.heatmapConfig[1][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[2][2] - this.heatmapConfig[1][2]) + this.heatmapConfig[1][2];
+            } else if (offset < 0.75) {
+                const mixRatio = (offset - 0.5) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[3][0] - this.heatmapConfig[2][0]) + this.heatmapConfig[2][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[3][1] - this.heatmapConfig[2][1]) + this.heatmapConfig[2][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[3][2] - this.heatmapConfig[2][2]) + this.heatmapConfig[2][2];
+            } else {
+                const mixRatio = (offset - 0.75) / 0.25;
+                colorMap[n] = mixRatio * (this.heatmapConfig[4][0] - this.heatmapConfig[3][0]) + this.heatmapConfig[3][0];
+                colorMap[n + 1] = mixRatio * (this.heatmapConfig[4][1] - this.heatmapConfig[3][1]) + this.heatmapConfig[3][1];
+                colorMap[n + 2] = mixRatio * (this.heatmapConfig[4][2] - this.heatmapConfig[3][2]) + this.heatmapConfig[3][2];
+            }
+        }
+    }
+    return colorMap;
+  }
+
+  mounted() {
+    console.log('mounted');
+    const vm = this;
+    this.scene = this.createScene();
+    console.log(this.scene);
+    this.engine.runRenderLoop(() => {
+        vm.scene.render();
+    });
+    window.addEventListener('resize', () => {
+        vm.engine.resize();
+    });
   }
 
   close() {

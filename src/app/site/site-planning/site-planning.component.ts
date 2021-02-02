@@ -250,6 +250,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
+    this.view3dDialogConfig.hasBackdrop = false;
     this.msgDialogConfig.autoFocus = false;
 
     for (let i = 0; i < 9; i++) {
@@ -742,7 +743,10 @@ console.log(this.spanStyle[id])
 
   /** drag */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
-
+    if (this.svgId !== this.realId) {
+      this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
+    }
     this.target = target;
     this.frame.set('left', `${left}px`);
     this.frame.set('top', `${top}px`);
@@ -782,6 +786,7 @@ console.log(this.spanStyle[id])
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     if (this.svgId !== this.realId) {
       this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
     }
     const deg = parseFloat(this.frame.get('transform', 'rotate')) + beforeDelta;
     this.frame.set('transform', 'rotate', `${deg}deg`);
@@ -798,6 +803,7 @@ console.log(this.spanStyle[id])
     if (this.svgId !== this.realId) {
       // 物件太接近，id有時會錯亂，還原id
       this.svgId = _.cloneDeep(this.realId);
+      target = document.querySelector(`#${this.svgId}`);
     }
     if (width < 5) {
       width = 5;
@@ -1242,23 +1248,32 @@ console.log(this.spanStyle[id])
   }
 
   view3D() {
+    const defaultBS = [];
+    for (const item of this.defaultBSList) {
+      defaultBS.push(this.dragObject[item]);
+    }
+    const candidate = [];
+    for (const item of this.candidateList) {
+      candidate.push(this.dragObject[item]);
+    }
+    const obstacle = [];
+    for (const item of this.obstacleList) {
+      obstacle.push(this.dragObject[item]);
+    }
+    const ue = [];
+    for (const item of this.ueList) {
+      ue.push(this.dragObject[item]);
+    }
+
     this.view3dDialogConfig.data = {
       calculateForm: this.calculateForm,
-      obstacleList: this.obstacleList,
-      defaultBSList: this.defaultBSList,
-      candidateList: this.candidateList,
-      ueList: this.ueList,
-      dragObject: this.dragObject
+      obstacleList: obstacle,
+      defaultBSList: defaultBS,
+      candidateList: candidate,
+      ueList: ue,
+      zValue: this.zValues
     };
     this.matDialog.open(View3dComponent, this.view3dDialogConfig);
-    // sessionStorage.setItem('calculateForm', JSON.stringify(this.calculateForm));
-    // sessionStorage.setItem('obstacleList', JSON.stringify(this.obstacleList));
-    // sessionStorage.setItem('defaultBSList', JSON.stringify(this.defaultBSList));
-    // sessionStorage.setItem('candidateList', JSON.stringify(this.candidateList));
-    // sessionStorage.setItem('ueList', JSON.stringify(this.ueList));
-    // sessionStorage.setItem('dragObject', JSON.stringify(this.dragObject));
-
-    // this.router.navigate(['/site/view3d']);
   }
 
   /** export xlsx */
@@ -1422,7 +1437,13 @@ console.log(this.spanStyle[id])
     if (typeof mapData[1][keyMap['protocol']] === 'undefined') {
       this.calculateForm.objectiveIndex = '2';
     } else {
-      this.calculateForm.objectiveIndex = mapData[1][keyMap['protocol']];
+      if (mapData[1][keyMap['protocol']] === '0' || mapData[1][keyMap['protocol']] === '4G') {
+        this.calculateForm.objectiveIndex = '0';
+      } else if (mapData[1][keyMap['protocol']] === '1' || mapData[1][keyMap['protocol']] === '5G') {
+        this.calculateForm.objectiveIndex = '1';
+      } else if (mapData[1][keyMap['protocol']] === '2' || mapData[1][keyMap['protocol']] === 'wifi') {
+        this.calculateForm.objectiveIndex = '2';
+      }
     }
 
     this.initData(true);

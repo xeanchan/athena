@@ -174,5 +174,7 @@ button {
 .btn_area {
     display: block;
     width: 100%;
-    text-align: center;
+    text-align: center;}
+.cdk-overlay-pane {
+    overflow: auto;
 }

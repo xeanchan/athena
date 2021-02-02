@@ -87,7 +87,7 @@ export class SignalStrengthComponent implements OnInit {
         images: images
       };
 
-      const zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+      const zValues = JSON.parse(this.calculateForm.zValue);
 
       let id;
       if (isPDF) {
@@ -96,7 +96,7 @@ export class SignalStrengthComponent implements OnInit {
         id = document.querySelectorAll(`.signal_strength`)[0];
       }
 
-      const zLen = this.calculateForm.zValue.split(',').length;
+      const zLen = zValues.length;
       const zData = [];
       for (let i = 0; i < zLen; i++) {
         zData.push([]);
@@ -182,13 +182,15 @@ export class SignalStrengthComponent implements OnInit {
 
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
-        const list = this.calculateForm.ueCoordinate
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.ueCoordinate.split('|');
+
+        // const list = this.calculateForm.ueCoordinate
+        // .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
         const cx = [];
         const cy = [];
         const text = [];
         for (const item of list) {
-          const oData = item.split(',');
+          const oData = JSON.parse(item);
           if (oData[2] !== zValue) {
             continue;
           }
@@ -236,12 +238,11 @@ export class SignalStrengthComponent implements OnInit {
 
       // 障礙物
       if (this.calculateForm.obstacleInfo !== '') {
-        const obstacle = this.calculateForm.obstacleInfo
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const obstacle = this.calculateForm.obstacleInfo.split('|');
         for (const item of obstacle) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
           let oColor = oData[7];
           let text = `障礙物資訊
           X: ${xdata}
@@ -280,16 +281,15 @@ export class SignalStrengthComponent implements OnInit {
 
       // 現有基站
       if (this.calculateForm.defaultBs !== '') {
-        const list = this.calculateForm.defaultBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.defaultBs.split('|');
         const cx = [];
         const cy = [];
         const ctext = [];
         for (const item of list) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
-          const zdata = Number(oData[2]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
+          const zdata = oData[2];
           cx.push(xdata);
           cy.push(ydata);
 
@@ -310,16 +310,15 @@ export class SignalStrengthComponent implements OnInit {
 
       // 新增基站
       if (this.calculateForm.candidateBs !== '') {
-        const list = this.calculateForm.candidateBs
-        .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+        const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
         const ctext = [];
         for (const item of list) {
-          const oData = item.split(',');
-          const xdata = Number(oData[0]);
-          const ydata = Number(oData[1]);
-          const zdata = Number(oData[2]);
+          const oData = JSON.parse(item);
+          const xdata = oData[0];
+          const ydata = oData[1];
+          const zdata = oData[2];
           cx.push(xdata);
           cy.push(ydata);
 

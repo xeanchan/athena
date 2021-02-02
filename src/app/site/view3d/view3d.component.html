@@ -1,3 +1,27 @@
 <h1>3D顯示</h1>
 <a href="javascript:void(0)" class="close" (click)="close()">&times;</a>
 <div id="chart3D"></div>
+
+<mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >原始基站</mat-checkbox>
+<mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">待選基站</mat-checkbox>
+<mat-checkbox [(ngModel)]="showObstacle" (change)="switchObstacle()" class="ml-2">障礙物</mat-checkbox>
+<mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">無線終端</mat-checkbox>
+
+<div>
+  <label>Heatmap類型</label>
+  <mat-radio-group [(ngModel)]="heatmapType" (change)="switchHeatMap()" aria-label="Select an option">
+    <mat-radio-button value="0" class="ml-2">{{ 'sinrMap' | translate }}</mat-radio-button>
+    <mat-radio-button value="1" class="ml-2">{{ 'connectionMap' | translate }}</mat-radio-button>
+    <mat-radio-button value="2" class="ml-2">{{ 'rsrpMap' | translate }}</mat-radio-button>
+  </mat-radio-group>
+</div>
+
+<div style="height: 50px;">
+  <label for="zval">切面高度：</label>
+  <select id="zval" [(ngModel)]="planeHeight" (change)="switchHeatMap()">
+    <option *ngFor="let z of zValue" [value]="z">{{z}}</option>
+  </select>
+</div>
+
+
+<canvas id="canvas" style="height: 100%; width: 100%"></canvas>
