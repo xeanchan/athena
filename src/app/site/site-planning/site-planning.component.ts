@@ -1836,8 +1836,8 @@ console.log(this.spanStyle[id])
         x: item[0],
         y: item[1],
         z: item[2],
-        width: 30,
-        height: 30,
+        width: 28,
+        height: 22,
         altitude: 50,
         rotate: 0,
         title: this.svgMap['candidate'].title,
@@ -1849,13 +1849,13 @@ console.log(this.spanStyle[id])
       this.spanStyle[id] = {
         left: `${this.pixelXLinear(item[0])}px`,
         top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
-        width: `30px`,
-        height: `30px`
+        width: `28px`,
+        height: `22px`
       };
       this.svgStyle[id] = {
         display: 'inherit',
-        width: 30,
-        height: 30
+        width: 28,
+        height: 22
       };
       this.pathStyle[id] = {
         fill: 'green'

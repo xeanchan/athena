@@ -92,16 +92,18 @@ p.subitem.active + ol {
     cursor: pointer;
 }
 .matBadge {
-    width: 2.2em;
-    height: 2.2em;
+    max-width: 3em;
+    min-width: 2.3em;
+    height: 2.3em;
     display: inline-block;
-    line-height: 2.2em;
-    margin-left: .3em;
+    line-height: 2.3em;
+    margin-left: 0.3em;
+    font-size: .5em;
+    font-weight: normal;
     color: #fff;
     background-color: #3b71b5;
-    font-size: .5em;
     text-align: center;
-    border-radius: 5em;
+    border-radius: 9em;
 }
 :host ::ng-deep .mat-expansion-panel-body ul > li {
     padding: 0 0 1em;
@@ -327,7 +329,7 @@ ul {
     padding: 1em 0 1em 2em;
 }
 .mat-button-toggle-appearance-standard {
-    background: transparent!important;
+    padding: 1em 0;
 }
 .s_ue {
     transform: scale(.5);

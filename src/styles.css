@@ -171,3 +171,8 @@ button {
     width: initial!important;
     
 }
+.btn_area {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
