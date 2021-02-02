@@ -1,14 +1,18 @@
-<h1>3D顯示</h1>
-<a href="javascript:void(0)" class="close" (click)="close()">&times;</a>
+<h5>3D顯示<a href="javascript:void(0)" class="close" (click)="close()">&times;</a></h5>
+
+
 <div id="chart3D"></div>
 
-<mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >原始基站</mat-checkbox>
-<mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">待選基站</mat-checkbox>
-<mat-checkbox [(ngModel)]="showObstacle" (change)="switchObstacle()" class="ml-2">障礙物</mat-checkbox>
-<mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">無線終端</mat-checkbox>
+<div>
+  <label>顯示項目：</label>
+  <mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >原始基站</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">待選基站</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showObstacle" (change)="switchObstacle()" class="ml-2">障礙物</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">無線終端</mat-checkbox>
+</div>
 
 <div>
-  <label>Heatmap類型</label>
+  <label>Heat Map 類型：</label>
   <mat-radio-group [(ngModel)]="heatmapType" (change)="switchHeatMap()" aria-label="Select an option">
     <mat-radio-button value="0" class="ml-2">{{ 'sinrMap' | translate }}</mat-radio-button>
     <mat-radio-button value="1" class="ml-2">{{ 'connectionMap' | translate }}</mat-radio-button>
@@ -16,7 +20,7 @@
   </mat-radio-group>
 </div>
 
-<div style="height: 50px;">
+<div style="height: 40px;">
   <label for="zval">切面高度：</label>
   <select id="zval" [(ngModel)]="planeHeight" (change)="switchHeatMap()">
     <option *ngFor="let z of zValue" [value]="z">{{z}}</option>

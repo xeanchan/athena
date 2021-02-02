@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
 
 @NgModule({
   imports: [
@@ -17,7 +19,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatCheckboxModule,
     MatRadioModule,
     MatSelectModule,
-    TranslateModule
+    TranslateModule,
+    MatButtonToggleModule
   ],
   declarations: [View3dComponent],
   exports: [View3dComponent]
