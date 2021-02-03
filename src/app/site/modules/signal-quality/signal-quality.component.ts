@@ -273,7 +273,7 @@ export class SignalQualityComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
-        opacity: 0.7,
+        // opacity: 0.7,
         hoverinfo: 'x+y+z',
         showscale: false
       };

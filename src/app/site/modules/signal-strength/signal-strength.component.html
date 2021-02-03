@@ -6,18 +6,19 @@
     </div>
     <!-- 新增基站 -->
     <span *ngFor="let item of candidateList" [ngStyle]="item.style" style="z-index: 99999;">
-      <svg class="drag_obj" width="30" height="30" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+      <svg class="drag_obj" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
         <g>
-          <rect fill="none" height="32" width="32" y="-1" x="-1"/>
+          <rect fill="none" id="canvas_background" height="3" width="25" y="-1" x="-1"/>
         </g>
         <g>
           <g>
-            <rect  x="0" width="24" height="24" fill="none"/>
+            <rect  x="0" width="24" height="15" fill="none"/>
           </g>
           <g>
             <g stroke="null">
               <g stroke="null">
-                <path [attr.fill]="item.color" stroke="null" d="m26.60334,2.83059l-23.16898,0c-1.60735,0 -2.88164,1.28877 -2.88164,2.89612l-0.01448,17.37673c0,1.60735 1.28877,2.89612 2.89612,2.89612l23.16898,0c1.60735,0 2.89612,-1.28877 2.89612,-2.89612l0,-17.37673c0,-1.60735 -1.28877,-2.89612 -2.89612,-2.89612zm-16.6527,15.92867l-1.73767,0l-3.69256,-5.06821l0,5.06821l-1.81008,0l0,-8.68837l1.81008,0l3.62015,5.06821l0,-5.06821l1.81008,0l0,8.68837zm7.2403,-6.86381l-3.62015,0l0,1.62183l3.62015,0l0,1.82456l-3.62015,0l0,1.60735l3.62015,0l0,1.81008l-5.79224,0l0,-8.68837l5.79224,0l0,1.82456zm10.13643,5.41575c0,0.79643 -0.65163,1.44806 -1.44806,1.44806l-5.79224,0c-0.79643,0 -1.44806,-0.65163 -1.44806,-1.44806l0,-7.2403l1.81008,0l0,6.53075l1.63631,0l0,-5.09717l1.81008,0l0,5.08269l1.62183,0l0,-6.51627l1.81008,0l0,7.2403z"/>
+                <rect stroke="#000" rx="3" id="svg_3" height="17.79447" width="27.84664" y="0.08384" x="0.08216" stroke-opacity="null" stroke-width="0" fill="#000"/>
+                <text stroke="#fff" transform="matrix(0.8532502651214598,0,0,0.8532502651214598,0.7290017828345299,0.38280437514185905) " font-style="normal" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="12" id="svg_7" y="14.00717" x="3.15093" stroke-opacity="null" stroke-width="0" fill="#fff">New</text>                  
               </g>
             </g>
           </g>

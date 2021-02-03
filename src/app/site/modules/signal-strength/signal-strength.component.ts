@@ -24,6 +24,7 @@ export class SignalStrengthComponent implements OnInit {
   ueList = [];
   style = {};
   colorBars = [];
+  imgSRC;
 
   ngOnInit(): void {
   }
@@ -128,11 +129,9 @@ export class SignalStrengthComponent implements OnInit {
         zMax.push(Plotly.d3.max(item));
         zMin.push(Plotly.d3.min(item));
       }
-
+console.log(zMin)
       // 套件的colorbar在pdf會空白，另外產生
       this.colorBars.length = 0;
-      const max = zMax[zValues.indexOf(Number(zValue))];
-      const min = zMin[zValues.indexOf(Number(zValue))];
       this.colorBars.push(
         {
           val: -44,
@@ -275,7 +274,7 @@ export class SignalStrengthComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
-        opacity: 0.7,
+        // opacity: 0.7,
         hoverinfo: 'x+y+z',
         showscale: false
       };

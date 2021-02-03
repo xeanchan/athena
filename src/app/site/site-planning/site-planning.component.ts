@@ -198,6 +198,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   currentLeft;
   currentTop;
   ognSpanStyle;
+  /** 1: 以整體場域為主進行規劃, 2: 以行動終端為主進行規劃 */
+  planningIndex = '1';
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -501,15 +503,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.live = true;
     }, 0);
 
+    let color;
     if (id === 'rect') {
+      color = '#73805c';
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.rectStyle[this.svgId] = {
         width: 30,
         height: 30,
-        fill: '#73805c'
+        fill: color
       };
+
     } else if (id === 'ellipse') {
+      color = '#73805c';
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.ellipseStyle[this.svgId] = {
@@ -517,9 +523,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         rx: 15,
         cx: 15,
         cy: 15,
-        fill: '#73805c'
+        fill: color
       };
     } else if (id === 'polygon') {
+      color = '#73805c';
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.polygonStyle[this.svgId] = {
@@ -527,18 +534,21 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         fill: '#73805c'
       };
     } else if (id === 'defaultBS') {
+      color = '#2958be';
       this.svgId = `${id}_${this.defaultBSList.length}`;
       this.defaultBSList.push(this.svgId);
       this.pathStyle[this.svgId] = {
         fill: '#2958be'
       };
     } else if (id === 'candidate') {
+      color = '#d00a67';
       this.svgId = `${id}_${this.candidateList.length}`;
       this.candidateList.push(this.svgId);
       this.pathStyle[this.svgId] = {
         fill: '#d00a67'
       };
     } else if (id === 'UE') {
+      color = '#0c9ccc';
       this.svgId = `${id}_${this.ueList.length}`;
       this.ueList.push(this.svgId);
       this.pathStyle[this.svgId] = {
@@ -567,7 +577,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       rotate: 0,
       title: this.svgMap[id].title,
       type: this.svgMap[id].type,
-      color: 'green',
+      color: color,
       material: '0',
       element: id
     };
@@ -1041,6 +1051,12 @@ console.log(this.spanStyle[id])
       this.calculateForm.isUeTpByDistance = false;
     }
     this.calculateForm.useUeCoordinate = 1;
+    // 規劃目標預設值
+    this.calculateForm.sinrRatio = this.calculateForm.isAverageSinr ? 5 : null;
+    this.calculateForm.throughputRatio = this.calculateForm.isCoverage ? 5 : null;
+    this.calculateForm.ueAvgSinrRatio = this.calculateForm.isUeAvgSinr ? 16 : null;
+    this.calculateForm.ueCoverageRatio = this.calculateForm.isUeAvgThroughput ? 0.95 : null;
+    this.calculateForm.ueAvgThroughputRatio = this.calculateForm.isUeCoverage ? 100 : null;
 
     this.calculateForm.sessionid = this.authService.userToken;
     const zValue = this.zValues.filter(
@@ -1635,7 +1651,7 @@ console.log(this.spanStyle[id])
         if (!materialReg.test(material)) {
           material = '0';
         }
-        const color = (typeof obstacleData[i][7] === 'undefined' ? 'green' : obstacleData[i][7]);
+        const color = (typeof obstacleData[i][7] === 'undefined' ? '#73805c' : obstacleData[i][7]);
         this.dragObject[id] = {
           x: obstacleData[i][0],
           y: obstacleData[i][1],

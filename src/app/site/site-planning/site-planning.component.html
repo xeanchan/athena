@@ -154,9 +154,9 @@
 
           <svg *ngIf="dragObject[item].element === 'polygon'" [ngStyle]="svgStyle[item]" xmlns="http://www.w3.org/2000/svg">
             <g>
-            <rect x="-1" y="-1" width="32" height="32" id="canvas_background" fill="none"/>
+            <rect x="-1" y="-1" width="32" height="32" fill="none"/>
             <g id="canvasGrid" display="none">
-              <rect width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"/>
+              <rect width="100%" height="100%" x="0" y="0" stroke-width="0" fill="none"/>
             </g>
             </g>
             <g>
@@ -284,7 +284,7 @@
           <mat-panel-title>規劃目標</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="panel_content">
-          <mat-radio-group>
+          <mat-radio-group [(ngModel)]="planningIndex">
             <mat-radio-button class="block" value="1"
             matTooltip="將場域內所有位置納入演算法計算，適用於以下情境:
             1.全新場域規劃
@@ -298,21 +298,26 @@
             >以行動終端為主進行規劃</mat-radio-button>
           </mat-radio-group>
           <div class="subTarget">
-            <mat-checkbox
-            matTooltip="訊號品質提升，有助於提升平均傳輸速度"
-            >強化整體場域內整體訊號品質</mat-checkbox>
-            <mat-checkbox
-            matTooltip="提升訊號覆蓋率，可以避免場域邊緣或遮蔽物附近的位置沒有訊號可供連網，但有可能造成AP間訊號干擾上升"
-            >強化整體場域內訊號覆蓋</mat-checkbox>
-            <mat-checkbox
-            matTooltip="根據行動終端分布的位置，找出讓這些使用者訊號品質最好的方案，對於這些座標的優化效果會高於以場域為主進行規劃"
-            >強化行動終端整體訊號品質</mat-checkbox>
-            <mat-checkbox
-            matTooltip="根據行動終端分布的位置，提升這些位置的傳輸速度，但可能犧牲其他位置或場域邊緣的訊號品質"
-            >強化行動終端傳輸速率上限</mat-checkbox>
-            <mat-checkbox
-            matTooltip="根據行動終端分布的位置提升訊號覆蓋率，可避免清單中的裝置沒有訊號連網，效果會高於以場域為主進行規劃"
-            >強化行動終端有訊號覆蓋的比率</mat-checkbox>
+            <ng-container *ngIf="planningIndex === '1'">
+              <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr" matTooltip="訊號品質提升，有助於提升平均傳輸速度">
+                強化整體場域內整體訊號品質
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="calculateForm.isCoverage" matTooltip="提升訊號覆蓋率，可以避免場域邊緣或遮蔽物附近的位置沒有訊號可供連網，但有可能造成AP間訊號干擾上升">
+                強化整體場域內訊號覆蓋
+              </mat-checkbox>
+            </ng-container>
+
+            <ng-container *ngIf="planningIndex === '2'">
+              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr" matTooltip="根據行動終端分布的位置，找出讓這些使用者訊號品質最好的方案，對於這些座標的優化效果會高於以場域為主進行規劃">
+                強化行動終端整體訊號品質
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput" matTooltip="根據行動終端分布的位置，提升這些位置的傳輸速度，但可能犧牲其他位置或場域邊緣的訊號品質">
+                強化行動終端傳輸速率上限
+              </mat-checkbox>
+              <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance" matTooltip="根據行動終端分布的位置提升訊號覆蓋率，可避免清單中的裝置沒有訊號連網，效果會高於以場域為主進行規劃">
+                強化行動終端有訊號覆蓋的比率
+              </mat-checkbox>
+            </ng-container>
           </div>
         </div>
         <!--

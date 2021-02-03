@@ -162,44 +162,52 @@ export class SignalCoverComponent implements OnInit {
       //   });
       // }
 
-      // 新增基站
+      // 圖區右邊建議基站
       if (this.calculateForm.candidateBs !== '') {
         const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
         let k = 1;
-        for (const item of list) {
-          const oData = JSON.parse(item);
-          cx.push(oData[0]);
-          cy.push(oData[1]);
 
-          const z = zData[zValues.indexOf(Number(zValue))][Math.ceil(oData[1])][Math.ceil(oData[0])];
-          const max = zMax[zValues.indexOf(Number(zValue))];
+        const chosenCandidate = [];
+        for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
+          chosenCandidate.push(this.result['chosenCandidate'][i].toString());
+        }
 
-          let color;
-          if (z < max * 0.25) {
-            color = 'rgb(12,51,131)';
-          } else if (z >= max * 0.25 && z < max * 0.5) {
-            color = 'rgb(10,136,186)';
-          } else if (z >= max * 0.5 && z < max * 0.75) {
-            color = 'rgb(242,211,56)';
-          } else if (z >= max * 0.75 && z < max) {
-            color = 'rgb(242,143,56)';
-          } else if (z === max) {
-            color = 'rgb(217,30,30)';
+        for (let i = 0; i < list.length; i++) {
+          const oData = JSON.parse(list[i]);
+          if (chosenCandidate.includes(oData.toString())) {
+            cx.push(oData[0]);
+            cy.push(oData[1]);
+
+            const z = zData[zValues.indexOf(Number(zValue))][Math.ceil(oData[1])][Math.ceil(oData[0])];
+            const max = zMax[zValues.indexOf(Number(zValue))];
+
+            let color;
+            if (z < max * 0.25) {
+              color = 'rgb(12,51,131)';
+            } else if (z >= max * 0.25 && z < max * 0.5) {
+              color = 'rgb(10,136,186)';
+            } else if (z >= max * 0.5 && z < max * 0.75) {
+              color = 'rgb(242,211,56)';
+            } else if (z >= max * 0.75 && z < max) {
+              color = 'rgb(242,143,56)';
+            } else if (z === max) {
+              color = 'rgb(217,30,30)';
+            }
+
+            traces.push({
+              x: [0],
+              y: [0],
+              name: `AP ${k}`,
+              marker: {
+                color: color,
+              },
+              type: 'bar',
+              hoverinfo: 'none',
+              showlegend: true
+            });
           }
-
-          traces.push({
-            x: [0],
-            y: [0],
-            name: `AP ${k}`,
-            marker: {
-              color: color,
-            },
-            type: 'bar',
-            hoverinfo: 'none',
-            showlegend: true
-          });
           k++;
         }
       }
@@ -246,7 +254,7 @@ export class SignalCoverComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
-        opacity: 0.7,
+        // opacity: 0.7,
         hoverinfo: 'x+y+z',
         showscale: false
       };
@@ -288,8 +296,8 @@ export class SignalCoverComponent implements OnInit {
         const cx = [];
         const cy = [];
         const ctext = [];
-        for (const item of list) {
-          const oData = JSON.parse(item);
+        for (let i = 0; i < list.length; i++) {
+          const oData = JSON.parse(list[i]);
           const xdata = oData[0];
           const ydata = oData[1];
           const zdata = oData[2];
@@ -304,7 +312,7 @@ export class SignalCoverComponent implements OnInit {
           this.candidateList.push({
             x: xdata,
             y: ydata,
-            color: '#f7176a',
+            color: '#000',
             hover: text
           });
 
@@ -458,6 +466,16 @@ export class SignalCoverComponent implements OnInit {
 
       });
     };
+  }
+
+  /** 亂數顏色 */
+  getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
 }
