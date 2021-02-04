@@ -5,10 +5,7 @@
     padding: 0;
     width: 100%;
 }
-.box label {
-    font-weight: bold;
-    margin: 0 1em 0 0;
-}
+
 .box .map {
     display: block;
     width: 100%;
@@ -36,7 +33,6 @@
 .leftArea table th,
 .leftArea table td {
     border-right:1px solid #5aa5e2;
-    line-height: 1.5;
 }
 
 .leftArea table td {
@@ -111,7 +107,7 @@
     font-size: .9em;
     }
 .mapType mat-button-toggle-group {
-    margin: .5em 0 0 0;
+    margin: 0.5em 0 0 0.5em;
 }
 .ds {
     display: block;

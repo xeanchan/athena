@@ -78,6 +78,7 @@ h3 button {
 }
 .leftArea table .panel label {
     color: #fff !important;
+    margin: 0;
 }
 .box table {
     border: 1.5px solid #0f4e82!important;
