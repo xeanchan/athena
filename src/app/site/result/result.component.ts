@@ -19,6 +19,7 @@ import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { View3dComponent } from '../view3d/view3d.component';
+import { FormService } from '../../service/form.service';
 
 declare var Plotly: any;
 
@@ -37,6 +38,7 @@ export class ResultComponent implements OnInit {
     public spinner: NgxSpinnerService,
     private pdfService: PdfService,
     private translateService: TranslateService,
+    private formService: FormService,
     private http: HttpClient) { }
 
   taskId;
@@ -58,6 +60,8 @@ export class ResultComponent implements OnInit {
   obstacleList = [];
   ueList = [];
   dragObject = {};
+  /** 歷史紀錄 */
+  isHst = false;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -77,6 +81,9 @@ export class ResultComponent implements OnInit {
     this.msgDialogConfig.autoFocus = false;
     this.route.queryParams.subscribe(params => {
       this.taskId = params['taskId'];
+      if (params['isHst'] === 'true') {
+        this.isHst = true;
+      }
       this.getResult();
     });
     // this.getResult();
@@ -84,12 +91,25 @@ export class ResultComponent implements OnInit {
   }
 
   getResult() {
-    const url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
+    let url;
+    if (this.isHst) {
+      // 歷史紀錄
+      url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
+      url += `${this.authService.userToken}/${this.taskId}`;
+    } else {
+      url = `${this.authService.API_URL}/completeCalcResult/${this.taskId}/${this.authService.userToken}`;
+    }
     this.http.get(url).subscribe(
       res => {
         // console.log(res);
-        this.calculateForm = res['input'];
-        this.result = res['output'];
+        if (this.isHst) {
+          // 大小寫不同，各自塞回form
+          this.result = this.formService.setHstOutputToResultOutput(res['output']);
+          this.calculateForm = this.formService.setHstToForm(res);
+        } else {
+          this.calculateForm = res['input'];
+          this.result = res['output'];
+        }
         console.log(this.result);
 
         if (this.calculateForm.defaultBs !== '') {
@@ -153,7 +173,7 @@ export class ResultComponent implements OnInit {
         this.siteInfo.calculateForm = this.calculateForm;
         this.siteInfo.result = this.result;
         window.setTimeout(() => {
-          this.siteInfo.inputBsListCount = this.result['inputBsList'].length;
+          this.siteInfo.inputBsListCount = candidateBs.length;
           this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
         }, 0);
       }
@@ -214,11 +234,11 @@ export class ResultComponent implements OnInit {
 
   /** 回上頁 */
   back() {
-    this.router.navigate(['/site/site-planning'], { queryParams: { taskId: this.taskId }});
+    this.save(true);
   }
 
   /** 儲存 */
-  save() {
+  save(isBack) {
     const form = {
       id: this.authService.userId,
       taskid: this.taskId,
@@ -227,11 +247,16 @@ export class ResultComponent implements OnInit {
     const url = `${this.authService.API_URL}/storeResult`;
     this.http.post(url, JSON.stringify(form)).subscribe(
       res => {
-        this.msgDialogConfig.data = {
-          type: 'success',
-          infoMessage: this.translateService.instant('save.success')
-        };
-        this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+        if (isBack) {
+          // 回上一頁
+          this.router.navigate(['/site/site-planning'], { queryParams: { taskId: this.taskId, isHst: true }});
+        } else {
+          this.msgDialogConfig.data = {
+            type: 'success',
+            infoMessage: this.translateService.instant('save.success')
+          };
+          this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+        }
       },
       err => {
         this.msgDialogConfig.data = {

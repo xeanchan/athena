@@ -1953,7 +1953,7 @@ console.log(this.spanStyle[id])
   result() {
     // location.replace(`#/site/result?taskId=${this.taskid}`);
     // location.reload();
-    this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
+    this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
   }
 
   /** 歷史資料塞回form */

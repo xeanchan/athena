@@ -4,8 +4,9 @@
     <div class="color_bar">
       <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>
     </div>
+    
     <!-- 新增基站 -->
-    <span *ngFor="let item of candidateList" [ngStyle]="item.style" style="z-index: 99999;">
+    <span *ngFor="let item of candidateList" [ngStyle]="item.style" #tooltip="matTooltip" matTooltip="{{ item.text }}" style="z-index: 99999;">
       <svg class="drag_obj" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
         <g>
           <rect fill="none" id="canvas_background" height="3" width="25" y="-1" x="-1"/>
@@ -62,7 +63,9 @@
           </g>
         </svg>
       </span>
-      
     </div>
+    <!-- <div class="quality_img" [ngStyle]="style" style="opacity: 0.7;">
+      <span *ngFor="let item of heatmap" [ngStyle]="item" #tooltip="matTooltip" matTooltip="{{ item.hoverInfo }}" ></span>
+    </div> -->
   </div>
 </div>

@@ -129,7 +129,7 @@ export class SignalStrengthComponent implements OnInit {
         zMax.push(Plotly.d3.max(item));
         zMin.push(Plotly.d3.min(item));
       }
-console.log(zMin)
+
       // 套件的colorbar在pdf會空白，另外產生
       this.colorBars.length = 0;
       this.colorBars.push(
@@ -162,6 +162,7 @@ console.log(zMin)
 
       const x = [];
       const y = [];
+
       for (let i = 0; i <= this.result['inputWidth']; i++) {
         x.push(i);
       }
@@ -276,7 +277,9 @@ console.log(zMin)
         type: 'heatmap',
         // opacity: 0.7,
         hoverinfo: 'x+y+z',
-        showscale: false
+        showscale: false,
+        zmax: -44,
+        zmin: -140
       };
       traces.push(trace);
 

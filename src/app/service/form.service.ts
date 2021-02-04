@@ -51,10 +51,20 @@ export class FormService {
     const output = {};
     output['averageRsrp'] = result['averagersrp'];
     output['averageSinr'] = result['averagesinr'];
-    output['candidateBeamId'] = JSON.parse(result['candidatebeamid']);
-    output['candidateBsPower'] = JSON.parse(result['candidatebs_power']);
-    output['candidateConnection'] = JSON.parse(result['candidateconnection']);
-    output['candidateThroughput'] = JSON.parse(result['candidatethroughput']);
+    if (typeof result['candidatebeamid'] !== 'undefined') {
+      output['candidateBeamId'] = JSON.parse(result['candidatebeamid']);
+    }
+    if (typeof result['candidatebs_power'] !== 'undefined') {
+      output['candidateBsPower'] = JSON.parse(result['candidatebs_power']);
+    }
+    if (typeof result['candidateconnection'] !== 'undefined') {
+      output['candidateConnection'] = JSON.parse(result['candidateconnection']);
+    }
+    if (typeof result['candidatethroughput'] !== 'undefined') {
+      output['candidateThroughput'] = JSON.parse(result['candidatethroughput']);
+    }
+    
+    
     output['chosenCandidate'] = JSON.parse(result['chosecandidate']);
     output['connectionMap'] = JSON.parse(result['connectionmap']);
     output['connectionMapAll'] = JSON.parse(result['connectionmapall']);

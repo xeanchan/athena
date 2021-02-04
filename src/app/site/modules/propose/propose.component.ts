@@ -89,14 +89,16 @@ export class ProposeComponent implements OnInit {
       const text = [];
       const color = [];
 
-      for (let i = 0; i < this.result['inputBsList'].length; i++) {
-        numMap[this.result['inputBsList'][i]] = index;
-        xyMap[this.result['inputBsList'][i]] = {
-          x: this.result['inputBsList'][i][0],
-          y: this.result['inputBsList'][i][1]
+      const candidateBs = this.calculateForm.candidateBs.split('|');
+      for (let i = 0; i < candidateBs.length; i++) {
+        const candidate = JSON.parse(candidateBs[i]);
+        numMap[candidate] = index;
+        xyMap[candidate] = {
+          x: candidate[0],
+          y: candidate[1]
         };
-        x.push(this.result['inputBsList'][i][0]);
-        y.push(this.result['inputBsList'][i][1]);
+        x.push(candidate[0]);
+        y.push(candidate[1]);
         text.push(index);
         color.push('#7083d6');
         index++;
