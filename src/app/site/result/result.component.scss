@@ -191,17 +191,13 @@ table {
 :host ::ng-deep .mat-button-toggle-group button {
     width: initial!important;
     font-size: .95em;
-    color:#fff;
-    background: #1665b5; /* Old browsers */
-    background: -moz-linear-gradient(top,  #1665b5 0%, #0a4d90 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top,  #1665b5 0%,#0a4d90 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, #1665b5 0%, #0a4d90 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1665b5', endColorstr='#0a4d90',GradientType=0 ); /* IE6-9 */
 
 }
-:host ::ng-deep .mat-button-toggle-appearance-standard {
-    background: initial;
-}
+
 .mat-button-toggle-group-appearance-standard {
     border: solid 1px rgba(0,0,0,.12);
+}
+h2 + mat-button-toggle-group {
+    vertical-align: middle;
+    margin-bottom: 1em;
 }

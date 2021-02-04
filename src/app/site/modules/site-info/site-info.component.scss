@@ -2,17 +2,18 @@
 
 h5 {
     font-size: 1.1em;
+    margin-bottom: .5em;
 }
 ul li {
     display: block;
+    line-height: 1.75;
 }
 ul li span {
     display: block;
     font-size: .9;
 }
 ul li span > span {
-    display: inline;
-    line-height: 1;
+    display: inline-block;
     margin-bottom: .5em;
 }
 ul li span label {

@@ -386,7 +386,7 @@
                 </li>
                 <li>
                   <p>上傳圖檔</p><input type="file" (change)="fileChange($event)">
-                  <span *ngIf="showFileName">{{ calculateForm.mapName }}</span>
+                  <span style="margin-left: 2em;" *ngIf="showFileName">{{ calculateForm.mapName }}</span>
                 </li>
                 <li>
                   <p>場域尺寸</p>
@@ -467,7 +467,7 @@
                 </li>
                 
                 <li>
-                  <p>切面高度<span> ( 單位:公分，最多可設定3組高度 ) </span></p>
+                  <p>切面高度<span> ( 單位:公尺，最多可設定3組高度 ) </span></p>
                   <ol class="inline-block">
                     <li><input type="text" [(ngModel)]="zValues[0]"></li>
                     <li><input type="text" [(ngModel)]="zValues[1]"></li>
@@ -642,19 +642,19 @@
                 <mat-panel-title>場域內無線訊號衰減模型</mat-panel-title>
               </mat-expansion-panel-header>
               <ul>
-                <li>
+                <!--<li>
                   <p>
                     <span>Path Loss Model</span>
                     <select class="widthAuto">
                       <option>台中智機場域</option>
                     </select>
                   </p>
-                </li>
+                </li>-->
                 <li>
                   <p>
                     <label>預設無線模型</label>
                     <span>
-                      <select [(ngModel)]="calculateForm.pathLossModelId">
+                      <select style="min-width: 16em;" [(ngModel)]="calculateForm.pathLossModelId">
                         <option value="0">ITRI 51館5F</option>
                         <option value="1">台中智機場域</option>
                         <option value="2">ITU office 900MHz</option>

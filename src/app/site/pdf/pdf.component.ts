@@ -215,7 +215,7 @@ export class PdfComponent implements OnInit {
     pos += margin;
     pdf.text(leftStart, pos, `高度： ${this.calculateForm['altitude']} 公尺`);
     pos += margin;
-    pdf.text(leftStart, pos, `切面高度： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} 公分`);
+    pdf.text(leftStart, pos, `切面高度： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} 公尺`);
     pos += margin;
     pdf.text(20, pos, `基站資訊：`);
     pos += margin;
