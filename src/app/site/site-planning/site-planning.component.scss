@@ -120,7 +120,7 @@ p.subitem.active + ol {
     vertical-align: middle;
 }
 :host ::ng-deep .mat-expansion-panel-body li input[type="text"]{
-    width: 5em;
+    width: 4.5em;
 }
 :host ::ng-deep .mat-expansion-panel-body input[type="text"]{
     margin-left: .3em;
@@ -141,7 +141,9 @@ p.subitem.active + ol {
 input[type="text"], select {
     outline:0;
 }
-
+ol li::marker {
+    color: rgb(126, 143, 175);
+}
 ol li {
     display: list-item;
     list-style: decimal;
