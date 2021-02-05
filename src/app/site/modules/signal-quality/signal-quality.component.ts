@@ -176,61 +176,6 @@ export class SignalQualityComponent implements OnInit {
         y.push(i);
       }
       const traces = [];
-
-      // 現有基站
-      // if (this.calculateForm.defaultBs !== '') {
-      //   const list = this.calculateForm.defaultBs
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const ctext = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     ctext.push(`現有基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: ctext,
-      //     marker: {
-      //       color: '#338aee',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     showlegend: false,
-      //   });
-      // }
-
-      // // 新增基站
-      // if (this.calculateForm.candidateBs !== '') {
-      //   const list = this.calculateForm.candidateBs
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const ctext = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     ctext.push(`新增基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: ctext,
-      //     marker: {
-      //       color: '#f7176a',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     showlegend: false,
-      //   });
-      // }
-
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
         const list = this.calculateForm.ueCoordinate.split('|');
