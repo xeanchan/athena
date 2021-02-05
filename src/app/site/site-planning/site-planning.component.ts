@@ -136,7 +136,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   };
   // select svg id
   svgId;
-  /** 避免resize時id錯亂用 */
+  /** 避免互動時id錯亂用 */
   realId;
   scalex;
   scaley;
@@ -200,6 +200,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   ognSpanStyle;
   /** 1: 以整體場域為主進行規劃, 2: 以行動終端為主進行規劃 */
   planningIndex = '1';
+  /** 障礙物預設顏色 */
+  OBSTACLE_COLOR = '#73805c';
+  /** defaultBs預設顏色 */
+  DEFAULT_BS_COLOR = '#2958be';
+  /** candidate預設顏色 */
+  CANDIDATE_COLOR = '#d00a67';
+  /** UE預設顏色 */
+  UE_COLOR = '#0c9ccc';
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -504,8 +512,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
 
     let color;
+    let width = 30;
+    let height = 30;
     if (id === 'rect') {
-      color = '#73805c';
+      color = this.OBSTACLE_COLOR;
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.rectStyle[this.svgId] = {
@@ -515,7 +525,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
 
     } else if (id === 'ellipse') {
-      color = '#73805c';
+      color = this.OBSTACLE_COLOR;
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.ellipseStyle[this.svgId] = {
@@ -526,53 +536,55 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         fill: color
       };
     } else if (id === 'polygon') {
-      color = '#73805c';
+      color = this.OBSTACLE_COLOR;
       this.svgId = `${id}_${this.obstacleList.length}`;
       this.obstacleList.push(this.svgId);
       this.polygonStyle[this.svgId] = {
         points: '15,0 30,30 0,30',
-        fill: '#73805c'
+        fill: this.OBSTACLE_COLOR
       };
     } else if (id === 'defaultBS') {
-      color = '#2958be';
+      color = this.DEFAULT_BS_COLOR;
       this.svgId = `${id}_${this.defaultBSList.length}`;
       this.defaultBSList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: '#2958be'
+        fill: this.DEFAULT_BS_COLOR
       };
     } else if (id === 'candidate') {
-      color = '#d00a67';
+      color = this.CANDIDATE_COLOR;
       this.svgId = `${id}_${this.candidateList.length}`;
       this.candidateList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: '#d00a67'
+        fill: this.CANDIDATE_COLOR
       };
     } else if (id === 'UE') {
-      color = '#0c9ccc';
+      color = this.UE_COLOR;
       this.svgId = `${id}_${this.ueList.length}`;
       this.ueList.push(this.svgId);
       this.pathStyle[this.svgId] = {
-        fill: '#0c9ccc'
+        fill: this.UE_COLOR
       };
+      width = 20;
+      height = 30;
     }
     this.spanStyle[this.svgId] = {
       left: `200px`,
       top: `100px`,
-      width: `30px`,
-      height: `30px`
+      width: `${width}px`,
+      height: `${height}px`
     };
     this.svgStyle[this.svgId] = {
       display: 'inherit',
-      width: 30,
-      height: 30
+      width: width,
+      height: height
     };
 
     this.dragObject[this.svgId] = {
       x: 0,
       y: 0,
       z: this.zValues[0],
-      width: 30,
-      height: 30,
+      width: width,
+      height: height,
       altitude: 50,
       rotate: 0,
       title: this.svgMap[id].title,
@@ -582,9 +594,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       element: id
     };
 
+    this.realId = _.cloneDeep(this.svgId);
+
     this.frame = new Frame({
-      width: '30px',
-      height: '30px',
+      width: `${width}px`,
+      height: `${height}px`,
       left: '200px',
       top: '100px',
       'z-index': 99999,
@@ -615,6 +629,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.hoverObj = this.target;
       this.setLabel();
     }, 0);
+
   }
 
   /** moveable init */
@@ -641,7 +656,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         scaleY: 1
       }
     });
-console.log(this.spanStyle[id])
+
     this.currentLeft = _.cloneDeep(this.spanStyle[this.svgId].left);
     this.currentTop = _.cloneDeep(this.spanStyle[this.svgId].top);
     this.ognSpanStyle = _.cloneDeep(this.spanStyle);
@@ -991,8 +1006,7 @@ console.log(this.spanStyle[id])
         top: top,
         left: `${left + width - 10}px`
       };
-
-      console.log(this.spanStyle[svgId], this.circleStyle[svgId])
+      // console.log(this.spanStyle[svgId], this.circleStyle[svgId])
     }
   }
 
@@ -1483,7 +1497,7 @@ console.log(this.spanStyle[id])
         if (!materialReg.test(material)) {
           material = '0';
         }
-        const color = (typeof baseStationData[i][4] === 'undefined' ? 'green' : baseStationData[i][4]);
+        const color = (typeof baseStationData[i][4] === 'undefined' ? this.DEFAULT_BS_COLOR : baseStationData[i][4]);
 
         this.dragObject[id] = {
           x: baseStationData[i][0],
@@ -1531,7 +1545,7 @@ console.log(this.spanStyle[id])
         if (!materialReg.test(material)) {
           material = '0';
         }
-        const color = (typeof candidateData[i][4] === 'undefined' ? 'green' : candidateData[i][4]);
+        const color = (typeof candidateData[i][4] === 'undefined' ? this.CANDIDATE_COLOR : candidateData[i][4]);
 
         this.dragObject[id] = {
           x: candidateData[i][0],
@@ -1581,7 +1595,7 @@ console.log(this.spanStyle[id])
         if (!materialReg.test(material)) {
           material = '0';
         }
-        const color = (typeof ueData[i][4] === 'undefined' ? 'green' : ueData[i][4]);
+        const color = (typeof ueData[i][4] === 'undefined' ? this.UE_COLOR : ueData[i][4]);
 
         this.dragObject[id] = {
           x: ueData[i][0],
@@ -1651,7 +1665,7 @@ console.log(this.spanStyle[id])
         if (!materialReg.test(material)) {
           material = '0';
         }
-        const color = (typeof obstacleData[i][7] === 'undefined' ? '#73805c' : obstacleData[i][7]);
+        const color = (typeof obstacleData[i][7] === 'undefined' ? this.OBSTACLE_COLOR : obstacleData[i][7]);
         this.dragObject[id] = {
           x: obstacleData[i][0],
           y: obstacleData[i][1],
@@ -1781,11 +1795,10 @@ console.log(this.spanStyle[id])
 
   edit() {
     // obstacleInfo
-    const obstacle = this.calculateForm.obstacleInfo
-    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const obstacle = this.calculateForm.obstacleInfo.split('|');
     const obstacleLen = obstacle.length;
     for (let i = 0; i < obstacleLen; i++) {
-      const item = obstacle[i].split(',');
+      const item = JSON.parse(obstacle[i]);
       const id = `rect_${i}`;
       this.obstacleList.push(id);
       this.dragObject[id] = {
@@ -1798,7 +1811,7 @@ console.log(this.spanStyle[id])
         rotate: item[5],
         title: this.svgMap['rect'].title,
         type: this.svgMap['rect'].type,
-        color: 'green',
+        color: this.OBSTACLE_COLOR,
         material: item[6],
         element: 'rect'
       };
@@ -1818,16 +1831,15 @@ console.log(this.spanStyle[id])
       this.rectStyle[id] = {
         width: this.pixelXLinear(item[2]),
         height: this.pixelYLinear(item[3]),
-        fill: 'green'
+        fill: this.dragObject[id].color
       };
     }
     // defaultBs
     if (this.calculateForm.defaultBs !== '') {
-      const defaultBS = this.calculateForm.defaultBs
-      .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+      const defaultBS = this.calculateForm.defaultBs.split('|');
       const defaultBSLen = defaultBS.length;
       for (let i = 0; i < defaultBSLen; i++) {
-        const item = defaultBS[i].split(',');
+        const item = JSON.parse(defaultBS[i]);
         const id = `defaultBS_${i}`;
         this.defaultBSList.push(id);
         this.dragObject[id] = {
@@ -1840,7 +1852,7 @@ console.log(this.spanStyle[id])
           rotate: 0,
           title: this.svgMap['defaultBS'].title,
           type: this.svgMap['defaultBS'].type,
-          color: 'green',
+          color: this.DEFAULT_BS_COLOR,
           material: '0',
           element: 'defaultBS'
         };
@@ -1856,17 +1868,16 @@ console.log(this.spanStyle[id])
           height: 30
         };
         this.pathStyle[id] = {
-          fill: 'green'
+          fill: this.dragObject[id].color
         };
         this.moveNumber(id);
       }
     }
     // candidate
-    const candidate = this.calculateForm.candidateBs
-    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const candidate = this.calculateForm.candidateBs.split('|');
     const candidateLen = candidate.length;
     for (let i = 0; i < candidateLen; i++) {
-      const item = candidate[i].split(',');
+      const item = JSON.parse(candidate[i]);
       const id = `candidate_${i}`;
       this.candidateList.push(id);
       this.dragObject[id] = {
@@ -1879,7 +1890,7 @@ console.log(this.spanStyle[id])
         rotate: 0,
         title: this.svgMap['candidate'].title,
         type: this.svgMap['candidate'].type,
-        color: 'green',
+        color: this.CANDIDATE_COLOR,
         material: '0',
         element: 'candidate'
       };
@@ -1895,18 +1906,17 @@ console.log(this.spanStyle[id])
         height: 22
       };
       this.pathStyle[id] = {
-        fill: 'green'
+        fill: this.dragObject[id].color
       };
       window.setTimeout(() => {
         this.moveNumber(id);
       }, 0);
     }
     // UE
-    const ue = this.calculateForm.ueCoordinate
-    .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+    const ue = this.calculateForm.ueCoordinate.split('|');
     const ueLen = ue.length;
     for (let i = 0; i < ueLen; i++) {
-      const item = ue[i].split(',');
+      const item = JSON.parse(ue[i]);
       const id = `ue_${i}`;
       this.ueList.push(id);
       this.dragObject[id] = {
@@ -1919,7 +1929,7 @@ console.log(this.spanStyle[id])
         rotate: 0,
         title: this.svgMap['UE'].title,
         type: this.svgMap['UE'].type,
-        color: 'green',
+        color: this.UE_COLOR,
         material: '0',
         element: 'UE'
       };
@@ -1935,7 +1945,7 @@ console.log(this.spanStyle[id])
         height: 30
       };
       this.pathStyle[id] = {
-        fill: 'green'
+        fill: this.dragObject[id].color
       };
     }
 

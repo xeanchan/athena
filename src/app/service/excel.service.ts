@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CalculateForm } from '../form/CalculateForm';
 import * as XLSX from 'xlsx';
+import { JoystickAxis } from 'babylonjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,9 @@ export class ExcelService {
   constructor() { }
 
   export(calculateForm: CalculateForm) {
-    console.log(calculateForm)
+    // console.log(calculateForm)
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    const zValues = calculateForm.zValue.replace('[', '').replace(']', '').split(',');
+    const zValues = JSON.parse(calculateForm.zValue);
     const mapData = [
       ['image', 'imageName', 'width', 'height', 'altitude', 'protocol', 'mapLayer'],
       [
@@ -38,11 +39,9 @@ export class ExcelService {
     const baseStationData = [['x', 'y', 'z', 'material', 'color']];
 
     if (calculateForm.defaultBs != null && calculateForm.defaultBs !== '') {
-      let str = calculateForm.defaultBs.replace(new RegExp('\\[', 'gi'), '');
-      str = str.replace(new RegExp('\\]', 'gi'), '');
-      const ary = str.split('|');
-      for (const item of ary) {
-        const data = item.split(',');
+      const defaultBs = calculateForm.defaultBs.split('|');
+      for (const item of defaultBs) {
+        const data = JSON.parse(item);
         baseStationData.push([
           data[0], data[1], data[2], data[3]
         ]);
@@ -53,11 +52,9 @@ export class ExcelService {
     // candidate
     const candidateData = [['x', 'y', 'z', 'material', 'color']];
     if (calculateForm.candidateBs != null) {
-      let str = calculateForm.candidateBs.replace(new RegExp('\\[', 'gi'), '');
-      str = str.replace(new RegExp('\\]', 'gi'), '');
-      const ary = str.split('|');
-      for (const item of ary) {
-        const data = item.split(',');
+      const candidate = calculateForm.candidateBs.split('|');
+      for (const item of candidate) {
+        const data = JSON.parse(item);
         candidateData.push([
           data[0], data[1], data[2], data[3]
         ]);
@@ -68,11 +65,9 @@ export class ExcelService {
     // UE
     const ueData = [['x', 'y', 'z', 'material', 'color']];
     if (calculateForm.ueCoordinate != null) {
-      let str = calculateForm.ueCoordinate.replace(new RegExp('\\[', 'gi'), '');
-      str = str.replace(new RegExp('\\]', 'gi'), '');
-      const ary = str.split('|');
-      for (const item of ary) {
-        const data = item.split(',');
+      const ue = calculateForm.ueCoordinate.split('|');
+      for (const item of ue) {
+        const data = JSON.parse(item);
         ueData.push([
           data[0], data[1], data[2], data[3]
         ]);
@@ -83,11 +78,9 @@ export class ExcelService {
     // obstacle
     const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
     if (calculateForm.obstacleInfo != null) {
-      let str = calculateForm.obstacleInfo.replace(new RegExp('\\[', 'gi'), '');
-      str = str.replace(new RegExp('\\]', 'gi'), '');
-      const ary = str.split('|');
-      for (const item of ary) {
-        const data = item.split(',');
+      const obstacleInfo = calculateForm.obstacleInfo.split('|');
+      for (const item of obstacleInfo) {
+        const data = JSON.parse(item);
         obstacleData.push([
           data[0], data[1], data[2], data[3], data[4], data[5], data[6]
         ]);

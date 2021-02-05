@@ -89,32 +89,30 @@ export class PdfComponent implements OnInit {
             this.result = res['output'];
           }
           // 現有基站
-          const defaultBsAry = this.calculateForm.defaultBs
-          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-          for (const item of defaultBsAry) {
-            this.defaultBs.push(item.split(','));
+          if (this.calculateForm.defaultBs !== '') {
+            const bs = this.calculateForm.defaultBs.split('|');
+            for (const item of bs) {
+              this.defaultBs.push(JSON.parse(item));
+            }
           }
           // 新增基站
-          const candidateBsAry = this.calculateForm.candidateBs
-          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          const candidateBsAry = this.calculateForm.candidateBs.split('|');
           for (const item of candidateBsAry) {
-            this.inputBsList.push(item.split(','));
+            this.inputBsList.push(JSON.parse(item));
           }
           this.result['inputBsList'] = this.inputBsList;
           // 障礙物資訊
-          const obstacle = this.calculateForm.obstacleInfo
-          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          const obstacle = this.calculateForm.obstacleInfo.split('|');
           for (const item of obstacle) {
-            this.obstacleList.push(item.split(','));
+            this.obstacleList.push(JSON.parse(item));
           }
           // 行動終端分佈
-          const ueCoordinate = this.calculateForm.ueCoordinate
-          .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
+          const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
           for (const item of ueCoordinate) {
-            this.ueList.push(item.split(','));
+            this.ueList.push(JSON.parse(item));
           }
 
-          this.zValues = this.calculateForm.zValue.replace('[', '').replace(']', '') .split(',');
+          this.zValues = JSON.parse(this.calculateForm.zValue);
           window.setTimeout(() => {
             this.propose.calculateForm = this.calculateForm;
             this.propose.result = this.result;

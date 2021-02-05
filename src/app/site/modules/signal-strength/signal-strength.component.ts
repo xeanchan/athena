@@ -170,66 +170,9 @@ export class SignalStrengthComponent implements OnInit {
         y.push(i);
       }
       const traces = [];
-      // // 現有基站
-      // if (this.calculateForm.defaultBs !== '') {
-      //   const list = this.calculateForm.defaultBs
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const ctext = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     ctext.push(`現有基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: ctext,
-      //     marker: {
-      //       color: '#338aee',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     showlegend: false,
-      //   });
-      // }
-
-      // // 新增基站
-      // if (this.calculateForm.candidateBs !== '') {
-      //   const list = this.calculateForm.candidateBs
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-      //   const cx = [];
-      //   const cy = [];
-      //   const ctext = [];
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     cx.push(oData[0]);
-      //     cy.push(oData[1]);
-      //     ctext.push(`新增基站<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-      //   }
-      //   traces.push({
-      //     x: cx,
-      //     y: cy,
-      //     text: ctext,
-      //     marker: {
-      //       color: '#f7176a',
-      //     },
-      //     type: 'scatter',
-      //     mode: 'markers',
-      //     hoverinfo: 'none',
-      //     showlegend: false,
-      //   });
-      // }
-
       // UE
       if (this.calculateForm.ueCoordinate !== '') {
         const list = this.calculateForm.ueCoordinate.split('|');
-
-        // const list = this.calculateForm.ueCoordinate
-        // .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
         const cx = [];
         const cy = [];
         const text = [];
@@ -383,34 +326,6 @@ export class SignalStrengthComponent implements OnInit {
 
         }
       }
-
-      // UE
-      // if (this.calculateForm.ueCoordinate !== '') {
-      //   const list = this.calculateForm.ueCoordinate
-      //   .replace(new RegExp('\\[', 'gi'), '').replace(new RegExp('\\]', 'gi'), '').split('|');
-
-      //   for (const item of list) {
-      //     const oData = item.split(',');
-      //     const xdata = oData[0];
-      //     const ydata = oData[1];
-      //     const zdata = oData[2];
-      //     if (zdata !== zValue) {
-      //       continue;
-      //     }
-
-      //     const text = `新增ＵＥ
-      //     X: ${xdata}
-      //     Y: ${ydata}
-      //     高度: ${zdata}`;
-      //     this.ueList.push({
-      //       x: xdata,
-      //       y: ydata,
-      //       color: 'green',
-      //       hover: text
-      //     });
-
-      //   }
-      // }
 
       console.log(traces);
 
