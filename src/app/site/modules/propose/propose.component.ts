@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 
@@ -20,12 +20,14 @@ export class ProposeComponent implements OnInit {
   calculateForm = new CalculateForm();
   /** 建議方案 list */
   candidateList = [];
+  @ViewChild('layoutChart') layoutChart: ElementRef;
 
   ngOnInit(): void {
   }
 
   /** draw layout */
   drawLayout(isPDF) {
+    this.layoutChart.nativeElement.style.opacity = 0;
     const reader = new FileReader();
     reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
     reader.onload = (e) => {
@@ -160,7 +162,9 @@ export class ProposeComponent implements OnInit {
             };
           }
 
-          Plotly.relayout(id, layoutOption);
+          Plotly.relayout(id, layoutOption).then((gd) => {
+            this.layoutChart.nativeElement.style.opacity = 1;
+          });
         };
       });
 

@@ -182,7 +182,7 @@ export class ResultComponent implements OnInit {
 
   /** export PDF */
   async exportPDF() {
-    this.pdf.export(this.taskId, false);
+    this.pdf.export(this.taskId, this.isHst);
   }
 
   /** 訊號品質圖 */

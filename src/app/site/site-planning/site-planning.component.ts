@@ -345,101 +345,103 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
    * init data
    */
   initData(isImport) {
+    this.chart.nativeElement.style.opacity = 0;
     // if (this.calculateForm.mapImage != null) {
-      const reader = new FileReader();
-      reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
-      reader.onload = (e) => {
-        // draw background image chart
-        const defaultPlotlyConfiguration = {
-          displaylogo: false,
-          showTips: false,
-          editable: false,
-          scrollZoom: false,
-          displayModeBar: false
-        };
-
-        this.plotLayout = {
-          autosize: true,
-          xaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.width],
-            showgrid: false,
-            zeroline: false,
-            fixedrange: true
-          },
-          yaxis: {
-            linewidth: 1,
-            mirror: 'all',
-            range: [0, this.calculateForm.height],
-            showgrid: false,
-            zeroline: false,
-            fixedrange: true
-          },
-          margin: { t: 20, b: 20, l: 40},
-          images: [{
-            source: reader.result,
-            x: 0,
-            y: 0,
-            sizex: this.calculateForm.width,
-            sizey: this.calculateForm.height,
-            xref: 'x',
-            yref: 'y',
-            xanchor: 'left',
-            yanchor: 'bottom',
-            sizing: 'stretch',
-            hover: 'x+y'
-          }]
-        };
-
-        Plotly.newPlot('chart', {
-          data: [],
-          layout: this.plotLayout,
-          config: defaultPlotlyConfiguration
-        }).then((gd) => {
-          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
-          const rect = xy.getBoundingClientRect();
-
-          const image = new Image();
-          image.src = reader.result.toString();
-          image.onload = () => {
-            let layoutOption;
-            if (image.width > image.height) {
-              const height = (image.height / (image.width * 0.9)) * rect.width;
-              layoutOption = {
-                height: height
-              };
-            } else {
-              const width = (image.width / (image.height * 0.9)) * rect.height;
-              layoutOption = {
-                width: width
-              };
-            }
-
-            Plotly.relayout('chart', layoutOption).then((gd2) => {
-              const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
-              const rect2 = xy2.getBoundingClientRect();
-              // drag範圍
-              this.bounds = {
-                left: rect2.left,
-                top: rect2.top,
-                right: rect2.right,
-                bottom: rect2.top + rect2.height
-              };
-
-              // 計算比例尺
-              this.calScale(gd2);
-              // import xlsx
-              if (isImport) {
-                this.setImportData();
-              } else if (this.taskid !== '') {
-                // 編輯
-                this.edit();
-              }
-            });
-          };
-        });
+    const reader = new FileReader();
+    reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
+    reader.onload = (e) => {
+      // draw background image chart
+      const defaultPlotlyConfiguration = {
+        displaylogo: false,
+        showTips: false,
+        editable: false,
+        scrollZoom: false,
+        displayModeBar: false
       };
+
+      this.plotLayout = {
+        autosize: true,
+        xaxis: {
+          linewidth: 1,
+          mirror: 'all',
+          range: [0, this.calculateForm.width],
+          showgrid: false,
+          zeroline: false,
+          fixedrange: true
+        },
+        yaxis: {
+          linewidth: 1,
+          mirror: 'all',
+          range: [0, this.calculateForm.height],
+          showgrid: false,
+          zeroline: false,
+          fixedrange: true
+        },
+        margin: { t: 20, b: 20, l: 40},
+        images: [{
+          source: reader.result,
+          x: 0,
+          y: 0,
+          sizex: this.calculateForm.width,
+          sizey: this.calculateForm.height,
+          xref: 'x',
+          yref: 'y',
+          xanchor: 'left',
+          yanchor: 'bottom',
+          sizing: 'stretch',
+          hover: 'x+y'
+        }]
+      };
+
+      Plotly.newPlot('chart', {
+        data: [],
+        layout: this.plotLayout,
+        config: defaultPlotlyConfiguration
+      }).then((gd) => {
+        const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+        const rect = xy.getBoundingClientRect();
+
+        const image = new Image();
+        image.src = reader.result.toString();
+        image.onload = () => {
+          let layoutOption;
+          if (image.width > image.height) {
+            const height = (image.height / (image.width * 0.9)) * rect.width;
+            layoutOption = {
+              height: height
+            };
+          } else {
+            const width = (image.width / (image.height * 0.9)) * rect.height;
+            layoutOption = {
+              width: width
+            };
+          }
+
+          Plotly.relayout('chart', layoutOption).then((gd2) => {
+            this.chart.nativeElement.style.opacity = 1;
+            const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
+            const rect2 = xy2.getBoundingClientRect();
+            // drag範圍
+            this.bounds = {
+              left: rect2.left,
+              top: rect2.top,
+              right: rect2.right,
+              bottom: rect2.top + rect2.height
+            };
+
+            // 計算比例尺
+            this.calScale(gd2);
+            // import xlsx
+            if (isImport) {
+              this.setImportData();
+            } else if (this.taskid !== '') {
+              // 編輯
+              this.edit();
+            }
+          });
+        };
+      });
+    };
     // }
   }
 
