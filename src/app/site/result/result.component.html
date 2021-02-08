@@ -31,6 +31,13 @@
 							<mat-button-toggle  value="PCI" (click)="drawCover()">{{ 'connectionMap' | translate }}</mat-button-toggle>
 							<mat-button-toggle  value="RSRP" (click)="drawStrength()">{{ 'rsrpMap' | translate }}</mat-button-toggle>
 						</mat-button-toggle-group>
+
+						<label class="mL_1">顯示行動終端</label>
+						<mat-button-toggle-group [(ngModel)]="showUE" (change)="switchShowUE()" >
+							<mat-button-toggle [value]="true">ON</mat-button-toggle>
+							<mat-button-toggle [value]="false">OFF</mat-button-toggle>
+						</mat-button-toggle-group>
+
 						<!-- 訊號品質圖 -->
 						<app-signal-quality *ngIf="showQuality" #quality></app-signal-quality>
 						<!-- 訊號覆蓋圖 -->

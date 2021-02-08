@@ -25,6 +25,8 @@ export class SignalStrengthComponent implements OnInit {
   style = {};
   colorBars = [];
   imgSRC;
+  chartId;
+  showUE = true;
 
   ngOnInit(): void {
   }
@@ -98,6 +100,7 @@ export class SignalStrengthComponent implements OnInit {
       } else {
         id = document.querySelectorAll(`.signal_strength`)[0];
       }
+      this.chartId = id;
 
       const zLen = zValues.length;
       const zData = [];
@@ -191,13 +194,14 @@ export class SignalStrengthComponent implements OnInit {
           y: cy,
           text: text,
           marker: {
-            color: 'green',
+            color: '#140101',
           },
           type: 'scatter',
           mode: 'markers',
           hoverinfo: 'none',
           opacity: 0.7,
-          showlegend: false
+          showlegend: false,
+          visible: this.showUE
         });
       }
 
@@ -303,27 +307,34 @@ export class SignalStrengthComponent implements OnInit {
         const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
-        const ctext = [];
+        const chosenCandidate = [];
+        for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
+          chosenCandidate.push(this.result['chosenCandidate'][i].toString());
+        }
+        let num = 1;
         for (const item of list) {
           const oData = JSON.parse(item);
-          const xdata = oData[0];
-          const ydata = oData[1];
-          const zdata = oData[2];
-          cx.push(xdata);
-          cy.push(ydata);
+          if (chosenCandidate.includes(oData.toString())) {
+            const xdata = oData[0];
+            const ydata = oData[1];
+            const zdata = oData[2];
+            cx.push(xdata);
+            cy.push(ydata);
 
-          const text = `新增基站
-          X: ${xdata}
-          Y: ${ydata}
-          高度: ${zdata}`;
-          ctext.push(text);
-          this.candidateList.push({
-            x: xdata,
-            y: ydata,
-            color: '#f7176a',
-            hover: text
-          });
-
+            const text = `新增AP
+            X: ${xdata}
+            Y: ${ydata}
+            Z: ${zdata}
+            訊號品質: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`;
+            this.candidateList.push({
+              x: xdata,
+              y: ydata,
+              color: '#f7176a',
+              hover: text,
+              num: num
+            });
+          }
+          num++;
         }
       }
 
@@ -434,6 +445,13 @@ export class SignalStrengthComponent implements OnInit {
 
       });
     };
+  }
+
+  /** show/hide UE */
+  switchUE(visible) {
+    Plotly.restyle(this.chartId, {
+      visible: visible
+    }, [0]);
   }
 
 }

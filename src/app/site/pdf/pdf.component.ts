@@ -225,9 +225,9 @@ export class PdfComponent implements OnInit {
     pos += margin;
     pdf.text(leftStart, pos, `可分配波束編號範圍： 0 ~ 30`);
     pos += margin;
-    pdf.text(leftStart, pos, `LTE系統頻寬(MHz)： ${this.calculateForm.bandwidth} MHz`);
+    pdf.text(leftStart, pos, `Channel頻寬(MHz)： ${this.calculateForm.bandwidth} MHz`);
     pos += margin;
-    pdf.text(leftStart, pos, `LTE系統頻率(MHz)： ${this.calculateForm.frequency} MHz`);
+    pdf.text(leftStart, pos, `中心頻率(MHz)： ${this.calculateForm.frequency} MHz`);
     pos += margin;
     pdf.text(20, pos, `演算法參數：`);
     pos += margin;

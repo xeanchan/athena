@@ -1963,9 +1963,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 運算結果 */
   result() {
-    // location.replace(`#/site/result?taskId=${this.taskid}`);
-    // location.reload();
-    this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+    location.replace(`#/site/result?taskId=${this.taskid}&isHst=true`);
+    location.reload();
+    // this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+    
   }
 
   /** 歷史資料塞回form */

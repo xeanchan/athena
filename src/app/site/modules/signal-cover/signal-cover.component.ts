@@ -23,8 +23,8 @@ export class SignalCoverComponent implements OnInit {
   defaultBsList = [];
   ueList = [];
   style = {};
-  /**  */
-  colorLegend = [];
+  chartId;
+  showUE = true;
 
   ngOnInit(): void {
   }
@@ -97,6 +97,7 @@ export class SignalCoverComponent implements OnInit {
       } else {
         id = document.querySelectorAll(`.signal_cover`)[0];
       }
+      this.chartId = id;
 
       const zLen = zValues.length;
       const zData = [];
@@ -135,6 +136,37 @@ export class SignalCoverComponent implements OnInit {
         y.push(i);
       }
       const traces = [];
+
+      // UE
+      if (this.calculateForm.ueCoordinate !== '') {
+        const list = this.calculateForm.ueCoordinate.split('|');
+        const cx = [];
+        const cy = [];
+        const text = [];
+        for (const item of list) {
+          const oData = JSON.parse(item);
+          if (oData[2] !== zValue) {
+            continue;
+          }
+          cx.push(oData[0]);
+          cy.push(oData[1]);
+          text.push(`新增ＵＥ<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+        }
+
+        traces.push({
+          x: cx,
+          y: cy,
+          text: text,
+          marker: {
+            color: '#140101',
+          },
+          type: 'scatter',
+          mode: 'markers',
+          hoverinfo: 'none',
+          showlegend: false,
+          visible: this.showUE
+        });
+      }
 
       // 圖區右邊建議基站
       if (this.calculateForm.candidateBs !== '') {
@@ -184,36 +216,6 @@ export class SignalCoverComponent implements OnInit {
           }
           k++;
         }
-      }
-
-      // UE
-      if (this.calculateForm.ueCoordinate !== '') {
-        const list = this.calculateForm.ueCoordinate.split('|');
-        const cx = [];
-        const cy = [];
-        const text = [];
-        for (const item of list) {
-          const oData = JSON.parse(item);
-          if (oData[2] !== zValue) {
-            continue;
-          }
-          cx.push(oData[0]);
-          cy.push(oData[1]);
-          text.push(`新增ＵＥ<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
-        }
-
-        traces.push({
-          x: cx,
-          y: cy,
-          text: text,
-          marker: {
-            color: 'green',
-          },
-          type: 'scatter',
-          mode: 'markers',
-          hoverinfo: 'none',
-          showlegend: false
-        });
       }
 
       const trace = {
@@ -269,27 +271,34 @@ export class SignalCoverComponent implements OnInit {
         const list = this.calculateForm.candidateBs.split('|');
         const cx = [];
         const cy = [];
-        const ctext = [];
-        for (let i = 0; i < list.length; i++) {
-          const oData = JSON.parse(list[i]);
-          const xdata = oData[0];
-          const ydata = oData[1];
-          const zdata = oData[2];
-          cx.push(xdata);
-          cy.push(ydata);
+        const chosenCandidate = [];
+        for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
+          chosenCandidate.push(this.result['chosenCandidate'][i].toString());
+        }
+        let num = 1;
+        for (const item of list) {
+          const oData = JSON.parse(item);
+          if (chosenCandidate.includes(oData.toString())) {
+            const xdata = oData[0];
+            const ydata = oData[1];
+            const zdata = oData[2];
+            cx.push(xdata);
+            cy.push(ydata);
 
-          const text = `新增基站
-          X: ${xdata}
-          Y: ${ydata}
-          高度: ${zdata}`;
-          ctext.push(text);
-          this.candidateList.push({
-            x: xdata,
-            y: ydata,
-            color: '#000',
-            hover: text
-          });
-
+            const text = `新增AP
+            X: ${xdata}
+            Y: ${ydata}
+            Z: ${zdata}
+            訊號品質: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`;
+            this.candidateList.push({
+              x: xdata,
+              y: ydata,
+              color: '#f7176a',
+              hover: text,
+              num: num
+            });
+          }
+          num++;
         }
       }
 
@@ -450,6 +459,13 @@ export class SignalCoverComponent implements OnInit {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  }
+
+  /** show/hide UE */
+  switchUE(visible) {
+    Plotly.restyle(this.chartId, {
+      visible: visible
+    }, [0]);
   }
 
 }

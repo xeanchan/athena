@@ -62,6 +62,7 @@ export class ResultComponent implements OnInit {
   dragObject = {};
   /** 歷史紀錄 */
   isHst = false;
+  showUE = true;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -191,6 +192,7 @@ export class ResultComponent implements OnInit {
     this.showCover = false;
     this.showStrength = false;
     window.setTimeout(() => {
+      this.quality.showUE = this.showUE;
       this.quality.calculateForm = this.calculateForm;
       this.quality.result = this.result;
       this.quality.draw(false, this.zValue);
@@ -203,6 +205,7 @@ export class ResultComponent implements OnInit {
     this.showCover = true;
     this.showStrength = false;
     window.setTimeout(() => {
+      this.cover.showUE = this.showUE;
       this.cover.calculateForm = this.calculateForm;
       this.cover.result = this.result;
       this.cover.draw(false, this.zValue);
@@ -215,6 +218,7 @@ export class ResultComponent implements OnInit {
     this.showCover = false;
     this.showStrength = true;
     window.setTimeout(() => {
+      this.strength.showUE = this.showUE;
       this.strength.calculateForm = this.calculateForm;
       this.strength.result = this.result;
       this.strength.draw(false, this.zValue);
@@ -278,6 +282,17 @@ export class ResultComponent implements OnInit {
       zValue: this.zValues
     };
     this.matDialog.open(View3dComponent, this.view3dDialogConfig);
+  }
+
+  /** ON/OFF 顯示UE */
+  switchShowUE() {
+    if (this.chartType === 'SINR') {
+      this.quality.switchUE(this.showUE);
+    } else if (this.chartType === 'PCI') {
+      this.cover.switchUE(this.showUE);
+    } else if (this.chartType === 'RSRP') {
+      this.strength.switchUE(this.showUE);
+    }
   }
 
 }

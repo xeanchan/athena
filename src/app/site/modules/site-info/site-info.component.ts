@@ -19,4 +19,14 @@ export class SiteInfoComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  parseOB(type) {
+    if (type === '0') {
+      return '5G';
+    } else if (type === '1') {
+      return '4G';
+    } else if (type === '2') {
+      return 'WIFI';
+    }
+  }
+
 }

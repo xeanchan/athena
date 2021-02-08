@@ -107,6 +107,7 @@ export class ProposeComponent implements OnInit {
       }
 
       const traces = [];
+      const chosenNum = [];
       // 建議方案 list
       for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {
@@ -118,25 +119,52 @@ export class ProposeComponent implements OnInit {
             this.result['candidateBeamId'][i]
           ]);
           color[numMap[this.result['chosenCandidate'][i]] - 1] = 'red';
+          chosenNum.push(numMap[this.result['chosenCandidate'][i].toString()]);
+
+          traces.push({
+            type: 'scatter',
+            mode: 'text',
+            x: [xyMap[this.result['chosenCandidate'][i].toString()].x],
+            y: [xyMap[this.result['chosenCandidate'][i].toString()].y],
+            text: `${numMap[this.result['chosenCandidate'][i].toString()]}<br>✅`,
+            marker: {
+              size: 27,
+              color: color,
+              symbol: 'arrow-bar-down-open'
+            },
+            textfont: {
+              size: 14,
+              color: 'red'
+            },
+            hoverinfo: 'x+y',
+            showlegend: false
+          });
         }
       }
 
-      traces.push({
-        type: 'scatter',
-        mode: 'markers+text',
-        x: x,
-        y: y,
-        text: text,
-        marker: {
-          size: 27,
-          color: color
-        },
-        textfont: {
-          size: 14,
-          color: '#ffffff'
-        },
-        hoverinfo: 'x+y'
-      });
+      for (let i = 0; i < x.length; i++) {
+        if (!chosenNum.includes((i + 1))) {
+          traces.push({
+            type: 'scatter',
+            mode: 'markers+text',
+            x: [x[i]],
+            y: [y[i]],
+            text: text[i],
+            marker: {
+              size: 20,
+              color: 'gray',
+              symbol: 'x'
+            },
+            textfont: {
+              size: 14,
+              color: 'red'
+            },
+            textposition: 'center top',
+            hoverinfo: 'x+y',
+            showlegend: false
+          });
+        }
+      }
 
       Plotly.newPlot(id, {
         data: traces,

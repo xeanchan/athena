@@ -6,17 +6,18 @@
       <span><label>規劃時間</label>{{ result['createTime'] }}</span>
     </li>
     <li>
+      <span><label>場域大小(公尺)</label>長 {{ result['inputWidth'] }} / 寬 {{ result['inputHeight'] }} ／高 {{ calculateForm['altitude'] }} </span>
+      <span><label>切面高度</label>{{ calculateForm.zValue }} 公尺</span>
+    </li>
+    <li>
       <span><label>規劃目標</label>
       <span>不限制增加基站數量，以達到UE平均下行throughput最大.</span>
       </span>
     </li>
-    <li>
-      <span><label>場域大小(公尺)</label>長 {{ result['inputWidth'] }} / 寬 {{ result['inputHeight'] }} ／高 {{ calculateForm['altitude'] }} </span>
-      <span><label>切面高度</label>{{ calculateForm.zValue }} 公尺</span>
-    </li>
     <hr>
     <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
     <li>
+      <span><label>網路種類</label>{{ parseOB(calculateForm.objectiveIndex) }}</span>
       <span><label>待選基站位置</label>(共{{ inputBsListCount }}處)</span>
       <span><label>現有基站</label>(共{{ defaultBsCount }}台)</span>
       <span><label>發射功率範圍</label>	{{ calculateForm.powerMinRange }} dBm ~ {{ calculateForm.powerMaxRange }} dBm</span>
