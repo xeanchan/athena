@@ -304,7 +304,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               delete result['output'];
               // 大小寫不同，各自塞回form
               this.calculateForm = this.formService.setHstToForm(result);
-              this.calculateForm.ueCoordinate = '';
             } else {
               this.calculateForm = res['input'];
             }
