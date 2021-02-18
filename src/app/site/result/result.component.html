@@ -13,13 +13,13 @@
 		<!-- 建議方案 -->
 		<app-propose #propose></app-propose>
         
-		<table>
+		<table style="table-layout: fixed;">
 			<tbody>
 				<tr>
 					<th colspan="2" class="panel center"><label>訊號覆蓋模擬結果</label></th>
 				</tr>
 				<tr>
-					<td class="mapType">
+					<td class="mapType" colspan="2">
 						<label>{{ 'zValue' | translate }}</label>
 						<mat-button-toggle-group [(ngModel)]="zValue" (change)="changeZvalue()" >
 							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} 公尺</mat-button-toggle>
@@ -41,9 +41,10 @@
 						<!-- 訊號品質圖 -->
 						<app-signal-quality *ngIf="showQuality" #quality></app-signal-quality>
 						<!-- 訊號覆蓋圖 -->
-            <app-signal-cover *ngIf="showCover" #cover></app-signal-cover>
-            <!-- 訊號強度圖 -->
-            <app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
+						<app-signal-cover *ngIf="showCover" #cover></app-signal-cover>
+						<!-- 訊號強度圖 -->
+						<app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
+					
 					</td>
 				</tr>
 			</tbody>
