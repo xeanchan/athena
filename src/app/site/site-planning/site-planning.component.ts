@@ -304,6 +304,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               delete result['output'];
               // 大小寫不同，各自塞回form
               this.calculateForm = this.formService.setHstToForm(result);
+              this.calculateForm.ueCoordinate = '';
             } else {
               this.calculateForm = res['input'];
             }
@@ -1915,40 +1916,42 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 0);
     }
     // UE
-    const ue = this.calculateForm.ueCoordinate.split('|');
-    const ueLen = ue.length;
-    for (let i = 0; i < ueLen; i++) {
-      const item = JSON.parse(ue[i]);
-      const id = `ue_${i}`;
-      this.ueList.push(id);
-      this.dragObject[id] = {
-        x: item[0],
-        y: item[1],
-        z: item[2],
-        width: 20,
-        height: 30,
-        altitude: 50,
-        rotate: 0,
-        title: this.svgMap['UE'].title,
-        type: this.svgMap['UE'].type,
-        color: this.UE_COLOR,
-        material: '0',
-        element: 'UE'
-      };
-      this.spanStyle[id] = {
-        left: `${this.pixelXLinear(item[0])}px`,
-        top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
-        width: `20px`,
-        height: `30px`
-      };
-      this.svgStyle[id] = {
-        display: 'inherit',
-        width: 20,
-        height: 30
-      };
-      this.pathStyle[id] = {
-        fill: this.dragObject[id].color
-      };
+    if (this.calculateForm.ueCoordinate != null && this.calculateForm.ueCoordinate !== '') {
+      const ue = this.calculateForm.ueCoordinate.split('|');
+      const ueLen = ue.length;
+      for (let i = 0; i < ueLen; i++) {
+        const item = JSON.parse(ue[i]);
+        const id = `ue_${i}`;
+        this.ueList.push(id);
+        this.dragObject[id] = {
+          x: item[0],
+          y: item[1],
+          z: item[2],
+          width: 20,
+          height: 30,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['UE'].title,
+          type: this.svgMap['UE'].type,
+          color: this.UE_COLOR,
+          material: '0',
+          element: 'UE'
+        };
+        this.spanStyle[id] = {
+          left: `${this.pixelXLinear(item[0])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
+          width: `20px`,
+          height: `30px`
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 20,
+          height: 30
+        };
+        this.pathStyle[id] = {
+          fill: this.dragObject[id].color
+        };
+      }
     }
 
     if (this.calculateForm.objectiveIndex === '2') {

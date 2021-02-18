@@ -341,11 +341,13 @@ export class StatisticsComponent implements OnInit {
     const x = ['QPSK', '16-QAM', '64-QAM'];
     const y = this.result['ueModulationCount'];
     const text = [];
-    const sum = Plotly.d3.sum(y);
-    const fmt = Plotly.d3.format('.0%');
-    text.push(fmt(y[0] / sum));
-    text.push(fmt(y[1] / sum));
-    text.push(fmt(y[2] / sum));
+    if (this.calculateForm.ueCoordinate !== '') {
+      const sum = Plotly.d3.sum(y);
+      const fmt = Plotly.d3.format('.0%');
+      text.push(fmt(y[0] / sum));
+      text.push(fmt(y[1] / sum));
+      text.push(fmt(y[2] / sum));
+    }
 
     traces.push({
       type: 'bar',
@@ -750,10 +752,12 @@ export class StatisticsComponent implements OnInit {
     const x = ['0', '1', '2', '3', '4', '5'];
     const y = this.result['ueSignalLevelCount'];
     const text = [];
-    const sum = Plotly.d3.sum(y);
-    const fmt = Plotly.d3.format('.0%');
-    for (let i = 0; i < y.length; i++) {
-      text.push(fmt(y[i] / sum));
+    if (this.calculateForm.ueCoordinate !== '') {
+      const sum = Plotly.d3.sum(y);
+      const fmt = Plotly.d3.format('.0%');
+      for (let i = 0; i < y.length; i++) {
+        text.push(fmt(y[i] / sum));
+      }
     }
 
     traces.push({
@@ -768,6 +772,7 @@ export class StatisticsComponent implements OnInit {
       },
       hoverinfo: 'x+y'
     });
+
 
     Plotly.newPlot(id, {
       data: traces,

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 
@@ -21,6 +21,12 @@ export class ProposeComponent implements OnInit {
   /** 建議方案 list */
   candidateList = [];
   @ViewChild('layoutChart') layoutChart: ElementRef;
+
+  @HostListener('window:resize') windowResize() {
+    Plotly.relayout('layout_chart', {
+      autosize: true
+    });
+  }
 
   ngOnInit(): void {
   }
@@ -108,6 +114,7 @@ export class ProposeComponent implements OnInit {
 
       const traces = [];
       const chosenNum = [];
+      this.candidateList.length = 0;
       // 建議方案 list
       for (let i = 0; i < this.result['chosenCandidate'].length; i++) {
         if (typeof numMap[this.result['chosenCandidate'][i].toString()] !== 'undefined') {

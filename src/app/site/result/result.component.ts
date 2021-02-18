@@ -74,7 +74,6 @@ export class ResultComponent implements OnInit {
   @ViewChild('statistics') statistics: StatisticsComponent;
   @ViewChild('siteInfo') siteInfo: SiteInfoComponent;
 
-
   ngOnInit() {
     this.view3dDialogConfig.autoFocus = false;
     this.view3dDialogConfig.width = '80%';
@@ -144,14 +143,17 @@ export class ResultComponent implements OnInit {
             altitude: obj[4]
           });
         }
-        const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
-        for (const item of ueCoordinate) {
-          const obj = JSON.parse(item);
-          this.ueList.push({
-            x: obj[0],
-            y: obj[1],
-            z: obj[2]
-          });
+
+        if (this.calculateForm.ueCoordinate !== '') {
+          const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
+          for (const item of ueCoordinate) {
+            const obj = JSON.parse(item);
+            this.ueList.push({
+              x: obj[0],
+              y: obj[1],
+              z: obj[2]
+            });
+          }
         }
 
         // 建議方案

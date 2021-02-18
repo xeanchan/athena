@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 
@@ -27,6 +27,12 @@ export class SignalStrengthComponent implements OnInit {
   imgSRC;
   chartId;
   showUE = true;
+
+  @HostListener('window:resize') windowResize() {
+    Plotly.relayout(this.chartId, {
+      autosize: true
+    });
+  }
 
   ngOnInit(): void {
   }
