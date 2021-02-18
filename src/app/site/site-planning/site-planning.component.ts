@@ -1140,6 +1140,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.calculateForm[key] = Number(this.calculateForm[key]);
       }
     });
+
+    // check規劃目標
+    if (this.planningIndex === '1') {
+      this.calculateForm.isUeAvgSinr = false;
+      this.calculateForm.isUeAvgThroughput = false;
+      this.calculateForm.isUeTpByDistance = false;
+    } else {
+      this.calculateForm.isAverageSinr = false;
+      this.calculateForm.isCoverage = false;
+    }
   }
 
   /** 查詢進度 */
