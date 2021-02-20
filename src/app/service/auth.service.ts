@@ -46,7 +46,7 @@ export class AuthService {
       res => {
         this.setUserToken(null, null);
         // this.router.navigate(['/logon']);
-        location.href = '/logon';
+        location.href = '#/logon';
       }
     );
   }
