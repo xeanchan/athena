@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -11,7 +12,10 @@ declare var Plotly: any;
 })
 export class SignalCoverComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private translateService: TranslateService
+  ) { }
 
   // plotLayout;
   calculateForm = new CalculateForm();
@@ -92,7 +96,8 @@ export class SignalCoverComponent implements OnInit {
           ticks: 'inside',
         },
         margin: { t: 20, b: 20, l: 40},
-        images: images
+        images: images,
+        hovermode: 'closest'
       };
 
       const zValues = JSON.parse(this.calculateForm.zValue.toString());
@@ -108,9 +113,11 @@ export class SignalCoverComponent implements OnInit {
       const zLen = zValues.length;
       const zData = [];
       const allZ = [];
+      const zText = [];
       for (let i = 0; i < zLen; i++) {
         zData.push([]);
         allZ.push([]);
+        zText.push([]);
       }
       let xIndex = 0;
       for (const item of this.result['connectionMapAll']) {
@@ -119,8 +126,10 @@ export class SignalCoverComponent implements OnInit {
           for (const yData of item) {
             if (typeof zData[i][yIndex] === 'undefined') {
               zData[i][yIndex] = [];
+              zText[i][yIndex] = [];
             }
             zData[i][yIndex][xIndex] = yData[i];
+            zText[i][yIndex][xIndex] = Math.round(yData[i] * 100) / 100;
             yIndex++;
             allZ[i].push(yData[i]);
           }
@@ -228,6 +237,7 @@ export class SignalCoverComponent implements OnInit {
         x: x,
         y: y,
         z: zData[zValues.indexOf(Number(zValue))],
+        text: zText[zValues.indexOf(zValue)],
         colorscale: [
           ['0.0', 'rgb(12,51,131)'],
           ['0.25', 'rgb(10,136,186)'],
@@ -236,8 +246,7 @@ export class SignalCoverComponent implements OnInit {
           ['1', 'rgb(217,30,30)'],
         ],
         type: 'heatmap',
-        // opacity: 0.7,
-        hoverinfo: 'x+y+z',
+        hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
         showscale: false
       };
       traces.push(trace);
@@ -291,11 +300,11 @@ export class SignalCoverComponent implements OnInit {
             cx.push(xdata);
             cy.push(ydata);
 
-            const text = `新增AP
+            const text = `${this.translateService.instant('candidateBs')}
             X: ${xdata}
             Y: ${ydata}
             Z: ${zdata}
-            訊號品質: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`;
+            ${this.translateService.instant('bsPower')}: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`;
             this.candidateList.push({
               x: xdata,
               y: ydata,
