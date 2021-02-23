@@ -28,10 +28,6 @@ export class View3dComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data) {
 
       this.calculateForm = data.calculateForm;
-      // this.obstacleList = data.obstacleList;
-      // this.defaultBSList = data.defaultBSList;
-      // this.candidateList = data.candidateList;
-      // this.ueList = data.ueList;
       this.obstacle = data.obstacleList;
       this.defaultBs = data.defaultBSList;
       this.candidate = data.candidateList;
@@ -40,6 +36,8 @@ export class View3dComponent implements OnInit {
       this.height = this.calculateForm.height;
       this.zValue = data.zValue;
       this.planeHeight = this.zValue[0].toString();
+      this.result = data.result;
+console.log(this.result)      
     }
 
   calculateForm: CalculateForm;
@@ -74,21 +72,22 @@ export class View3dComponent implements OnInit {
   candidate = [];
   ue = [];
   result = {};
-  heatmapConfig = {
-    container: document.getElementById('heatmap'),
-    radius: 5,
-    maxOpacity: .8,
-    minOpacity: .8,
-    blur: 0,
-    gradient: {
-      // plotly js 'portland' setup
-      0: 'rgb(12, 51, 131)',
-      0.25: 'rgb(10,136,186)',
-      0.5: 'rgb(242,211,56)',
-      0.75: 'rgb(242,143,56)',
-      1: 'rgb(217,30,30)'
-    }
-  };
+  // heatmapConfig = {
+  //   container: document.getElementById('heatmap'),
+  //   radius: 5,
+  //   maxOpacity: .8,
+  //   minOpacity: .8,
+  //   blur: 0,
+  //   gradient: {
+  //     // plotly js 'portland' setup
+  //     0: 'rgb(12, 51, 131)',
+  //     0.25: 'rgb(10,136,186)',
+  //     0.5: 'rgb(242,211,56)',
+  //     0.75: 'rgb(242,143,56)',
+  //     1: 'rgb(217,30,30)'
+  //   }
+  // };
+  heatmapConfig = [[12, 51, 131], [10, 136, 186], [242, 211, 56], [242, 143, 56], [217, 30, 30]];
 
   ngOnInit() {
     // this.draw();
@@ -183,8 +182,7 @@ export class View3dComponent implements OnInit {
         const candBox = BABYLON.BoxBuilder.CreateBox('candidate', {size: 1}, scene);
         candBox.position = new BABYLON.Vector3(candidate.x + offsetX, candidate.z + offsetY, candidate.y + offsetZ);
         if (null != this.result['gaResult']) {
-          for (const id2 of this.result['gaResult'].chosenCandidate) {
-            const chosen = this.result['gaResult'].chosenCandidate[id2];
+          for (const chosen of this.result['gaResult'].chosenCandidate) {
             if (candidate.x === chosen[0] && candidate.y === chosen[1] && candidate.z === chosen[2]) {
               candBox.material = chosenMat;
               break;
@@ -277,7 +275,7 @@ export class View3dComponent implements OnInit {
   switchHeatMap() {
     Object.keys(this.heatmapGroup).forEach(id => {
       for (let i = 0; i < 3; i++) {
-        if (id === this.planeHeight && i === this.heatmapType) {
+        if (id === this.planeHeight && i === Number(this.heatmapType)) {
           this.heatmapGroup[id][i].isVisible = true;
         } else {
           this.heatmapGroup[id][i].isVisible = false;

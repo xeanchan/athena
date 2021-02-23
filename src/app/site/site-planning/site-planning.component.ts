@@ -208,6 +208,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   CANDIDATE_COLOR = '#d00a67';
   /** UE預設顏色 */
   UE_COLOR = '#0c9ccc';
+  /** history output */
+  hstOutput = {};
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -301,9 +303,40 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           res => {
             if (this.isHst) {
               const result = res;
+              const output = this.formService.setHstOutputToResultOutput(result['output']);
               delete result['output'];
               // 大小寫不同，各自塞回form
               this.calculateForm = this.formService.setHstToForm(result);
+console.log(output)
+              this.hstOutput['gaResult'] = {};
+              this.hstOutput['gaResult']['chosenCandidate'] = output['chosenCandidate'];
+              this.hstOutput['gaResult']['sinrMap'] = output['sinrMap'];
+              this.hstOutput['gaResult']['connectionMapAll'] = output['connectionMapAll'];
+              this.hstOutput['gaResult']['rsrpMap'] = output['rsrpMap'];
+
+              const sinrAry = [];
+              output['sinrMap'].map(v => {
+                v.map(m => {
+                  m.map(d => {
+                    sinrAry.push(d);
+                  });
+                });
+              });
+
+              const rsrpAry = [];
+              output['rsrpMap'].map(v => {
+                v.map(m => {
+                  m.map(d => {
+                    rsrpAry.push(d);
+                  });
+                });
+              });
+
+              this.hstOutput['sinrMax'] = Plotly.d3.max(sinrAry);
+              this.hstOutput['sinrMin'] = Plotly.d3.min(sinrAry);
+              this.hstOutput['rsrpMax'] = Plotly.d3.max(rsrpAry);
+              this.hstOutput['rsrpMin'] = Plotly.d3.min(rsrpAry);
+
             } else {
               this.calculateForm = res['input'];
             }
@@ -1313,7 +1346,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       defaultBSList: defaultBS,
       candidateList: candidate,
       ueList: ue,
-      zValue: this.zValues
+      zValue: this.zValues,
+      result: this.hstOutput
     };
     this.matDialog.open(View3dComponent, this.view3dDialogConfig);
   }
