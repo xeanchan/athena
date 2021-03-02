@@ -63,6 +63,7 @@ export class ResultComponent implements OnInit {
   /** 歷史紀錄 */
   isHst = false;
   showUE = true;
+  hstOutput = {};
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -179,6 +180,35 @@ export class ResultComponent implements OnInit {
           this.siteInfo.inputBsListCount = candidateBs.length;
           this.siteInfo.defaultBsCount = this.result['defaultBs'].length;
         }, 0);
+
+        this.hstOutput['gaResult'] = {};
+        this.hstOutput['gaResult']['chosenCandidate'] = this.result['chosenCandidate'];
+        this.hstOutput['gaResult']['sinrMap'] = this.result['sinrMap'];
+        this.hstOutput['gaResult']['connectionMapAll'] = this.result['connectionMapAll'];
+        this.hstOutput['gaResult']['rsrpMap'] = this.result['rsrpMap'];
+
+        const sinrAry = [];
+        this.result['sinrMap'].map(v => {
+          v.map(m => {
+            m.map(d => {
+              sinrAry.push(d);
+            });
+          });
+        });
+
+        const rsrpAry = [];
+        this.result['rsrpMap'].map(v => {
+          v.map(m => {
+            m.map(d => {
+              rsrpAry.push(d);
+            });
+          });
+        });
+
+        this.hstOutput['sinrMax'] = Plotly.d3.max(sinrAry);
+        this.hstOutput['sinrMin'] = Plotly.d3.min(sinrAry);
+        this.hstOutput['rsrpMax'] = Plotly.d3.max(rsrpAry);
+        this.hstOutput['rsrpMin'] = Plotly.d3.min(rsrpAry);
       }
     );
   }
@@ -281,7 +311,8 @@ export class ResultComponent implements OnInit {
       defaultBSList: this.defaultBSList,
       candidateList: this.candidateList,
       ueList: this.ueList,
-      zValue: this.zValues
+      zValue: this.zValues,
+      result: this.hstOutput
     };
     this.matDialog.open(View3dComponent, this.view3dDialogConfig);
   }

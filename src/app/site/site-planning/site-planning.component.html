@@ -300,22 +300,22 @@
           <div class="subTarget">
             <ng-container *ngIf="planningIndex === '1'">
               <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr" matTooltip="訊號品質提升，有助於提升平均傳輸速度">
-                強化整體場域內整體訊號品質
+                {{ 'isAverageSinr' | translate }}
               </mat-checkbox>
               <mat-checkbox [(ngModel)]="calculateForm.isCoverage" matTooltip="提升訊號覆蓋率，可以避免場域邊緣或遮蔽物附近的位置沒有訊號可供連網，但有可能造成AP間訊號干擾上升">
-                強化整體場域內訊號覆蓋
+                {{ 'isCoverage' | translate }}
               </mat-checkbox>
             </ng-container>
 
             <ng-container *ngIf="planningIndex === '2'">
               <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr" matTooltip="根據行動終端分布的位置，找出讓這些使用者訊號品質最好的方案，對於這些座標的優化效果會高於以場域為主進行規劃">
-                強化行動終端整體訊號品質
+                {{ 'isUeAvgSinr' | translate }}
               </mat-checkbox>
               <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput" matTooltip="根據行動終端分布的位置，提升這些位置的傳輸速度，但可能犧牲其他位置或場域邊緣的訊號品質">
-                強化行動終端傳輸速率上限
+                {{ 'isUeAvgThroughput' | translate }}
               </mat-checkbox>
               <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance" matTooltip="根據行動終端分布的位置提升訊號覆蓋率，可避免清單中的裝置沒有訊號連網，效果會高於以場域為主進行規劃">
-                強化行動終端有訊號覆蓋的比率
+                {{ 'isUeTpByDistance' | translate }}
               </mat-checkbox>
             </ng-container>
           </div>

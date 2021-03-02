@@ -25,9 +25,9 @@
       </tr>
       <tr>
           <td>{{ result['ueCoverage'] }}%</td>
-          <td>{{ result['ueAverageSinr'] | number }}</td>
-          <td>{{ result['ueAverageRsrp'] | number }}</td>
-          <td>{{ result['ueThroughput'] | number }}</td>
+          <td>{{ parseNoData(result['ueAverageSinr']) }}</td>
+          <td>{{ parseNoData(result['ueAverageRsrp']) }}</td>
+          <td>{{ parseNoData(result['ueThroughput']) }}</td>
       </tr>
   </tbody>
   <tbody>

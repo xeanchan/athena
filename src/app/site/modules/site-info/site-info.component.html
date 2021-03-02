@@ -10,8 +10,13 @@
       <span><label>切面高度</label>{{ calculateForm.zValue }} 公尺</span>
     </li>
     <li>
-      <span><label>規劃目標</label>
-      <span>不限制增加基站數量，以達到UE平均下行throughput最大.</span>
+      <span>
+        <label>規劃目標</label>
+        <div *ngIf="planningObj.isAverageSinr">{{ 'isAverageSinr' | translate }}</div>
+        <div *ngIf="planningObj.isCoverage">{{ 'isCoverage' | translate }}</div>
+        <div *ngIf="planningObj.isUeAvgSinr">{{ 'isUeAvgSinr' | translate }}</div>
+        <div *ngIf="planningObj.isUeAvgThroughput">{{ 'isUeAvgThroughput' | translate }}</div>
+        <div *ngIf="planningObj.isUeTpByDistance">{{ 'isUeTpByDistance' | translate }}</div>
       </span>
     </li>
     <hr>

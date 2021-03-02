@@ -31,4 +31,12 @@ export class PerformanceComponent implements OnInit {
     }
   }
 
+  parseNoData(val) {
+    if (val == null || val === '') {
+      return '-';
+    } else {
+      return Math.round(val * 1000) / 1000;
+    }
+  }
+
 }

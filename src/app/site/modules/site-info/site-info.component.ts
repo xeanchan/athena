@@ -15,8 +15,21 @@ export class SiteInfoComponent implements OnInit {
   calculateForm = new CalculateForm();
   inputBsListCount = 0;
   defaultBsCount = 0;
+  planningObj = {
+    isAverageSinr: false,
+    isCoverage: false,
+    isUeAvgSinr: false,
+    isUeAvgThroughput: false,
+    isUeTpByDistance: false
+  };
 
   ngOnInit(): void {
+    console.log(sessionStorage.getItem('planningObj'))
+    if (sessionStorage.getItem('planningObj') != null) {
+      this.planningObj = JSON.parse(sessionStorage.getItem('planningObj'));
+      console.log(this.planningObj)
+    }
+    
   }
 
   parseOB(type) {

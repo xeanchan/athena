@@ -264,6 +264,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.view3dDialogConfig.width = '80%';
     this.view3dDialogConfig.hasBackdrop = false;
     this.msgDialogConfig.autoFocus = false;
+    sessionStorage.removeItem('planningObj');
 
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
@@ -307,7 +308,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               delete result['output'];
               // 大小寫不同，各自塞回form
               this.calculateForm = this.formService.setHstToForm(result);
-console.log(output)
+              console.log(output);
               this.hstOutput['gaResult'] = {};
               this.hstOutput['gaResult']['chosenCandidate'] = output['chosenCandidate'];
               this.hstOutput['gaResult']['sinrMap'] = output['sinrMap'];
@@ -1063,6 +1064,9 @@ console.log(output)
 
     this.authService.spinnerShowAsHome();
     this.setForm();
+    // 規劃目標
+    this.setPlanningObj();
+
     console.log(this.calculateForm);
     const url = `${this.authService.API_URL}/calculate`;
     this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
@@ -1076,6 +1080,27 @@ console.log(output)
         console.log(err);
       }
     );
+  }
+
+  /** 規劃目標  */
+  setPlanningObj() {
+    // check規劃目標
+    if (this.planningIndex === '1') {
+      this.calculateForm.isUeAvgSinr = false;
+      this.calculateForm.isUeAvgThroughput = false;
+      this.calculateForm.isUeTpByDistance = false;
+    } else {
+      this.calculateForm.isAverageSinr = false;
+      this.calculateForm.isCoverage = false;
+    }
+    const planningObj = {
+      isAverageSinr: this.calculateForm.isAverageSinr,
+      isCoverage: this.calculateForm.isCoverage,
+      isUeAvgSinr: this.calculateForm.isUeAvgSinr,
+      isUeAvgThroughput: this.calculateForm.isUeAvgThroughput,
+      isUeTpByDistance: this.calculateForm.isUeTpByDistance
+    };
+    sessionStorage.setItem('planningObj', JSON.stringify(planningObj));
   }
 
   /** 組form */
@@ -1173,16 +1198,6 @@ console.log(output)
         this.calculateForm[key] = Number(this.calculateForm[key]);
       }
     });
-
-    // check規劃目標
-    if (this.planningIndex === '1') {
-      this.calculateForm.isUeAvgSinr = false;
-      this.calculateForm.isUeAvgThroughput = false;
-      this.calculateForm.isUeTpByDistance = false;
-    } else {
-      this.calculateForm.isAverageSinr = false;
-      this.calculateForm.isCoverage = false;
-    }
   }
 
   /** 查詢進度 */
@@ -2009,6 +2024,8 @@ console.log(output)
 
   /** 運算結果 */
   result() {
+    // 規劃目標
+    this.setPlanningObj();
     location.replace(`#/site/result?taskId=${this.taskid}&isHst=true`);
     location.reload();
     // this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});

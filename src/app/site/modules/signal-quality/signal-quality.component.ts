@@ -126,6 +126,10 @@ export class SignalQualityComponent implements OnInit {
         zText.push([]);
       }
       let xIndex = 0;
+      const mapX = [];
+      const mapY = [];
+      const mapColor = [];
+      const mapText = [];
       for (const item of this.result['sinrMap']) {
         for (let i = 0; i < zLen; i++) {
           let yIndex = 0;
@@ -136,6 +140,24 @@ export class SignalQualityComponent implements OnInit {
             }
             zData[i][yIndex][xIndex] = yData[i];
             zText[i][yIndex][xIndex] = Math.round(yData[i] * 100) / 100;
+            if (zText[i][yIndex][xIndex] >= 24) {
+              mapColor.push('rgb(217,30,30)');
+            } else if (zText[i][yIndex][xIndex] >= 23) {
+              mapColor.push('rgb(242,143,56)');
+            } else if (zText[i][yIndex][xIndex] >= 15) {
+              mapColor.push('rgb(242,211,56)');
+            } else if (zText[i][yIndex][xIndex] >= 6) {
+              mapColor.push('green');
+            } else if (zText[i][yIndex][xIndex] >= -3) {
+              mapColor.push('rgb(10,136,186)');
+            } else if (zText[i][yIndex][xIndex] < -3) {
+              mapColor.push('rgb(12,51,131)');
+            }
+
+            mapX.push(xIndex);
+            mapY.push(yIndex);
+            mapText.push(zText[i][yIndex][xIndex]);
+
             yIndex++;
             allZ[i].push(yData[i]);
           }
@@ -155,31 +177,37 @@ export class SignalQualityComponent implements OnInit {
       this.colorBars.length = 0;
       const max = zMax[zValues.indexOf(Number(zValue))];
       const min = zMin[zValues.indexOf(Number(zValue))];
+
       this.colorBars.push(
         {
-          val: Math.round(max),
+          val: Math.round(24),
           background: 'rgb(217,30,30)',
-          height: '25%'
+          height: '20%'
         },
         {
-          val: Math.round(max * 0.75),
+          val: Math.round(23),
           background: 'rgb(242,143,56)',
-          height: '25%'
+          height: '20%'
         },
         {
-          val: Math.round(max * 0.5),
+          val: Math.round(15),
           background: 'rgb(242,211,56)',
-          height: '25%'
+          height: '20%'
         },
         {
-          val: Math.round(max * 0.25),
+          val: Math.round(6),
+          background: 'green',
+          height: '20%'
+        },
+        {
+          val: Math.round(-3),
           background: 'rgb(10,136,186)',
-          height: '25%'
+          height: '20%'
         },
         {
-          val: Math.round(min),
+          val: Math.round(-12),
           background: 'rgb(12,51,131)',
-          height: '25%'
+          height: '20%'
         }
       );
 
@@ -225,22 +253,39 @@ export class SignalQualityComponent implements OnInit {
       }
 
       const trace = {
-        x: x,
-        y: y,
-        z: zData[zValues.indexOf(zValue)],
-        text: zText[zValues.indexOf(zValue)],
-        colorscale: [
-          ['0.0', 'rgb(12,51,131)'],
-          ['0.25', 'rgb(10,136,186)'],
-          ['0.5', 'rgb(242,211,56)'],
-          ['0.75', 'rgb(242,143,56)'],
-          ['1', 'rgb(217,30,30)'],
-        ],
-        type: 'heatmap',
+        x: mapX,
+        y: mapY,
+        type: 'scatter',
+        text: mapText,
+        mode: 'markers',
+        marker: {
+          color: mapColor,
+          symbol: 'square',
+          size: 8
+        },
+        showlegend: false,
         hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-        showscale: false
       };
       traces.push(trace);
+
+      // const trace = {
+      //   x: x,
+      //   y: y,
+      //   z: zData[zValues.indexOf(zValue)],
+      //   text: zText[zValues.indexOf(zValue)],
+      //   colorscale: [
+      //     [0, 'rgb(12,51,131)'],
+      //     [0.2, 'rgb(10,136,186)'],
+      //     [0.4, 'green'],
+      //     [0.6, 'rgb(242,211,56)'],
+      //     [0.8, 'rgb(242,143,56)'],
+      //     [1, 'rgb(217,30,30)'],
+      //   ],
+      //   type: 'heatmap',
+      //   hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
+      //   showscale: false
+      // };
+      // traces.push(trace);
 
       // 現有基站
       if (this.calculateForm.defaultBs !== '') {
