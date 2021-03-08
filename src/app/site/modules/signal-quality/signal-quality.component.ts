@@ -181,32 +181,32 @@ export class SignalQualityComponent implements OnInit {
       this.colorBars.push(
         {
           val: Math.round(24),
-          background: 'rgb(217,30,30)',
-          height: '20%'
+          'background-image': 'linear-gradient(rgb(217,30,30),rgb(242,143,56))',
+          height: '25%'
         },
         {
-          val: Math.round(23),
-          background: 'rgb(242,143,56)',
-          height: '20%'
+          val: '',
+          'background-image': 'linear-gradient(rgb(242,143,56),rgb(242,143,56))',
+          height: '25%'
         },
         {
           val: Math.round(15),
-          background: 'rgb(242,211,56)',
-          height: '20%'
+          'background-image': 'linear-gradient(rgb(242,143,56),rgb(242,211,56))',
+          height: '25%'
         },
         {
-          val: Math.round(6),
-          background: 'green',
-          height: '20%'
+          val: '6',
+          'background-image': 'linear-gradient(rgb(242,211,56),green)',
+          height: '10%'
         },
         {
-          val: Math.round(-3),
-          background: 'rgb(10,136,186)',
-          height: '20%'
+          val: '',
+          'background-image': 'linear-gradient(green,rgb(10,136,186))',
+          height: '15%'
         },
         {
           val: Math.round(-12),
-          background: 'rgb(12,51,131)',
+          'background-image': 'linear-gradient(rgb(10,136,186),rgb(12,51,131))',
           height: '20%'
         }
       );
@@ -252,40 +252,40 @@ export class SignalQualityComponent implements OnInit {
         });
       }
 
-      const trace = {
-        x: mapX,
-        y: mapY,
-        type: 'scatter',
-        text: mapText,
-        mode: 'markers',
-        marker: {
-          color: mapColor,
-          symbol: 'square',
-          size: 8
-        },
-        showlegend: false,
-        hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-      };
-      traces.push(trace);
-
       // const trace = {
-      //   x: x,
-      //   y: y,
-      //   z: zData[zValues.indexOf(zValue)],
-      //   text: zText[zValues.indexOf(zValue)],
-      //   colorscale: [
-      //     [0, 'rgb(12,51,131)'],
-      //     [0.2, 'rgb(10,136,186)'],
-      //     [0.4, 'green'],
-      //     [0.6, 'rgb(242,211,56)'],
-      //     [0.8, 'rgb(242,143,56)'],
-      //     [1, 'rgb(217,30,30)'],
-      //   ],
-      //   type: 'heatmap',
+      //   x: mapX,
+      //   y: mapY,
+      //   type: 'scatter',
+      //   text: mapText,
+      //   mode: 'markers',
+      //   marker: {
+      //     color: mapColor,
+      //     symbol: 'square',
+      //     size: 8
+      //   },
+      //   showlegend: false,
       //   hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-      //   showscale: false
       // };
       // traces.push(trace);
+
+      const trace = {
+        x: x,
+        y: y,
+        z: zData[zValues.indexOf(zValue)],
+        text: zText[zValues.indexOf(zValue)],
+        colorscale: [
+          [0, 'rgb(12,51,131)'],
+          [0.2, 'rgb(10,136,186)'],
+          [0.3, 'green'],
+          [0.4, 'rgb(242,211,56)'],
+          [0.75, 'rgb(242,143,56)'],
+          [1, 'rgb(217,30,30)'],
+        ],
+        type: 'heatmap',
+        hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
+        showscale: false
+      };
+      traces.push(trace);
 
       // 現有基站
       if (this.calculateForm.defaultBs !== '') {
