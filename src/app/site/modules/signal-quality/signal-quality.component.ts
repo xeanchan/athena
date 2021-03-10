@@ -181,12 +181,12 @@ export class SignalQualityComponent implements OnInit {
       this.colorBars.push(
         {
           val: Math.round(24),
-          'background-image': 'linear-gradient(rgb(217,30,30),rgb(242,143,56))',
+          'background-color': 'rgb(217,30,30)',
           height: '25%'
         },
         {
-          val: '',
-          'background-image': 'linear-gradient(rgb(242,143,56),rgb(242,143,56))',
+          val: '20',
+          'background-image': 'linear-gradient(rgb(217,30,30),rgb(242,143,56))',
           height: '25%'
         },
         {
@@ -196,12 +196,12 @@ export class SignalQualityComponent implements OnInit {
         },
         {
           val: '6',
-          'background-image': 'linear-gradient(rgb(242,211,56),green)',
+          'background-image': 'linear-gradient(rgb(242,211,56), rgb(136, 224, 53))',
           height: '10%'
         },
         {
           val: '',
-          'background-image': 'linear-gradient(green,rgb(10,136,186))',
+          'background-image': 'linear-gradient(rgb(136, 224, 53), rgb(10,136,186))',
           height: '15%'
         },
         {
@@ -276,7 +276,7 @@ export class SignalQualityComponent implements OnInit {
         colorscale: [
           [0, 'rgb(12,51,131)'],
           [0.2, 'rgb(10,136,186)'],
-          [0.3, 'green'],
+          [0.3, 'rgb(136, 224, 53)'],
           [0.4, 'rgb(242,211,56)'],
           [0.75, 'rgb(242,143,56)'],
           [1, 'rgb(217,30,30)'],

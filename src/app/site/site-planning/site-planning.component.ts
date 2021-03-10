@@ -1162,7 +1162,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     } else {
-      ueCoordinate = '[]';
+      ueCoordinate = '';
     }
     this.calculateForm.ueCoordinate = ueCoordinate;
     let defaultBs = '';

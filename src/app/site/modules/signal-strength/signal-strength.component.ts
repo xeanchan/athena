@@ -158,22 +158,22 @@ export class SignalStrengthComponent implements OnInit {
         },
         {
           val: -70,
-          background: 'rgb(242,143,56)',
+          background: 'linear-gradient(rgb(217,30,30), rgb(242,143,56))',
           height: '25%'
         },
         {
           val: -95,
-          background: 'rgb(242,211,56)',
+          background: 'linear-gradient(rgb(242,143,56), rgb(242,211,56))',
           height: '25%'
         },
         {
           val: -120,
-          background: 'rgb(10,136,186)',
+          background: 'linear-gradient(rgb(242,211,56), rgb(10,136,186))',
           height: '25%'
         },
         {
           val: -140,
-          background: 'rgb(12,51,131)',
+          background: 'linear-gradient(rgb(10,136,186), rgb(12,51,131))',
           height: '25%'
         }
       );
