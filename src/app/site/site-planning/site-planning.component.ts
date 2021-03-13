@@ -14,6 +14,7 @@ import { View3dComponent } from '../view3d/view3d.component';
 import * as XLSX from 'xlsx';
 import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.component';
 import { FormService } from '../../service/form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -34,6 +35,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private matDialog: MatDialog,
     private formService: FormService,
+    private translateService: TranslateService,
     private http: HttpClient) {
     }
 
@@ -75,7 +77,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     ue: 'subitem active'
   };
   /** 平面高度 */
-  zValues = ['50', '', ''];
+  zValues = ['1', '', ''];
   /** 障礙物 */
   obstacleList = [];
   dragObject = {};
@@ -129,7 +131,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     },
     UE: {
       id: 'svg_6',
-      title: '新增ＵＥ',
+      title: this.translateService.instant('ue'),
       type: 'UE',
       element: ''
     }
@@ -379,40 +381,45 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
    * init data
    */
   initData(isImport) {
-    this.chart.nativeElement.style.opacity = 0;
-    // if (this.calculateForm.mapImage != null) {
-    const reader = new FileReader();
-    reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
-    reader.onload = (e) => {
-      // draw background image chart
-      const defaultPlotlyConfiguration = {
-        displaylogo: false,
-        showTips: false,
-        editable: false,
-        scrollZoom: false,
-        displayModeBar: false
-      };
+    if (typeof this.chart !== 'undefined') {
+      this.chart.nativeElement.style.opacity = 0;
+    }
 
-      this.plotLayout = {
-        autosize: true,
-        xaxis: {
-          linewidth: 1,
-          mirror: 'all',
-          range: [0, this.calculateForm.width],
-          showgrid: false,
-          zeroline: false,
-          fixedrange: true
-        },
-        yaxis: {
-          linewidth: 1,
-          mirror: 'all',
-          range: [0, this.calculateForm.height],
-          showgrid: false,
-          zeroline: false,
-          fixedrange: true
-        },
-        margin: { t: 20, b: 20, l: 40},
-        images: [{
+    const defaultPlotlyConfiguration = {
+      displaylogo: false,
+      showTips: false,
+      editable: false,
+      scrollZoom: false,
+      displayModeBar: false
+    };
+
+    this.plotLayout = {
+      autosize: true,
+      xaxis: {
+        linewidth: 1,
+        mirror: 'all',
+        range: [0, this.calculateForm.width],
+        showgrid: false,
+        zeroline: false,
+        fixedrange: true
+      },
+      yaxis: {
+        linewidth: 1,
+        mirror: 'all',
+        range: [0, this.calculateForm.height],
+        showgrid: false,
+        zeroline: false,
+        fixedrange: true
+      },
+      margin: { t: 20, b: 20, l: 40}
+    };
+
+    if (this.calculateForm.mapImage != null) {
+      const reader = new FileReader();
+      reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
+      reader.onload = (e) => {
+
+        this.plotLayout['images'] = [{
           source: reader.result,
           x: 0,
           y: 0,
@@ -424,59 +431,89 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           yanchor: 'bottom',
           sizing: 'stretch',
           hover: 'x+y'
-        }]
+        }];
+
+        // draw background image chart
+        Plotly.newPlot('chart', {
+          data: [],
+          layout: this.plotLayout,
+          config: defaultPlotlyConfiguration
+        }).then((gd) => {
+          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+          const rect = xy.getBoundingClientRect();
+
+          const image = new Image();
+          image.src = reader.result.toString();
+          image.onload = () => {
+            let layoutOption;
+            if (image.width > image.height) {
+              const height = (image.height / (image.width * 0.9)) * rect.width;
+              layoutOption = {
+                height: height
+              };
+            } else {
+              const width = (image.width / (image.height * 0.9)) * rect.height;
+              layoutOption = {
+                width: width
+              };
+            }
+
+            Plotly.relayout('chart', layoutOption).then((gd2) => {
+              this.chart.nativeElement.style.opacity = 1;
+              const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
+              const rect2 = xy2.getBoundingClientRect();
+              // drag範圍
+              this.bounds = {
+                left: rect2.left,
+                top: rect2.top,
+                right: rect2.right,
+                bottom: rect2.top + rect2.height
+              };
+
+              // 計算比例尺
+              this.calScale(gd2);
+              // import xlsx
+              if (isImport) {
+                this.setImportData();
+              } else if (this.taskid !== '') {
+                // 編輯
+                this.edit();
+              }
+            });
+          };
+        });
       };
 
+    } else {
+      this.plotLayout['width'] = window.innerWidth * 0.68;
+      // draw background image chart
       Plotly.newPlot('chart', {
         data: [],
         layout: this.plotLayout,
         config: defaultPlotlyConfiguration
       }).then((gd) => {
-        const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
-        const rect = xy.getBoundingClientRect();
 
-        const image = new Image();
-        image.src = reader.result.toString();
-        image.onload = () => {
-          let layoutOption;
-          if (image.width > image.height) {
-            const height = (image.height / (image.width * 0.9)) * rect.width;
-            layoutOption = {
-              height: height
-            };
-          } else {
-            const width = (image.width / (image.height * 0.9)) * rect.height;
-            layoutOption = {
-              width: width
-            };
-          }
-
-          Plotly.relayout('chart', layoutOption).then((gd2) => {
-            this.chart.nativeElement.style.opacity = 1;
-            const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
-            const rect2 = xy2.getBoundingClientRect();
-            // drag範圍
-            this.bounds = {
-              left: rect2.left,
-              top: rect2.top,
-              right: rect2.right,
-              bottom: rect2.top + rect2.height
-            };
-
-            // 計算比例尺
-            this.calScale(gd2);
-            // import xlsx
-            if (isImport) {
-              this.setImportData();
-            } else if (this.taskid !== '') {
-              // 編輯
-              this.edit();
-            }
-          });
+        const xy2: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
+        const rect2 = xy2.getBoundingClientRect();
+        // drag範圍
+        this.bounds = {
+          left: rect2.left,
+          top: rect2.top,
+          right: rect2.right,
+          bottom: rect2.top + rect2.height
         };
+
+        // 計算比例尺
+        this.calScale(gd);
+        // import xlsx
+        if (isImport) {
+          this.setImportData();
+        } else if (this.taskid !== '') {
+          // 編輯
+          this.edit();
+        }
       });
-    };
-    // }
+    }
   }
 
   /** 計算比例尺 */
@@ -1549,7 +1586,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ueList.length = 0;
     const materialReg = new RegExp('[0-4]');
     /* base station sheet */
-    const baseStation: string = this.wb.SheetNames[1];
+    const sheetNameIndex = {};
+    for (let i = 0; i < this.wb.SheetNames.length; i++) {
+      sheetNameIndex[this.wb.SheetNames[i]] = i;
+    }
+
+    const baseStation: string = this.wb.SheetNames[sheetNameIndex['base station']];
     const baseStationWS: XLSX.WorkSheet = this.wb.Sheets[baseStation];
     const baseStationData = (XLSX.utils.sheet_to_json(baseStationWS, {header: 1}));
     if (baseStationData.length > 1) {
@@ -1597,7 +1639,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     /* candidate sheet */
-    const candidate: string = this.wb.SheetNames[2];
+    const candidate: string = this.wb.SheetNames[sheetNameIndex['candidate']];
     const candidateWS: XLSX.WorkSheet = this.wb.Sheets[candidate];
     const candidateData = (XLSX.utils.sheet_to_json(candidateWS, {header: 1}));
     if (candidateData.length > 1) {
@@ -1646,52 +1688,55 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     /* UE sheet */
-    const ue: string = this.wb.SheetNames[3];
-    const ueWS: XLSX.WorkSheet = this.wb.Sheets[ue];
-    const ueData = (XLSX.utils.sheet_to_json(ueWS, {header: 1}));
-    if (ueData.length > 1) {
-      for (let i = 1; i < ueData.length; i++) {
-        const id = `UE_${(i - 1)}`;
-        this.ueList.push(id);
+    const ue: string = this.wb.SheetNames[sheetNameIndex['ue']];
+    if (typeof ue !== 'undefined') {
+      const ueWS: XLSX.WorkSheet = this.wb.Sheets[ue];
+      const ueData = (XLSX.utils.sheet_to_json(ueWS, {header: 1}));
+      if (ueData.length > 1) {
+        for (let i = 1; i < ueData.length; i++) {
+          const id = `UE_${(i - 1)}`;
+          this.ueList.push(id);
 
-        let material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
-        if (!materialReg.test(material)) {
-          material = '0';
+          let material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
+          if (!materialReg.test(material)) {
+            material = '0';
+          }
+          const color = (typeof ueData[i][4] === 'undefined' ? this.UE_COLOR : ueData[i][4]);
+
+          this.dragObject[id] = {
+            x: ueData[i][0],
+            y: ueData[i][1],
+            z: ueData[i][2],
+            width: 19,
+            height: 29,
+            altitude: 50,
+            rotate: 0,
+            title: this.svgMap['UE'].title,
+            type: this.svgMap['UE'].type,
+            color: color,
+            material: material,
+            element: this.svgMap['UE'].element
+          };
+          this.spanStyle[id] = {
+            left: `${this.pixelXLinear(ueData[i][0])}px`,
+            top: `${this.chartHeight - 30 - this.pixelYLinear(ueData[i][1])}px`,
+            width: `19px`,
+            height: `29px`
+          };
+          this.svgStyle[id] = {
+            display: 'inherit',
+            width: 19,
+            height: 29
+          };
+          this.pathStyle[id] = {
+            fill: color
+          };
         }
-        const color = (typeof ueData[i][4] === 'undefined' ? this.UE_COLOR : ueData[i][4]);
-
-        this.dragObject[id] = {
-          x: ueData[i][0],
-          y: ueData[i][1],
-          z: ueData[i][2],
-          width: 19,
-          height: 29,
-          altitude: 50,
-          rotate: 0,
-          title: this.svgMap['UE'].title,
-          type: this.svgMap['UE'].type,
-          color: color,
-          material: material,
-          element: this.svgMap['UE'].element
-        };
-        this.spanStyle[id] = {
-          left: `${this.pixelXLinear(ueData[i][0])}px`,
-          top: `${this.chartHeight - 30 - this.pixelYLinear(ueData[i][1])}px`,
-          width: `19px`,
-          height: `29px`
-        };
-        this.svgStyle[id] = {
-          display: 'inherit',
-          width: 19,
-          height: 29
-        };
-        this.pathStyle[id] = {
-          fill: color
-        };
       }
     }
+
     /* obstacle sheet */
-    const obstacle: string = this.wb.SheetNames[4];
+    const obstacle: string = this.wb.SheetNames[sheetNameIndex['obstacle']];
     const obstacleWS: XLSX.WorkSheet = this.wb.Sheets[obstacle];
     const obstacleData = (XLSX.utils.sheet_to_json(obstacleWS, {header: 1}));
     if (obstacleData.length > 1) {
@@ -1799,7 +1844,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     /* bs parameters sheet */
-    const bsParameters: string = this.wb.SheetNames[5];
+    const bsParameters: string = this.wb.SheetNames[sheetNameIndex['bs parameters']];
     const bsParametersWS: XLSX.WorkSheet = this.wb.Sheets[bsParameters];
     const bsParametersData = (XLSX.utils.sheet_to_json(bsParametersWS, {header: 1}));
     if (bsParametersData.length > 1) {
@@ -1811,7 +1856,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.frequency = Number(bsParametersData[1][5]);
     }
     /* algorithm parameters sheet */
-    const algorithmParameters: string = this.wb.SheetNames[6];
+    const algorithmParameters: string = this.wb.SheetNames[sheetNameIndex['algorithm parameters']];
     const algorithmParametersWS: XLSX.WorkSheet = this.wb.Sheets[algorithmParameters];
     const algorithmParametersData = (XLSX.utils.sheet_to_json(algorithmParametersWS, {header: 1}));
     if (algorithmParametersData.length > 1) {
@@ -1824,7 +1869,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.pathLossModelId = Number(algorithmParametersData[1][6]);
     }
     /* objective parameters sheet */
-    const objectiveParameters: string = this.wb.SheetNames[7];
+    const objectiveParameters: string = this.wb.SheetNames[sheetNameIndex['objective parameters']];
     const objectiveParametersWS: XLSX.WorkSheet = this.wb.Sheets[objectiveParameters];
     const objectiveParametersData = (XLSX.utils.sheet_to_json(objectiveParametersWS, {header: 1}));
     if (objectiveParametersData.length > 1) {

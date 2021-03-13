@@ -31,11 +31,11 @@ export class PerformanceComponent implements OnInit {
     }
   }
 
-  parseNoData(val) {
+  parseNoData(val, isPercentage) {
     if (val == null || val === '') {
       return '-';
     } else {
-      return Math.round(val * 1000) / 1000;
+      return Math.round(val * 1000) / 1000 + (isPercentage ? '%' : '');
     }
   }
 

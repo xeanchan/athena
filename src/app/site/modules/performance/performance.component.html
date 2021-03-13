@@ -24,10 +24,10 @@
           <th>行動終端平均 Throughput</th>
       </tr>
       <tr>
-          <td>{{ result['ueCoverage'] }}%</td>
-          <td>{{ parseNoData(result['ueAverageSinr']) }}</td>
-          <td>{{ parseNoData(result['ueAverageRsrp']) }}</td>
-          <td>{{ parseNoData(result['ueThroughput']) }}</td>
+          <td>{{ parseNoData(result['ueCoverage'], true) }}</td>
+          <td>{{ parseNoData(result['ueAverageSinr'], false) }}</td>
+          <td>{{ parseNoData(result['ueAverageRsrp'], false) }}</td>
+          <td>{{ parseNoData(result['ueThroughput'], false) }}</td>
       </tr>
   </tbody>
   <tbody>

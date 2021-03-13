@@ -165,7 +165,7 @@ export class SignalCoverComponent implements OnInit {
           }
           cx.push(oData[0]);
           cy.push(oData[1]);
-          text.push(`新增ＵＥ<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+          text.push(`${this.translateService.instant('ue')}<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
         }
 
         traces.push({

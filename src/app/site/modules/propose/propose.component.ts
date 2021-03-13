@@ -97,19 +97,21 @@ export class ProposeComponent implements OnInit {
       const text = [];
       const color = [];
 
-      const candidateBs = this.calculateForm.candidateBs.split('|');
-      for (let i = 0; i < candidateBs.length; i++) {
-        const candidate = JSON.parse(candidateBs[i]);
-        numMap[candidate] = index;
-        xyMap[candidate] = {
-          x: candidate[0],
-          y: candidate[1]
-        };
-        x.push(candidate[0]);
-        y.push(candidate[1]);
-        text.push(index);
-        color.push('#7083d6');
-        index++;
+      if (this.calculateForm.candidateBs !== '') {
+        const candidateBs = this.calculateForm.candidateBs.split('|');
+        for (let i = 0; i < candidateBs.length; i++) {
+          const candidate = JSON.parse(candidateBs[i]);
+          numMap[candidate] = index;
+          xyMap[candidate] = {
+            x: candidate[0],
+            y: candidate[1]
+          };
+          x.push(candidate[0]);
+          y.push(candidate[1]);
+          text.push(index);
+          color.push('#7083d6');
+          index++;
+        }
       }
 
       const traces = [];

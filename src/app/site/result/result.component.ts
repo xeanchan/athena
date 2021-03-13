@@ -124,25 +124,32 @@ export class ResultComponent implements OnInit {
             });
           }
         }
-        const candidateBs = this.calculateForm.candidateBs.split('|');
-        for (const item of candidateBs) {
-          const obj = JSON.parse(item);
-          this.candidateList.push({
-            x: obj[0],
-            y: obj[1],
-            z: obj[2]
-          });
+
+        let candidateBs = [];
+        if (this.calculateForm.candidateBs !== '') {
+          candidateBs = this.calculateForm.candidateBs.split('|');
+          for (const item of candidateBs) {
+            const obj = JSON.parse(item);
+            this.candidateList.push({
+              x: obj[0],
+              y: obj[1],
+              z: obj[2]
+            });
+          }
         }
-        const obstacleInfo = this.calculateForm.obstacleInfo.split('|');
-        for (const item of obstacleInfo) {
-          const obj = JSON.parse(item);
-          this.obstacleList.push({
-            x: obj[0],
-            y: obj[1],
-            width: obj[2],
-            height: obj[3],
-            altitude: obj[4]
-          });
+
+        if (this.calculateForm.obstacleInfo !== '') {
+          const obstacleInfo = this.calculateForm.obstacleInfo.split('|');
+          for (const item of obstacleInfo) {
+            const obj = JSON.parse(item);
+            this.obstacleList.push({
+              x: obj[0],
+              y: obj[1],
+              width: obj[2],
+              height: obj[3],
+              altitude: obj[4]
+            });
+          }
         }
 
         if (this.calculateForm.ueCoordinate !== '') {
