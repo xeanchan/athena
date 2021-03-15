@@ -1256,7 +1256,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           window.clearInterval(this.progressInterval);
           this.progressInterval = window.setTimeout(() => {
             this.getProgress();
-          }, 3000);
+          }, 2000);
         }
 
       }, err => {
@@ -1540,43 +1540,53 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const map: string = this.wb.SheetNames[0];
     const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
     const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
-    this.calculateForm.mapImage = '';
-    const keyMap = {};
-    Object.keys(mapData[0]).forEach((key) => {
-      keyMap[mapData[0][key]] = key;
-    });
-    this.zValues.length = 0;
-    for (let i = 1; i < mapData.length; i++) {
-      this.calculateForm.mapImage += mapData[i][0];
-      if (typeof mapData[i][keyMap['mapLayer']] !== 'undefined') {
-        if (mapData[i][keyMap['mapLayer']] !== '') {
-          this.zValues.push(mapData[i][keyMap['mapLayer']]);
+    if (mapData.length === 1) {
+      // fail xlsx
+      this.msgDialogConfig.data = {
+        type: 'error',
+        infoMessage: this.translateService.instant('xlxs.fail')
+      };
+      this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      this.initData(false);
+    } else {
+      this.calculateForm.mapImage = '';
+      const keyMap = {};
+      Object.keys(mapData[0]).forEach((key) => {
+        keyMap[mapData[0][key]] = key;
+      });
+      this.zValues.length = 0;
+      for (let i = 1; i < mapData.length; i++) {
+        this.calculateForm.mapImage += mapData[i][0];
+        if (typeof mapData[i][keyMap['mapLayer']] !== 'undefined') {
+          if (mapData[i][keyMap['mapLayer']] !== '') {
+            this.zValues.push(mapData[i][keyMap['mapLayer']]);
+          }
         }
       }
-    }
-    this.calculateForm.width = mapData[1][keyMap['width']];
-    this.calculateForm.height = mapData[1][keyMap['height']];
-    this.calculateForm.altitude = mapData[1][keyMap['altitude']];
-    // mapName or imageName
-    if (typeof mapData[1][keyMap['mapName']] === 'undefined') {
-      this.calculateForm.mapName = mapData[1][keyMap['imageName']];
-    } else {
-      this.calculateForm.mapName = mapData[1][keyMap['mapName']];
-    }
-    // excel無protocol時預設wifi
-    if (typeof mapData[1][keyMap['protocol']] === 'undefined') {
-      this.calculateForm.objectiveIndex = '2';
-    } else {
-      if (mapData[1][keyMap['protocol']] === '0' || mapData[1][keyMap['protocol']] === '4G') {
-        this.calculateForm.objectiveIndex = '0';
-      } else if (mapData[1][keyMap['protocol']] === '1' || mapData[1][keyMap['protocol']] === '5G') {
-        this.calculateForm.objectiveIndex = '1';
-      } else if (mapData[1][keyMap['protocol']] === '2' || mapData[1][keyMap['protocol']] === 'wifi') {
-        this.calculateForm.objectiveIndex = '2';
+      this.calculateForm.width = mapData[1][keyMap['width']];
+      this.calculateForm.height = mapData[1][keyMap['height']];
+      this.calculateForm.altitude = mapData[1][keyMap['altitude']];
+      // mapName or imageName
+      if (typeof mapData[1][keyMap['mapName']] === 'undefined') {
+        this.calculateForm.mapName = mapData[1][keyMap['imageName']];
+      } else {
+        this.calculateForm.mapName = mapData[1][keyMap['mapName']];
       }
+      // excel無protocol時預設wifi
+      if (typeof mapData[1][keyMap['protocol']] === 'undefined') {
+        this.calculateForm.objectiveIndex = '2';
+      } else {
+        if (mapData[1][keyMap['protocol']] === '0' || mapData[1][keyMap['protocol']] === '4G') {
+          this.calculateForm.objectiveIndex = '0';
+        } else if (mapData[1][keyMap['protocol']] === '1' || mapData[1][keyMap['protocol']] === '5G') {
+          this.calculateForm.objectiveIndex = '1';
+        } else if (mapData[1][keyMap['protocol']] === '2' || mapData[1][keyMap['protocol']] === 'wifi') {
+          this.calculateForm.objectiveIndex = '2';
+        }
+      }
+  
+      this.initData(true);
     }
-
-    this.initData(true);
   }
 
   setImportData() {
@@ -1694,9 +1704,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const ueData = (XLSX.utils.sheet_to_json(ueWS, {header: 1}));
       if (ueData.length > 1) {
         for (let i = 1; i < ueData.length; i++) {
+          if (typeof ueData[i][0] === 'undefined') {
+            continue;
+          }
           const id = `UE_${(i - 1)}`;
           this.ueList.push(id);
-
           let material = (typeof ueData[i][3] === 'undefined' ? '0' : ueData[i][3]);
           if (!materialReg.test(material)) {
             material = '0';

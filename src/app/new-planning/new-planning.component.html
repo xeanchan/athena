@@ -44,9 +44,9 @@
       <tr>
         <td class="th">場域尺寸</td>
         <td class="size" [formGroup]="sizeGroup">
-          <span><input type="text" placeholder="長" [(ngModel)]="calculateForm.width" formControlName="width" required pattern="[1-9][0-9]*">公尺</span>
-          <span><input type="text" placeholder="寬" [(ngModel)]="calculateForm.height" formControlName="height" required pattern="[1-9][0-9]*">公尺</span>
-          <span><input type="text" placeholder="高" [(ngModel)]="calculateForm.altitude" formControlName="altitude" required pattern="[1-9][0-9]*">公尺</span>
+          <span><input type="text" placeholder="長" [(ngModel)]="calculateForm.width" formControlName="width" required pattern="^-?[\d.]+(?:e-?\d+)?$">公尺</span>
+          <span><input type="text" placeholder="寬" [(ngModel)]="calculateForm.height" formControlName="height" required pattern="^-?[\d.]+(?:e-?\d+)?$">公尺</span>
+          <span><input type="text" placeholder="高" [(ngModel)]="calculateForm.altitude" formControlName="altitude" required pattern="^-?[\d.]+(?:e-?\d+)?$">公尺</span>
           <div *ngIf="sizeGroup.errors?.sizeRevealed && (sizeGroup.touched || sizeGroup.dirty)" class="alert alert-danger">
             <div *ngIf="width.errors?.pattern || height.errors?.pattern || altitude.errors?.pattern; else required">
               {{ 'numeric.enter' | translate }}
