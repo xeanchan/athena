@@ -414,7 +414,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       margin: { t: 20, b: 20, l: 40}
     };
 
-    if (this.calculateForm.mapImage != null) {
+    if (this.calculateForm.mapImage != null && this.calculateForm.mapImage !== 'null') {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
@@ -485,6 +485,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
 
     } else {
+      this.chart.nativeElement.style.opacity = 1;
       this.plotLayout['width'] = window.innerWidth * 0.68;
       // draw background image chart
       Plotly.newPlot('chart', {
