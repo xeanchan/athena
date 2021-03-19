@@ -284,7 +284,8 @@ export class SignalQualityComponent implements OnInit {
         type: 'heatmap',
         hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
         showscale: false,
-        opacity: 0.8
+        opacity: 0.8,
+        zsmooth: 'best'
       };
       traces.push(trace);
 

@@ -241,7 +241,8 @@ export class SignalStrengthComponent implements OnInit {
         hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
         showscale: false,
         zmax: -44,
-        zmin: -140
+        zmin: -140,
+        zsmooth: 'best'
       };
       traces.push(trace);
 

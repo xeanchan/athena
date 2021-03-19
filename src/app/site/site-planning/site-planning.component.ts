@@ -485,7 +485,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
 
     } else {
-      this.chart.nativeElement.style.opacity = 1;
+      if (typeof this.chart !== 'undefined') {
+        this.chart.nativeElement.style.opacity = 1;
+      }
       this.plotLayout['width'] = window.innerWidth * 0.68;
       // draw background image chart
       Plotly.newPlot('chart', {

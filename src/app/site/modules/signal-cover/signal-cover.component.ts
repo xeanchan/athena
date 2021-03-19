@@ -247,7 +247,8 @@ export class SignalCoverComponent implements OnInit {
         ],
         type: 'heatmap',
         hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-        showscale: false
+        showscale: false,
+        zsmooth: 'best'
       };
       traces.push(trace);
       console.log(traces);
