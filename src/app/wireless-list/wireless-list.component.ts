@@ -68,7 +68,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
    */
   getList() {
     if (this.authService.userToken != null) {
-      this.http.get(`${this.authService.API_URL}/taskList/sel/${this.authService.userToken}`).subscribe(
+      this.http.get(`${this.authService.API_URL}/taskList/${this.authService.userId}/${this.authService.userToken}`).subscribe(
         res => {
           this.taskList = res;
         }, err => {
@@ -77,7 +77,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
         }
       );
 
-      this.http.get(`${this.authService.API_URL}/history/sel/${this.authService.userToken}`).subscribe(
+      this.http.get(`${this.authService.API_URL}/history/${this.authService.userId}/${this.authService.userToken}`).subscribe(
         res => {
           this.hstList = res['history'];
         }, err => {

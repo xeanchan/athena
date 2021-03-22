@@ -63,8 +63,7 @@ export class FormService {
     if (typeof result['candidatethroughput'] !== 'undefined') {
       output['candidateThroughput'] = JSON.parse(result['candidatethroughput']);
     }
-    
-    
+
     output['chosenCandidate'] = JSON.parse(result['chosecandidate']);
     output['connectionMap'] = JSON.parse(result['connectionmap']);
     output['connectionMapAll'] = JSON.parse(result['connectionmapall']);
@@ -95,9 +94,18 @@ export class FormService {
     output['throughput'] = result['throughput'];
     output['throughputMap'] = JSON.parse(result['throughputmap']);
     output['ueAverageRsrp'] = result['ueaveragersrp'];
+    if (output['ueAverageRsrp'] === 'null') {
+      output['ueAverageRsrp'] = null;
+    }
     output['ueAverageSinr'] = result['ueaveragesinr'];
+    if (output['ueAverageSinr'] === 'null') {
+      output['ueAverageSinr'] = null;
+    }
     output['ueConnection'] = result['ueconnection'];
     output['ueCoverage'] = result['uecoverage'];
+    if (output['ueCoverage'] === 'null') {
+      output['ueCoverage'] = null;
+    }
     output['ueCqi'] = result['uecqi'];
     output['ueCqiCount'] = JSON.parse(result['uecqicount']);
     output['ueMcs'] = result['uemcs'];
@@ -109,6 +117,9 @@ export class FormService {
     output['ueSignalLevelCount'] = JSON.parse(result['uesignallevelcount']);
     output['ueSinr'] = JSON.parse(result['uesinr']);
     output['ueThroughput'] = result['uethroughput'];
+    if (output['ueThroughput'] === 'null') {
+      output['ueThroughput'] = null;
+    }
     output['ueThroughputIndividual'] = result['uethroughputindividual'];
 
     return output;

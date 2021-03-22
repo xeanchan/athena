@@ -1,5 +1,4 @@
-<!-- <img id="signal_cover" class="map" src="assets/img/map.png"> -->
-<div style="position: relative;">
+<div [ngStyle]="divStyle">
   <div class="signal_cover">
     <!-- 新增基站 -->
     <span *ngFor="let item of candidateList" [matTooltip]="item.hover" [ngStyle]="item.style" style="z-index: 99999;">

@@ -1,5 +1,4 @@
-<!-- <img id="signal_quality" class="map" src="assets/img/map.png"> -->
-<div style="position: relative;">
+<div [ngStyle]="divStyle">
   <div class="quality_chart">
     <div class="color_bar">
       <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>

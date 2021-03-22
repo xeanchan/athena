@@ -64,6 +64,7 @@ export class ResultComponent implements OnInit {
   isHst = false;
   showUE = true;
   hstOutput = {};
+  showUEArea = false;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -153,6 +154,7 @@ export class ResultComponent implements OnInit {
         }
 
         if (this.calculateForm.ueCoordinate !== '') {
+          this.showUEArea = true;
           const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
           for (const item of ueCoordinate) {
             const obj = JSON.parse(item);

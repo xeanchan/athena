@@ -31,6 +31,10 @@ export class SignalStrengthComponent implements OnInit {
   imgSRC;
   chartId;
   showUE = true;
+  divStyle = {
+    position: 'relative',
+    opacity: 0
+  };
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -380,6 +384,7 @@ export class SignalStrengthComponent implements OnInit {
           }
 
           Plotly.relayout(id, layoutOption).then((gd2) => {
+            this.divStyle.opacity = 1;
             const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
             const rect2 = xy2.getBoundingClientRect();
             gd2.style.opacity = 0.85;

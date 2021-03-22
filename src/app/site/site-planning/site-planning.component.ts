@@ -1545,11 +1545,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
     if (mapData.length === 1) {
       // fail xlsx
-      this.msgDialogConfig.data = {
-        type: 'error',
-        infoMessage: this.translateService.instant('xlxs.fail')
-      };
-      this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      // this.msgDialogConfig.data = {
+      //   type: 'error',
+      //   infoMessage: this.translateService.instant('xlxs.fail')
+      // };
+      // this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      this.calculateForm.width = 1;
+      this.calculateForm.height = 1;
+      this.calculateForm.altitude = 1;
       this.initData(false);
     } else {
       this.calculateForm.mapImage = '';
