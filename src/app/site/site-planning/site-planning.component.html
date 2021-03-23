@@ -470,6 +470,15 @@
                     </ng-template>
                   </span>
                 </li>
+
+                <li>
+                  <p>{{ 'powerRange' | translate }}</p>
+                  <span>
+                    <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="{{ 'powerMinRange' | translate }}">
+                    ~
+                    <input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="{{ 'powerMaxRange' | translate }}">dBm
+                  </span>
+                </li>
                 
                 <li>
                   <p>切面高度<span> ( 單位:公尺，最多可設定3組高度 ) </span></p>
