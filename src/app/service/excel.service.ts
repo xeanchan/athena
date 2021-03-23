@@ -81,9 +81,15 @@ export class ExcelService {
       const obstacleInfo = calculateForm.obstacleInfo.split('|');
       for (const item of obstacleInfo) {
         const data = JSON.parse(item);
-        obstacleData.push([
-          data[0], data[1], data[2], data[3], data[4], data[5], data[6]
-        ]);
+        if (typeof item[7] !== 'undefined') {
+          obstacleData.push([
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6], 'rgb(115, 128, 92)', data[7]
+          ]);
+        } else {
+          obstacleData.push([
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6]
+          ]);
+        }
       }
     }
     const obstacleWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(obstacleData);

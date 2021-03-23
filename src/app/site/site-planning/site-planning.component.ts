@@ -1477,12 +1477,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     // obstacle
     const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
     for (const item of this.obstacleList) {
+      let shape = '0';
+      if (this.dragObject[item].element === 'polygon') {
+        shape = '1';
+      } else if (this.dragObject[item].element === 'ellipse') {
+        shape = '2';
+      }
       obstacleData.push([
         this.dragObject[item].x, this.dragObject[item].y,
         this.dragObject[item].width, this.dragObject[item].height,
         this.dragObject[item].altitude, this.dragObject[item].rotate,
         this.dragObject[item].material, this.dragObject[item].color,
-        this.dragObject[item].element
+        shape
       ]);
     }
     const obstacleWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(obstacleData);
