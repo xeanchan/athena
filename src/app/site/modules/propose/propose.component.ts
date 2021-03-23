@@ -41,7 +41,7 @@ export class ProposeComponent implements OnInit {
       reader.onload = (e) => {
         // background image chart
         images.push({
-          source: reader.result,
+          source: reader.result.toString(),
           x: 0,
           y: 0,
           sizex: this.calculateForm.width,
@@ -68,6 +68,29 @@ export class ProposeComponent implements OnInit {
       editable: false,
       scrollZoom: false,
       displayModeBar: false
+    };
+
+    this.plotLayout = {
+      autosize: true,
+      xaxis: {
+        linewidth: 1,
+        mirror: 'all',
+        range: [0, this.calculateForm.width],
+        showgrid: false,
+        zeroline: false,
+        fixedrange: true
+      },
+      yaxis: {
+        linewidth: 1,
+        mirror: 'all',
+        range: [0, this.calculateForm.height],
+        showgrid: false,
+        zeroline: false,
+        fixedrange: true
+      },
+      margin: { t: 20, b: 20, l: 40},
+      images: images,
+      hovermode: 'closest'
     };
 
     let id;
@@ -171,6 +194,7 @@ export class ProposeComponent implements OnInit {
     }).then((gd) => {
       const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
       const rect = xy.getBoundingClientRect();
+
       if (images.length > 0) {
         const image = new Image();
         image.src = images[0].source;
