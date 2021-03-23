@@ -11,7 +11,7 @@ export class ExcelService {
   constructor() { }
 
   export(calculateForm: CalculateForm) {
-    // console.log(calculateForm)
+    console.log(calculateForm);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     const zValues = JSON.parse(calculateForm.zValue);
     const mapData = [
@@ -51,7 +51,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, baseStationWS, 'base_station');
     // candidate
     const candidateData = [['x', 'y', 'z', 'material', 'color']];
-    if (calculateForm.candidateBs != null) {
+    if (calculateForm.candidateBs != null && calculateForm.candidateBs !== '') {
       const candidate = calculateForm.candidateBs.split('|');
       for (const item of candidate) {
         const data = JSON.parse(item);
@@ -64,7 +64,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, candidateWS, 'candidate');
     // UE
     const ueData = [['x', 'y', 'z', 'material', 'color']];
-    if (calculateForm.ueCoordinate != null) {
+    if (calculateForm.ueCoordinate != null && calculateForm.ueCoordinate !== '') {
       const ue = calculateForm.ueCoordinate.split('|');
       for (const item of ue) {
         const data = JSON.parse(item);
@@ -77,7 +77,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, ueWS, 'ue');
     // obstacle
     const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
-    if (calculateForm.obstacleInfo != null) {
+    if (calculateForm.obstacleInfo != null && calculateForm.obstacleInfo !== '') {
       const obstacleInfo = calculateForm.obstacleInfo.split('|');
       for (const item of obstacleInfo) {
         const data = JSON.parse(item);

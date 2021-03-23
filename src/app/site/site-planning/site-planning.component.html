@@ -421,9 +421,9 @@
                 <li *ngIf="calculateForm.objectiveIndex === '2'">
                   <p>Wifi頻率	</p>
                   <select [(ngModel)]="wifiFrequency" (change)="changeWifiFrequency()" style="width: 100px;" >
-                    <option value="0">sub-1Ghz</option>
-                    <option value="1">2.4Ghz</option>
-                    <option value="2">5Ghz</option>
+                    <option value="0">sub-1GHz</option>
+                    <option value="1">2.4GHz</option>
+                    <option value="2">5GHz</option>
                   </select>
                 </li>
                 <li>
@@ -434,6 +434,7 @@
                       <select [(ngModel)]="calculateForm.bandwidth">
                         <ng-container *ngIf="wifiFrequency === '0'">
                           <option value="1">1</option>
+                          <option value="2">2</option>
                           <option value="4">4</option>
                           <option value="8">8</option>
                           <option value="16">16</option>
@@ -441,12 +442,12 @@
                         <ng-template [ngIf]="wifiFrequency === '1'">
                           <option value="20">20</option>
                           <option value="40">40</option>
-                          <option value="80">80</option>
                         </ng-template>
                         <ng-template [ngIf]="wifiFrequency === '2'">
                           <option value="20">20</option>
                           <option value="40">40</option>
                           <option value="80">80</option>
+                          <option value="120">120</option>
                         </ng-template>
                       </select>
                     </ng-container>
@@ -459,11 +460,11 @@
                         <option value="20">20</option>
                       </select>
                     </ng-template>
-                    
+                    MHz
                     /
                     <label>{{ 'frequency' | translate }}</label>
                     <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherFrequency">
-                      {{ calculateForm.frequency }}
+                      {{ calculateForm.frequency }} MHz
                     </ng-container>
                     <ng-template #otherFrequency>
                       <input type="text" [(ngModel)]="calculateForm.frequency">

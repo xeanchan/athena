@@ -1183,7 +1183,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // 障礙物資訊
       for (let i = 0; i < this.obstacleList.length; i++) {
         const obj = this.dragObject[this.obstacleList[i]];
-        obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate},${obj.material}]`;
+        let shape = 0;
+        if (obj.element === 'polygon') {
+          shape = 1;
+        } else if (obj.element === 'ellipse') {
+          shape = 2;
+        }
+        obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate},${obj.material},${shape}]`;
         if (i < this.obstacleList.length - 1) {
           obstacleInfo += '|';
         }
@@ -1619,7 +1625,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           material = '0';
         }
         const color = (typeof baseStationData[i][4] === 'undefined' ? this.DEFAULT_BS_COLOR : baseStationData[i][4]);
-
         this.dragObject[id] = {
           x: baseStationData[i][0],
           y: baseStationData[i][1],
@@ -1768,15 +1773,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         let id;
         let type;
         let shape = obstacleData[i][8];
-        if (shape === 'rect') {
+        if (shape === 'rect' || shape === '0') {
           id = `rect_${rect}`;
           type = 'rect';
           rect++;
-        } else if (shape === 'ellipse') {
+        } else if (shape === 'ellipse' || shape === '2') {
           id = `ellipse_${ellipse}`;
           type = 'ellipse';
           ellipse++;
-        } else if (shape === 'polygon') {
+        } else if (shape === 'polygon' || shape === '1') {
           id = `polygon_${polygon}`;
           type = 'polygon';
           polygon++;
@@ -1925,7 +1930,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const obstacleLen = obstacle.length;
     for (let i = 0; i < obstacleLen; i++) {
       const item = JSON.parse(obstacle[i]);
-      const id = `rect_${i}`;
+      let shape = 'rect';
+      if (typeof item[7] !== 'undefined') {
+        if (item[7] === '1') {
+          shape = 'polygon';
+        } else if (item[7] === '2') {
+          shape = 'ellipse';
+        }
+      }
+      const id = `${shape}_${i}`;
       this.obstacleList.push(id);
       this.dragObject[id] = {
         x: item[0],
@@ -1935,11 +1948,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         height: item[3],
         altitude: item[4],
         rotate: item[5],
-        title: this.svgMap['rect'].title,
-        type: this.svgMap['rect'].type,
+        title: this.svgMap[shape].title,
+        type: this.svgMap[shape].type,
         color: this.OBSTACLE_COLOR,
         material: item[6],
-        element: 'rect'
+        element: shape
       };
 
       this.spanStyle[id] = {
@@ -1949,16 +1962,42 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         height: `${this.pixelYLinear(item[3])}px`,
         transform: `rotate(${this.dragObject[id].rotate}deg)`
       };
+
+      const width = this.pixelXLinear(item[2]);
+      const height = this.pixelYLinear(item[3]);
       this.svgStyle[id] = {
         display: 'inherit',
-        width: this.pixelXLinear(item[2]),
-        height: this.pixelYLinear(item[3])
+        width: width,
+        height: height
       };
-      this.rectStyle[id] = {
-        width: this.pixelXLinear(item[2]),
-        height: this.pixelYLinear(item[3]),
-        fill: this.dragObject[id].color
-      };
+
+      if (shape === 'rect') {
+        // 方形
+        this.rectStyle[id] = {
+          width: width,
+          height: height,
+          fill: this.dragObject[id].color
+        };
+      } else if (shape === 'ellipse') {
+        // 圓形
+        const x = (width / 2).toString();
+        const y = (height / 2).toString();
+        this.ellipseStyle[this.svgId] = {
+          ry: x,
+          rx: y,
+          cx: x,
+          cy: y,
+          fill: this.dragObject[id].color
+        };
+
+      } else if (shape === 'polygon') {
+        // 三角形
+        const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+        this.polygonStyle[this.svgId] = {
+          points: points,
+          fill: this.dragObject[id].color
+        };
+      }
     }
     // defaultBs
     if (this.calculateForm.defaultBs !== '') {
@@ -2132,11 +2171,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** Wifi頻率切換 */
   changeWifiFrequency() {
     if (this.wifiFrequency === '0') {
-      this.calculateForm.frequency = 850;
+      this.calculateForm.frequency = 950;
     } else if (this.wifiFrequency === '1') {
       this.calculateForm.frequency = 2400;
     } else if (this.wifiFrequency === '2') {
-      this.calculateForm.frequency = 5000;
+      this.calculateForm.frequency = 5800;
     }
   }
 
