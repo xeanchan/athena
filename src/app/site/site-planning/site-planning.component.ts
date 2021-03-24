@@ -1932,81 +1932,84 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   edit() {
     // obstacleInfo
-    const obstacle = this.calculateForm.obstacleInfo.split('|');
-    const obstacleLen = obstacle.length;
-    for (let i = 0; i < obstacleLen; i++) {
-      const item = JSON.parse(obstacle[i]);
-      let shape = 'rect';
-      if (typeof item[7] !== 'undefined') {
-        if (item[7] === '1') {
-          shape = 'polygon';
-        } else if (item[7] === '2') {
-          shape = 'ellipse';
+    if (this.calculateForm.obstacleInfo != null && this.calculateForm.obstacleInfo !== '') {
+      const obstacle = this.calculateForm.obstacleInfo.split('|');
+      const obstacleLen = obstacle.length;
+      for (let i = 0; i < obstacleLen; i++) {
+        const item = JSON.parse(obstacle[i]);
+        let shape = 'rect';
+        if (typeof item[7] !== 'undefined') {
+          if (item[7] === '1') {
+            shape = 'polygon';
+          } else if (item[7] === '2') {
+            shape = 'ellipse';
+          }
+        }
+        const id = `${shape}_${i}`;
+        this.obstacleList.push(id);
+        this.dragObject[id] = {
+          x: item[0],
+          y: item[1],
+          z: 0,
+          width: item[2],
+          height: item[3],
+          altitude: item[4],
+          rotate: item[5],
+          title: this.svgMap[shape].title,
+          type: this.svgMap[shape].type,
+          color: this.OBSTACLE_COLOR,
+          material: item[6],
+          element: shape
+        };
+  
+        this.spanStyle[id] = {
+          left: `${this.pixelXLinear(item[0])}px`,
+          top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
+          width: `${this.pixelXLinear(item[2])}px`,
+          height: `${this.pixelYLinear(item[3])}px`,
+          transform: `rotate(${this.dragObject[id].rotate}deg)`
+        };
+  
+        const width = this.pixelXLinear(item[2]);
+        const height = this.pixelYLinear(item[3]);
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: width,
+          height: height
+        };
+  
+        if (shape === 'rect') {
+          // 方形
+          this.rectStyle[id] = {
+            width: width,
+            height: height,
+            fill: this.dragObject[id].color
+          };
+        } else if (shape === 'ellipse') {
+          // 圓形
+          const x = (width / 2).toString();
+          const y = (height / 2).toString();
+          this.ellipseStyle[this.svgId] = {
+            ry: x,
+            rx: y,
+            cx: x,
+            cy: y,
+            fill: this.dragObject[id].color
+          };
+  
+        } else if (shape === 'polygon') {
+          // 三角形
+          const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+          this.polygonStyle[this.svgId] = {
+            points: points,
+            fill: this.dragObject[id].color
+          };
         }
       }
-      const id = `${shape}_${i}`;
-      this.obstacleList.push(id);
-      this.dragObject[id] = {
-        x: item[0],
-        y: item[1],
-        z: 0,
-        width: item[2],
-        height: item[3],
-        altitude: item[4],
-        rotate: item[5],
-        title: this.svgMap[shape].title,
-        type: this.svgMap[shape].type,
-        color: this.OBSTACLE_COLOR,
-        material: item[6],
-        element: shape
-      };
-
-      this.spanStyle[id] = {
-        left: `${this.pixelXLinear(item[0])}px`,
-        top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
-        width: `${this.pixelXLinear(item[2])}px`,
-        height: `${this.pixelYLinear(item[3])}px`,
-        transform: `rotate(${this.dragObject[id].rotate}deg)`
-      };
-
-      const width = this.pixelXLinear(item[2]);
-      const height = this.pixelYLinear(item[3]);
-      this.svgStyle[id] = {
-        display: 'inherit',
-        width: width,
-        height: height
-      };
-
-      if (shape === 'rect') {
-        // 方形
-        this.rectStyle[id] = {
-          width: width,
-          height: height,
-          fill: this.dragObject[id].color
-        };
-      } else if (shape === 'ellipse') {
-        // 圓形
-        const x = (width / 2).toString();
-        const y = (height / 2).toString();
-        this.ellipseStyle[this.svgId] = {
-          ry: x,
-          rx: y,
-          cx: x,
-          cy: y,
-          fill: this.dragObject[id].color
-        };
-
-      } else if (shape === 'polygon') {
-        // 三角形
-        const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
-        this.polygonStyle[this.svgId] = {
-          points: points,
-          fill: this.dragObject[id].color
-        };
-      }
     }
+    
     // defaultBs
-    if (this.calculateForm.defaultBs !== '') {
+    if (this.calculateForm.defaultBs != null && this.calculateForm.defaultBs !== '') {
       const defaultBS = this.calculateForm.defaultBs.split('|');
       const defaultBSLen = defaultBS.length;
       for (let i = 0; i < defaultBSLen; i++) {
@@ -2041,48 +2044,53 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.pathStyle[id] = {
           fill: this.dragObject[id].color
         };
-        this.moveNumber(id);
+        window.setTimeout(() => {
+          this.moveNumber(id);
+        }, 0);
       }
     }
     // candidate
-    const candidate = this.calculateForm.candidateBs.split('|');
-    const candidateLen = candidate.length;
-    for (let i = 0; i < candidateLen; i++) {
-      const item = JSON.parse(candidate[i]);
-      const id = `candidate_${i}`;
-      this.candidateList.push(id);
-      this.dragObject[id] = {
-        x: item[0],
-        y: item[1],
-        z: item[2],
-        width: 28,
-        height: 22,
-        altitude: 50,
-        rotate: 0,
-        title: this.svgMap['candidate'].title,
-        type: this.svgMap['candidate'].type,
-        color: this.CANDIDATE_COLOR,
-        material: '0',
-        element: 'candidate'
-      };
-      this.spanStyle[id] = {
-        left: `${this.pixelXLinear(item[0])}px`,
-        top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
-        width: `28px`,
-        height: `22px`
-      };
-      this.svgStyle[id] = {
-        display: 'inherit',
-        width: 28,
-        height: 22
-      };
-      this.pathStyle[id] = {
-        fill: this.dragObject[id].color
-      };
-      window.setTimeout(() => {
-        this.moveNumber(id);
-      }, 0);
+    if (this.calculateForm.candidateBs != null && this.calculateForm.candidateBs !== '') {
+      const candidate = this.calculateForm.candidateBs.split('|');
+      const candidateLen = candidate.length;
+      for (let i = 0; i < candidateLen; i++) {
+        const item = JSON.parse(candidate[i]);
+        const id = `candidate_${i}`;
+        this.candidateList.push(id);
+        this.dragObject[id] = {
+          x: item[0],
+          y: item[1],
+          z: item[2],
+          width: 28,
+          height: 22,
+          altitude: 50,
+          rotate: 0,
+          title: this.svgMap['candidate'].title,
+          type: this.svgMap['candidate'].type,
+          color: this.CANDIDATE_COLOR,
+          material: '0',
+          element: 'candidate'
+        };
+        this.spanStyle[id] = {
+          left: `${this.pixelXLinear(item[0])}px`,
+          top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
+          width: `28px`,
+          height: `22px`
+        };
+        this.svgStyle[id] = {
+          display: 'inherit',
+          width: 28,
+          height: 22
+        };
+        this.pathStyle[id] = {
+          fill: this.dragObject[id].color
+        };
+        window.setTimeout(() => {
+          this.moveNumber(id);
+        }, 0);
+      }
     }
+    
     // UE
     if (this.calculateForm.ueCoordinate != null && this.calculateForm.ueCoordinate !== '') {
       const ue = this.calculateForm.ueCoordinate.split('|');

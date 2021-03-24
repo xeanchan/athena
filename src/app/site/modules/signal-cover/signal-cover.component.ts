@@ -53,7 +53,7 @@ export class SignalCoverComponent implements OnInit {
       reader.onload = (e) => {
         // background image
         images.push({
-          source: reader.result,
+          source: reader.result.toString(),
           x: 0,
           y: 0,
           sizex: this.calculateForm.width,
@@ -65,9 +65,10 @@ export class SignalCoverComponent implements OnInit {
           sizing: 'stretch',
           layer: 'below'
         });
+
+        this.drawChart(isPDF, images);
       };
 
-      this.drawChart(isPDF, images);
     } else {
       this.drawChart(isPDF, images);
     }
@@ -100,6 +101,7 @@ export class SignalCoverComponent implements OnInit {
         zeroline: false,
         fixedrange: true,
         ticks: 'inside',
+        ticksuffix: 'm'
       },
       yaxis: {
         linewidth: 1,
@@ -109,6 +111,7 @@ export class SignalCoverComponent implements OnInit {
         zeroline: false,
         fixedrange: true,
         ticks: 'inside',
+        ticksuffix: 'm'
       },
       margin: { t: 20, b: 20, l: 40},
       images: images,
@@ -383,6 +386,7 @@ export class SignalCoverComponent implements OnInit {
     }).then((gd) => {
       const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
       const rect = xy.getBoundingClientRect();
+
       if (images.length > 0) {
         const image = new Image();
         image.src = images[0].source;

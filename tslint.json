@@ -144,7 +144,8 @@
     "no-angle-bracket-type-assertion": false,
     "prefer-for-of": false,
     "object-literal-shorthand": false,
-    "no-string-literal": false
+    "no-string-literal": false,
+    "no-trailing-whitespace": false
   },
   "rulesDirectory": [
     "codelyzer"

@@ -102,6 +102,7 @@ export class SignalStrengthComponent implements OnInit {
         zeroline: false,
         fixedrange: true,
         ticks: 'inside',
+        ticksuffix: 'm'
       },
       yaxis: {
         linewidth: 1,
@@ -111,6 +112,7 @@ export class SignalStrengthComponent implements OnInit {
         zeroline: false,
         fixedrange: true,
         ticks: 'inside',
+        ticksuffix: 'm'
       },
       margin: { t: 20, b: 20, l: 40},
       images: images,

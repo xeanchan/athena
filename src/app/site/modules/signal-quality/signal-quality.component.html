@@ -2,6 +2,7 @@
   <div class="quality_chart">
     <div class="color_bar">
       <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>
+      <div style="color: #000;">db</div>
     </div>
     <!-- 新增基站 -->
     <span *ngFor="let item of candidateList" [matTooltip]="item.hover" [ngStyle]="item.style" style="z-index: 99999;">

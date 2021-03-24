@@ -2,6 +2,7 @@
   <div class="signal_strength">
     <div class="color_bar">
       <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>
+      <div style="color: #000;">dBm</div>
     </div>
     
     <!-- 新增基站 -->
