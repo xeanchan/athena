@@ -36,6 +36,7 @@ export class SignalStrengthComponent implements OnInit {
     opacity: 0
   };
   zValue = '';
+  showObstacle = 'visible';
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -292,7 +293,8 @@ export class SignalStrengthComponent implements OnInit {
             width: oData[2],
             height: oData[3],
             transform: `rotate(${oData[5]}deg)`,
-            position: 'absolute'
+            position: 'absolute',
+            visibility: this.showObstacle
           },
           svgStyle: {
             width: oData[2],
@@ -490,6 +492,13 @@ export class SignalStrengthComponent implements OnInit {
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [0]);
+  }
+
+  /** show/hide 障礙物 */
+  switchShowObstacle(visible) {
+    for (const item of this.rectList) {
+      item.style['visibility'] = visible;
+    }
   }
 
 }

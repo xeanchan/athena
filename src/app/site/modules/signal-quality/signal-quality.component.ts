@@ -35,6 +35,7 @@ export class SignalQualityComponent implements OnInit {
     position: 'relative',
     opacity: 0
   };
+  showObstacle = 'visible';
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -49,7 +50,7 @@ export class SignalQualityComponent implements OnInit {
     zValue = Number(zValue);
     this.zValue = zValue;
     const images = [];
-    if (this.calculateForm.mapImage != null) {
+    if (this.calculateForm.mapImage != null && this.calculateForm.mapImage !== 'null') {
       const reader = new FileReader();
       reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
@@ -396,7 +397,8 @@ export class SignalQualityComponent implements OnInit {
             width: oData[2],
             height: oData[3],
             transform: `rotate(${oData[5]}deg)`,
-            position: 'absolute'
+            position: 'absolute',
+            visibility: this.showObstacle
           },
           svgStyle: {
             width: oData[2],
@@ -526,6 +528,13 @@ export class SignalQualityComponent implements OnInit {
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [0]);
+  }
+
+  /** show/hide 障礙物 */
+  switchShowObstacle(visible) {
+    for (const item of this.rectList) {
+      item.style['visibility'] = visible;
+    }
   }
 
 }

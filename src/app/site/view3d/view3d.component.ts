@@ -290,6 +290,9 @@ console.log(this.result)
     for (let j = 0; j < this.height; j++) {
         for (let i = 0; i < this.width; i++) {
             const n = (j * this.width + i) * 3;
+            if (typeof this.result['gaResult'].connectionMapAll[i][j] === 'undefined') {
+              continue;
+            }
             const value = this.result['gaResult'].connectionMapAll[i][j][zIndex];
             const offset = (value + 1) / blockCount;
             if (offset < 0.25) {
@@ -324,6 +327,9 @@ console.log(this.result)
     for (let j = 0; j < this.height; j++) {
         for (let i = 0; i < this.width; i++) {
             const n = (j * this.width + i) * 3;
+            if (typeof this.result['gaResult'].sinrMap[i][j] === 'undefined') {
+              continue;
+            }
             const value = this.result['gaResult'].sinrMap[i][j][zIndex];
             const offset = (value - this.result['sinrMin']) / totalDelta;
             if (offset < 0.25) {
@@ -359,6 +365,9 @@ console.log(this.result)
     for (let j = 0; j < this.height; j++) {
         for (let i = 0; i < this.width; i++) {
             const n = (j * this.width + i) * 3;
+            if (typeof this.result['gaResult'].rsrpMap[i][j] === 'undefined') {
+              continue;
+            }
             const value = this.result['gaResult'].rsrpMap[i][j][zIndex];
             const offset = (value - this.result['rsrpMin']) / totalDelta;
             if (offset < 0.25) {

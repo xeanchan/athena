@@ -65,6 +65,8 @@ export class ResultComponent implements OnInit {
   showUE = true;
   hstOutput = {};
   showUEArea = false;
+  showObstacleArea = false;
+  showObstacle = true;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -140,6 +142,7 @@ export class ResultComponent implements OnInit {
         }
 
         if (this.calculateForm.obstacleInfo !== '') {
+          this.showObstacleArea = true;
           const obstacleInfo = this.calculateForm.obstacleInfo.split('|');
           for (const item of obstacleInfo) {
             const obj = JSON.parse(item);
@@ -236,6 +239,7 @@ export class ResultComponent implements OnInit {
       this.quality.showUE = this.showUE;
       this.quality.calculateForm = this.calculateForm;
       this.quality.result = this.result;
+      this.quality.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.quality.draw(false, this.zValue);
     }, 0);
   }
@@ -249,6 +253,7 @@ export class ResultComponent implements OnInit {
       this.cover.showUE = this.showUE;
       this.cover.calculateForm = this.calculateForm;
       this.cover.result = this.result;
+      this.cover.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.cover.draw(false, this.zValue);
     }, 0);
   }
@@ -262,6 +267,7 @@ export class ResultComponent implements OnInit {
       this.strength.showUE = this.showUE;
       this.strength.calculateForm = this.calculateForm;
       this.strength.result = this.result;
+      this.strength.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.strength.draw(false, this.zValue);
     }, 0);
   }
@@ -334,6 +340,18 @@ export class ResultComponent implements OnInit {
       this.cover.switchUE(this.showUE);
     } else if (this.chartType === 'RSRP') {
       this.strength.switchUE(this.showUE);
+    }
+  }
+
+  /** ON/OFF 顯示障礙物 */
+  switchShowObstacle() {
+    const visible = this.showObstacle ? 'visible' : 'hidden';
+    if (this.chartType === 'SINR') {
+      this.quality.switchShowObstacle(visible);
+    } else if (this.chartType === 'PCI') {
+      this.cover.switchShowObstacle(visible);
+    } else if (this.chartType === 'RSRP') {
+      this.strength.switchShowObstacle(visible);
     }
   }
 
