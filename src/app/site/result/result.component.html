@@ -33,27 +33,33 @@
 						</mat-button-toggle-group>
 
 						<ng-container *ngIf="showUEArea">
-							<label class="mL_1">{{ 'show.ue' | translate }}</label>
-							<mat-button-toggle-group [(ngModel)]="showUE" (change)="switchShowUE()" >
+							<label class="mL_1 displayType">
+								<input type="checkbox">
+								{{ 'show.ue' | translate }}</label>
+							<!--<mat-button-toggle-group [(ngModel)]="showUE" (change)="switchShowUE()" >
 								<mat-button-toggle [value]="true">ON</mat-button-toggle>
 								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>
+							</mat-button-toggle-group>-->
 						</ng-container>
 
 						<ng-container *ngIf="showObstacleArea">
-							<label class="mL_1">{{ 'show.obstacle' | translate }}</label>
-							<mat-button-toggle-group [(ngModel)]="showObstacle" (change)="switchShowObstacle()" >
+							<label class="mL_1 displayType">
+								<input type="checkbox">
+								{{ 'show.obstacle' | translate }}</label>
+							<!--<mat-button-toggle-group [(ngModel)]="showObstacle" (change)="switchShowObstacle()" >
 								<mat-button-toggle [value]="true">ON</mat-button-toggle>
 								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>
+							</mat-button-toggle-group>-->
 						</ng-container>
 
 						<ng-container *ngIf="showCandidateArea">
-							<label class="mL_1">{{ 'show.candidate' | translate }}</label>
-							<mat-button-toggle-group [(ngModel)]="showCandidate" (change)="switchShowCandidate()" >
+							<label class="mL_1 displayType">
+								<input type="checkbox">
+								{{ 'show.candidate' | translate }}</label>
+							<!--<mat-button-toggle-group [(ngModel)]="showCandidate" (change)="switchShowCandidate()" >
 								<mat-button-toggle [value]="true">ON</mat-button-toggle>
 								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>
+							</mat-button-toggle-group>-->
 						</ng-container>
 
 						<!-- 訊號品質圖 -->
