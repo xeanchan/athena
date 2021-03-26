@@ -64,9 +64,16 @@ export class ResultComponent implements OnInit {
   isHst = false;
   showUE = true;
   hstOutput = {};
+  // 有UE
   showUEArea = false;
+  // 有障礙物
   showObstacleArea = false;
+  // 有AP
+  showCandidateArea = false;
+  // 障礙物顯示
   showObstacle = true;
+  // AP顯示
+  showCandidate = true;
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -130,6 +137,7 @@ export class ResultComponent implements OnInit {
 
         let candidateBs = [];
         if (this.calculateForm.candidateBs !== '') {
+          this.showCandidateArea = true;
           candidateBs = this.calculateForm.candidateBs.split('|');
           for (const item of candidateBs) {
             const obj = JSON.parse(item);
@@ -240,6 +248,7 @@ export class ResultComponent implements OnInit {
       this.quality.calculateForm = this.calculateForm;
       this.quality.result = this.result;
       this.quality.showObstacle = this.showObstacle ? 'visible' : 'hidden';
+      this.quality.showCandidate = this.showCandidate ? 'visible' : 'hidden';
       this.quality.draw(false, this.zValue);
     }, 0);
   }
@@ -254,6 +263,7 @@ export class ResultComponent implements OnInit {
       this.cover.calculateForm = this.calculateForm;
       this.cover.result = this.result;
       this.cover.showObstacle = this.showObstacle ? 'visible' : 'hidden';
+      this.cover.showCandidate = this.showCandidate ? 'visible' : 'hidden';
       this.cover.draw(false, this.zValue);
     }, 0);
   }
@@ -268,6 +278,7 @@ export class ResultComponent implements OnInit {
       this.strength.calculateForm = this.calculateForm;
       this.strength.result = this.result;
       this.strength.showObstacle = this.showObstacle ? 'visible' : 'hidden';
+      this.strength.showCandidate = this.showCandidate ? 'visible' : 'hidden';
       this.strength.draw(false, this.zValue);
     }, 0);
   }
@@ -352,6 +363,18 @@ export class ResultComponent implements OnInit {
       this.cover.switchShowObstacle(visible);
     } else if (this.chartType === 'RSRP') {
       this.strength.switchShowObstacle(visible);
+    }
+  }
+
+  /** ON/OFF 顯示AP */
+  switchShowCandidate() {
+    const visible = this.showCandidate ? 'visible' : 'hidden';
+    if (this.chartType === 'SINR') {
+      this.quality.switchShowCandidate(visible);
+    } else if (this.chartType === 'PCI') {
+      this.cover.switchShowCandidate(visible);
+    } else if (this.chartType === 'RSRP') {
+      this.strength.switchShowCandidate(visible);
     }
   }
 

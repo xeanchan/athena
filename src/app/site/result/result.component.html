@@ -33,7 +33,7 @@
 						</mat-button-toggle-group>
 
 						<ng-container *ngIf="showUEArea">
-							<label class="mL_1">顯示行動終端</label>
+							<label class="mL_1">{{ 'show.ue' | translate }}</label>
 							<mat-button-toggle-group [(ngModel)]="showUE" (change)="switchShowUE()" >
 								<mat-button-toggle [value]="true">ON</mat-button-toggle>
 								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
@@ -41,8 +41,16 @@
 						</ng-container>
 
 						<ng-container *ngIf="showObstacleArea">
-							<label class="mL_1">顯示障礙物</label>
+							<label class="mL_1">{{ 'show.obstacle' | translate }}</label>
 							<mat-button-toggle-group [(ngModel)]="showObstacle" (change)="switchShowObstacle()" >
+								<mat-button-toggle [value]="true">ON</mat-button-toggle>
+								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
+							</mat-button-toggle-group>
+						</ng-container>
+
+						<ng-container *ngIf="showCandidateArea">
+							<label class="mL_1">{{ 'show.candidate' | translate }}</label>
+							<mat-button-toggle-group [(ngModel)]="showCandidate" (change)="switchShowCandidate()" >
 								<mat-button-toggle [value]="true">ON</mat-button-toggle>
 								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
 							</mat-button-toggle-group>

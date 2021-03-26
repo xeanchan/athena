@@ -34,7 +34,10 @@ export class SignalCoverComponent implements OnInit {
     opacity: 0
   };
   zValue = '1';
+  // 障礙物顯示style
   showObstacle = 'visible';
+  // AP顯示style
+  showCandidate = 'visible';
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -267,7 +270,8 @@ export class SignalCoverComponent implements OnInit {
       type: 'heatmap',
       hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
       showscale: false,
-      zsmooth: 'best'
+      zsmooth: 'best',
+      opacity: 0.8
     };
     traces.push(trace);
     console.log(traces);
@@ -482,12 +486,14 @@ export class SignalCoverComponent implements OnInit {
         item['style'] = {
           left: `${candisateXLinear(item.x)}px`,
           bottom: `${candisateYLinear(item.y)}px`,
-          position: 'absolute'
+          position: 'absolute',
+          visibility: this.showCandidate
         };
         item['circleStyle'] = {
           left: `${candisateXLinear(item.x) + 15}px`,
           bottom: `${candisateYLinear(item.y) + 25}px`,
-          position: 'absolute'
+          position: 'absolute',
+          visibility: this.showCandidate
         };
       }
 
@@ -515,6 +521,14 @@ export class SignalCoverComponent implements OnInit {
   switchShowObstacle(visible) {
     for (const item of this.rectList) {
       item.style['visibility'] = visible;
+    }
+  }
+
+  /** show/hide AP */
+  switchShowCandidate(visible) {
+    for (const item of this.candidateList) {
+      item.style['visibility'] = visible;
+      item.circleStyle['visibility'] = visible;
     }
   }
 
