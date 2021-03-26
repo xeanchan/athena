@@ -13,6 +13,7 @@ import { StatisticsModule } from '../modules/statistics/statistics.module';
 import { PdfModule } from '../pdf/pdf.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { FormsModule } from '@angular/forms';
     SiteInfoModule,
     StatisticsModule,
     PdfModule,
-    TranslateModule
+    TranslateModule,
+    MatCheckboxModule
   ],
   declarations: [ResultComponent]
 })

@@ -34,32 +34,29 @@
 
 						<ng-container *ngIf="showUEArea">
 							<label class="mL_1 displayType">
-								<input type="checkbox">
-								{{ 'show.ue' | translate }}</label>
-							<!--<mat-button-toggle-group [(ngModel)]="showUE" (change)="switchShowUE()" >
-								<mat-button-toggle [value]="true">ON</mat-button-toggle>
-								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>-->
+								<!-- <input type="checkbox" [(ngModel)]="showUE" (change)="switchShowUE()"> -->
+								<mat-checkbox [(ngModel)]="showUE" [color]="'primary'" (ngModelChange)="switchShowUE()">
+									{{ 'show.ue' | translate }}
+								</mat-checkbox>
+							</label>
 						</ng-container>
 
 						<ng-container *ngIf="showObstacleArea">
 							<label class="mL_1 displayType">
-								<input type="checkbox">
-								{{ 'show.obstacle' | translate }}</label>
-							<!--<mat-button-toggle-group [(ngModel)]="showObstacle" (change)="switchShowObstacle()" >
-								<mat-button-toggle [value]="true">ON</mat-button-toggle>
-								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>-->
+								<!-- <input type="checkbox" [(ngModel)]="showObstacle" (change)="switchShowObstacle()"> -->
+								<mat-checkbox [(ngModel)]="showObstacle" [color]="'primary'" (ngModelChange)="switchShowObstacle()">
+									{{ 'show.obstacle' | translate }}
+								</mat-checkbox>
+							</label>
 						</ng-container>
 
 						<ng-container *ngIf="showCandidateArea">
 							<label class="mL_1 displayType">
-								<input type="checkbox">
-								{{ 'show.candidate' | translate }}</label>
-							<!--<mat-button-toggle-group [(ngModel)]="showCandidate" (change)="switchShowCandidate()" >
-								<mat-button-toggle [value]="true">ON</mat-button-toggle>
-								<mat-button-toggle [value]="false">OFF</mat-button-toggle>
-							</mat-button-toggle-group>-->
+								<!-- <input type="checkbox" [(ngModel)]="showCandidate" (change)="switchShowCandidate()"> -->
+								<mat-checkbox [(ngModel)]="showCandidate" [color]="'primary'" (ngModelChange)="switchShowCandidate()">
+									{{ 'show.candidate' | translate }}
+								</mat-checkbox>
+							</label>
 						</ng-container>
 
 						<!-- 訊號品質圖 -->
