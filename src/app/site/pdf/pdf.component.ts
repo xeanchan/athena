@@ -14,6 +14,7 @@ import { StatisticsComponent } from '../modules/statistics/statistics.component'
 import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { JsPDFFontService } from '../../service/js-pdffont.service';
 import { FormService } from '../../service/form.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-pdf',
@@ -26,6 +27,7 @@ export class PdfComponent implements OnInit {
     private authService: AuthService,
     private formService: FormService,
     private jsPDFFontService: JsPDFFontService,
+    private translateService: TranslateService,
     private http: HttpClient) { }
 
   taskId = 'task_sel_2debd312-a5aa-48ab-a131-0518fc3c714e_1';
@@ -89,27 +91,35 @@ export class PdfComponent implements OnInit {
             this.result = res['output'];
           }
           // 現有基站
-          if (this.calculateForm.defaultBs !== '') {
-            const bs = this.calculateForm.defaultBs.split('|');
-            for (const item of bs) {
-              this.defaultBs.push(JSON.parse(item));
+          if (!this.isEmpty(this.calculateForm.defaultBs)) {
+            if (this.calculateForm.defaultBs !== '') {
+              const bs = this.calculateForm.defaultBs.split('|');
+              for (const item of bs) {
+                this.defaultBs.push(JSON.parse(item));
+              }
             }
-          }
+          }          
           // 新增基站
-          const candidateBsAry = this.calculateForm.candidateBs.split('|');
-          for (const item of candidateBsAry) {
-            this.inputBsList.push(JSON.parse(item));
-          }
+          if (!this.isEmpty(this.calculateForm.candidateBs)) {
+            const candidateBsAry = this.calculateForm.candidateBs.split('|');
+            for (const item of candidateBsAry) {
+              this.inputBsList.push(JSON.parse(item));
+            }
+          }          
           this.result['inputBsList'] = this.inputBsList;
           // 障礙物資訊
-          const obstacle = this.calculateForm.obstacleInfo.split('|');
-          for (const item of obstacle) {
-            this.obstacleList.push(JSON.parse(item));
+          if (!this.isEmpty(this.calculateForm.obstacleInfo)) {
+            const obstacle = this.calculateForm.obstacleInfo.split('|');
+            for (const item of obstacle) {
+              this.obstacleList.push(JSON.parse(item));
+            }
           }
           // 行動終端分佈
-          const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
-          for (const item of ueCoordinate) {
-            this.ueList.push(JSON.parse(item));
+          if (!this.isEmpty(this.calculateForm.ueCoordinate)) {
+            const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
+            for (const item of ueCoordinate) {
+              this.ueList.push(JSON.parse(item));
+            }
           }
 
           this.zValues = JSON.parse(this.calculateForm.zValue);
@@ -383,16 +393,30 @@ export class PdfComponent implements OnInit {
       headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
       beforePageContent: performanceHeader
     });
-    const p2Title = ['UE 覆蓋率', 'UE 平均 SINR', 'UE 平均 RSRP', 'UE 平均 Throughput'];
-    const p2Data = [[
-      this.result['ueCoverage'].toString(), `${Math.round(this.result['ueAverageSinr'] * 1000) / 1000} `,
-      `${Math.round(this.result['ueAverageRsrp'] * 1000) / 1000} `, `${Math.round(this.result['ueThroughput'] * 1000) / 1000} `
-    ]];
+
+    const p2Title = [
+      this.translateService.instant('ue.corver'),
+      this.translateService.instant('ue.quality'),
+      this.translateService.instant('ue.strength'),
+      this.translateService.instant('ue.throughput')
+    ];
+    let p2Data;
+    if (!this.isEmpty(this.calculateForm.ueCoordinate)) {
+      p2Data = [[
+        this.result['ueCoverage'].toString(), `${Math.round(this.result['ueAverageSinr'] * 1000) / 1000} `,
+        `${Math.round(this.result['ueAverageRsrp'] * 1000) / 1000} `, `${Math.round(this.result['ueThroughput'] * 1000) / 1000} `
+      ]];
+    } else {
+      p2Data = [[
+        `-`, `-`, `-`, `-`
+      ]];
+    }
     pdf.autoTable(p2Title, p2Data, {
       styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
       headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
       margin: { top: 0 }
     });
+    
 
     const p3Title = ['地圖切面(高度)', '切面覆蓋率', '切面平均 SINR', '切面平均 RSRP'];
     const p3Data = [];
@@ -438,6 +462,14 @@ export class PdfComponent implements OnInit {
     this.authService.spinnerHide();
     pdf.save(`${taskName}_report.pdf`); // Generated PDF
 
+  }
+
+  isEmpty(val) {
+    if (val == null || val === 'null' || val === '') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

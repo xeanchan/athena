@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CalculateForm } from '../../../form/CalculateForm';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-performance',
@@ -8,7 +9,7 @@ import { CalculateForm } from '../../../form/CalculateForm';
 })
 export class PerformanceComponent implements OnInit {
 
-  constructor() { }
+  constructor(private translateService: TranslateService) { }
 
   result = {};
   calculateForm = new CalculateForm();

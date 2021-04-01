@@ -780,7 +780,7 @@
       <li class="highset">
         {{ 'altitude.setting' | translate }}
         <ng-container *ngIf="dragObject[svgId].type === 'obstacle'">
-          <input type="text" [(ngModel)]="dragObject[svgId].altitude">公分
+          <input type="text" [(ngModel)]="dragObject[svgId].altitude">{{ 'meter' | translate }}
         </ng-container>
         <ng-container *ngIf="dragObject[svgId].type === 'defaultBS' || dragObject[svgId].type === 'candidate'">
           <input type="text" [(ngModel)]="dragObject[svgId].z">公分

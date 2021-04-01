@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   logon() {
+    this.authService.spinnerShow();
     this.authService.logon(JSON.stringify(this.loginForm)).subscribe(
       res => {
         if (typeof res['session'] !== 'undefined') {
@@ -35,8 +36,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
         } else {
           this.showMsg = true;
         }
+        this.authService.spinnerHide();
       },
       err => {
+        this.authService.spinnerHide();
         this.showMsg = true;
       }
     );

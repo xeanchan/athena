@@ -445,14 +445,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           const image = new Image();
           image.src = reader.result.toString();
           image.onload = () => {
+            const maxHeight = window.innerHeight - 170;
+            let imgHeight = image.height;
+            if (imgHeight > maxHeight) {
+              imgHeight = maxHeight;
+            }
             let layoutOption;
-            if (image.width > image.height) {
-              const height = (image.height / (image.width * 0.9)) * rect.width;
+            if (image.width > imgHeight) {
+              const height = (imgHeight / (image.width * 0.9)) * rect.width;
               layoutOption = {
                 height: height
               };
             } else {
-              const width = (image.width / (image.height * 0.9)) * rect.height;
+              const width = (image.width / (imgHeight * 0.9)) * rect.height;
               layoutOption = {
                 width: width
               };
@@ -699,6 +704,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.moveable.rotatable = false;
         this.moveable.resizable = false;
       }
+      // this.moveable.
+      
       this.moveable.ngOnInit();
       this.setDragData();
       this.moveNumber(this.svgId);
@@ -825,15 +832,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   parseMaterial(val) {
-    if (val === '0') {
+    if (val === '0' || val === 0) {
       return '木頭';
-    } else if (val === '1') {
+    } else if (val === '1' || val === 1) {
       return '水泥';
-    } else if (val === '2') {
+    } else if (val === '2' || val === 2) {
       return '輕鋼架';
-    } else if (val === '3') {
+    } else if (val === '3' || val === 3) {
       return '玻璃';
-    } else if (val === '4') {
+    } else if (val === '4' || val === 4) {
       return '不鏽鋼/其它金屬類';
     }
   }
@@ -900,7 +907,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /** 縮放 */
-  onResize({ target, clientX, clientY, width, height, isPinch }: OnResize) {
+  onResize({ target, clientX, clientY, width, height, drag }: OnResize) {
     if (this.svgId !== this.realId) {
       // 物件太接近，id有時會錯亂，還原id
       this.svgId = _.cloneDeep(this.realId);
@@ -912,12 +919,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (height < 5) {
       height = 5;
     }
+
     this.frame.set('width', `${width}px`);
     this.frame.set('height', `${height}px`);
-    this.frame.set('left', this.spanStyle[this.svgId].left);
-    this.frame.set('top', this.spanStyle[this.svgId].top);
+
+    const beforeTranslate = drag.beforeTranslate;
     this.frame.set('z-index', 9999999);
     this.setTransform(target);
+    
+    target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
 
     this.svgStyle[this.svgId].width = width;
     this.svgStyle[this.svgId].height = height;
@@ -1549,6 +1559,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** read xls */
   readXls(result) {
+    this.obstacleList.length = 0;
+    this.defaultBSList.length = 0;
+    this.candidateList.length = 0;
+    this.ueList.length = 0;
+    this.calculateForm = new CalculateForm();
+
     this.wb = XLSX.read(result, {type: 'binary'});
 
     /* map sheet */
@@ -1958,7 +1974,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           title: this.svgMap[shape].title,
           type: this.svgMap[shape].type,
           color: this.OBSTACLE_COLOR,
-          material: item[6],
+          material: item[6].toString(),
           element: shape
         };
   
@@ -2200,5 +2216,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.spanStyle[item] = _.cloneDeep(this.ognSpanStyle[item]);
       }
     }
+  }
+
+  resizeEnd() {
+
+    this.onEnd();
   }
 }

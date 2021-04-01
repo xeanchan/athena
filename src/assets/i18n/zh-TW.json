@@ -35,6 +35,10 @@
 	"isUeTpByDistance": "強化行動終端有訊號覆蓋的比率",
 	"new.ue": "新增行動終端",
 	"ue": "行動終端",
+	"ue.corver": "行動終端覆蓋率",
+	"ue.quality": "行動終端平均訊號品質",
+	"ue.strength": "行動終端平均訊號強度",
+	"ue.throughput": "行動終端平均 Throughput",
 	"xlxs.fail": "Excel檔案異常!",
 	"powerRange": "傳輸功率",
 	"powerMinRange": "最小傳輸功率",
@@ -50,5 +54,6 @@
 	"statistics.ue_modulation": "行動終端Modulation統計",
 	"statistics.ue_modulation_cdf": "行動終端Modulation CDF圖",
 	"statistics.ue_signal": "行動終端訊號強度統計",
-	"statistics.ue_signal_cdf": "行動終端訊號強度CDF圖"
+	"statistics.ue_signal_cdf": "行動終端訊號強度CDF圖",
+	"meter": "公尺"
 }
