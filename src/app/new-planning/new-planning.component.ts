@@ -95,6 +95,12 @@ export class NewPlanningComponent implements OnInit {
     this.taskFormService.calculateForm = this.calculateForm;
     this.matDialog.closeAll();
     this.router.navigate(['/site/site-planning']);
+    Object.keys(sessionStorage).forEach((d) => {
+      if (d.indexOf('form_') !== -1) {
+        // 刪除其他task暫存
+        sessionStorage.removeItem(d);
+      }
+    });
   }
 
   import(event) {

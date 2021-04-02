@@ -153,6 +153,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   }
 
   edit(taskId, isHst) {
+    this.authService.spinnerShow();
     window.clearInterval(this.timeInterval);
     // this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
     let url;
@@ -165,7 +166,16 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     }
     this.http.get(url).subscribe(
       res => {
+        Object.keys(sessionStorage).forEach((d) => {
+          if (d.indexOf('form_') !== -1) {
+            if (!d.substring(5) === taskId) {
+              // 刪除其他task暫存
+              sessionStorage.removeItem(d);
+            }
+          }
+        });
         this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId, isHst: isHst }});
+        this.authService.spinnerHide();
       },
       err => {
         this.msgDialogConfig.data = {
@@ -173,6 +183,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
           infoMessage: '無法取得計算結果!'
         };
         this.dialog.open(MsgDialogComponent, this.msgDialogConfig);
+        this.authService.spinnerHide();
       }
     );
   }

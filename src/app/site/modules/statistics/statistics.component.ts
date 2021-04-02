@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from '../../../service/auth.service';
 
 declare var Plotly: any;
 
@@ -11,7 +12,9 @@ declare var Plotly: any;
 })
 export class StatisticsComponent implements OnInit {
 
-  constructor(private translateService: TranslateService) { }
+  constructor(
+    private translateService: TranslateService,
+    public authService: AuthService) { }
 
   result = {};
   calculateForm = new CalculateForm();
@@ -50,14 +53,18 @@ export class StatisticsComponent implements OnInit {
     this.drawLayerSignal(isPDF);
     // 場域訊號強度CDF圖
     this.drawLayerSignalCDF(isPDF);
-    // 行動終端Modulation統計
-    this.drawUEModulation(isPDF);
-    // 行動終端Modulation CDF圖
-    this.drawUEModulationCDF(isPDF);
-    // UE訊號強度統計
-    this.drawUESignal(isPDF);
-    // UE訊號強度CDF圖
-    this.drawUESignalCDF(isPDF);
+
+    if (!this.authService.isEmpty(this.calculateForm.ueCoordinate)) {
+      // 行動終端Modulation統計
+      this.drawUEModulation(isPDF);
+      // 行動終端Modulation CDF圖
+      this.drawUEModulationCDF(isPDF);
+      // UE訊號強度統計
+      this.drawUESignal(isPDF);
+      // UE訊號強度CDF圖
+      this.drawUESignalCDF(isPDF);
+    }
+    
   }
 
   /** 場域Modulation統計 */

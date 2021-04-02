@@ -22,7 +22,16 @@ export class LayoutComponent implements OnInit {
   }
 
   home() {
-    location.href = '';
+    // location.href = '';
+    window.setTimeout(() => {
+      try {
+        this.router.navigate(['/']);  
+      } catch (error) {
+        this.router.navigate(['/']);
+      }
+    }, 0);
+    
+    
   }
 
   logout() {

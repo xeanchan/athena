@@ -24,13 +24,8 @@ export class AuthService {
   public userId = null;
 
   public setUserToken(sonSession: string, userId: string) {
-    if (sonSession == null) {
-      window.sessionStorage.removeItem('son_session');
-      window.sessionStorage.removeItem('son_userId');
-    } else {
-      window.sessionStorage.setItem('son_session', sonSession);
-      sessionStorage.setItem('son_userId', userId);
-    }
+    sessionStorage.setItem('son_session', sonSession);
+    sessionStorage.setItem('son_userId', userId);
     this.userToken = sonSession;
     this.userId = userId;
   }
@@ -44,9 +39,12 @@ export class AuthService {
     };
     this.http.post(`${this.API_URL}/logout`, JSON.stringify(form)).subscribe(
       res => {
-        this.setUserToken(null, null);
-        // this.router.navigate(['/logon']);
-        location.href = '#/logon';
+        this.router.navigate(['/logon']);
+        window.setTimeout(() => {
+          Object.keys(sessionStorage).forEach((d) => {
+            sessionStorage.removeItem(d);
+          });
+        }, 0);
       }
     );
   }
@@ -110,6 +108,14 @@ export class AuthService {
       return '玻璃';
     } else if (val === '4') {
       return '不鏽鋼/其它金屬類';
+    }
+  }
+
+  isEmpty(val) {
+    if (val == null || val === 'null' || val === '') {
+      return true;
+    } else {
+      return false;
     }
   }
 

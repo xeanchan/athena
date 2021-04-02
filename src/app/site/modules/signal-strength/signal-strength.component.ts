@@ -54,7 +54,7 @@ export class SignalStrengthComponent implements OnInit {
     zValue = Number(zValue);
     this.zValue = zValue;
     const images = [];
-    if (this.calculateForm.mapImage) {
+    if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
       const reader = new FileReader();
       reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {

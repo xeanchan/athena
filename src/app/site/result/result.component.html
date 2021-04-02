@@ -1,9 +1,9 @@
-<h2 class="inline-block">規劃結果</h2>
+<h2 class="inline-block">{{ 'result.title' | translate }}</h2>
 
 <mat-button-toggle-group >
-  <mat-button-toggle (click)="back()" value="back">回上頁</mat-button-toggle>
-	<mat-button-toggle  value="3d" (click)="view3D()" >3D 顯示</mat-button-toggle>
-	<mat-button-toggle value="export" (click)="exportPDF()">匯出</mat-button-toggle>
+  <mat-button-toggle (click)="back()" value="back">{{ 'result.back' | translate }}</mat-button-toggle>
+	<mat-button-toggle  value="3d" (click)="view3D()" >{{ 'view.3d' | translate }}</mat-button-toggle>
+	<mat-button-toggle value="export" (click)="exportPDF()">{{ 'result.export' | translate }}</mat-button-toggle>
 	<mat-button-toggle value="save" (click)="save(false)">{{ 'save' | translate }}</mat-button-toggle>
 </mat-button-toggle-group>
 

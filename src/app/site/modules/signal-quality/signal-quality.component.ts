@@ -53,7 +53,7 @@ export class SignalQualityComponent implements OnInit {
     zValue = Number(zValue);
     this.zValue = zValue;
     const images = [];
-    if (this.calculateForm.mapImage != null && this.calculateForm.mapImage !== 'null') {
+    if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
       const reader = new FileReader();
       reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {

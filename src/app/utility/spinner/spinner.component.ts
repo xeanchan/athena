@@ -31,7 +31,8 @@ export class SpinnerComponent {
 
   home() {
     this.spinner.hide();
-    location.href = '';
+    this.router.navigate(['/']);
+    // location.href = '';
   }
 
 }

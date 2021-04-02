@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { CalculateForm } from '../form/CalculateForm';
 import * as XLSX from 'xlsx';
 import { JoystickAxis } from 'babylonjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExcelService {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   export(calculateForm: CalculateForm) {
     console.log(calculateForm);
@@ -38,7 +39,7 @@ export class ExcelService {
     // defaultBS
     const baseStationData = [['x', 'y', 'z', 'material', 'color']];
 
-    if (calculateForm.defaultBs != null && calculateForm.defaultBs !== '') {
+    if (!this.authService.isEmpty(calculateForm.defaultBs)) {
       const defaultBs = calculateForm.defaultBs.split('|');
       for (const item of defaultBs) {
         const data = JSON.parse(item);
@@ -51,7 +52,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, baseStationWS, 'base_station');
     // candidate
     const candidateData = [['x', 'y', 'z', 'material', 'color']];
-    if (calculateForm.candidateBs != null && calculateForm.candidateBs !== '') {
+    if (!this.authService.isEmpty(calculateForm.candidateBs)) {
       const candidate = calculateForm.candidateBs.split('|');
       for (const item of candidate) {
         const data = JSON.parse(item);
@@ -64,7 +65,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, candidateWS, 'candidate');
     // UE
     const ueData = [['x', 'y', 'z', 'material', 'color']];
-    if (calculateForm.ueCoordinate != null && calculateForm.ueCoordinate !== '') {
+    if (!this.authService.isEmpty(calculateForm.ueCoordinate)) {
       const ue = calculateForm.ueCoordinate.split('|');
       for (const item of ue) {
         const data = JSON.parse(item);
@@ -77,7 +78,7 @@ export class ExcelService {
     XLSX.utils.book_append_sheet(wb, ueWS, 'ue');
     // obstacle
     const obstacleData = [['x', 'y', 'width', 'height', 'altitude', 'rotate', 'material', 'color', 'shape']];
-    if (calculateForm.obstacleInfo != null && calculateForm.obstacleInfo !== '') {
+    if (!this.authService.isEmpty(calculateForm.obstacleInfo)) {
       const obstacleInfo = calculateForm.obstacleInfo.split('|');
       for (const item of obstacleInfo) {
         const data = JSON.parse(item);

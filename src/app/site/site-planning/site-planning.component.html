@@ -108,7 +108,7 @@
     <button class="toggle" mat-button (click)="sidenav.toggle();plotResize()">
       <span class="material-icons">swap_horiz</span>
     </button>
-    <h2 class="inline-block">場域 wifi 規劃({{ calculateForm.taskName }})</h2>
+    <h2 class="inline-block">{{ getTitle() }}({{ calculateForm.taskName }})</h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="import" (click)="file.click()">匯入</mat-button-toggle>
       <mat-button-toggle value="export" (click)="export()">匯出</mat-button-toggle>
@@ -260,7 +260,12 @@
         (click)="$event.stopPropagation()" 
         [(colorPicker)]="color" 
         (colorPickerChange)="colorChange()">換顏色</button>
-      <button mat-menu-item (click)="openHeightSetting()">{{ 'altitude.setting' | translate }}/{{ 'material.setting' | translate }}</button>
+      <button mat-menu-item (click)="openHeightSetting()">
+        <ng-container *ngIf="dragObject[svgId].type === 'obstacle' ; else otherTypeTemp2">
+          {{ 'altitude.setting' | translate }}/{{ 'material.setting' | translate }}
+        </ng-container>
+        <ng-template #otherTypeTemp2>{{ 'altitude.setting' | translate }}</ng-template>
+      </button>
     </ng-template>
   </mat-menu>
   <!-- <mat-menu #mater="matMenu">
@@ -278,49 +283,46 @@
   </mat-sidenav-content>
   <mat-sidenav #sidenav mode="side" position="end" [(opened)]="opened" >
     <mat-accordion>
-      <mat-expansion-panel (opened)="panelOpenState = true"
-                           (closed)="panelOpenState = false">
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
-          <mat-panel-title>規劃目標</mat-panel-title>
+          <mat-panel-title>{{ 'planning.target' | translate }}</mat-panel-title>
         </mat-expansion-panel-header>
         <div class="panel_content">
-          <mat-radio-group [(ngModel)]="planningIndex">
-            <mat-radio-button class="block" value="1"
-            matTooltip="將場域內所有位置納入演算法計算，適用於以下情境:
-            1.全新場域規劃
-            2.暫無人流或行動終端位置資訊
-            3.偵測場域內訊號不佳的盲區，或對人員難以進入的區域進行分析">
-            以整體場域為主進行規劃</mat-radio-button>
-            <mat-radio-button class="block" value="2"
-            matTooltip="以設定好的行動終端位置進行無線訊號優化，適用於以下情境:
-            1.欲強化特定位置的訊號品質
-            2.人員或重要的無線終端裝置集中於某些區域，並非均勻分布"
-            >以行動終端為主進行規劃</mat-radio-button>
+          <mat-radio-group [(ngModel)]="planningIndex" (change)="changePlanningIndex()">
+            <mat-radio-button class="block" value="1" matTooltip="{{ 'planning.layered.tooltip' | translate }}">
+              {{ 'planning.layered' | translate }}
+            </mat-radio-button>
           </mat-radio-group>
-          <div class="subTarget">
-            <ng-container *ngIf="planningIndex === '1'">
-              <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr" matTooltip="訊號品質提升，有助於提升平均傳輸速度">
-                {{ 'isAverageSinr' | translate }}
-              </mat-checkbox>
-              <mat-checkbox [(ngModel)]="calculateForm.isCoverage" matTooltip="提升訊號覆蓋率，可以避免場域邊緣或遮蔽物附近的位置沒有訊號可供連網，但有可能造成AP間訊號干擾上升">
-                {{ 'isCoverage' | translate }}
-              </mat-checkbox>
-            </ng-container>
-
-            <ng-container *ngIf="planningIndex === '2'">
-              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr" matTooltip="根據行動終端分布的位置，找出讓這些使用者訊號品質最好的方案，對於這些座標的優化效果會高於以場域為主進行規劃">
-                {{ 'isUeAvgSinr' | translate }}
-              </mat-checkbox>
-              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput" matTooltip="根據行動終端分布的位置，提升這些位置的傳輸速度，但可能犧牲其他位置或場域邊緣的訊號品質">
-                {{ 'isUeAvgThroughput' | translate }}
-              </mat-checkbox>
-              <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance" matTooltip="根據行動終端分布的位置提升訊號覆蓋率，可避免清單中的裝置沒有訊號連網，效果會高於以場域為主進行規劃">
-                {{ 'isUeTpByDistance' | translate }}
-              </mat-checkbox>
-            </ng-container>
+          <div *ngIf="planningIndex == '1'" class="subTarget">
+            <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr" matTooltip="{{ 'isAverageSinr.tooltip' | translate }}">
+              {{ 'isAverageSinr' | translate }}
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="calculateForm.isCoverage" matTooltip="{{ 'isCoverage.tooltip' | translate }}">
+              {{ 'isCoverage' | translate }}
+            </mat-checkbox>
           </div>
 
-          <p class="sub_title inline-block">欲佈建的AP數量</p>
+          <mat-radio-group [(ngModel)]="planningIndex" (change)="changePlanningIndex()">
+            <mat-radio-button class="block" value="2" matTooltip="{{ 'planning.ue.tooltip' | translate }}">
+              {{ 'planning.ue' | translate }}
+            </mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="planningIndex === '2'" class="subTarget">
+            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr" matTooltip="{{ 'isUeAvgSinr.tooltip' | translate }}">
+              {{ 'isUeAvgSinr' | translate }}
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput" matTooltip="{{ 'isUeAvgThroughput.tooltip' | translate }}">
+              {{ 'isUeAvgThroughput' | translate }}
+            </mat-checkbox>
+            <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance" matTooltip="{{ 'isUeTpByDistance.tooltip' | translate }}">
+              {{ 'isUeTpByDistance' | translate }}
+            </mat-checkbox>
+          </div>
+
+          <p class="sub_title inline-block">
+            <ng-container *ngIf="calculateForm.objectiveIndex == '2' ; else oTemp">{{ 'availableNewBsNumber.wifi' | translate }}</ng-container>
+            <ng-template #oTemp>{{ 'availableNewBsNumber.gen' | translate }}</ng-template>
+          </p>
           <div class="sub_content inline-block">
             <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
           </div>
@@ -418,7 +420,20 @@
                     <option value="2">Wifi</option>
                   </select>
                 </li>
-                <li *ngIf="calculateForm.objectiveIndex === '2'">
+                <ng-container *ngIf="calculateForm.objectiveIndex == '1'">
+                  <!-- 5G -->
+                  <li>
+                    <p>{{ 'subcarrier' | translate }}	</p>
+                    <select [(ngModel)]="subcarrier" style="width: 100px;" >
+                      <option value="15">15</option>
+                      <option value="30">30</option>
+                      <option value="60">60</option>
+                      <option value="120">120</option>
+                    </select>
+                  </li>
+                </ng-container>
+                
+                <li *ngIf="calculateForm.objectiveIndex == '2'">
                   <p>Wifi頻率	</p>
                   <select [(ngModel)]="wifiFrequency" (change)="changeWifiFrequency()" style="width: 100px;" >
                     <option value="0">sub-1GHz</option>
@@ -429,29 +444,8 @@
                 <li>
                   <p>{{ 'bandwidth' | translate }}</p>
                   <span>
-                    <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherObjective">
-                      <!-- WIFI -->
-                      <select [(ngModel)]="calculateForm.bandwidth">
-                        <ng-container *ngIf="wifiFrequency === '0'">
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="4">4</option>
-                          <option value="8">8</option>
-                          <option value="16">16</option>
-                        </ng-container>
-                        <ng-template [ngIf]="wifiFrequency === '1'">
-                          <option value="20">20</option>
-                          <option value="40">40</option>
-                        </ng-template>
-                        <ng-template [ngIf]="wifiFrequency === '2'">
-                          <option value="20">20</option>
-                          <option value="40">40</option>
-                          <option value="80">80</option>
-                          <option value="120">120</option>
-                        </ng-template>
-                      </select>
-                    </ng-container>
-                    <ng-template #otherObjective>
+                    <!-- 4G -->
+                    <ng-container *ngIf="calculateForm.objectiveIndex == '0'">
                       <select [(ngModel)]="calculateForm.bandwidth">
                         <option value="3">3</option>
                         <option value="5">5</option>
@@ -459,11 +453,76 @@
                         <option value="15">15</option>
                         <option value="20">20</option>
                       </select>
-                    </ng-template>
+                    </ng-container>
+                    <!-- 5G -->
+                    <ng-container *ngIf="calculateForm.objectiveIndex == '1'">
+                      <select [(ngModel)]="calculateForm.bandwidth">
+                        <ng-container *ngIf="subcarrier == 15 || subcarrier == 30">
+                          <option value="5">5</option>
+                          <option value="10">10</option>
+                          <option value="15">15</option>
+                          <option value="20">20</option>
+                          <option value="25">25</option>
+                          <option value="30">30</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                        </ng-container>
+                        <ng-container *ngIf="subcarrier == 30">
+                          <option value="60">60</option>
+                          <option value="70">70</option>
+                          <option value="80">80</option>
+                          <option value="90">90</option>
+                          <option value="100">100</option>
+                        </ng-container>
+                        <ng-container *ngIf="subcarrier == 60">
+                          <option value="10">10</option>
+                          <option value="15">15</option>
+                          <option value="20">20</option>
+                          <option value="25">25</option>
+                          <option value="30">30</option>
+                          <option value="40">40</option>
+                          <option value="50">50</option>
+                          <option value="60">60</option>
+                          <option value="70">70</option>
+                          <option value="80">80</option>
+                          <option value="90">90</option>
+                          <option value="100">100</option>
+                          <option value="200">200</option>
+                        </ng-container>
+                        <ng-container *ngIf="subcarrier == 120">
+                          <option value="50">50</option>
+                          <option value="100">100</option>
+                          <option value="200">200</option>
+                          <option value="400">400</option>
+                        </ng-container>
+                      </select>
+                    </ng-container>
+                    <!-- WIFI -->
+                    <ng-container *ngIf="calculateForm.objectiveIndex == '2'">
+                      <select [(ngModel)]="calculateForm.bandwidth">
+                        <ng-container *ngIf="wifiFrequency == '0'">
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="4">4</option>
+                          <option value="8">8</option>
+                          <option value="16">16</option>
+                        </ng-container>
+                        <ng-template [ngIf]="wifiFrequency == '1'">
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                        </ng-template>
+                        <ng-template [ngIf]="wifiFrequency == '2'">
+                          <option value="20">20</option>
+                          <option value="40">40</option>
+                          <option value="80">80</option>
+                          <option value="120">120</option>
+                        </ng-template>
+                      </select>
+                    </ng-container>
                     MHz
                     /
                     <label>{{ 'frequency' | translate }}</label>
-                    <ng-container *ngIf="calculateForm.objectiveIndex === '2'; else otherFrequency">
+                    <ng-container *ngIf="calculateForm.objectiveIndex == '2'; else otherFrequency">
                       {{ calculateForm.frequency }} MHz
                     </ng-container>
                     <ng-template #otherFrequency>
@@ -774,7 +833,10 @@
 </mat-sidenav-container>
 
 <ng-template #materialModal>
-  <h5 mat-dialog-title>{{ 'altitude.setting' | translate }} / {{ 'material.setting' | translate }} </h5>
+  <h5 *ngIf="dragObject[svgId].type === 'obstacle' ; else otherTypeTemp" mat-dialog-title>{{ 'altitude.setting' | translate }} / {{ 'material.setting' | translate }} </h5>
+  <ng-template #otherTypeTemp>
+    <h5 mat-dialog-title>{{ 'altitude.setting' | translate }}</h5>
+  </ng-template>  
   <div mat-dialog-content>
     <ul>
       <li class="highset">
@@ -800,14 +862,14 @@
           <input matInput >
         </mat-form-field>-->
       </li>
-      <li class="mt-2">
+      <li class="mt-2" *ngIf="dragObject[svgId].type === 'obstacle'">
         <mat-label>{{ 'material.setting' | translate }}</mat-label>
         <mat-radio-group [(ngModel)]="dragObject[svgId].material" aria-label="Select an option">
-          <mat-radio-button value="0">木頭</mat-radio-button>
-          <mat-radio-button class="ml-2" value="1">水泥</mat-radio-button>
-          <mat-radio-button class="ml-2" value="2">輕鋼架</mat-radio-button>
-          <mat-radio-button class="ml-2" value="3">玻璃</mat-radio-button>
-          <mat-radio-button class="ml-2" value="4">不鏽鋼/其它金屬類</mat-radio-button>
+          <mat-radio-button value="0">{{ 'material.wood' | translate }}</mat-radio-button>
+          <mat-radio-button class="ml-2" value="1">{{ 'material.cement' | translate }}</mat-radio-button>
+          <mat-radio-button class="ml-2" value="2">{{ 'material.light_steel_frame' | translate }}</mat-radio-button>
+          <mat-radio-button class="ml-2" value="3">{{ 'material.glass' | translate }}</mat-radio-button>
+          <mat-radio-button class="ml-2" value="4">{{ 'material.stainless' | translate }}</mat-radio-button>
         </mat-radio-group>
       </li>
     </ul>

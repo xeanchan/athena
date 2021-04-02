@@ -212,6 +212,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   UE_COLOR = '#0c9ccc';
   /** history output */
   hstOutput = {};
+  /** 子載波間距 */
+  subcarrier = 15;
+  /** 進度 */
+  progressNum = 0;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -345,6 +349,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             this.zValues = JSON.parse(this.calculateForm.zValue);
 
+            if (window.sessionStorage.getItem(`form_${this.taskid}`) != null) {
+              // 從暫存取出
+              this.calculateForm = JSON.parse(window.sessionStorage.getItem(`form_${this.taskid}`));
+            }
+
             this.initData(false);
           },
           err => {
@@ -358,12 +367,26 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         // from new-planning upload image
         this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+        // 頻寬初始值
+        this.changeWifiFrequency();
+        if (this.calculateForm.objectiveIndex === '0') {
+          this.calculateForm.bandwidth = 3;
+        } else if (this.calculateForm.objectiveIndex === '1') {
+          this.calculateForm.bandwidth = 5;
+        } else if (this.calculateForm.objectiveIndex === '2') {
+          this.calculateForm.bandwidth = 1;
+        }
         this.initData(false);
       }
     }
   }
 
   ngOnDestroy(): void {
+    if (this.taskid !== '') {
+      // 暫存
+      this.setForm();
+      window.sessionStorage.setItem(`form_${this.taskid}`, JSON.stringify(this.calculateForm));
+    }
     if (typeof this.progressInterval !== 'undefined') {
       window.clearInterval(this.progressInterval);
     }
@@ -414,7 +437,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       margin: { t: 20, b: 20, l: 40}
     };
 
-    if (this.calculateForm.mapImage != null && this.calculateForm.mapImage !== 'null') {
+    if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
@@ -919,9 +942,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (height < 5) {
       height = 5;
     }
+    const type = this.dragObject[this.svgId].element;
 
     this.frame.set('width', `${width}px`);
-    this.frame.set('height', `${height}px`);
+    if (type === 'ellipse') {
+      // 圓形正圓
+      this.frame.set('height', `${width}px`);
+    } else {
+      this.frame.set('height', `${height}px`);
+    }
+    
 
     const beforeTranslate = drag.beforeTranslate;
     this.frame.set('z-index', 9999999);
@@ -934,8 +964,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.spanStyle[this.svgId].width = `${width}px`;
     this.spanStyle[this.svgId].height = `${height}px`;
 
-    const type = this.dragObject[this.svgId].element;
-
     if (type === 'rect') {
       // 方形
       this.rectStyle[this.svgId].width = width;
@@ -943,17 +971,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // dragRect.setAttribute('width', width.toString());
       // dragRect.setAttribute('height', height.toString());
     } else if (type === 'ellipse') {
-      // 圓形
+      // 圓形正圓
       const x = (width / 2).toString();
-      const y = (height / 2).toString();
       this.ellipseStyle[this.svgId].rx = x;
-      this.ellipseStyle[this.svgId].ry = y;
+      this.ellipseStyle[this.svgId].ry = x;
       this.ellipseStyle[this.svgId].cx = x;
-      this.ellipseStyle[this.svgId].cy = y;
-      // dragRect.setAttribute('rx', x);
-      // dragRect.setAttribute('ry', y);
-      // dragRect.setAttribute('cx', x);
-      // dragRect.setAttribute('cy', y);
+      this.ellipseStyle[this.svgId].cy = x;
+
     } else if (type === 'polygon') {
       // 三角形
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
@@ -1112,24 +1136,40 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.moveable.destroy();
     } catch (error) {}
 
-    this.authService.spinnerShowAsHome();
-    this.setForm();
-    // 規劃目標
-    this.setPlanningObj();
-
-    console.log(this.calculateForm);
-    const url = `${this.authService.API_URL}/calculate`;
-    this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
-      res => {
-        this.taskid = res['taskid'];
-        document.getElementById('percentageVal').innerHTML = '0';
-        this.getProgress();
-      },
-      err => {
-        this.authService.spinnerHide();
-        console.log(err);
+    if (Number(this.calculateForm.availableNewBsNumber) === 0) {
+      let msg;
+      if (this.calculateForm.objectiveIndex === '2') {
+        msg = this.translateService.instant('availableNewBsNumber.wifi');
+      } else {
+        msg = this.translateService.instant('availableNewBsNumber.gen');
       }
-    );
+      msg += ' ' + this.translateService.instant('must_greater_then') + '0';
+      this.msgDialogConfig.data = {
+        type: 'error',
+        infoMessage: msg
+      };
+      this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+    } else {
+      this.progressNum = 0;
+      this.authService.spinnerShowAsHome();
+      this.setForm();
+      // 規劃目標
+      this.setPlanningObj();
+
+      console.log(this.calculateForm);
+      const url = `${this.authService.API_URL}/calculate`;
+      this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
+        res => {
+          this.taskid = res['taskid'];
+          document.getElementById('percentageVal').innerHTML = '0';
+          this.getProgress();
+        },
+        err => {
+          this.authService.spinnerHide();
+          console.log(err);
+        }
+      );
+    }
   }
 
   /** 規劃目標  */
@@ -1155,7 +1195,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 組form */
   setForm() {
-    this.authService.spinnerShowAsHome();
     if (typeof this.calculateForm.isAverageSinr === 'undefined') {
       this.calculateForm.isAverageSinr = false;
     }
@@ -1260,22 +1299,32 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** 查詢進度 */
   getProgress() {
+    window.setTimeout(() => {
+      if (this.progressNum < 100) {
+        document.getElementById('percentageVal').innerHTML = (this.progressNum++).toString();
+      }
+    }, 0);
     const url = `${this.authService.API_URL}/progress/${this.taskid}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
         window.clearInterval(this.progressInterval);
-        document.getElementById('percentageVal').innerHTML = Math.ceil(res['progress'] * 100).toString();
+        
         if (res['progress'] === 1) {
+          document.getElementById('percentageVal').innerHTML = '100';
           // done
           this.authService.spinnerHide();
-          location.replace(`#/site/result?taskId=${this.taskid}`);
-          location.reload();
+          // 儲存
+          this.save();
+          this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+          // location.replace(`#/site/result?taskId=${this.taskid}`);
+          // location.reload();
         } else {
           // query again
+          // document.getElementById('percentageVal').innerHTML = Math.ceil(res['progress'] * 100).toString();
           window.clearInterval(this.progressInterval);
           this.progressInterval = window.setTimeout(() => {
             this.getProgress();
-          }, 2000);
+          }, 3000);
         }
 
       }, err => {
@@ -1571,18 +1620,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const map: string = this.wb.SheetNames[0];
     const mapWS: XLSX.WorkSheet = this.wb.Sheets[map];
     const mapData = (XLSX.utils.sheet_to_json(mapWS, {header: 1}));
-    if (mapData.length === 1) {
-      // fail xlsx
-      // this.msgDialogConfig.data = {
-      //   type: 'error',
-      //   infoMessage: this.translateService.instant('xlxs.fail')
-      // };
-      // this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
-      this.calculateForm.width = 1;
-      this.calculateForm.height = 1;
-      this.calculateForm.altitude = 1;
-      this.initData(false);
-    } else {
+
+    try {
       this.calculateForm.mapImage = '';
       const keyMap = {};
       Object.keys(mapData[0]).forEach((key) => {
@@ -1620,7 +1659,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
   
       this.initData(true);
+    } catch (error) {
+      console.log(error);
+      // fail xlsx
+      this.msgDialogConfig.data = {
+        type: 'error',
+        infoMessage: this.translateService.instant('xlxs.fail')
+      };
+      this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+      window.setTimeout(() => {
+        this.matDialog.closeAll();
+        this.router.navigate(['/']);
+      }, 2000);
     }
+
+    // if (mapData.length === 1) {
+    //   // fail xlsx
+    //   // this.msgDialogConfig.data = {
+    //   //   type: 'error',
+    //   //   infoMessage: this.translateService.instant('xlxs.fail')
+    //   // };
+    //   // this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
+    //   this.calculateForm.width = 1;
+    //   this.calculateForm.height = 1;
+    //   this.calculateForm.altitude = 1;
+    //   this.initData(false);
+    // } else {
+      
+    // }
   }
 
   setImportData() {
@@ -1926,6 +1992,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.wifiFrequency = '1';
       }
       this.changeWifiFrequency();
+    } else if (this.calculateForm.objectiveIndex === '1') {
+      // 5G set子載波間距
+      this.setSubcarrier();
     }
   }
 
@@ -1948,16 +2017,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   edit() {
     // obstacleInfo
-    if (this.calculateForm.obstacleInfo != null && this.calculateForm.obstacleInfo !== '') {
+    if (!this.authService.isEmpty(this.calculateForm.obstacleInfo)) {
       const obstacle = this.calculateForm.obstacleInfo.split('|');
       const obstacleLen = obstacle.length;
       for (let i = 0; i < obstacleLen; i++) {
         const item = JSON.parse(obstacle[i]);
         let shape = 'rect';
         if (typeof item[7] !== 'undefined') {
-          if (item[7] === '1') {
+          if (item[7] === 1) {
             shape = 'polygon';
-          } else if (item[7] === '2') {
+          } else if (item[7] === 2) {
             shape = 'ellipse';
           }
         }
@@ -2005,7 +2074,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // 圓形
           const x = (width / 2).toString();
           const y = (height / 2).toString();
-          this.ellipseStyle[this.svgId] = {
+          this.ellipseStyle[id] = {
             ry: x,
             rx: y,
             cx: x,
@@ -2016,7 +2085,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (shape === 'polygon') {
           // 三角形
           const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
-          this.polygonStyle[this.svgId] = {
+          this.polygonStyle[id] = {
             points: points,
             fill: this.dragObject[id].color
           };
@@ -2025,7 +2094,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     // defaultBs
-    if (this.calculateForm.defaultBs != null && this.calculateForm.defaultBs !== '') {
+    if (!this.authService.isEmpty(this.calculateForm.defaultBs)) {
       const defaultBS = this.calculateForm.defaultBs.split('|');
       const defaultBSLen = defaultBS.length;
       for (let i = 0; i < defaultBSLen; i++) {
@@ -2066,7 +2135,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     // candidate
-    if (this.calculateForm.candidateBs != null && this.calculateForm.candidateBs !== '') {
+    if (!this.authService.isEmpty(this.calculateForm.candidateBs)) {
       const candidate = this.calculateForm.candidateBs.split('|');
       const candidateLen = candidate.length;
       for (let i = 0; i < candidateLen; i++) {
@@ -2108,7 +2177,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     // UE
-    if (this.calculateForm.ueCoordinate != null && this.calculateForm.ueCoordinate !== '') {
+    if (!this.authService.isEmpty(this.calculateForm.ueCoordinate)) {
       const ue = this.calculateForm.ueCoordinate.split('|');
       const ueLen = ue.length;
       for (let i = 0; i < ueLen; i++) {
@@ -2160,9 +2229,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   result() {
     // 規劃目標
     this.setPlanningObj();
-    location.replace(`#/site/result?taskId=${this.taskid}&isHst=true`);
-    location.reload();
-    // this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+    // location.replace(`#/site/result?taskId=${this.taskid}&isHst=true`);
+    // location.reload();
+    if (this.isHst) {
+      this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+    } else {
+      this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
+    }
     
   }
 
@@ -2218,8 +2291,48 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  resizeEnd() {
+  /** 場域標題 */
+  getTitle() {
+    if (this.calculateForm.objectiveIndex.toString() === '0') {
+      return this.translateService.instant('planning.title').replace('{0}', '4G');
+    } else if (this.calculateForm.objectiveIndex.toString() === '1') {
+      return this.translateService.instant('planning.title').replace('{0}', '5G');
+    } else if (this.calculateForm.objectiveIndex.toString() === '2') {
+      return this.translateService.instant('planning.title').replace('{0}', 'Wifi');
+    }
+  }
 
-    this.onEnd();
+  /** set子載波間距 */
+  setSubcarrier() {
+    const list15 = [5, 10, 15, 20, 25, 30, 40, 50];
+    const list30 = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100];
+    const list60 = [10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100, 200];
+    const list120 = [50, 100, 200, 400];
+    const bandwidth = Number(this.calculateForm.bandwidth);
+    if (list15.includes(bandwidth)) {
+      this.subcarrier = 15;
+    } else if (list30.includes(bandwidth)) {
+      this.subcarrier = 30;
+    } else if (list60.includes(bandwidth)) {
+      this.subcarrier = 60;
+    } else if (list120.includes(bandwidth)) {
+      this.subcarrier = 120;
+    }
+  }
+
+  /** 規劃目標切換 */
+  changePlanningIndex() {
+    // 設定預設值
+    if (this.planningIndex === '1') {
+      if (!this.calculateForm.isAverageSinr && !this.calculateForm.isCoverage) {
+        this.calculateForm.isAverageSinr = true;
+      }
+    } else {
+      if (!this.calculateForm.isUeAvgSinr 
+        && !this.calculateForm.isUeAvgThroughput 
+        && !this.calculateForm.isUeTpByDistance) {
+        this.calculateForm.isUeAvgSinr = true;
+      }
+    }
   }
 }
