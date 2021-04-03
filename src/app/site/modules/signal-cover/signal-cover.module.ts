@@ -4,7 +4,6 @@ import { SignalCoverComponent } from './signal-cover.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 
-
 @NgModule({
   declarations: [SignalCoverComponent],
   imports: [

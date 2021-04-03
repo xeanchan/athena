@@ -14,7 +14,7 @@ import { PdfModule } from '../pdf/pdf.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 
 @NgModule({
   imports: [
@@ -31,7 +31,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     StatisticsModule,
     PdfModule,
     TranslateModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxSliderModule
   ],
   declarations: [ResultComponent]
 })

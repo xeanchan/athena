@@ -32,6 +32,7 @@ export class StatisticsComponent implements OnInit {
   textColor = '#ffffff';
   zValues = [];
   fmt = Plotly.d3.format('.2%');
+  showUE = true;
 
   ngOnInit(): void {
   }
@@ -63,6 +64,8 @@ export class StatisticsComponent implements OnInit {
       this.drawUESignal(isPDF);
       // UE訊號強度CDF圖
       this.drawUESignalCDF(isPDF);
+    } else {
+      this.showUE = false;
     }
     
   }

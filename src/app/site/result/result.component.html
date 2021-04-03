@@ -65,6 +65,10 @@
 						<app-signal-cover *ngIf="showCover" #cover></app-signal-cover>
 						<!-- 訊號強度圖 -->
 						<app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
+
+						<div>
+							<ngx-slider [(value)]="opacityValue" [options]="opacityOptions" (userChange)="changeOpacity()"></ngx-slider>
+						</div>
 					
 					</td>
 				</tr>

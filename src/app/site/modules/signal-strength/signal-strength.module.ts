@@ -4,7 +4,6 @@ import { SignalStrengthComponent } from './signal-strength.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 
-
 @NgModule({
   declarations: [SignalStrengthComponent],
   imports: [

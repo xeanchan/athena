@@ -20,6 +20,7 @@ import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.componen
 import { TranslateService } from '@ngx-translate/core';
 import { View3dComponent } from '../view3d/view3d.component';
 import { FormService } from '../../service/form.service';
+import { Options } from '@angular-slider/ngx-slider/options';
 
 declare var Plotly: any;
 
@@ -74,6 +75,25 @@ export class ResultComponent implements OnInit {
   showObstacle = true;
   // AP顯示
   showCandidate = true;
+  // slide heatmapw透明度
+  opacityValue: number = 0.8;
+  opacityOptions: Options = {
+    showSelectionBar: true,
+    showTicks: true,
+    stepsArray: [
+      { value: 0 },
+      { value: 0.1 },
+      { value: 0.2 },
+      { value: 0.3 },
+      { value: 0.4 },
+      { value: 0.5 },
+      { value: 0.6 },
+      { value: 0.7 },
+      { value: 0.8 },
+      { value: 0.9 },
+      { value: 1 }
+    ]
+  };
 
   @ViewChild('pdf') pdf: PdfComponent;
 
@@ -249,6 +269,7 @@ export class ResultComponent implements OnInit {
       this.quality.result = this.result;
       this.quality.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.quality.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.quality.opacityValue = this.opacityValue;
       this.quality.draw(false, this.zValue);
     }, 0);
   }
@@ -264,6 +285,7 @@ export class ResultComponent implements OnInit {
       this.cover.result = this.result;
       this.cover.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.cover.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.cover.opacityValue = this.opacityValue;
       this.cover.draw(false, this.zValue);
     }, 0);
   }
@@ -279,6 +301,7 @@ export class ResultComponent implements OnInit {
       this.strength.result = this.result;
       this.strength.showObstacle = this.showObstacle ? 'visible' : 'hidden';
       this.strength.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.strength.opacityValue = this.opacityValue;
       this.strength.draw(false, this.zValue);
     }, 0);
   }
@@ -375,6 +398,20 @@ export class ResultComponent implements OnInit {
       this.cover.switchShowCandidate(visible);
     } else if (this.chartType === 'RSRP') {
       this.strength.switchShowCandidate(visible);
+    }
+  }
+
+  /** heatmap透明度 */
+  changeOpacity() {
+    if (this.chartType === 'SINR') {
+      this.quality.opacityValue = this.opacityValue;
+      this.quality.changeOpacity();
+    } else if (this.chartType === 'PCI') {
+      this.cover.opacityValue = this.opacityValue;
+      this.cover.changeOpacity();
+    } else if (this.chartType === 'RSRP') {
+      this.strength.opacityValue = this.opacityValue;
+      this.strength.changeOpacity();
     }
   }
 

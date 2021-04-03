@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SignalQualityComponent } from './signal-quality.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-
-
 @NgModule({
   declarations: [SignalQualityComponent],
   imports: [

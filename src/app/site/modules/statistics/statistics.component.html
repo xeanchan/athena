@@ -23,7 +23,7 @@
 				<div id="LAYER_SIGNAL_CDF"></div>
 			</td>
 		</tr>
-		<tr *ngIf="!authService.isEmpty(calculateForm.ueCoordinate)">
+		<tr *ngIf="showUE">
 			<td style="width: 50%;">
 				<!-- UE Modulation統計 -->
 				<div id="UE_Modulation"></div>
@@ -33,7 +33,7 @@
 				<div id="UE_Modulation_CDF"></div>
 			</td>
 		</tr>
-		<tr *ngIf="!authService.isEmpty(calculateForm.ueCoordinate)">
+		<tr *ngIf="showUE">
 			<td>
 				<!-- UE訊號強度統計 -->
 				<div id="UE_SIGNAL"></div>

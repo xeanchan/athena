@@ -2,6 +2,7 @@ import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
+import { Options } from '@angular-slider/ngx-slider';
 
 declare var Plotly: any;
 
@@ -39,6 +40,8 @@ export class SignalQualityComponent implements OnInit {
   showObstacle = 'visible';
   // AP顯示style
   showCandidate = 'visible';
+  // slide
+  opacityValue: number = 0.8;
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -100,7 +103,7 @@ export class SignalQualityComponent implements OnInit {
       xaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, this.calculateForm.width],
+        range: [0, Number(this.calculateForm.width) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -110,10 +113,10 @@ export class SignalQualityComponent implements OnInit {
       yaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, this.calculateForm.height],
+        range: [0, Number(this.calculateForm.height) - 1],
         showgrid: false,
         zeroline: false,
-        fixedrange: true,
+        fixedrange: false,
         ticks: 'inside',
         ticksuffix: 'm'
       },
@@ -300,7 +303,7 @@ export class SignalQualityComponent implements OnInit {
       type: 'heatmap',
       hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
       showscale: false,
-      opacity: 0.8,
+      opacity: this.opacityValue,
       zsmooth: 'best'
     };
     traces.push(trace);
@@ -548,6 +551,14 @@ export class SignalQualityComponent implements OnInit {
       item.style['visibility'] = visible;
       item.circleStyle['visibility'] = visible;
     }
+  }
+
+  /** heatmap透明度 */
+  changeOpacity() {
+    const chartElm = document.querySelectorAll(`.quality_chart`)[0];
+    Plotly.restyle(chartElm, {
+      opacity: this.opacityValue
+    }, [1]);
   }
 
 }

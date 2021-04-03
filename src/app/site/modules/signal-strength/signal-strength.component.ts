@@ -2,6 +2,7 @@ import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
+import { Options } from '@angular-slider/ngx-slider';
 
 declare var Plotly: any;
 
@@ -40,6 +41,8 @@ export class SignalStrengthComponent implements OnInit {
   showObstacle = 'visible';
   // AP顯示style
   showCandidate = 'visible';
+  // slide
+  opacityValue: number = 0.8;
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -101,7 +104,7 @@ export class SignalStrengthComponent implements OnInit {
       xaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, this.calculateForm.width],
+        range: [0, Number(this.calculateForm.width) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -111,7 +114,7 @@ export class SignalStrengthComponent implements OnInit {
       yaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, this.calculateForm.height],
+        range: [0, Number(this.calculateForm.height) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -263,7 +266,7 @@ export class SignalStrengthComponent implements OnInit {
       zmax: -44,
       zmin: -140,
       zsmooth: 'best',
-      opacity: 0.8
+      opacity: this.opacityValue
     };
     traces.push(trace);
 
@@ -513,6 +516,14 @@ export class SignalStrengthComponent implements OnInit {
       item.style['visibility'] = visible;
       item.circleStyle['visibility'] = visible;
     }
+  }
+
+  /** heatmap透明度 */
+  changeOpacity() {
+    const chartElm = document.querySelectorAll(`.signal_strength`)[0];
+    Plotly.restyle(chartElm, {
+      opacity: this.opacityValue
+    }, [1]);
   }
 
 }
