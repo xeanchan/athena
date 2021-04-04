@@ -42,4 +42,14 @@ export class SiteInfoComponent implements OnInit {
     }
   }
 
+  getWaitSelect() {
+    return this.translateService.instant('result.propose.wait_select_2')
+    .replace('{0}', this.inputBsListCount);
+  }
+
+  getBsCount() {
+    return this.translateService.instant('result.bs.count')
+    .replace('{0}', this.defaultBsCount);
+  }
+
 }

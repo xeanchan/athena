@@ -16,16 +16,16 @@
 		<table style="table-layout: fixed;">
 			<tbody>
 				<tr>
-					<th colspan="2" class="panel center"><label>訊號覆蓋模擬結果</label></th>
+					<th colspan="2" class="panel center"><label>{{ 'result.sinr_result' | translate }}</label></th>
 				</tr>
 				<tr>
 					<td class="mapType" colspan="2">
 						<label>{{ 'zValue' | translate }}</label>
 						<mat-button-toggle-group [(ngModel)]="zValue" (change)="changeZvalue()" >
-							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} 公尺</mat-button-toggle>
+							<mat-button-toggle *ngFor="let item of zValues" [value]="item">{{ item }} {{ 'meter' | translate }}</mat-button-toggle>
 						</mat-button-toggle-group>
 			
-						<label class="mL_1">分布圖切換</label>
+						<label class="mL_1">{{ 'result.img.change' | translate }}</label>
 						<mat-button-toggle-group [(ngModel)]="chartType">
 							<mat-button-toggle  value="SINR" (click)="drawQuality()" selected>{{ 'sinrMap' | translate }}</mat-button-toggle>
 							<mat-button-toggle  value="PCI" (click)="drawCover()">{{ 'connectionMap' | translate }}</mat-button-toggle>

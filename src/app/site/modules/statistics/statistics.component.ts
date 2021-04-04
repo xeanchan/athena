@@ -90,7 +90,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '調變類型',
+          text: this.translateService.instant('statistics.modulation.type'),
           font: {
             color: this.textColor
           }
@@ -106,7 +106,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '參考點總數',
+          text: this.translateService.instant('statistics.ref.points'),
           font: {
             color: this.textColor
           }
@@ -196,7 +196,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '調變類型',
+          text: this.translateService.instant('statistics.modulation.type'),
           font: {
             color: this.textColor
           }
@@ -212,7 +212,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '累計比率',
+          text: this.translateService.instant('statistics.cumulative.ratio'),
           font: {
             color: this.textColor
           }
@@ -312,7 +312,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '調變類型',
+          text: this.translateService.instant('statistics.modulation.type'),
           font: {
             color: this.textColor
           }
@@ -328,7 +328,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '行動終端總數',
+          text: this.translateService.instant('statistics.ue.count'),
           font: {
             color: this.textColor
           }
@@ -399,7 +399,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '訊號強度(格數)',
+          text: this.translateService.instant('statistics.sinr'),
           font: {
             color: this.textColor
           }
@@ -417,7 +417,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '參考點總數',
+          text: this.translateService.instant('statistics.ref.points'),
           font: {
             color: this.textColor
           }
@@ -507,7 +507,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '訊號強度(格數)',
+          text: this.translateService.instant('statistics.sinr'),
           font: {
             color: this.textColor
           }
@@ -525,7 +525,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '累計比率',
+          text: this.translateService.instant('statistics.cumulative.ratio'),
           font: {
             color: this.textColor
           }
@@ -625,7 +625,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '調變類型',
+          text: this.translateService.instant('statistics.modulation.type'),
           font: {
             color: this.textColor
           }
@@ -641,7 +641,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '累計比率',
+          text: this.translateService.instant('statistics.cumulative.ratio'),
           font: {
             color: this.textColor
           }
@@ -721,7 +721,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '訊號強度(格數)',
+          text: this.translateService.instant('statistics.sinr'),
           font: {
             color: this.textColor
           }
@@ -739,7 +739,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '行動終端總數',
+          text: this.translateService.instant('statistics.ue.count'),
           font: {
             color: this.textColor
           }
@@ -811,7 +811,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '訊號強度(格數)',
+          text: this.translateService.instant('statistics.sinr'),
           font: {
             color: this.textColor
           }
@@ -829,7 +829,7 @@ export class StatisticsComponent implements OnInit {
           color: this.textColor
         },
         title: {
-          text: '累計比率',
+          text: this.translateService.instant('statistics.cumulative.ratio'),
           font: {
             color: this.textColor
           }

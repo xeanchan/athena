@@ -1,17 +1,17 @@
 <div id="site_info">
-  <h5><i class="fas fa-info-circle"></i>場域設定資訊</h5>
+  <h5><i class="fas fa-info-circle"></i>{{ 'result.layered.info' | translate }}</h5>
   <ul>
     <li>
-      <span><label>專案名稱</label>{{ calculateForm['taskName'] }}</span>
-      <span><label>規劃時間</label>{{ result['createTime'] }}</span>
+      <span><label>{{ 'taskName' | translate }}</label>{{ calculateForm['taskName'] }}</span>
+      <span><label>{{ 'createTime' | translate }}</label>{{ result['createTime'] }}</span>
     </li>
     <li>
-      <span><label>場域大小(公尺)</label>長 {{ result['inputWidth'] }} / 寬 {{ result['inputHeight'] }} ／高 {{ calculateForm['altitude'] }} </span>
-      <span><label>切面高度</label>{{ calculateForm.zValue }} 公尺</span>
+      <span><label>{{ 'planning.size' | translate }}({{ 'meter' | translate }})</label>{{ 'width' | translate }} {{ result['inputWidth'] }} / {{ 'height' | translate }} {{ result['inputHeight'] }} ／高 {{ calculateForm['altitude'] }} </span>
+      <span><label>{{ 'zValue' | translate }}</label>{{ calculateForm.zValue }} {{ 'meter' | translate }}</span>
     </li>
     <li>
       <span>
-        <label>規劃目標</label>
+        <label>{{ 'planning.target' | translate }}</label>
         <div *ngIf="planningObj.isAverageSinr">{{ 'isAverageSinr' | translate }}</div>
         <div *ngIf="planningObj.isCoverage">{{ 'isCoverage' | translate }}</div>
         <div *ngIf="planningObj.isUeAvgSinr">{{ 'isUeAvgSinr' | translate }}</div>
@@ -20,13 +20,13 @@
       </span>
     </li>
     <hr>
-    <h5><i class="fas fa-info-circle"></i>基站資訊</h5>
+    <h5><i class="fas fa-info-circle"></i>{{ 'result.bs.info' | translate }}</h5>
     <li>
-      <span><label>網路種類</label>{{ parseOB(calculateForm.objectiveIndex) }}</span>
-      <span><label>待選基站位置</label>(共{{ inputBsListCount }}處)</span>
-      <span><label>現有基站</label>(共{{ defaultBsCount }}台)</span>
-      <span><label>發射功率範圍</label>	{{ calculateForm.powerMinRange }} dBm ~ {{ calculateForm.powerMaxRange }} dBm</span>
-      <span><label>可分配波束編號範圍</label>	0 ~ 30</span>
+      <span><label>{{ 'planning.net' | translate }}</label>{{ parseOB(calculateForm.objectiveIndex) }}</span>
+      <span><label>{{ 'result.propose.wait_select_1' | translate }}</label>{{ getWaitSelect() }}</span>
+      <span><label>{{ 'defaultBs' | translate }}</label>{{ getBsCount() }}</span>
+      <span><label>{{ 'result.dbm.range' | translate }}</label>	{{ calculateForm.powerMinRange }} dBm ~ {{ calculateForm.powerMaxRange }} dBm</span>
+      <span><label>{{ 'result.beam.range' | translate }}</label>	0 ~ 30</span>
       <span><label>{{ 'bandwidth' | translate }}(MHz)</label>	{{ calculateForm.bandwidth }} MHz</span>
       <span><label>{{ 'frequency' | translate }}(MHz)</label>	{{ calculateForm.frequency }} MHz</span>
     </li>

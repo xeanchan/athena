@@ -3,18 +3,18 @@
 	<div class="box">
 		
 		<div class="leftArea">
-			<h2 class="inline-block">規劃結果</h2>
+			<h2 class="inline-block">{{ 'result.title' | translate }}</h2>
 		
 			<table id="defaultBs_list">
 				<tbody>
 					<tr>
-						<th class="panel center" colspan="4"><label class="bold">現有基站</label></th>
+						<th class="panel center" colspan="4"><label class="bold">{{ 'defaultBs' | translate }}</label></th>
 					</tr>
 					<tr>   
-						<th>編號</th>
-						<th>X座標</th>
-						<th>Y座標</th>
-						<th>Z座標</th>
+						<th>{{ 'result.num' | translate }}</th>
+						<th>{{ 'result.propose.candidateBs.X' | translate }}</th>
+						<th>{{ 'result.propose.candidateBs.Y' | translate }}</th>
+						<th>{{ 'result.propose.candidateBs.z' | translate }}</th>
 					</tr>
 					<tr *ngFor="let item of defaultBs; let i = index;">
 						<td class="choose">{{ i + 1 }}</td>
@@ -23,7 +23,7 @@
 						<td class="choose">{{ item[2] }}</td>
 					</tr>
 					<tr *ngIf="defaultBs.length === 0">
-						<td class="choose center" colspan="4">未設置現有基站資訊</td>
+						<td class="choose center" colspan="4">{{ 'result.no.defaultBs' | translate }}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -34,11 +34,11 @@
 			<table *ngFor="let zValue of zValues; let idx = index;" id="signal_{{ idx }}">
 				<tbody>
 					<tr>
-						<th colspan="2" class="panel center"><label>訊號覆蓋模擬結果</label></th>
+						<th colspan="2" class="panel center"><label>{{ 'result.sinr_result' | translate }}</label></th>
 					</tr>
 					<tr>
 						<td class="mapType">
-							<label>{{ 'zValue' | translate }}{{ zValue }}公尺</label>
+							<label>{{ 'zValue' | translate }}{{ zValue }} {{ 'meter' | translate }}</label>
 				
 							<label class="mL_1">{{ 'sinrMap' | translate }}</label>
 							<app-signal-quality #quality></app-signal-quality>
@@ -56,11 +56,11 @@
 			<table *ngFor="let zValue of zValues; let idx = index;" id="view_3d_{{ idx }}">
 				<tbody>
 					<tr>
-						<th colspan="2" class="panel center"><label>3D訊號覆蓋模擬結果</label></th>
+						<th colspan="2" class="panel center"><label>3D {{ 'result.sinr_result' | translate }}</label></th>
 					</tr>
 					<tr>
 						<td class="mapType" style="height: 500px;">
-							<label>{{ 'zValue' | translate }}{{ zValue }}公尺</label>
+							<label>{{ 'zValue' | translate }}{{ zValue }} {{ 'meter' | translate }}</label>
 				
 							<label class="mL_1">{{ 'sinrMap' | translate }}</label>
 							<app-view3d #view3D1></app-view3d>

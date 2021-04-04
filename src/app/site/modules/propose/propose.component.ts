@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -11,7 +12,10 @@ declare var Plotly: any;
 })
 export class ProposeComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private translateService: TranslateService
+  ) { }
 
   plotLayout;
   /** result output */
@@ -221,6 +225,11 @@ export class ProposeComponent implements OnInit {
       }
 
     });
+  }
+
+  getWaitSelect() {
+    return this.translateService.instant('result.propose.wait_select_2')
+    .replace('{0}', this.candidateList.length);
   }
 
 }

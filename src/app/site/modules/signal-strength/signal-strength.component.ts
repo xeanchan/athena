@@ -224,7 +224,7 @@ export class SignalStrengthComponent implements OnInit {
         }
         cx.push(oData[0]);
         cy.push(oData[1]);
-        text.push(`${this.translateService.instant('ue')}<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>高度: ${oData[2]}`);
+        text.push(`${this.translateService.instant('ue')}<br>X: ${oData[0]}<br>Y: ${oData[1]}<br>${this.translateService.instant('altitude')}: ${oData[2]}`);
       }
 
       traces.push({
@@ -278,15 +278,15 @@ export class SignalStrengthComponent implements OnInit {
         const xdata = oData[0];
         const ydata = oData[1];
         let oColor = oData[7];
-        let text = `障礙物資訊
+        let text = `${this.translateService.instant('planning.obstacleInfo')}
         X: ${xdata}
         Y: ${ydata}
-        長: ${oData[2]}
-        寬: ${oData[3]}
-        高度: ${oData[4]}
+        ${this.translateService.instant('width')}: ${oData[2]}
+        ${this.translateService.instant('height')}: ${oData[3]}
+        ${this.translateService.instant('altitude')}: ${oData[4]}
         `;
         if (typeof oData[6] !== 'undefined') {
-          text += `材質: ${this.authService.parseMaterial(oData[6])}`;
+          text += `${this.translateService.instant('material')}: ${this.authService.parseMaterial(oData[6])}`;
         }
         if (typeof oData[7] === 'undefined') {
           oColor = '#000000';
@@ -328,10 +328,10 @@ export class SignalStrengthComponent implements OnInit {
         cx.push(xdata);
         cy.push(ydata);
 
-        const text = `現有基站
+        const text = `${this.translateService.instant('defaultBs')}
         X: ${xdata}
         Y: ${ydata}
-        高度: ${zdata}`;
+        ${this.translateService.instant('altitude')}: ${zdata}`;
         ctext.push(text);
         this.defaultBsList.push({
           x: xdata,

@@ -1,12 +1,12 @@
 <table id="performace" class="thCenter">
   <tbody>
       <tr>
-          <th class="panel" colspan="4"><label class="bold">預估效能</label></th>
+          <th class="panel" colspan="4"><label class="bold">{{ 'result.performance' | translate }}</label></th>
       </tr>
       <tr>
-          <th>場域覆蓋率</th>
-          <th>場域平均訊號品質</th>
-          <th>場域平均訊號強度</th>
+          <th>{{ 'result.coverage' | translate }}</th>
+          <th>{{ 'result.averageSinr' | translate }}</th>
+          <th>{{ 'result.averageRsrp' | translate }}</th>
           <th></th>
       </tr>
       <tr>
@@ -32,13 +32,13 @@
   </tbody>
   <tbody>
       <tr>
-          <th>地圖切面(高度)</th>
-          <th>切面覆蓋率</th>
-          <th>切面平均訊號品質</th>
-          <th>切面平均訊號強度</th>
+          <th>{{ 'result.img.section' | translate }}</th>
+          <th>{{ 'result.section.coverage' | translate }}</th>
+          <th>{{ 'result.section.sinr' | translate }}</th>
+          <th>{{ 'result.section.rsrp' | translate }}</th>
       </tr>
       <tr *ngFor="let item of zValueList">
-          <td>{{ item[0] }}公尺</td>
+          <td>{{ item[0] }} {{ 'meger' | translate }}</td>
           <td>{{ item[1] }}%</td>
           <td>{{ item[2] | number }}dB</td>
           <td>{{ item[3] | number }}dBm</td>
