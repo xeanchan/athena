@@ -1,9 +1,6 @@
-<h5>3D顯示<a href="javascript:void(0)" class="close" (click)="close()">&times;</a></h5>
+<h5 *ngIf="!isPDF">3D顯示<a href="javascript:void(0)" class="close" (click)="close()">&times;</a></h5>
 
-
-<div id="chart3D"></div>
-
-<div>
+<div *ngIf="!isPDF">
   <label>顯示項目：</label>
   <mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >原始基站</mat-checkbox>
   <mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">待選基站</mat-checkbox>
@@ -11,7 +8,7 @@
   <mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">無線終端</mat-checkbox>
 </div>
 
-<div>
+<div *ngIf="!isPDF">
   <label>Heat Map 類型：</label>
   <mat-radio-group [(ngModel)]="heatmapType" (change)="switchHeatMap()" aria-label="Select an option">
     <mat-radio-button value="0" class="ml-2">{{ 'sinrMap' | translate }}</mat-radio-button>
@@ -20,12 +17,12 @@
   </mat-radio-group>
 </div>
 
-<div style="height: 40px;">
+<div *ngIf="!isPDF" style="height: 40px;">
   <label for="zval">切面高度：</label>
   <select id="zval" [(ngModel)]="planeHeight" (change)="switchHeatMap()">
     <option *ngFor="let z of zValue" [value]="z">{{z}}</option>
   </select>公尺
 </div>
 
-
-<canvas id="canvas" style="height: 100%; width: 100%"></canvas>
+<canvas #canvas class="canvas_3d" style="height: 100%; width: 100%"></canvas>
+<img *ngIf="isPDF" #img src="" alt="" class="canvas_3d_img" style="height: 500px; width: 100%">

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Optional, ViewChild, ElementRef } from '@angular/core';
 import { CalculateForm } from '../../form/CalculateForm';
 import { AuthService } from '../../service/auth.service';
 import { Router } from '@angular/router';
@@ -25,19 +25,25 @@ export class View3dComponent implements OnInit {
     private router: Router,
     private matDialog: MatDialog,
     private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data) {
+    @Optional() @Inject(MAT_DIALOG_DATA) public data) {
 
-      this.calculateForm = data.calculateForm;
-      this.obstacle = data.obstacleList;
-      this.defaultBs = data.defaultBSList;
-      this.candidate = data.candidateList;
-      this.ue = data.ueList;
-      this.width = this.calculateForm.width;
-      this.height = this.calculateForm.height;
-      this.zValue = data.zValue;
-      this.planeHeight = this.zValue[0].toString();
-      this.result = data.result;
-console.log(this.result)      
+      if (data != null) {
+        this.calculateForm = data.calculateForm;
+        this.obstacle = data.obstacleList;
+        this.defaultBs = data.defaultBSList;
+        this.candidate = data.candidateList;
+        this.ue = data.ueList;
+        this.width = this.calculateForm.width;
+        this.height = this.calculateForm.height;
+        this.zValue = data.zValue;
+        this.planeHeight = this.zValue[0].toString();
+        this.result = data.result;
+        this.isPDF = false;
+        window.setTimeout(() => {
+          this.mounted();
+        }, 100);
+      }
+
     }
 
   calculateForm: CalculateForm;
@@ -72,6 +78,7 @@ console.log(this.result)
   candidate = [];
   ue = [];
   result = {};
+  isPDF = false;
   // heatmapConfig = {
   //   container: document.getElementById('heatmap'),
   //   radius: 5,
@@ -89,16 +96,22 @@ console.log(this.result)
   // };
   heatmapConfig = [[12, 51, 131], [10, 136, 186], [242, 211, 56], [242, 143, 56], [217, 30, 30]];
 
+  @ViewChild('canvas', { static: true }) 
+  canvas: ElementRef<HTMLCanvasElement>;
+
+  @ViewChild('img')
+  img: ElementRef<HTMLImageElement>;
+
   ngOnInit() {
     // this.draw();
-    this.mounted();
+    
   }
 
   createScene() {
-    const canvas = <HTMLCanvasElement> document.getElementById('canvas');
-    this.engine = new BABYLON.Engine(canvas, true);
+
+    this.engine = new BABYLON.Engine(this.canvas.nativeElement, true);
     const scene = new BABYLON.Scene(this.engine);
-    console.log(canvas.width);
+    console.log(this.canvas.nativeElement.width);
     console.log(scene.clearColor);
     scene.clearColor = new BABYLON.Color4(1, 1, 1, 1);
 
@@ -113,7 +126,7 @@ console.log(this.result)
     camera.angularSensibilityX = 500;
     camera.angularSensibilityY = 500;
     camera.panningSensibility = 50;
-    camera.attachControl(canvas, true);
+    camera.attachControl(this.canvas.nativeElement, true);
     console.log(camera);
 
     const light = new BABYLON.HemisphericLight('hemiLight', new BABYLON.Vector3(-10, 10, 0), scene);
@@ -122,7 +135,6 @@ console.log(this.result)
     const offsetX = this.width / -2;
     const offsetY = -5;
     const offsetZ = this.height / -2;
-
     // floor
     const floorData = [
         new BABYLON.Vector3(this.width, 0, 0),
@@ -402,11 +414,18 @@ console.log(this.result)
     this.scene = this.createScene();
     console.log(this.scene);
     this.engine.runRenderLoop(() => {
-        vm.scene.render();
+      vm.scene.render();
+      if (this.isPDF) {
+        this.img.nativeElement.src = this.canvas.nativeElement.toDataURL();
+      }
     });
     window.addEventListener('resize', () => {
         vm.engine.resize();
     });
+
+    if (this.isPDF) {
+      this.canvas.nativeElement.style.display = 'none';
+    }
   }
 
   close() {

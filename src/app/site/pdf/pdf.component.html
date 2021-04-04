@@ -52,6 +52,28 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<table *ngFor="let zValue of zValues; let idx = index;" id="view_3d_{{ idx }}">
+				<tbody>
+					<tr>
+						<th colspan="2" class="panel center"><label>3D訊號覆蓋模擬結果</label></th>
+					</tr>
+					<tr>
+						<td class="mapType" style="height: 500px;">
+							<label>{{ 'zValue' | translate }}{{ zValue }}公尺</label>
+				
+							<label class="mL_1">{{ 'sinrMap' | translate }}</label>
+							<app-view3d #view3D1></app-view3d>
+
+							<label class="mL_1">{{ 'connectionMap' | translate }}</label>
+							<app-view3d #view3D2></app-view3d>
+
+							<label class="mL_1">{{ 'rsrpMap' | translate }}</label>
+							<app-view3d #view3D3></app-view3d>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 			<!-- 預估效能 -->
 			<app-performance #performance></app-performance>
 			

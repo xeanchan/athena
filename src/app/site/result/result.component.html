@@ -67,6 +67,7 @@
 						<app-signal-strength *ngIf="showStrength" #strength></app-signal-strength>
 
 						<div>
+							<label class="m-0">{{ 'result.opacity' | translate }}</label>
 							<ngx-slider [(value)]="opacityValue" [options]="opacityOptions" (userChange)="changeOpacity()"></ngx-slider>
 						</div>
 					

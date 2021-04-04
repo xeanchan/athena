@@ -15,6 +15,10 @@ import { SiteInfoComponent } from '../modules/site-info/site-info.component';
 import { JsPDFFontService } from '../../service/js-pdffont.service';
 import { FormService } from '../../service/form.service';
 import { TranslateService } from '@ngx-translate/core';
+import { View3dComponent } from '../view3d/view3d.component';
+import { ActivatedRoute } from '@angular/router';
+
+declare var Plotly: any;
 
 @Component({
   selector: 'app-pdf',
@@ -28,9 +32,10 @@ export class PdfComponent implements OnInit {
     private formService: FormService,
     private jsPDFFontService: JsPDFFontService,
     private translateService: TranslateService,
+    private route: ActivatedRoute,
     private http: HttpClient) { }
 
-  taskId = 'task_sel_2debd312-a5aa-48ab-a131-0518fc3c714e_1';
+  taskId = 'task_sel_365aa925-c004-443c-949d-a2eed2d9dd60_1';
   result = {};
   calculateForm: CalculateForm = new CalculateForm();
   zValues = [];
@@ -46,13 +51,15 @@ export class PdfComponent implements OnInit {
   @ViewChild('performance') performance: PerformanceComponent;
   @ViewChild('statistics') statistics: StatisticsComponent;
   @ViewChild('siteInfo') siteInfo: SiteInfoComponent;
+  @ViewChildren('view3D1') view3D1: QueryList<View3dComponent>;
+  @ViewChildren('view3D2') view3D2: QueryList<View3dComponent>;
+  @ViewChildren('view3D3') view3D3: QueryList<View3dComponent>;
 
   ngOnInit() {
     // this.route.queryParams.subscribe(params => {
     //   this.taskId = params['taskId'];
-    //   this.getResult();
     // });
-    // this.export(this.taskId, false);
+    // this.export(this.taskId, true);
 
     // this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
   }
@@ -91,32 +98,36 @@ export class PdfComponent implements OnInit {
             this.result = res['output'];
           }
           // 現有基站
+          let bs = [];
           if (!this.isEmpty(this.calculateForm.defaultBs)) {
             if (this.calculateForm.defaultBs !== '') {
-              const bs = this.calculateForm.defaultBs.split('|');
+              bs = this.calculateForm.defaultBs.split('|');
               for (const item of bs) {
                 this.defaultBs.push(JSON.parse(item));
               }
             }
           }          
           // 新增基站
+          let candidateBsAry = [];
           if (!this.isEmpty(this.calculateForm.candidateBs)) {
-            const candidateBsAry = this.calculateForm.candidateBs.split('|');
+            candidateBsAry = this.calculateForm.candidateBs.split('|');
             for (const item of candidateBsAry) {
               this.inputBsList.push(JSON.parse(item));
             }
           }          
           this.result['inputBsList'] = this.inputBsList;
           // 障礙物資訊
+          let obstacle = [];
           if (!this.isEmpty(this.calculateForm.obstacleInfo)) {
-            const obstacle = this.calculateForm.obstacleInfo.split('|');
+            obstacle = this.calculateForm.obstacleInfo.split('|');
             for (const item of obstacle) {
               this.obstacleList.push(JSON.parse(item));
             }
           }
           // 行動終端分佈
+          let ueCoordinate = [];
           if (!this.isEmpty(this.calculateForm.ueCoordinate)) {
-            const ueCoordinate = this.calculateForm.ueCoordinate.split('|');
+            ueCoordinate = this.calculateForm.ueCoordinate.split('|');
             for (const item of ueCoordinate) {
               this.ueList.push(JSON.parse(item));
             }
@@ -154,6 +165,109 @@ export class PdfComponent implements OnInit {
               index++;
             });
 
+
+            this.result['gaResult'] = {};
+            this.result['gaResult']['chosenCandidate'] = this.result['chosenCandidate'];
+            this.result['gaResult']['sinrMap'] = this.result['sinrMap'];
+            this.result['gaResult']['connectionMapAll'] = this.result['connectionMapAll'];
+            this.result['gaResult']['rsrpMap'] = this.result['rsrpMap'];
+
+            const sinrAry = [];
+            this.result['sinrMap'].map(v => {
+              v.map(m => {
+                m.map(d => {
+                  sinrAry.push(d);
+                });
+              });
+            });
+
+            const rsrpAry = [];
+            this.result['rsrpMap'].map(v => {
+              v.map(m => {
+                m.map(d => {
+                  rsrpAry.push(d);
+                });
+              });
+            });
+
+            this.result['sinrMax'] = Plotly.d3.max(sinrAry);
+            this.result['sinrMin'] = Plotly.d3.min(sinrAry);
+            this.result['rsrpMax'] = Plotly.d3.max(rsrpAry);
+            this.result['rsrpMin'] = Plotly.d3.min(rsrpAry);
+
+            console.log(document.querySelectorAll('.canvas_3d').length)
+
+            for (const zValue of this.zValues) {
+              // 3D訊號品質圖
+              index = 0;
+              this.view3D1.forEach(element => {
+                if (index === this.zValues.indexOf(zValue)) {
+                  element.calculateForm = this.calculateForm;
+                  element.obstacle = obstacle;
+                  element.defaultBs = bs;
+                  element.candidate = candidateBsAry;
+                  element.ue = ueCoordinate;
+                  element.width = this.calculateForm.width;
+                  element.height = this.calculateForm.height;
+                  element.zValue = this.zValues;
+                  element.planeHeight = zValue.toString();
+                  element.result = this.result;
+                  element.isPDF = true;
+      
+                  element.mounted();
+                  element.switchHeatMap();
+                }
+                index++;
+              });
+
+              // 3D訊號覆蓋圖
+              index = 0;
+              this.view3D2.forEach(element => {
+                if (index === this.zValues.indexOf(zValue)) {
+                  element.calculateForm = this.calculateForm;
+                  element.obstacle = obstacle;
+                  element.defaultBs = bs;
+                  element.candidate = candidateBsAry;
+                  element.ue = ueCoordinate;
+                  element.width = this.calculateForm.width;
+                  element.height = this.calculateForm.height;
+                  element.zValue = this.zValues;
+                  element.planeHeight = zValue.toString();
+                  element.result = this.result;
+                  element.isPDF = true;
+                  element.heatmapType = 1;
+
+                  element.mounted();
+                  element.switchHeatMap();
+                }
+                index++;
+              });
+
+              // 3D訊號強度圖
+              index = 0;
+              this.view3D3.forEach(element => {
+                if (index === this.zValues.indexOf(zValue)) {
+                  element.calculateForm = this.calculateForm;
+                  element.obstacle = obstacle;
+                  element.defaultBs = bs;
+                  element.candidate = candidateBsAry;
+                  element.ue = ueCoordinate;
+                  element.width = this.calculateForm.width;
+                  element.height = this.calculateForm.height;
+                  element.zValue = this.zValues;
+                  element.planeHeight = zValue.toString();
+                  element.result = this.result;
+                  element.isPDF = true;
+                  element.heatmapType = 2;
+      
+                  element.mounted();
+                  element.switchHeatMap();
+                }
+                index++;
+              });
+
+            }
+
             // 統計資訊
             this.performance.calculateForm = this.calculateForm;
             this.performance.result = this.result;
@@ -180,7 +294,7 @@ export class PdfComponent implements OnInit {
 
   /** export PDF */
   async genericPDF(taskName) {
-    // this.authService.spinnerShow();
+    this.authService.spinnerShow();
     const pdf = new jsPDF('p', 'mm', 'a4', true); // A4 size page of PDF
     // 設定字型
     this.jsPDFFontService.AddFontArimo(pdf);
@@ -194,6 +308,9 @@ export class PdfComponent implements OnInit {
     const list = [];
     for (let k = 0; k < this.zValues.length; k++) {
       list.push(`signal_${k}`);
+    }
+    for (let k = 0; k < this.zValues.length; k++) {
+      list.push(`view_3d_${k}`);
     }
     // 基站資訊
     let pos = 10;
@@ -360,8 +477,12 @@ export class PdfComponent implements OnInit {
 
     for (const id of list) {
       pdf.addPage();
+      console.log(id);
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
-      await html2canvas(data).then(canvas => {
+      await html2canvas(data, {
+        useCORS: true,
+        allowTaint: true,
+      }).then(canvas => {
         // Few necessary setting options
         const imgWidth = 182;
         let imgHeight = canvas.height * imgWidth / canvas.width;

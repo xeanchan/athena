@@ -12,6 +12,9 @@ import { RouterModule } from '@angular/router';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { PdfRoutingModule } from './pdf-routing.module';
+import { View3dModule } from '../view3d/view3d.module';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ColorPickerModule, ColorPickerDirective } from 'ngx-color-picker';
 
 
 
@@ -29,8 +32,12 @@ import { PdfRoutingModule } from './pdf-routing.module';
     SignalStrengthModule,
     SiteInfoModule,
     StatisticsModule,
-    TranslateModule
+    TranslateModule,
+    View3dModule,
+    MatDialogModule,
+    ColorPickerModule,
   ],
-  exports: [PdfComponent]
+  exports: [PdfComponent],
+  providers: [ColorPickerDirective]
 })
 export class PdfModule { }

@@ -35,7 +35,7 @@ export class ProposeComponent implements OnInit {
   drawLayout(isPDF) {
     this.layoutChart.nativeElement.style.opacity = 0;
     const images = [];
-    if (this.calculateForm.mapImage != null && this.calculateForm.mapImage !== 'null') {
+    if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
       const reader = new FileReader();
       reader.readAsDataURL(this.authService.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
@@ -109,7 +109,7 @@ export class ProposeComponent implements OnInit {
     const text = [];
     const color = [];
 
-    if (this.calculateForm.candidateBs !== '') {
+    if (!this.authService.isEmpty(this.calculateForm.candidateBs)) {
       const candidateBs = this.calculateForm.candidateBs.split('|');
       for (let i = 0; i < candidateBs.length; i++) {
         const candidate = JSON.parse(candidateBs[i]);

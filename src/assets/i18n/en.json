@@ -81,5 +81,6 @@
 
 	"result.title": "規劃結果",
 	"result.back": "回上頁",
-	"result.export": "產生場域規劃報表"
+	"result.export": "產生場域規劃報表",
+	"result.opacity": "圖層透明度"
 }
