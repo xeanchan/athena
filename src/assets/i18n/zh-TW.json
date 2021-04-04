@@ -158,6 +158,10 @@
 	"result.beam.range": "可分配波束編號範圍",
 	"result.num": "編號",
 	"result.no.defaultBs": "未設置現有基站資訊",
+	"result.pdf.width": "水平寬度",
+	"result.pdf.height": "垂直長度",
+	"result.pdf.altitude": "高度",
+	"result.pdf.ue": "行動終端分佈",
 
 	"tasklist.title": "無線網路規劃",
 	"tasklist.status": "狀況",

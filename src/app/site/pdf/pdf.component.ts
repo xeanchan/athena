@@ -318,72 +318,95 @@ export class PdfComponent implements OnInit {
     const leftStart = 25;
     pdf.setFontStyle('normal');
     pdf.setFontSize(17);
-    pdf.text(14, pos, `專案名稱：${this.calculateForm['taskName']}`);
+    pdf.text(14, pos, `${this.translateService.instant('taskName')}：${this.calculateForm['taskName']}`);
     pos += margin;
     pdf.setFontSize(14);
-    pdf.text(14, pos, `規劃時間：${this.result['createTime']}`);
+    pdf.text(14, pos, `${this.translateService.instant('createTime')}${this.result['createTime']}`);
     pos += margin;
-    pdf.text(14, pos, `場域規劃設置：`);
+    pdf.text(14, pos, `${this.translateService.instant('result.layered.info')}：`);
     pdf.setFillColor(255, 255, 255);
     pdf.setLineWidth(0.1);
     pdf.rect(14, pos + (margin / 2), 182, 175);
     pos += margin + 5;
-    pdf.text(20, pos, `規劃目標：`);
+    pdf.text(20, pos, `${this.translateService.instant('planning.target')}：`);
     pos += margin;
-    pdf.text(leftStart, pos, `不限制增加基站數量，以達到UE平均下行throughput最大.`);
+    if (this.calculateForm.isAverageSinr) {
+      pdf.text(leftStart, pos, this.translateService.instant('isAverageSinr'));
+      pos += margin;
+    }
+    if (this.calculateForm.isCoverage) {
+      pdf.text(leftStart, pos, this.translateService.instant('isCoverage'));
+      pos += margin;
+    }
+    if (this.calculateForm.isUeAvgSinr) {
+      pdf.text(leftStart, pos, this.translateService.instant('isUeAvgSinr'));
+      pos += margin;
+    }
+    if (this.calculateForm.isUeAvgThroughput) {
+      pdf.text(leftStart, pos, this.translateService.instant('isUeAvgThroughput'));
+      pos += margin;
+    }
+    if (this.calculateForm.isUeTpByDistance) {
+      pdf.text(leftStart, pos, this.translateService.instant('isUeTpByDistance'));
+      pos += margin;
+    }
+    pdf.text(20, pos, `${this.translateService.instant('planning.size')}：`);
     pos += margin;
-    pdf.text(20, pos, `場域大小：`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.width')}： ${this.result['inputWidth']} ${this.translateService.instant('meger')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `水平寬度： ${this.result['inputWidth']} 公尺`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.height')}： ${this.result['inputHeight']} ${this.translateService.instant('meger')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `垂直長度： ${this.result['inputHeight']} 公尺`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.altitude')}： ${this.calculateForm['altitude']} ${this.translateService.instant('meger')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `高度： ${this.calculateForm['altitude']} 公尺`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('zValue')}： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} ${this.translateService.instant('meger')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `切面高度： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} 公尺`);
+    pdf.text(20, pos, `${this.translateService.instant('result.bs.info')}：`);
     pos += margin;
-    pdf.text(20, pos, `基站資訊：`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.propose.wait_select_1')}： ${this.translateService.instant('result.propose.wait_select_2').replace('{0}', this.inputBsList.length)}`);
     pos += margin;
-    pdf.text(leftStart, pos, `待選基站位置： 共${this.inputBsList.length}處`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('defaultBs')}： ${this.translateService.instant('result.bs.count').replace('{0}', defaultBsCount)}`);
     pos += margin;
-    pdf.text(leftStart, pos, `現有基站： 共${defaultBsCount}台`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.dbm.range')}： ${this.calculateForm.powerMinRange} dBm ~ ${this.calculateForm.powerMaxRange} dBm`);
     pos += margin;
-    pdf.text(leftStart, pos, `發射功率範圍： ${this.calculateForm.powerMinRange} dBm ~ ${this.calculateForm.powerMaxRange} dBm`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.beam.range')}： 0 ~ 30`);
     pos += margin;
-    pdf.text(leftStart, pos, `可分配波束編號範圍： 0 ~ 30`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('bandwidth')}(MHz)： ${this.calculateForm.bandwidth} MHz`);
     pos += margin;
-    pdf.text(leftStart, pos, `Channel頻寬(MHz)： ${this.calculateForm.bandwidth} MHz`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('frequency')}(MHz)： ${this.calculateForm.frequency} MHz`);
     pos += margin;
-    pdf.text(leftStart, pos, `中心頻率(MHz)： ${this.calculateForm.frequency} MHz`);
+    pdf.text(20, pos, `${this.translateService.instant('planning.algorithm')}：`);
     pos += margin;
-    pdf.text(20, pos, `演算法參數：`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsC')}： ${this.calculateForm.mctsC}`);
     pos += margin;
-    pdf.text(leftStart, pos, `C值： ${this.calculateForm.mctsC}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsMimo')}： ${this.calculateForm.mctsMimo}`);
     pos += margin;
-    pdf.text(leftStart, pos, `天線數： ${this.calculateForm.mctsMimo}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsTemperature')}： ${this.calculateForm.mctsTemperature}`);
     pos += margin;
-    pdf.text(leftStart, pos, `氣溫： ${this.calculateForm.mctsTemperature}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsTime')}： ${this.calculateForm.mctsTime}`);
     pos += margin;
-    pdf.text(leftStart, pos, `節點模擬時間限制： ${this.calculateForm.mctsTime}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsTestTime')}： ${this.calculateForm.mctsTestTime}`);
     pos += margin;
-    pdf.text(leftStart, pos, `本次規劃之時間限制： ${this.calculateForm.mctsTestTime}`);
-    pos += margin;
-    pdf.text(leftStart, pos, `本次規劃之模擬次數上限： ${this.calculateForm.mctsTotalTime}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('mctsTotalTime')}： ${this.calculateForm.mctsTotalTime}`);
 
     // 現有基站
-    const defaultBsTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const defaultBsTitle = [
+      this.translateService.instant('result.num'), 
+      this.translateService.instant('result.propose.candidateBs.x'),
+      this.translateService.instant('result.propose.candidateBs.y'),
+      this.translateService.instant('result.propose.candidateBs.z'),
+    ];
     const defaultBsHeader = (data) => {
       pdf.setFontSize(12);
       pdf.setTextColor(255);
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, pos + 13, 182, 7, 'F');
-      pdf.text('現有基站', 100, pos + 18);
+      pdf.text(this.translateService.instant('defaultBs'), 100, pos + 18);
     };
     const defaultBsData = [];
     for (let k = 0; k < this.defaultBs.length; k++) {
       if (this.defaultBs[k][0] === '') {
-        defaultBsData.push([{ content: '未設置現有基站資訊', colSpan: 4, styles: { halign: 'center' } }]);
+        defaultBsData.push([{ content: this.translateService.instant('result.no.defaultBs'), colSpan: 4, styles: { halign: 'center' } }]);
         continue;
       }
       defaultBsData.push([
@@ -405,9 +428,14 @@ export class PdfComponent implements OnInit {
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, 7, 182, 7, 'F');
-      pdf.text('新增基站', 100, 12);
+      pdf.text(this.translateService.instant('candidateBs'), 100, 12);
     };
-    const candidateTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const candidateTitle = [
+      this.translateService.instant('result.num'), 
+      this.translateService.instant('result.propose.candidateBs.x'),
+      this.translateService.instant('result.propose.candidateBs.y'),
+      this.translateService.instant('result.propose.candidateBs.z'),
+    ];
     const candidateData = [];
     for (let k = 0; k < this.inputBsList.length; k++) {
       candidateData.push([
@@ -427,9 +455,18 @@ export class PdfComponent implements OnInit {
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, 7, 182, 7, 'F');
-      pdf.text('障礙物資訊', 100, 12);
+      pdf.text(this.translateService.instant('planning.obstacleInfo'), 100, 12);
     };
-    const obstacleTitle = ['編號', 'X座標', 'Y座標', '水平寬度(公尺)', '垂直長度(公尺)', '高度(公尺)'];
+    const obstacleTitle = [
+      this.translateService.instant('result.num'),
+      this.translateService.instant('result.propose.candidateBs.x'),
+      this.translateService.instant('result.propose.candidateBs.y'),
+      `${this.translateService.instant('result.pdf.width')}(${this.translateService.instant('meter')})`,
+      `${this.translateService.instant('result.pdf.height')}(${this.translateService.instant('meter')})`,
+      `${this.translateService.instant('result.pdf.altitude')}(${this.translateService.instant('meter')})`,
+      this.translateService.instant('result.pdf.width'),
+      this.translateService.instant('result.pdf.altitude')
+    ];
     const obstacleData = [];
     for (let k = 0; k < this.obstacleList.length; k++) {
       const item = this.obstacleList[k];
@@ -449,9 +486,14 @@ export class PdfComponent implements OnInit {
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, 7, 182, 7, 'F');
-      pdf.text('行動終端分佈', 100, 12);
+      pdf.text(this.translateService.instant('result.pdf.ue'), 100, 12);
     };
-    const ueTitle = ['編號', 'X座標', 'Y座標', 'Z座標'];
+    const ueTitle = [
+      this.translateService.instant('result.num'), 
+      this.translateService.instant('result.propose.candidateBs.x'),
+      this.translateService.instant('result.propose.candidateBs.y'),
+      this.translateService.instant('result.propose.candidateBs.z'),
+    ];
     const ueData = [];
     for (let k = 0; k < this.ueList.length; k++) {
       ueData.push([
@@ -502,9 +544,14 @@ export class PdfComponent implements OnInit {
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, 7, 182, 7, 'F');
-      pdf.text('預估效能', 100, 12);
+      pdf.text(this.translateService.instant('result.performance'), 100, 12);
     };
-    const p1Title = ['場域覆蓋率', '場域平均 SINR', '場域平均 RSRP', ''];
+    const p1Title = [
+      this.translateService.instant('result.coverage'),
+      this.translateService.instant('result.averageSinr'),
+      this.translateService.instant('result.averageRsrp'),
+      ''
+    ];
     const p1Data = [[
       this.result['coverage'], `${Math.round(this.result['averageSinr'])}db`,
       `${Math.round(this.result['averageRsrp'])}dBm`, ''
@@ -539,7 +586,12 @@ export class PdfComponent implements OnInit {
     });
     
 
-    const p3Title = ['地圖切面(高度)', '切面覆蓋率', '切面平均 SINR', '切面平均 RSRP'];
+    const p3Title = [
+      this.translateService.instant('result.img.section'),
+      this.translateService.instant('result.section.coverage'),
+      this.translateService.instant('result.section.sinr'),
+      this.translateService.instant('result.section.rsrp')
+    ];
     const p3Data = [];
     for (let k = 0; k < this.zValues.length; k++) {
       p3Data.push([
