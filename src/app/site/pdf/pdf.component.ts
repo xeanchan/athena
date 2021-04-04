@@ -285,7 +285,7 @@ export class PdfComponent implements OnInit {
             console.log(this.result);
             window.setTimeout(() => {
               this.genericPDF(this.calculateForm.taskName);
-            }, 500);
+            }, 1000);
           }, 0);
         }
       );
@@ -321,7 +321,7 @@ export class PdfComponent implements OnInit {
     pdf.text(14, pos, `${this.translateService.instant('taskName')}：${this.calculateForm['taskName']}`);
     pos += margin;
     pdf.setFontSize(14);
-    pdf.text(14, pos, `${this.translateService.instant('createTime')}${this.result['createTime']}`);
+    pdf.text(14, pos, `${this.translateService.instant('createTime')}：${this.result['createTime']}`);
     pos += margin;
     pdf.text(14, pos, `${this.translateService.instant('result.layered.info')}：`);
     pdf.setFillColor(255, 255, 255);
@@ -352,13 +352,13 @@ export class PdfComponent implements OnInit {
     }
     pdf.text(20, pos, `${this.translateService.instant('planning.size')}：`);
     pos += margin;
-    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.width')}： ${this.result['inputWidth']} ${this.translateService.instant('meger')}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.width')}： ${this.result['inputWidth']} ${this.translateService.instant('meter')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.height')}： ${this.result['inputHeight']} ${this.translateService.instant('meger')}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.height')}： ${this.result['inputHeight']} ${this.translateService.instant('meter')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.altitude')}： ${this.calculateForm['altitude']} ${this.translateService.instant('meger')}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('result.pdf.altitude')}： ${this.calculateForm['altitude']} ${this.translateService.instant('meter')}`);
     pos += margin;
-    pdf.text(leftStart, pos, `${this.translateService.instant('zValue')}： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} ${this.translateService.instant('meger')}`);
+    pdf.text(leftStart, pos, `${this.translateService.instant('zValue')}： ${this.calculateForm.zValue.replace(new RegExp(',', 'gi'), ', ')} ${this.translateService.instant('meter')}`);
     pos += margin;
     pdf.text(20, pos, `${this.translateService.instant('result.bs.info')}：`);
     pos += margin;
