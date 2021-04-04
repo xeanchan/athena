@@ -64,7 +64,7 @@
 	"mctsTime": "節點模擬時間限制",
 	"mctsTestTime": "本次規劃之時間限制",
 	"mctsTotalTime": "本次規劃之模擬次數上限",
-	"taskName": "本次規劃之模擬次數上限",
+	"taskName": "場域名稱",
 	"createTime": "建立時間",
 
 	"statistics.info": "統計資訊",
