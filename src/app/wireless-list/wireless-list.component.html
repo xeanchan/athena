@@ -1,6 +1,6 @@
-<h2>無線網路規劃
+<h2>{{ 'tasklist.title' | translate }}
 	<span class="example-button-row">
-		<button mat-button (click)="openDialog()"> 新增</button>
+		<button mat-button (click)="openDialog()"> {{ 'tasklist.add' | translate }}</button>
 	</span>
 </h2>
 	
@@ -9,13 +9,13 @@
 	<table>
 		<thead>
 			<tr>
-			<th>名稱</th>
-			<th class="stat">狀況</th>
-			<th class="date">建立時間</th>
-			<th class="min">規劃報告</th>
-			<th class="min">編輯</th>
-			<th class="min">刪除</th>
-			<th class="min">匯出</th>
+			<th>{{ 'tasklist.name' | translate }}</th>
+			<th class="stat">{{ 'tasklist.status' | translate }}</th>
+			<th class="date">{{ 'tasklist.createTime' | translate }}</th>
+			<th class="min">{{ 'tasklist.report' | translate }}</th>
+			<th class="min">{{ 'tasklist.edit' | translate }}</th>
+			<th class="min">{{ 'delete' | translate }}</th>
+			<th class="min">{{ 'tasklist.export' | translate }}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,13 +51,13 @@
 
 </div>
 <div class="footer">
-	<span>Current Version: 21.4.1</span>
+	<span>{{ 'current.version' | translate }}: 21.4.1</span>
 	<span>
-		Copyright © 2021 ITRI 工業技術研究院. All rights reserved.
+		{{ 'copyright.1' | translate }}
 	</span>
-	<p>建議使用瀏覽器：Google Chrome，並將螢幕解析度設定為1366*768以上，瀏覽器畫面縮放維持100%，以獲得最佳瀏覽效果</p>
+	<p>{{ 'copyright.1' | translate }}</p>
 </div>
-<h2 style="display: none;" >操作說明</h2>
+<h2 style="display: none;" >{{ 'opertaion.note' | translate }}</h2>
 
 <div id="pdf_area" style="display: none;" >
 	<app-pdf #pdf></app-pdf>

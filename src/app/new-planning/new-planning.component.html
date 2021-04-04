@@ -1,6 +1,6 @@
-<h3>新專案規劃
+<h3>{{ 'planning.new' | translate }}
   <span class="example-button-row">
-      <button mat-button (click)="importFile.click()">匯入舊檔(.xlsx)</button>
+      <button mat-button (click)="importFile.click()">{{ 'planning.import' | translate }}(.xlsx)</button>
       <input type="file" #importFile style="display: none;" (change)="import($event)" accept=".xlsx">
   </span>
 </h3>
@@ -8,7 +8,7 @@
   <table>
     <tbody>
       <tr>
-        <td class="th">規劃案名稱</td>
+        <td class="th">{{ 'planning.name' | translate }}</td>
         <td [formGroup]="formGroup">
           
             <input type="text" class="w100" [(ngModel)]="this.calculateForm.taskName" formControlName="taskName" required >
@@ -32,17 +32,17 @@
         </td>
       </tr>-->
       <tr>
-        <td class="th">場域平面圖</td>
+        <td class="th">{{ 'planning.image' | translate }}</td>
         <td>
           <input type="file" (change)="fileChange($event)" accept="image/jpeg,image/png,image/jpg" >
-          <span class="note">圖檔限制...</span>
+          <span class="note">{{ 'planning.limit' | translate }}...</span>
           <div *ngIf="showImgMsg" class="alert alert-danger">
               {{ 'image.required' | translate }}
           </div>
         </td>
       </tr>
       <tr>
-        <td class="th">場域尺寸</td>
+        <td class="th">{{ 'planning.size' | translate }}</td>
         <td class="size" [formGroup]="sizeGroup">
           <span><input type="text" placeholder="長" [(ngModel)]="calculateForm.width" formControlName="width" required pattern="^-?[\d.]+(?:e-?\d+)?$">公尺</span>
           <span><input type="text" placeholder="寬" [(ngModel)]="calculateForm.height" formControlName="height" required pattern="^-?[\d.]+(?:e-?\d+)?$">公尺</span>
@@ -58,7 +58,7 @@
         </td>
       </tr>
       <tr>
-        <td class="th">網路種類</td>
+        <td class="th">{{ 'planning.net' | translate }}</td>
         <td>
           <mat-radio-group [(ngModel)]="calculateForm.objectiveIndex" aria-label="Select an option">
             <mat-radio-button value="0">4G</mat-radio-button>
@@ -70,7 +70,7 @@
     </tbody>
   </table>
   <div class="modalFooter">
-    <a href="javascript:void(0)" (click)="ok()">確定</a>
+    <a href="javascript:void(0)" (click)="ok()">{{ 'planning.ok' | translate }}</a>
   </div>
 </div>
 
