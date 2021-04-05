@@ -1331,6 +1331,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // document.getElementById('percentageVal').innerHTML = Math.ceil(res['progress'] * 100).toString();
           window.clearInterval(this.progressInterval);
           this.progressInterval = window.setTimeout(() => {
+            this.addInterval();
             this.getProgress();
           }, 3000);
         }
