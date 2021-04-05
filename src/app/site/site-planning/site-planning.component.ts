@@ -1322,7 +1322,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           this.authService.spinnerHide();
           // 儲存
           // this.save();
-          this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+          this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
           window.clearInterval(this.pgInterval);
           // location.replace(`#/site/result?taskId=${this.taskid}`);
           // location.reload();
