@@ -42,6 +42,7 @@ export class FormService {
     calculateForm.ueCoordinate = result['uecoordinate'];
     calculateForm.useUeCoordinate = result['useuecoordinate'];
     calculateForm.beamMaxId = result['beammaxid'];
+    calculateForm.createTime = result['createtime'];
 
     return calculateForm;
   }

@@ -5,7 +5,7 @@ export class CalculateForm {
   totalRound: number = 1;
   mapName: string = '';
   mapImage: string = null;
-  // createTime = null;
+  createTime = null;
   crossover: number = 0.8;
   mutation: number = 0.4;
   iteration: number = 100;

@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef, HostListener } from '@
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
+import html2canvas from 'html2canvas';
 
 declare var Plotly: any;
 
@@ -24,7 +25,11 @@ export class ProposeComponent implements OnInit {
   calculateForm = new CalculateForm();
   /** 建議方案 list */
   candidateList = [];
+  isPDF = false;
+
   @ViewChild('layoutChart') layoutChart: ElementRef;
+  @ViewChild('proposeTbody') proposeTbody: ElementRef<HTMLElement>;
+  @ViewChild('proposeImg') proposeImg: ElementRef<HTMLImageElement>;
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout('layout_chart', {
@@ -218,10 +223,23 @@ export class ProposeComponent implements OnInit {
 
           Plotly.relayout(id, layoutOption).then((gd) => {
             this.layoutChart.nativeElement.style.opacity = 1;
+            if (isPDF) {
+              window.setTimeout(() => {
+                this.toImg();
+              }, 0);
+            }
+            
+            console.log('layout plot done.');
           });
         };
       } else {
         this.layoutChart.nativeElement.style.opacity = 1;
+        if (isPDF) {
+          window.setTimeout(() => {
+            this.toImg();
+          }, 0);
+        }
+        console.log('layout plot done.');
       }
 
     });
@@ -230,6 +248,20 @@ export class ProposeComponent implements OnInit {
   getWaitSelect() {
     return this.translateService.instant('result.propose.wait_select_2')
     .replace('{0}', this.candidateList.length);
+  }
+
+  async toImg() {
+    const proposeData = <HTMLDivElement> document.querySelector(`#propose`);
+    await html2canvas(proposeData, {
+      useCORS: true,
+      // allowTaint: true,
+    }).then(canvas => {
+      const contentDataURL = canvas.toDataURL('image/png');
+      this.proposeImg.nativeElement.src = contentDataURL;
+      
+      this.proposeTbody.nativeElement.style.display = 'none';
+      console.log('propose dom to img');
+    });
   }
 
 }

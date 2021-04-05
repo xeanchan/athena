@@ -137,6 +137,7 @@ export class PdfComponent implements OnInit {
           window.setTimeout(() => {
             this.propose.calculateForm = this.calculateForm;
             this.propose.result = this.result;
+            this.propose.isPDF = true;
             this.propose.drawLayout(true);
             // 訊號品質圖
             let index = 0;
@@ -285,7 +286,7 @@ export class PdfComponent implements OnInit {
             console.log(this.result);
             window.setTimeout(() => {
               this.genericPDF(this.calculateForm.taskName);
-            }, 1000);
+            }, 2000);
           }, 0);
         }
       );
@@ -326,7 +327,7 @@ export class PdfComponent implements OnInit {
     pdf.text(14, pos, `${this.translateService.instant('result.layered.info')}：`);
     pdf.setFillColor(255, 255, 255);
     pdf.setLineWidth(0.1);
-    pdf.rect(14, pos + (margin / 2), 182, 200);
+    pdf.rect(14, pos + (margin / 2), 182, 190);
     pos += margin + 5;
     pdf.text(20, pos, `${this.translateService.instant('planning.target')}：`);
     pos += margin;
@@ -400,24 +401,23 @@ export class PdfComponent implements OnInit {
       pdf.setTextColor(255);
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
-      pdf.rect(14, pos + 13, 182, 7, 'F');
-      pdf.text(this.translateService.instant('defaultBs'), 100, pos + 18);
+      pdf.rect(14, pos + 23, 182, 7, 'F');
+      pdf.text(this.translateService.instant('defaultBs'), 100, pos + 28);
     };
     const defaultBsData = [];
     for (let k = 0; k < this.defaultBs.length; k++) {
-      if (this.defaultBs[k][0] === '') {
-        defaultBsData.push([{ content: this.translateService.instant('result.no.defaultBs'), colSpan: 4, styles: { halign: 'center' } }]);
-        continue;
-      }
       defaultBsData.push([
         (k + 1), this.defaultBs[k][0], this.defaultBs[k][1], this.defaultBs[k][2]
       ]);
+    }
+    if (this.defaultBs.length === 0) {
+      defaultBsData.push([{ content: this.translateService.instant('result.no.defaultBs'), colSpan: 4, styles: { halign: 'center' } }]);
     }
     pdf.autoTable(defaultBsTitle, defaultBsData, {
       styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
       headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
       beforePageContent: defaultBsHeader,
-      startY: pos + 20,
+      startY: pos + 30,
       halign: 'center'
     });
     // 新增基站
@@ -506,9 +506,14 @@ export class PdfComponent implements OnInit {
       beforePageContent: ueHeader
     });
 
+    // 建議方案
     pdf.addPage();
     const proposeData = <HTMLDivElement> area.querySelector(`#propose`);
-    await html2canvas(proposeData).then(canvas => {
+    await html2canvas(proposeData, {
+      useCORS: true,
+      // allowTaint: true,
+    }).then(canvas => {
+      console.log('propose to img');
       // Few necessary setting options
       const imgWidth = 182;
       const imgHeight = canvas.height * imgWidth / canvas.width;
@@ -523,7 +528,7 @@ export class PdfComponent implements OnInit {
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
       await html2canvas(data, {
         useCORS: true,
-        allowTaint: true,
+        // allowTaint: true,
       }).then(canvas => {
         // Few necessary setting options
         const imgWidth = 182;
