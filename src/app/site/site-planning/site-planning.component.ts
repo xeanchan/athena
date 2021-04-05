@@ -216,6 +216,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   subcarrier = 15;
   /** 進度 */
   progressNum = 0;
+  pgInterval;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -1297,13 +1298,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  /** 查詢進度 */
-  getProgress() {
-    window.setTimeout(() => {
+  addInterval() {
+    this.pgInterval = window.setInterval(() => {
       if (this.progressNum < 100) {
         document.getElementById('percentageVal').innerHTML = (this.progressNum++).toString();
+      } else {
+        window.clearInterval(this.pgInterval);
       }
-    }, 0);
+    }, 3000);
+  }
+
+  /** 查詢進度 */
+  getProgress() {
+    
     const url = `${this.authService.API_URL}/progress/${this.taskid}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
@@ -1314,8 +1321,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // done
           this.authService.spinnerHide();
           // 儲存
-          this.save();
+          // this.save();
           this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
+          window.clearInterval(this.pgInterval);
           // location.replace(`#/site/result?taskId=${this.taskid}`);
           // location.reload();
         } else {
