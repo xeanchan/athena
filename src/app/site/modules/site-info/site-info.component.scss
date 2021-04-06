@@ -10,17 +10,20 @@ ul li {
 }
 ul li span {
     display: block;
-    font-size: .9;
+    /* font-size: .9; */
+    line-height: 1.5;
+    margin-bottom: .5em
 }
 ul li span > span {
     display: inline-block;
     margin-bottom: .5em;
 }
 ul li span label {
-    font-weight: bold;
-    font-size: .95em;
-    margin-right: .2em;
-    line-height: .5;
+  font-weight: normal;
+  font-size: .95em;
+  display: inline;
+  margin-right: .2em;
+  line-height: .5;
 }
 ul li span label::after {
     content: " :";

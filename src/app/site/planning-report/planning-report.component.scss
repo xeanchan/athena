@@ -23,7 +23,9 @@
 }
 .rightArea ul li span {
     display: block;
-    font-size: .9;
+    /* font-size: .9; */
+    line-height: 1.5;
+    margin-bottom: .5em
 }
 .rightArea ul li span > span {
     display: inline;
@@ -34,6 +36,13 @@
     font-weight: bold;
     font-size: .95em;
     margin-right: .2em;
+
+    font-weight: normal;
+    font-size: .95em;
+    display: inline;
+    margin-right: .2em;
+    line-height: .5;
+
 }
 .rightArea ul li span label::after {
     content: " :";
