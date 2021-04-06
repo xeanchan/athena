@@ -44,6 +44,22 @@
       </g>
      </svg>
   </span>
+
+  <span class="svg" style="cursor:point; display:block;  text-align: center;  margin: .7em 0 1.2em;">
+      <svg id="svg_07" width="25" height="20px" xmlns="http://www.w3.org/2000/svg">
+        <g>
+          <rect x="-1" y="-1" height="20" width="25" fill="none" id="canvas_background"></rect>
+          <g id="canvasGrid" display="none">
+            <rect width="100%" height="100%" x="0" y="0" stroke-width="0" fill="url(#gridpattern)"></rect>
+          </g>
+        </g>
+        <g>
+          <rect fill="none" stroke-width="1.5" x="50" y="0" width="25" height="20" stroke="none"></rect>
+          <path class="target" fill="#ffffff" stroke="null" id="svg_7" d="M3.6,3.8L15.9,0L22,16.5H0C0,16.5,3.6,3.3,3.6,3.8z"></path>
+        </g>
+      </svg>
+  </span>
+
   <hr>
   <span class="svg" matTooltip="{{ 'defaultBs' | translate }}" (click)="addMoveable('defaultBS')" >
     <svg id="svg_04" class="s" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
@@ -55,7 +71,7 @@
         <path class="target" fill="#ffffff" stroke="null" id="svg_4" d="m27.1373,5.80872l1.19321,-1.19321c-2.08811,-2.08811 -4.77283,-3.13217 -7.45754,-3.13217s-5.36943,1.04406 -7.45754,3.13217l1.19321,1.19321c1.78981,-1.64066 4.02707,-2.53556 6.26434,-2.53556s4.47453,0.89491 6.26434,2.53556zm-1.34236,1.19321c-1.34236,-1.34236 -3.13217,-2.08811 -4.92198,-2.08811s-3.57962,0.74575 -4.92198,2.08811l1.19321,1.19321c1.04406,-1.04406 2.38641,-1.49151 3.72877,-1.49151c1.34236,0 2.68472,0.44745 3.72877,1.49151l1.19321,-1.19321zm-0.44745,9.39651l-2.98302,0l0,-5.96604l-2.98302,0l0,5.96604l-14.91509,0c-1.64066,0 -2.98302,1.34236 -2.98302,2.98302l0,5.96604c0,1.64066 1.34236,2.98302 2.98302,2.98302l20.88112,0c1.64066,0 2.98302,-1.34236 2.98302,-2.98302l0,-5.96604c0,-1.64066 -1.34236,-2.98302 -2.98302,-2.98302zm-16.4066,7.45754l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302zm5.22028,0l-2.98302,0l0,-2.98302l2.98302,0l0,2.98302z"/>
       </g>
      </svg>
-     
+
   </span>
 
   <span class="svg" matTooltip="{{ 'candidateBs' | translate }}" (click)="addMoveable('candidate')" >
@@ -84,7 +100,7 @@
         <path class="target" fill="#ffffff" id="svg_6" d="m26.45453,3l-22.90908,0c-1.4,0 -2.54545,1.14545 -2.54545,2.54545l0,15.27272c0,1.4 1.14545,2.54545 2.54545,2.54545l8.90909,0l0,2.54545l-2.54545,0l0,2.54545l10.18181,0l0,-2.54545l-2.54545,0l0,-2.54545l8.90909,0c1.4,0 2.54545,-1.14545 2.54545,-2.54545l0,-15.27272c0,-1.4 -1.14545,-2.54545 -2.54545,-2.54545zm0,17.81817l-22.90908,0l0,-15.27272l22.90908,0l0,15.27272z"/>
        </g>
      </svg>-->
-     
+
      <svg id="svg_06" class="s" width="20" height="30" xmlns="http://www.w3.org/2000/svg">
       <!--<g>
         <rect fill="none" height="20" width="30" y="-1" x="-1"/>
@@ -102,7 +118,7 @@
 
 <mat-sidenav-container class="example-container">
   <mat-sidenav-content>
-    
+
 
   <div id="d_area">
     <button class="toggle" mat-button (click)="sidenav.toggle();plotResize()">
@@ -121,7 +137,7 @@
       <mat-button-toggle (click)="view3D()">{{ 'view.3d' | translate }}</mat-button-toggle>
     </mat-button-toggle-group>
     <!-- <div class="dropDown_area" style="background-image:url({{imageSrc}})">
-      
+
     </div> -->
     <div #chart id="chart" style="position: relative;">
       <div #dragArea [ngStyle]="dragStyle">
@@ -192,7 +208,7 @@
                   <g stroke="null">
                     <!--<path class="drag_rect" [ngStyle]="pathStyle[item]" stroke="null" d="m26.60334,2.83059l-23.16898,0c-1.60735,0 -2.88164,1.28877 -2.88164,2.89612l-0.01448,17.37673c0,1.60735 1.28877,2.89612 2.89612,2.89612l23.16898,0c1.60735,0 2.89612,-1.28877 2.89612,-2.89612l0,-17.37673c0,-1.60735 -1.28877,-2.89612 -2.89612,-2.89612zm-16.6527,15.92867l-1.73767,0l-3.69256,-5.06821l0,5.06821l-1.81008,0l0,-8.68837l1.81008,0l3.62015,5.06821l0,-5.06821l1.81008,0l0,8.68837zm7.2403,-6.86381l-3.62015,0l0,1.62183l3.62015,0l0,1.82456l-3.62015,0l0,1.60735l3.62015,0l0,1.81008l-5.79224,0l0,-8.68837l5.79224,0l0,1.82456zm10.13643,5.41575c0,0.79643 -0.65163,1.44806 -1.44806,1.44806l-5.79224,0c-0.79643,0 -1.44806,-0.65163 -1.44806,-1.44806l0,-7.2403l1.81008,0l0,6.53075l1.63631,0l0,-5.09717l1.81008,0l0,5.08269l1.62183,0l0,-6.51627l1.81008,0l0,7.2403z"/>-->
                     <rect stroke="#000" rx="3" id="svg_3" height="17.79447" width="27.84664" y="0.08384" x="0.08216" stroke-opacity="null" stroke-width="0" fill="#000"/>
-                    <text stroke="#fff" transform="matrix(0.8532502651214598,0,0,0.8532502651214598,0.7290017828345299,0.38280437514185905) " font-style="normal" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="12" id="svg_7" y="14.00717" x="3.15093" stroke-opacity="null" stroke-width="0" fill="#fff">New</text>                  
+                    <text stroke="#fff" transform="matrix(0.8532502651214598,0,0,0.8532502651214598,0.7290017828345299,0.38280437514185905) " font-style="normal" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="12" id="svg_7" y="14.00717" x="3.15093" stroke-opacity="null" stroke-width="0" fill="#fff">New</text>
                   </g>
                 </g>
               </g>
@@ -216,7 +232,7 @@
         <span *ngIf="live" class="msg_label" [ngStyle]="tooltipStyle" [innerHTML]="tooltipStr"></span>
       </div>
     </div>
-    
+
 
   </div>
 
@@ -256,9 +272,9 @@
   <mat-menu #rightMenu="matMenu">
     <ng-template matMenuContent >
       <button mat-menu-item (click)="delete()">{{ 'delete' | translate }}</button>
-      <button mat-menu-item 
-        (click)="$event.stopPropagation()" 
-        [(colorPicker)]="color" 
+      <button mat-menu-item
+        (click)="$event.stopPropagation()"
+        [(colorPicker)]="color"
         (colorPickerChange)="colorChange()">{{ 'planning.changeColor' | translate }}</button>
       <button mat-menu-item (click)="openHeightSetting()">
         <ng-container *ngIf="dragObject[svgId].type === 'obstacle' ; else otherTypeTemp2">
@@ -277,7 +293,7 @@
     </ng-template>
   </mat-menu> -->
 
-  
+
 
 
   </mat-sidenav-content>
@@ -356,7 +372,7 @@
               <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
             </div>
           </div>
-          
+
           <p class="sub_title inline-block">欲佈建的無線基站數量</p>
           <div class="sub_content inline-block">
               <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
@@ -375,7 +391,7 @@
         </div>
         -->
       </mat-expansion-panel>
-      
+
       <mat-expansion-panel (opened)="panelOpenState = true"
       (closed)="panelOpenState = false">
         <mat-expansion-panel-header>
@@ -432,7 +448,7 @@
                     </select>
                   </li>
                 </ng-container>
-                
+
                 <li *ngIf="calculateForm.objectiveIndex == '2'">
                   <p>{{ 'wifiFrequency' | translate }}</p>
                   <select [(ngModel)]="wifiFrequency" (change)="changeWifiFrequency()" style="width: 100px;" >
@@ -539,7 +555,7 @@
                     <input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="{{ 'powerMaxRange' | translate }}">dBm
                   </span>
                 </li>
-                
+
                 <li>
                   <p>{{ 'z.height' | translate }}<span> {{ 'z.height.note' | translate }} </span></p>
                   <ol class="inline-block">
@@ -603,12 +619,12 @@
                     </li>
                   </ol>
             </mat-expansion-panel>
-            
+
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ 'planning.defaultBs.info' | translate }}
                   <label class="matBadge">{{ defaultBSList.length }}</label>
-                  
+
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <span *ngIf="defaultBSList.length > 0" class="clearAll" (click)="clearAll('defaultBS')">
@@ -625,7 +641,7 @@
                           <option value="3">15</option>
                         </select>
                       </span>-->
-                    
+
                 <li>
                   <!--<p>{{ 'defaultBs' | translate }}</p>-->
                   <ol>
@@ -647,7 +663,7 @@
                 </li>
               </ul>
             </mat-expansion-panel>
-      
+
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title [class]="subitemClass['ue']">{{ 'planning.ue.info' | translate }}
@@ -683,7 +699,7 @@
                 </li>
               </ul>
             </mat-expansion-panel>
-      
+
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ 'planning.candidateBs.info' | translate }}
@@ -710,7 +726,7 @@
                   </li>
                 </ol>
             </mat-expansion-panel>
-      
+
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>{{ 'planning.model' | translate }}</mat-panel-title>
@@ -752,14 +768,14 @@
                     c<input type="text" [(ngModel)]="calculateForm.contantFactor">
                   </span>
                 </li> -->
-                
+
               </ul>
             </mat-expansion-panel>
-        </div>        
+        </div>
       </mat-expansion-panel>
 
 
-      
+
       <!--<mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>基站參數設定</mat-panel-title>
@@ -771,7 +787,7 @@
                   <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
                 </span>
               </li>
-              
+
               <li>
                 <label>系統頻寬</label>
                 <span>
@@ -787,11 +803,11 @@
                   <input type="text" [(ngModel)]="calculateForm.frequency">
                 </span>
               </li>
-            
+
           </ul>
       </mat-expansion-panel>-->
 
-      
+
 
 
       <mat-expansion-panel>
@@ -811,11 +827,11 @@
           <li>
             <span>{{ 'mctsTemperature' | translate }}</span>
             <input type="text" [(ngModel)]="calculateForm.mctsTemperature">
-          </li> 
+          </li>
           <li>
             <span>{{ 'mctsTime' | translate }}</span>
             <input type="text" [(ngModel)]="calculateForm.mctsTime">
-          </li> 
+          </li>
           <li>
             <span>{{ 'mctsTestTime' | translate }}</span>
             <input type="text" [(ngModel)]="calculateForm.mctsTestTime">
@@ -827,8 +843,8 @@
         </ul>
       </div>
       </mat-expansion-panel>
- 
-    </mat-accordion>    
+
+    </mat-accordion>
   </mat-sidenav>
 </mat-sidenav-container>
 
@@ -836,7 +852,7 @@
   <h5 *ngIf="dragObject[svgId].type === 'obstacle' ; else otherTypeTemp" mat-dialog-title>{{ 'altitude.setting' | translate }} / {{ 'material.setting' | translate }} </h5>
   <ng-template #otherTypeTemp>
     <h5 mat-dialog-title>{{ 'altitude.setting' | translate }}</h5>
-  </ng-template>  
+  </ng-template>
   <div mat-dialog-content>
     <ul>
       <li class="highset">
@@ -852,7 +868,7 @@
             <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
           </select>
         </ng-container>
-        
+
         <!--<mat-form-field>
           <mat-label>{{ 'altitude.setting' | translate }}2</mat-label>
           <input matInput >
@@ -873,6 +889,6 @@
         </mat-radio-group>
       </li>
     </ul>
-    
+
   </div>
 </ng-template>
