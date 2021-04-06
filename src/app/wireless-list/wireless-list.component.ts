@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../service/auth.service';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
@@ -46,6 +46,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   @ViewChild('pdf')
   pdf: PdfComponent;
+
+  @ViewChild('confirmAdd')
+  confirmAdd: TemplateRef<any>;
 
   ngOnInit(): void {
     this.matDialogConfig = new MatDialogConfig();
@@ -103,10 +106,17 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   }
 
   openDialog() {
-    this.matDialogConfig.data = {
-      timeInterval: this.timeInterval
-    };
-    this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
+    if (window.sessionStorage.getItem('form_blank_task') != null) {
+      this.matDialogConfig.data = {
+        timeInterval: this.timeInterval
+      };
+      this.dialogRef = this.dialog.open(this.confirmAdd, this.matDialogConfig);
+    } else {
+      this.matDialogConfig.data = {
+        timeInterval: this.timeInterval
+      };
+      this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
+    }
   }
 
   /** 匯出歷史紀錄excel */
@@ -186,6 +196,27 @@ export class WirelessListComponent implements OnInit, OnDestroy {
         this.authService.spinnerHide();
       }
     );
+  }
+
+  useOld() {
+    const form = sessionStorage.getItem('form_blank_task');
+    sessionStorage.setItem('calculateForm', form);
+    this.dialog.closeAll();
+    this.router.navigate(['/site/site-planning']);
+  }
+
+  useNew() {
+    this.dialog.closeAll();
+    Object.keys(sessionStorage).forEach((d) => {
+      if (d.indexOf('form_') !== -1) {
+        // 刪除其他task暫存
+        sessionStorage.removeItem(d);
+      }
+    });
+    this.matDialogConfig.data = {
+      timeInterval: this.timeInterval
+    };
+    this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
 
 }

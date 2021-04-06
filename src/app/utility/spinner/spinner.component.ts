@@ -12,9 +12,13 @@ export class SpinnerComponent {
   constructor(public spinner: NgxSpinnerService, private router: Router) { }
 
   showHome = false;
+  showCal = true;
+  showLoad = false;
 
   /** show loading */
   show() {
+    this.showCal = false;
+    this.showLoad = true;
     this.spinner.show();
   }
 
@@ -25,7 +29,15 @@ export class SpinnerComponent {
 
   /** show loading, 有home link */
   showAsHome() {
+    this.showLoad = false;
+    this.showCal = true;
     this.showHome = true;
+    this.spinner.show();
+  }
+
+  showCalculating() {
+    this.showLoad = false;
+    this.showCal = true;
     this.spinner.show();
   }
 

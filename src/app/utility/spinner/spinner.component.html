@@ -3,7 +3,11 @@
   size="medium"
   color="#fff"
   type="ball-scale-multiple">
-  <p class="going">運算中...<span *ngIf="showHome"><span id="percentageVal">0</span>%</span></p>
+  <p class="going">
+    <span *ngIf="showCal">{{ 'calculating' | translate }}</span>
+    <span *ngIf="showLoad">{{ 'loading' | translate }}</span>
+    <span *ngIf="showHome"><span id="percentageVal">0</span>%</span>
+  </p>
   <p *ngIf="showHome"><a style="color:#fff" href="javascript:void(0)" (click)="home()">
     <span class="material-icons">home</span><span>{{ 'backto.list' | translate }}</span></a></p>
 </ngx-spinner>

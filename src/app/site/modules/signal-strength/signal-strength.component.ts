@@ -443,7 +443,7 @@ export class SignalStrengthComponent implements OnInit {
         if (width < 5) {
           width = 5;
         }
-        let height = pixelXLinear(item['svgStyle'].height);
+        let height = pixelYLinear(item['svgStyle'].height);
         if (height < 5) {
           height = 5;
         }

@@ -13,6 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { PdfModule } from '../site/pdf/pdf.module';
 import { MsgDialogModule } from '../utility/msg-dialog/msg-dialog.module';
+import { ConfirmDialogModule } from '../utility/confirm-dailog/confirm-dialog.module';
 
 
 @NgModule({

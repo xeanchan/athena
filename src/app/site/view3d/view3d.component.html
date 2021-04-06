@@ -1,15 +1,15 @@
-<h5 *ngIf="!isPDF">3D顯示<a href="javascript:void(0)" class="close" (click)="close()">&times;</a></h5>
+<h5 *ngIf="!isPDF">{{ 'view.3d' | translate }}<a href="javascript:void(0)" class="close" (click)="close()">&times;</a></h5>
 
 <div *ngIf="!isPDF">
-  <label>顯示項目：</label>
-  <mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >原始基站</mat-checkbox>
-  <mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">待選基站</mat-checkbox>
-  <mat-checkbox [(ngModel)]="showObstacle" (change)="switchObstacle()" class="ml-2">障礙物</mat-checkbox>
-  <mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">無線終端</mat-checkbox>
+  <label>{{ 'view_3d.show.type' | translate }}：</label>
+  <mat-checkbox [(ngModel)]="showDefaultBs" (change)="switchDefaultBs()" >{{ 'defaultBs' | translate }}</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showCandidate" (change)="switchCandidate()" class="ml-2">{{ 'candidateBs' | translate }}</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showObstacle" (change)="switchObstacle()" class="ml-2">{{ 'obstacleInfo' | translate }}</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showUe" (change)="switchUe()" class="ml-2">{{ 'ue' | translate }}</mat-checkbox>
 </div>
 
 <div *ngIf="!isPDF">
-  <label>Heat Map 類型：</label>
+  <label>{{ 'view_3d.heatmap.type' | translate }}：</label>
   <mat-radio-group [(ngModel)]="heatmapType" (change)="switchHeatMap()" aria-label="Select an option">
     <mat-radio-button value="0" class="ml-2">{{ 'sinrMap' | translate }}</mat-radio-button>
     <mat-radio-button value="1" class="ml-2">{{ 'connectionMap' | translate }}</mat-radio-button>
@@ -18,10 +18,10 @@
 </div>
 
 <div *ngIf="!isPDF" style="height: 40px;">
-  <label for="zval">切面高度：</label>
+  <label for="zval">{{ 'zValue' | translate }}：</label>
   <select id="zval" [(ngModel)]="planeHeight" (change)="switchHeatMap()">
     <option *ngFor="let z of zValue" [value]="z">{{z}}</option>
-  </select>公尺
+  </select>{{ 'meter' | translate }}
 </div>
 
 <canvas #canvas class="canvas_3d" style="height: 100%; width: 100%"></canvas>

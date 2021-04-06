@@ -98,15 +98,15 @@ export class AuthService {
   }
 
   parseMaterial(val) {
-    if (val === '0') {
+    if (val === '0' || val === 0) {
       return '木頭';
-    } else if (val === '1') {
+    } else if (val === '1' || val === 1) {
       return '水泥';
-    } else if (val === '2') {
+    } else if (val === '2' || val === 2) {
       return '輕鋼架';
-    } else if (val === '3') {
+    } else if (val === '3' || val === 3) {
       return '玻璃';
-    } else if (val === '4') {
+    } else if (val === '4' || val === 4) {
       return '不鏽鋼/其它金屬類';
     }
   }

@@ -45,7 +45,7 @@
      </svg>
   </span>
   
-  <span class="svg" style="cursor:point; display:block;  text-align: center;  margin: .7em 0 1.2em;">
+  <!-- <span class="svg" style="cursor:point; display:block;  text-align: center;  margin: .7em 0 1.2em;">
       <svg id="svg_07" width="25" height="20px" xmlns="http://www.w3.org/2000/svg">
         <g>
           <rect x="-1" y="-1" height="20" width="25" fill="none" id="canvas_background"></rect>
@@ -58,7 +58,7 @@
           <path class="target" fill="#ffffff" stroke="null" id="svg_7" d="M3.6,3.8L15.9,0L22,16.5H0C0,16.5,3.6,3.3,3.6,3.8z"></path>
         </g>
       </svg>
-  </span>
+  </span> -->
   
   <hr>
   <span class="svg" matTooltip="{{ 'defaultBs' | translate }}" (click)="addMoveable('defaultBS')" >
@@ -536,8 +536,12 @@
                       </select>
                     </ng-container>
                     MHz
-                    /
-                    <label>{{ 'frequency' | translate }}</label>
+                  </span>
+                </li>
+
+                <li>
+                  <p>{{ 'frequency' | translate }}</p>
+                  <span>
                     <ng-container *ngIf="calculateForm.objectiveIndex == '2'; else otherFrequency">
                       {{ calculateForm.frequency }} MHz
                     </ng-container>

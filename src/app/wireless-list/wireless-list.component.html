@@ -51,7 +51,7 @@
 
 </div>
 <div class="footer">
-	<span>{{ 'current.version' | translate }}: 21.4.1</span>
+	<span>{{ 'current.version' | translate }}: 21.4.2</span>
 	<span>
 		{{ 'copyright.1' | translate }}
 	</span>
@@ -62,4 +62,23 @@
 <div id="pdf_area" style="display: none;" >
 	<app-pdf #pdf></app-pdf>
 </div>
+
+<ng-template #confirmAdd>
+	<h4 mat-dialog-title class="generalModal">
+		<i class="material-icons warning">&#xe002;</i>
+		<span>{{ 'tasklist.add.confirm' | translate }}</span>
+	</h4>
+	<mat-dialog-actions class="btn_area">
+		<button type="button" class="btn btn-primary" (click)="useOld()" >
+			{{ 'tasklist.add.useOld' | translate }}
+		</button>
+		<button type="button" class="btn btn-success ml-2" (click)="useNew()" >
+			{{ 'tasklist.add.useNew' | translate }}
+		</button>
+		<button type="button" class="btn btn-default ml-2" cdk-focus-start mat-dialog-close >
+			{{ 'cancel' | translate }}
+		</button>
+	</mat-dialog-actions>
+</ng-template>
+
 

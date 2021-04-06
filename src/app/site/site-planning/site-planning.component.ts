@@ -368,6 +368,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         // from new-planning upload image
         this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
+
         // 頻寬初始值
         this.changeWifiFrequency();
         if (this.calculateForm.objectiveIndex === '0') {
@@ -377,16 +378,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         } else if (this.calculateForm.objectiveIndex === '2') {
           this.calculateForm.bandwidth = 1;
         }
+
         this.initData(false);
       }
     }
   }
 
   ngOnDestroy(): void {
+    this.setForm();
+    // 暫存
     if (this.taskid !== '') {
-      // 暫存
-      this.setForm();
       window.sessionStorage.setItem(`form_${this.taskid}`, JSON.stringify(this.calculateForm));
+    } else {
+      window.sessionStorage.setItem(`form_blank_task`, JSON.stringify(this.calculateForm));
     }
     if (typeof this.progressInterval !== 'undefined') {
       window.clearInterval(this.progressInterval);
@@ -504,7 +508,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               // import xlsx
               if (isImport) {
                 this.setImportData();
-              } else if (this.taskid !== '') {
+              } else if (this.taskid !== '' || sessionStorage.getItem('form_blank_task') != null) {
                 // 編輯
                 this.edit();
               }
@@ -540,7 +544,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         // import xlsx
         if (isImport) {
           this.setImportData();
-        } else if (this.taskid !== '') {
+        } else if (this.taskid !== '' || sessionStorage.getItem('form_blank_task') != null) {
           // 編輯
           this.edit();
         }

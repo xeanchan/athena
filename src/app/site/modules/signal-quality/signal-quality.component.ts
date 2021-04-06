@@ -388,6 +388,7 @@ export class SignalQualityComponent implements OnInit {
         ${this.translateService.instant('height')}: ${oData[3]}
         ${this.translateService.instant('altitude')}: ${oData[4]}
         `;
+        console.log(oData, oData[3])
         if (typeof oData[6] !== 'undefined') {
           text += `${this.translateService.instant('material')}: ${this.authService.parseMaterial(oData[6])}`;
         }
@@ -480,7 +481,7 @@ export class SignalQualityComponent implements OnInit {
         if (width < 5) {
           width = 5;
         }
-        let height = pixelXLinear(item['svgStyle'].height);
+        let height = pixelYLinear(item['svgStyle'].height);
         if (height < 5) {
           height = 5;
         }

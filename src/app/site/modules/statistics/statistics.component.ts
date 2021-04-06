@@ -151,8 +151,8 @@ export class StatisticsComponent implements OnInit {
     for (let i = 0; i < y.length; i++) {
       const sum = Plotly.d3.sum(y[i]);
       text[i].push((y[i][0] === 0 ? 0 : this.fmt(y[i][0] / sum)));
-      text[i].push((y[i][1] === 0 ? 0 : this.fmt(y[i][0] / sum)));
-      text[i].push((y[i][2] === 0 ? 0 : this.fmt(y[i][0] / sum)));
+      text[i].push((y[i][1] === 0 ? 0 : this.fmt(y[i][1] / sum)));
+      text[i].push((y[i][2] === 0 ? 0 : this.fmt(y[i][2] / sum)));
 
       traces.push({
         type: 'bar',

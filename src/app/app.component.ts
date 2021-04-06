@@ -36,7 +36,7 @@ export class AppComponent {
     });
   }
 
-  /** show loading */
+  /** 運算中 */
   show() {
     this.spinner.show();
   }
@@ -49,5 +49,10 @@ export class AppComponent {
   /** show loading, 有home link */
   showAsHome() {
     this.spinner.showAsHome();
+  }
+
+  /** show loading */
+  showCalculating() {
+    this.spinner.showCalculating();
   }
 }

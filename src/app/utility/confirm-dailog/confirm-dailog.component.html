@@ -1,0 +1,9 @@
+<h4 mat-dialog-title class="generalModal">
+  <i class="material-icons warning">&#xe002;</i>
+  <span [innerHTML]="infoMessage"></span>
+</h4>
+<mat-dialog-actions class="btn_area">
+  <button type="button" class="btn btn-default" (click)="ok()" >OK</button>
+  <button type="button" class="btn btn-default" cdk-focus-start mat-dialog-close >Cancel</button>
+</mat-dialog-actions>
+
