@@ -101,31 +101,31 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   svgMap = {
     rect: {
       id: 'svg_1',
-      title: '障礙物',
+      title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
       element: 'rect'
     },
     ellipse: {
       id: 'svg_2',
-      title: '障礙物',
+      title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
       element: 'ellipse'
     },
     polygon: {
       id: 'svg_3',
-      title: '障礙物',
+      title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
       element: 'polygon'
     },
     defaultBS: {
       id: 'svg_4',
-      title: '現有基站',
+      title: this.translateService.instant('defaultBs'),
       type: 'defaultBS',
       element: ''
     },
     candidate: {
       id: 'svg_5',
-      title: '新增基站',
+      title: this.translateService.instant('candidateBs'),
       type: 'candidate',
       element: ''
     },
@@ -134,6 +134,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       title: this.translateService.instant('ue'),
       type: 'UE',
       element: ''
+    },
+    trapezoid: {
+      id: 'svg_7',
+      title: this.translateService.instant('obstacleInfo'),
+      type: 'obstacle',
+      element: 'trapezoid'
     }
   };
   // select svg id
@@ -191,6 +197,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   svgStyle = {};
   pathStyle = {};
   circleStyle = {};
+  trapezoidStyle = {};
   /** workbook */
   wb: XLSX.WorkBook;
   dragStyle = {};
@@ -675,7 +682,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
       width = 20;
       height = 30;
+    } else if (id === 'trapezoid') {
+      // 梯形
+      color = this.OBSTACLE_COLOR;
+      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.obstacleList.push(this.svgId);
+      this.trapezoidStyle[this.svgId] = {
+        fill: color
+      };
     }
+
     this.spanStyle[this.svgId] = {
       left: `200px`,
       top: `100px`,
@@ -949,6 +965,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const type = this.dragObject[this.svgId].element;
 
+    if (type === 'trapezoid') {
+      if (width > height) {
+        height = width;
+      } else {
+        width = height;
+      }
+    }
+
     this.frame.set('width', `${width}px`);
     if (type === 'ellipse') {
       // 圓形正圓
@@ -1070,6 +1094,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.ellipseStyle[this.svgId].fill = this.color;
       } else if (this.dragObject[this.svgId].element === 'polygon') {
         this.polygonStyle[this.svgId].fill = this.color;
+      } else if (this.dragObject[this.svgId].element === 'trapezoid') {
+        this.trapezoidStyle[this.svgId].fill = this.color;
       }
     } else {
       this.pathStyle[this.svgId].fill = this.color;
@@ -1242,6 +1268,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           shape = 1;
         } else if (obj.element === 'ellipse') {
           shape = 2;
+        } else if (obj.element === 'trapezoid') {
+          shape = 3;
         }
         obstacleInfo += `[${obj.x},${obj.y},${obj.width},${obj.height},${obj.altitude},${obj.rotate},${obj.material},${shape}]`;
         if (i < this.obstacleList.length - 1) {
@@ -1867,6 +1895,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let rect = 0;
       let ellipse = 0;
       let polygon = 0;
+      let trapezoid = 0;
       for (let i = 1; i < obstacleData.length; i++) {
         if ((<Array<any>> obstacleData[i]).length === 0) {
           continue;
@@ -1886,6 +1915,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           id = `polygon_${polygon}`;
           type = 'polygon';
           polygon++;
+        } else if (shape === 'trapezoid' || shape === '3') {
+          id = `trapezoid_${ellipse}`;
+          type = 'trapezoid';
+          trapezoid++;
+
         } else {
           // default
           shape = 'rect';
@@ -1961,6 +1995,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
           this.polygonStyle[id] = {
             points: points,
+            fill: this.dragObject[id].color
+          };
+        } else if (shape === 'trapezoid') {
+          this.spanStyle[id] = {
+            left: `${this.pixelXLinear(this.dragObject[id].x)}`,
+            top: `${this.pixelYLinear(this.dragObject[id].y)}`,
+            width: this.pixelXLinear(obstacleData[i][2] / 2),
+            height: this.pixelYLinear(obstacleData[i][3] / 2),
+            transform: `rotate(${this.dragObject[id].rotate}deg)`
+          };
+          this.trapezoidStyle[id] = {
             fill: this.dragObject[id].color
           };
         }
