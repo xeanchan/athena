@@ -388,7 +388,7 @@ export class SignalQualityComponent implements OnInit {
         ${this.translateService.instant('height')}: ${oData[3]}
         ${this.translateService.instant('altitude')}: ${oData[4]}
         `;
-        console.log(oData, oData[3])
+
         if (typeof oData[6] !== 'undefined') {
           text += `${this.translateService.instant('material')}: ${this.authService.parseMaterial(oData[6])}`;
         }
@@ -398,6 +398,7 @@ export class SignalQualityComponent implements OnInit {
         this.rectList.push({
           x: xdata,
           y: ydata,
+          rotate: oData[5],
           style: {
             left: 0,
             bottom: 0,
@@ -405,7 +406,7 @@ export class SignalQualityComponent implements OnInit {
             height: oData[3],
             transform: `rotate(${oData[5]}deg)`,
             position: 'absolute',
-            visibility: this.showObstacle
+            visibility: this.showObstacle,
           },
           svgStyle: {
             width: oData[2],
@@ -485,8 +486,13 @@ export class SignalQualityComponent implements OnInit {
         if (height < 5) {
           height = 5;
         }
+
         item['style'].left = `${pixelXLinear(item.x)}px`;
         item['style'].bottom = `${pixelYLinear(item.y)}px`;
+        if (item.rotate !== 0) {
+          item['style'].left = `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
+          item['style'].bottom = `${pixelYLinear(item.y) - 6}px`;
+        }
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;
@@ -557,9 +563,13 @@ export class SignalQualityComponent implements OnInit {
   /** heatmap透明度 */
   changeOpacity() {
     const chartElm = document.querySelectorAll(`.quality_chart`)[0];
+    let traceNum = 1;
+    if (this.authService.isEmpty(this.calculateForm.ueCoordinate)) {
+      traceNum = 0;
+    }
     Plotly.restyle(chartElm, {
       opacity: this.opacityValue
-    }, [1]);
+    }, [traceNum]);
   }
 
 }

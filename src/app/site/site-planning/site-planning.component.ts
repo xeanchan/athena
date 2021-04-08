@@ -866,9 +866,30 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (xVal < 0) {
       xVal = 0;
     }
+
+    const type = this.dragObject[this.svgId].element;
+
     const yVal = this.roundFormat(this.yLinear(rectBottom));
-    const wVal = this.roundFormat(this.xLinear(rect.width));
-    const hVal = this.roundFormat(this.yLinear(rect.height));
+    let wVal;
+    let hVal;
+    if (type === 'rect') {
+      // 方形
+      wVal = this.roundFormat(this.xLinear(this.rectStyle[this.svgId].width));
+      hVal = this.roundFormat(this.yLinear(this.rectStyle[this.svgId].height));
+    } else if (type === 'ellipse') {
+      // 圓形正圓
+      wVal = this.roundFormat(this.xLinear(rect.width));
+      hVal = this.roundFormat(this.yLinear(rect.width));
+
+    } else if (type === 'polygon') {
+      // 三角形
+      wVal = this.roundFormat(this.xLinear(this.svgStyle[this.svgId].width));
+      hVal = this.roundFormat(this.yLinear(this.svgStyle[this.svgId].height));
+    } else if (type === 'trapezoid') {
+      wVal = this.roundFormat(this.xLinear(this.trapezoidStyle[this.svgId].width));
+      hVal = this.roundFormat(this.yLinear(this.trapezoidStyle[this.svgId].height));
+    }
+
     this.dragObject[this.svgId].x = xVal;
     this.dragObject[this.svgId].y = yVal;
     this.dragObject[this.svgId].width = wVal;
@@ -980,13 +1001,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.frame.set('height', `${height}px`);
     }
-    
 
-    const beforeTranslate = drag.beforeTranslate;
+    
+    this.spanStyle[this.svgId].transform = `rotate(${this.dragObject[this.svgId].rotate}deg)`;
+
+    
     this.frame.set('z-index', 9999999);
+    this.frame.set('transform', 'rotate', `${this.dragObject[this.svgId].rotate}deg`);
     this.setTransform(target);
     
-    target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px)`;
+    const beforeTranslate = drag.beforeTranslate;
+    target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px) rotate(${this.dragObject[this.svgId].rotate}deg)`;
+    
+    // this.setTransform(target);
 
     this.svgStyle[this.svgId].width = width;
     this.svgStyle[this.svgId].height = height;
@@ -997,8 +1024,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // 方形
       this.rectStyle[this.svgId].width = width;
       this.rectStyle[this.svgId].height = height;
-      // dragRect.setAttribute('width', width.toString());
-      // dragRect.setAttribute('height', height.toString());
     } else if (type === 'ellipse') {
       // 圓形正圓
       const x = (width / 2).toString();
@@ -1012,6 +1037,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
       this.polygonStyle[this.svgId].points = points;
       // dragRect.setAttribute('points', points);
+    } else if (type === 'trapezoid') {
+      this.trapezoidStyle[this.svgId].width = width;
+      this.trapezoidStyle[this.svgId].height = height;
     }
     this.setDragData();
     this.setLabel();
@@ -2104,14 +2132,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           material: item[6].toString(),
           element: shape
         };
-  
+        
         this.spanStyle[id] = {
-          left: `${this.pixelXLinear(item[0])}px`,
+          left: `${this.pixelXLinear((this.dragObject[id].rotate !== 0) ? item[0] + item[2] : item[0])}px`,
           top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
           width: `${this.pixelXLinear(item[2])}px`,
           height: `${this.pixelYLinear(item[3])}px`,
           transform: `rotate(${this.dragObject[id].rotate}deg)`
+          // transform: `translate(${this.pixelXLinear(item[2])}px, ${this.pixelYLinear(item[3])}px) rotate(${this.dragObject[this.svgId].rotate}deg)`
         };
+        // `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
   
         const width = this.pixelXLinear(item[2]);
         const height = this.pixelYLinear(item[3]);

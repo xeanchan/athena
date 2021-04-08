@@ -368,6 +368,7 @@ export class SignalCoverComponent implements OnInit {
         this.rectList.push({
           x: xdata,
           y: ydata,
+          rotate: oData[5],
           style: {
             left: 0,
             bottom: 0,
@@ -457,6 +458,10 @@ export class SignalCoverComponent implements OnInit {
         }
         item['style'].left = `${pixelXLinear(item.x)}px`;
         item['style'].bottom = `${pixelYLinear(item.y)}px`;
+        if (item.rotate !== 0) {
+          item['style'].left = `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
+          item['style'].bottom = `${pixelYLinear(item.y) - 6}px`;
+        }
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;
@@ -538,9 +543,13 @@ export class SignalCoverComponent implements OnInit {
   /** heatmap透明度 */
   changeOpacity() {
     const chartElm = document.querySelectorAll(`.signal_cover`)[0];
+    let traceNum = 1;
+    if (this.authService.isEmpty(this.calculateForm.ueCoordinate)) {
+      traceNum = 0;
+    }
     Plotly.restyle(chartElm, {
       opacity: this.opacityValue
-    }, [1]);
+    }, [traceNum]);
   }
 
 }
