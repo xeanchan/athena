@@ -296,7 +296,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (sessionStorage.getItem('importFile') != null) {
       // from new-planning import file
       this.calculateForm = new CalculateForm();
-      this.calculateForm.taskName = sessionStorage.getItem('taskName');
       const reader = new FileReader();
       reader.onload = (e) => {
         this.readXls(e.target.result);
@@ -1220,7 +1219,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.http.post(url, JSON.stringify(this.calculateForm)).subscribe(
         res => {
           this.taskid = res['taskid'];
-          document.getElementById('percentageVal').innerHTML = '0';
+          const percentageVal = document.getElementById('percentageVal');
+          if (percentageVal != null) {
+            percentageVal.innerHTML = '0';
+          }
           this.getProgress();
         },
         err => {
@@ -1361,7 +1363,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   addInterval() {
     this.pgInterval = window.setInterval(() => {
       if (this.progressNum < 100) {
-        document.getElementById('percentageVal').innerHTML = (this.progressNum++).toString();
+        const percentageVal = document.getElementById('percentageVal');
+        if (percentageVal != null) {
+          percentageVal.innerHTML = (this.progressNum++).toString();
+        }
       } else {
         window.clearInterval(this.pgInterval);
       }
@@ -1377,7 +1382,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         window.clearInterval(this.progressInterval);
         
         if (res['progress'] === 1) {
-          document.getElementById('percentageVal').innerHTML = '100';
+          const percentageVal = document.getElementById('percentageVal');
+          if (percentageVal != null) {
+            percentageVal.innerHTML = '100';
+          }
           // done
           this.authService.spinnerHide();
           // 儲存
@@ -1388,7 +1396,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // location.reload();
         } else {
           // query again
-          // document.getElementById('percentageVal').innerHTML = Math.ceil(res['progress'] * 100).toString();
           window.clearInterval(this.progressInterval);
           this.progressInterval = window.setTimeout(() => {
             this.addInterval();
@@ -1664,10 +1671,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     if (target.files.length !== 1) {
       throw new Error('Cannot use multiple files');
     }
+    const file = event.target.files[0];
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       /* read workbook */
       const bstr: string = e.target.result;
+      const name = file.name.substring(0, file.name.lastIndexOf('.'));
+      sessionStorage.setItem('taskName', name);
       this.readXls(bstr);
 
       event.target.value = ''; // 清空
@@ -1682,7 +1692,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.candidateList.length = 0;
     this.ueList.length = 0;
     this.calculateForm = new CalculateForm();
-
+    this.calculateForm.taskName = sessionStorage.getItem('taskName');
     this.wb = XLSX.read(result, {type: 'binary'});
 
     /* map sheet */
@@ -2139,9 +2149,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           width: `${this.pixelXLinear(item[2])}px`,
           height: `${this.pixelYLinear(item[3])}px`,
           transform: `rotate(${this.dragObject[id].rotate}deg)`
-          // transform: `translate(${this.pixelXLinear(item[2])}px, ${this.pixelYLinear(item[3])}px) rotate(${this.dragObject[this.svgId].rotate}deg)`
         };
-        // `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
   
         const width = this.pixelXLinear(item[2]);
         const height = this.pixelYLinear(item[3]);

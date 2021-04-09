@@ -124,7 +124,13 @@
     <button class="toggle" mat-button (click)="sidenav.toggle();plotResize()">
       <span class="material-icons">swap_horiz</span>
     </button>
-    <h2 class="inline-block">{{ getTitle() }}({{ calculateForm.taskName }})</h2>
+    <h2 class="inline-block">
+      {{ getTitle() }}(
+        <mat-form-field floatLabel="never" style="height: 45px;">
+          <input matInput [(ngModel)]="calculateForm.taskName" placeholder="{{ 'taskName' | translate }}" required>
+        </mat-form-field>
+      )
+    </h2>
     <mat-button-toggle-group class="inline-block">
       <mat-button-toggle value="import" (click)="file.click()">{{ 'import' | translate }}</mat-button-toggle>
       <mat-button-toggle value="export" (click)="export()">{{ 'tasklist.export' | translate }}</mat-button-toggle>
@@ -418,11 +424,11 @@
               </mat-expansion-panel-header>
               <ul>
                 <li>
-                  <p>{{ 'tasklist.name' | translate }}</p>
+                  <p>{{ 'taskName' | translate }}</p>
                   <input type="text" [(ngModel)]="calculateForm.taskName" class="w18">
                 </li>
                 <li>
-                  <p>{{ 'tasklist.upload' | translate }}</p><input type="file" (change)="fileChange($event)">
+                  <p>{{ 'planning.upload' | translate }}</p><input type="file" (change)="fileChange($event)">
                   <span style="margin-left: 2em;" *ngIf="showFileName">{{ calculateForm.mapName }}</span>
                 </li>
                 <li>
