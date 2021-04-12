@@ -448,11 +448,11 @@ export class SignalStrengthComponent implements OnInit {
         if (height < 5) {
           height = 5;
         }
-        item['style'].left = `${pixelXLinear(item.x)}px`;
         item['style'].bottom = `${pixelYLinear(item.y)}px`;
         if (item.rotate !== 0) {
-          item['style'].left = `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
-          item['style'].bottom = `${pixelYLinear(item.y) - 6}px`;
+          item['style'].left = `${pixelXLinear(item.x + (item['svgStyle'].width / 1.5))}px`;
+        } else {
+          item['style'].left = `${pixelXLinear(item.x)}px`;
         }
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;

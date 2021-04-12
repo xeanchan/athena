@@ -199,22 +199,22 @@ export class SignalQualityComponent implements OnInit {
 
     this.colorBars.push(
       {
-        val: Math.round(24),
+        val: '24',
         'background-color': 'rgb(217,30,30)',
         height: '25%'
       },
       {
-        val: '20',
+        val: '16',
         'background-image': 'linear-gradient(rgb(217,30,30),rgb(242,143,56))',
         height: '25%'
       },
       {
-        val: Math.round(15),
+        val: '8',
         'background-image': 'linear-gradient(rgb(242,143,56),rgb(242,211,56))',
         height: '25%'
       },
       {
-        val: '6',
+        val: '0',
         'background-image': 'linear-gradient(rgb(242,211,56), rgb(136, 224, 53))',
         height: '10%'
       },
@@ -224,7 +224,7 @@ export class SignalQualityComponent implements OnInit {
         height: '15%'
       },
       {
-        val: Math.round(-12),
+        val: '-8',
         'background-image': 'linear-gradient(rgb(10,136,186),rgb(12,51,131))',
         height: '20%'
       }
@@ -487,11 +487,11 @@ export class SignalQualityComponent implements OnInit {
           height = 5;
         }
 
-        item['style'].left = `${pixelXLinear(item.x)}px`;
         item['style'].bottom = `${pixelYLinear(item.y)}px`;
         if (item.rotate !== 0) {
-          item['style'].left = `${pixelXLinear(item.x + item['svgStyle'].width + (item['svgStyle'].width * (item.rotate) / 100))}px`;
-          item['style'].bottom = `${pixelYLinear(item.y) - 6}px`;
+          item['style'].left = `${pixelXLinear(item.x + (item['svgStyle'].width / 1.5))}px`;
+        } else {
+          item['style'].left = `${pixelXLinear(item.x)}px`;
         }
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;

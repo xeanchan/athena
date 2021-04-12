@@ -925,6 +925,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('z-index', 9999999);
     this.setTransform(target);
 
+    // console.log(this.xLinear(target.offectL));
+    console.log(this.xLinear(left + Math.sin(23) * target.getBoundingClientRect().width));
+
     this.spanStyle[this.svgId].left = `${left}px`;
     this.spanStyle[this.svgId].top = `${top}px`;
 
@@ -2144,7 +2147,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         
         this.spanStyle[id] = {
-          left: `${this.pixelXLinear((this.dragObject[id].rotate !== 0) ? item[0] + item[2] : item[0])}px`,
+          left: `${this.pixelXLinear((this.dragObject[id].rotate !== 0) ? item[0] + (item[2] / 2) : item[0])}px`,
           top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
           width: `${this.pixelXLinear(item[2])}px`,
           height: `${this.pixelYLinear(item[3])}px`,
