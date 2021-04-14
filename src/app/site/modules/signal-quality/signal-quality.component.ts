@@ -103,7 +103,7 @@ export class SignalQualityComponent implements OnInit {
       xaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, Number(this.calculateForm.width) - 1],
+        // range: [0, Number(this.calculateForm.width) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -113,7 +113,7 @@ export class SignalQualityComponent implements OnInit {
       yaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, Number(this.calculateForm.height) - 1],
+        // range: [0, Number(this.calculateForm.height) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: false,
@@ -163,13 +163,13 @@ export class SignalQualityComponent implements OnInit {
             mapColor.push('rgb(217,30,30)');
           } else if (zText[i][yIndex][xIndex] >= 23) {
             mapColor.push('rgb(242,143,56)');
-          } else if (zText[i][yIndex][xIndex] >= 15) {
+          } else if (zText[i][yIndex][xIndex] >= 16) {
             mapColor.push('rgb(242,211,56)');
-          } else if (zText[i][yIndex][xIndex] >= 6) {
+          } else if (zText[i][yIndex][xIndex] >= 8) {
             mapColor.push('green');
-          } else if (zText[i][yIndex][xIndex] >= -3) {
+          } else if (zText[i][yIndex][xIndex] >= 0) {
             mapColor.push('rgb(10,136,186)');
-          } else if (zText[i][yIndex][xIndex] < -3) {
+          } else if (zText[i][yIndex][xIndex] < -8) {
             mapColor.push('rgb(12,51,131)');
           }
 
@@ -395,16 +395,24 @@ export class SignalQualityComponent implements OnInit {
         if (typeof oData[7] === 'undefined') {
           oColor = '#000000';
         }
+        let rotate = oData[5];
+        if (rotate !== 0) {
+          if (rotate < 0) {
+            rotate += 5;
+          } else {
+            rotate -= 5;
+          }
+        }
         this.rectList.push({
           x: xdata,
           y: ydata,
-          rotate: oData[5],
+          rotate: rotate,
           style: {
             left: 0,
-            bottom: 0,
+            top: 0,
             width: oData[2],
             height: oData[3],
-            transform: `rotate(${oData[5]}deg)`,
+            transform: `rotate(${rotate}deg)`,
             position: 'absolute',
             visibility: this.showObstacle,
           },
@@ -468,6 +476,8 @@ export class SignalQualityComponent implements OnInit {
         position: 'absolute'
       };
 
+      console.log(rect2.height, xy2.getAttribute('y'))
+
       const pixelXLinear = Plotly.d3.scale.linear()
         .domain([0, this.calculateForm.width])
         .range([0, rect2.width]);
@@ -487,12 +497,18 @@ export class SignalQualityComponent implements OnInit {
           height = 5;
         }
 
-        item['style'].bottom = `${pixelYLinear(item.y)}px`;
+        let leftPos = `${pixelXLinear(item.x)}px`;
         if (item.rotate !== 0) {
-          item['style'].left = `${pixelXLinear(item.x + (item['svgStyle'].width / 1.5))}px`;
+          if (item.rotate > 0) {
+            leftPos = `${pixelXLinear(item.x) + item.rotate - 5}px`;
+          } else {
+            leftPos = `${pixelXLinear(item.x) - item.rotate - 5}px`;
+          }
+          item['style'].top = `${rect2.height - height - pixelYLinear(item.y) + 5}px`;
         } else {
-          item['style'].left = `${pixelXLinear(item.x)}px`;
+          item['style'].top = `${rect2.height - height - pixelYLinear(item.y)}px`;
         }
+        item['style'].left = leftPos;
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;

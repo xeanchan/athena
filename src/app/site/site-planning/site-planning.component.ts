@@ -180,7 +180,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   // task id
   taskid = '';
   // progress interval
-  progressInterval;
+  progressInterval = 0;
   heightList = [];
   plotLayout;
   view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
@@ -223,7 +223,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   subcarrier = 15;
   /** 進度 */
   progressNum = 0;
-  pgInterval;
+  pgInterval = 0;
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -399,7 +399,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       window.sessionStorage.setItem(`form_blank_task`, JSON.stringify(this.calculateForm));
     }
     if (typeof this.progressInterval !== 'undefined') {
-      window.clearInterval(this.progressInterval);
+      for (let i = 0; i < this.progressInterval; i++) {
+        window.clearInterval(i);
+      }
     }
     try {
       this.moveable.destroy();
@@ -924,10 +926,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.frame.set('top', `${top}px`);
     this.frame.set('z-index', 9999999);
     this.setTransform(target);
-
-    // console.log(this.xLinear(target.offectL));
-    console.log(this.xLinear(left + Math.sin(23) * target.getBoundingClientRect().width));
-
+    
     this.spanStyle[this.svgId].left = `${left}px`;
     this.spanStyle[this.svgId].top = `${top}px`;
 
@@ -1371,7 +1370,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           percentageVal.innerHTML = (this.progressNum++).toString();
         }
       } else {
-        window.clearInterval(this.pgInterval);
+        for (let i = 0; i < this.pgInterval; i++) {
+          window.clearInterval(i);
+        }
       }
     }, 3000);
   }
@@ -1382,7 +1383,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = `${this.authService.API_URL}/progress/${this.taskid}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
-        window.clearInterval(this.progressInterval);
+        for (let i = 0; i < this.progressInterval; i++) {
+          window.clearInterval(i);
+        }
         
         if (res['progress'] === 1) {
           const percentageVal = document.getElementById('percentageVal');
@@ -1393,13 +1396,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           this.authService.spinnerHide();
           // 儲存
           // this.save();
+          for (let i = 0; i < this.pgInterval; i++) {
+            window.clearInterval(i);
+          }
           this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
-          window.clearInterval(this.pgInterval);
+          
           // location.replace(`#/site/result?taskId=${this.taskid}`);
           // location.reload();
         } else {
           // query again
-          window.clearInterval(this.progressInterval);
+          for (let i = 0; i < this.progressInterval; i++) {
+            window.clearInterval(i);
+          }
           this.progressInterval = window.setTimeout(() => {
             this.addInterval();
             this.getProgress();
@@ -1408,7 +1416,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
       }, err => {
         this.authService.spinnerHide();
-        window.clearInterval(this.progressInterval);
+        for (let i = 0; i < this.progressInterval; i++) {
+          window.clearInterval(i);
+        }
       }
     );
   }
@@ -2145,14 +2155,27 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           material: item[6].toString(),
           element: shape
         };
-        
+        let leftPos = `${this.pixelXLinear(item[0])}px`;
+        if (this.dragObject[id].rotate !== 0) {
+          if (this.dragObject[id].rotate > 0) {
+            leftPos = `${this.pixelXLinear(item[0]) + this.dragObject[id].rotate - 5 }px`;
+          } else {
+            leftPos = `${this.pixelXLinear(item[0]) - this.dragObject[id].rotate - 5}px`;
+          }
+        }
+
         this.spanStyle[id] = {
-          left: `${this.pixelXLinear((this.dragObject[id].rotate !== 0) ? item[0] + (item[2] / 2) : item[0])}px`,
+          left: leftPos,
           top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
           width: `${this.pixelXLinear(item[2])}px`,
           height: `${this.pixelYLinear(item[3])}px`,
           transform: `rotate(${this.dragObject[id].rotate}deg)`
         };
+
+        if (this.dragObject[id].rotate !== 0) {
+          this.spanStyle[id].top = `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1]) + 3}px`;
+        }
+        
   
         const width = this.pixelXLinear(item[2]);
         const height = this.pixelYLinear(item[3]);

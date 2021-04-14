@@ -37,7 +37,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   taskList: any = [];
   hstList: any = [];
-  timeInterval;
+  timeInterval = 0;
   dialogRef;
   matDialogConfig: MatDialogConfig;
   msgDialogConfig: MatDialogConfig;
@@ -64,6 +64,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     window.clearInterval(this.timeInterval);
+    for (let i = 0; i < this.timeInterval; i++) {
+      window.clearInterval(i);
+    }
   }
 
   /**
@@ -102,6 +105,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   logout() {
     window.clearInterval(this.timeInterval);
+    for (let i = 0; i < this.timeInterval; i++) {
+      window.clearInterval(i);
+    }
     this.authService.logout();
   }
 
@@ -165,6 +171,12 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   edit(taskId, isHst) {
     this.authService.spinnerShow();
     window.clearInterval(this.timeInterval);
+    if (this.timeInterval != null) {
+      for (let i = 0; i < this.timeInterval; i++) {
+        window.clearInterval(i);
+      }
+    }
+    
     // this.router.navigate(['/site/site-planning'], { queryParams: { taskId: taskId }});
     let url;
     if (isHst) {

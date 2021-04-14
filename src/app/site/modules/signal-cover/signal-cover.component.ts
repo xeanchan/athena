@@ -103,7 +103,7 @@ export class SignalCoverComponent implements OnInit {
       xaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, Number(this.calculateForm.width) - 1],
+        // range: [0, Number(this.calculateForm.width) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -113,7 +113,7 @@ export class SignalCoverComponent implements OnInit {
       yaxis: {
         linewidth: 1,
         mirror: 'all',
-        range: [0, Number(this.calculateForm.height) - 1],
+        // range: [0, Number(this.calculateForm.height) - 1],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -154,6 +154,11 @@ export class SignalCoverComponent implements OnInit {
             zText[i][yIndex] = [];
           }
           zData[i][yIndex][xIndex] = yData[i];
+          if (yData[i] == null) {
+            console.log(`x:${xIndex}, y:${yIndex}, z:${i}, ${yData[i]}`);
+            console.log(item);
+          }
+          
           zText[i][yIndex][xIndex] = Math.round(yData[i] * 100) / 100;
           yIndex++;
           allZ[i].push(yData[i]);
@@ -365,18 +370,26 @@ export class SignalCoverComponent implements OnInit {
         if (typeof oData[7] === 'undefined') {
           oColor = '#000000';
         }
+        let rotate = oData[5];
+        if (rotate !== 0) {
+          if (rotate < 0) {
+            rotate += 5;
+          } else {
+            rotate -= 5;
+          }
+        }
         this.rectList.push({
           x: xdata,
           y: ydata,
-          rotate: oData[5],
+          rotate: rotate,
           style: {
             left: 0,
-            bottom: 0,
+            top: 0,
             width: oData[2],
             height: oData[3],
-            transform: `rotate(${oData[5]}deg)`,
+            transform: `rotate(${rotate}deg)`,
             position: 'absolute',
-            visibility: this.showObstacle
+            visibility: this.showObstacle,
           },
           svgStyle: {
             width: oData[2],
@@ -456,12 +469,18 @@ export class SignalCoverComponent implements OnInit {
         if (height < 5) {
           height = 5;
         }
-        item['style'].bottom = `${pixelYLinear(item.y)}px`;
+        let leftPos = `${pixelXLinear(item.x)}px`;
         if (item.rotate !== 0) {
-          item['style'].left = `${pixelXLinear(item.x + (item['svgStyle'].width / 1.5))}px`;
+          if (item.rotate > 0) {
+            leftPos = `${pixelXLinear(item.x) + item.rotate - 5}px`;
+          } else {
+            leftPos = `${pixelXLinear(item.x) - item.rotate - 5}px`;
+          }
+          item['style'].top = `${rect2.height - height - pixelYLinear(item.y) + 5}px`;
         } else {
-          item['style'].left = `${pixelXLinear(item.x)}px`;
+          item['style'].top = `${rect2.height - height - pixelYLinear(item.y)}px`;
         }
+        item['style'].left = leftPos;
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;
