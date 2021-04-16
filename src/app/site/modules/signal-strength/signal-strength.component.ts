@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
@@ -43,6 +43,8 @@ export class SignalStrengthComponent implements OnInit {
   showCandidate = 'visible';
   // slide
   opacityValue: number = 0.8;
+
+  @ViewChildren('obstacletElm') obstacleElm: QueryList<ElementRef>;
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -104,7 +106,7 @@ export class SignalStrengthComponent implements OnInit {
       xaxis: {
         linewidth: 1,
         mirror: 'all',
-        // range: [0, Number(this.calculateForm.width) - 1],
+        range: [0, this.calculateForm.width],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -114,7 +116,7 @@ export class SignalStrengthComponent implements OnInit {
       yaxis: {
         linewidth: 1,
         mirror: 'all',
-        // range: [0, Number(this.calculateForm.height) - 1],
+        range: [0, this.calculateForm.height],
         showgrid: false,
         zeroline: false,
         fixedrange: true,
@@ -203,12 +205,19 @@ export class SignalStrengthComponent implements OnInit {
 
     const x = [];
     const y = [];
-
-    for (let i = 0; i <= this.result['inputWidth']; i++) {
-      x.push(i);
+    const wRatio = this.calculateForm.width / this.result['rsrpMap'].length;
+    let xval = 0;
+    const xLen = this.result['rsrpMap'].length;
+    for (let i = 0; i <= xLen; i++) {
+      x.push(xval);
+      xval += wRatio;
     }
-    for (let i = 0; i <= this.result['inputHeight']; i++) {
-      y.push(i);
+    const hRatio = this.calculateForm.height / this.result['rsrpMap'][0].length;
+    let yval = 0;
+    const yLen = this.result['rsrpMap'][0].length;
+    for (let i = 0; i <= yLen; i++) {
+      y.push(yval);
+      yval += hRatio;
     }
     const traces = [];
     // UE
@@ -291,14 +300,7 @@ export class SignalStrengthComponent implements OnInit {
         if (typeof oData[7] === 'undefined') {
           oColor = '#000000';
         }
-        let rotate = oData[5];
-        if (rotate !== 0) {
-          if (rotate < 0) {
-            rotate += 5;
-          } else {
-            rotate -= 5;
-          }
-        }
+        const rotate = oData[5];
         this.rectList.push({
           x: xdata,
           y: ydata,
@@ -401,14 +403,19 @@ export class SignalStrengthComponent implements OnInit {
         const image = new Image();
         image.src = images[0].source;
         image.onload = () => {
+          const maxHeight = window.innerHeight - 170;
+          let imgHeight = image.height;
+          if (imgHeight > maxHeight) {
+            imgHeight = maxHeight;
+          }
           let layoutOption;
-          if (image.width > image.height) {
-            const height = (image.height / (image.width * 0.9)) * rect.width;
+          if (image.width > imgHeight) {
+            const height = (imgHeight / (image.width * 0.9)) * rect.width;
             layoutOption = {
               height: height
             };
           } else {
-            const width = (image.width / (image.height * 0.9)) * rect.height;
+            const width = (image.width / (imgHeight * 0.9)) * rect.height;
             layoutOption = {
               width: width
             };
@@ -446,6 +453,8 @@ export class SignalStrengthComponent implements OnInit {
         .domain([0, this.calculateForm.height])
         .range([0, rect2.height]);
 
+      const ary = [];
+      let i = 0;
       for (const item of this.rectList) {
         // 障礙物加粗
         let width = pixelXLinear(item['svgStyle'].width);
@@ -456,23 +465,31 @@ export class SignalStrengthComponent implements OnInit {
         if (height < 5) {
           height = 5;
         }
-        let leftPos = `${pixelXLinear(item.x)}px`;
-        if (item.rotate !== 0) {
-          if (item.rotate > 0) {
-            leftPos = `${pixelXLinear(item.x) + item.rotate - 5}px`;
-          } else {
-            leftPos = `${pixelXLinear(item.x) - item.rotate - 5}px`;
-          }
-          item['style'].top = `${rect2.height - height - pixelYLinear(item.y) + 5}px`;
-        } else {
-          item['style'].top = `${rect2.height - height - pixelYLinear(item.y)}px`;
-        }
-        item['style'].left = leftPos;
+
+        item['style'].top = `${rect2.height - height - pixelYLinear(item.y)}px`;
+        item['style'].left = `${pixelXLinear(item.x)}px`;
         item['style'].width = `${width}px`;
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;
         item['svgStyle'].height = `${height}px`;
+        
+        if (item.rotate < 0) {
+          ary.push({
+            obj: item,
+            index: i
+          });
+        }
+        
+        i++;
       }
+
+      // fixed斜障礙物position
+      window.setTimeout(() => {
+        for (let k = 0; k < ary.length; k++) {
+          const obj = this.obstacleElm.toArray()[ary[k].index].nativeElement.getBoundingClientRect();
+          ary[k].obj['style'].left = `${Number(ary[k].obj['style'].left.replace('px', '')) + ((obj.right - obj.left) / 2)}px`;
+        }
+      }, 0);
 
       for (const item of this.defaultBsList) {
         item['style'] = {

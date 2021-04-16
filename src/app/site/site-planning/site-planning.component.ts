@@ -399,6 +399,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       window.sessionStorage.setItem(`form_blank_task`, JSON.stringify(this.calculateForm));
     }
     if (typeof this.progressInterval !== 'undefined') {
+      window.clearInterval(this.progressInterval);
       for (let i = 0; i < this.progressInterval; i++) {
         window.clearInterval(i);
       }
@@ -483,17 +484,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           image.onload = () => {
             const maxHeight = window.innerHeight - 170;
             let imgHeight = image.height;
+            const imgWidth = image.width;
             if (imgHeight > maxHeight) {
               imgHeight = maxHeight;
             }
             let layoutOption;
-            if (image.width > imgHeight) {
-              const height = (imgHeight / (image.width * 0.9)) * rect.width;
+            if (imgWidth > imgHeight) {
+              const height = (imgHeight / (imgWidth * 0.9)) * rect.width;
               layoutOption = {
                 height: height
               };
             } else {
-              const width = (image.width / (imgHeight * 0.9)) * rect.height;
+              const width = (imgWidth / (imgHeight * 0.9)) * rect.height;
               layoutOption = {
                 width: width
               };
@@ -1370,6 +1372,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           percentageVal.innerHTML = (this.progressNum++).toString();
         }
       } else {
+        window.clearInterval(this.pgInterval);
         for (let i = 0; i < this.pgInterval; i++) {
           window.clearInterval(i);
         }
@@ -1383,6 +1386,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const url = `${this.authService.API_URL}/progress/${this.taskid}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
       res => {
+        window.clearInterval(this.progressInterval);
         for (let i = 0; i < this.progressInterval; i++) {
           window.clearInterval(i);
         }
@@ -1396,6 +1400,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           this.authService.spinnerHide();
           // 儲存
           // this.save();
+          window.clearInterval(this.pgInterval);
           for (let i = 0; i < this.pgInterval; i++) {
             window.clearInterval(i);
           }
@@ -1405,6 +1410,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           // location.reload();
         } else {
           // query again
+          window.clearInterval(this.progressInterval);
           for (let i = 0; i < this.progressInterval; i++) {
             window.clearInterval(i);
           }
@@ -1416,9 +1422,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
       }, err => {
         this.authService.spinnerHide();
+        window.clearInterval(this.progressInterval);
         for (let i = 0; i < this.progressInterval; i++) {
           window.clearInterval(i);
         }
+        // check has result
+        if (err.error['text'] === '{"progress":,"index":-1}') {
+          const resultUrl = `${this.authService.API_URL}/completeCalcResult/${this.taskid}/${this.authService.userToken}`;
+          this.http.get(resultUrl).subscribe(
+            res => {
+              this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
+            }
+          );
+        }
+        
       }
     );
   }
@@ -2155,26 +2172,29 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           material: item[6].toString(),
           element: shape
         };
-        let leftPos = `${this.pixelXLinear(item[0])}px`;
-        if (this.dragObject[id].rotate !== 0) {
-          if (this.dragObject[id].rotate > 0) {
-            leftPos = `${this.pixelXLinear(item[0]) + this.dragObject[id].rotate - 5 }px`;
-          } else {
-            leftPos = `${this.pixelXLinear(item[0]) - this.dragObject[id].rotate - 5}px`;
-          }
-        }
 
         this.spanStyle[id] = {
-          left: leftPos,
+          left: `${this.pixelXLinear(item[0])}px`,
           top: `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1])}px`,
           width: `${this.pixelXLinear(item[2])}px`,
           height: `${this.pixelYLinear(item[3])}px`,
-          transform: `rotate(${this.dragObject[id].rotate}deg)`
+          transform: `rotate(${this.dragObject[id].rotate}deg)`,
+          opacity: 0
         };
-
-        if (this.dragObject[id].rotate !== 0) {
-          this.spanStyle[id].top = `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1]) + 3}px`;
+        if (item[5] < 0) {
+          // fixed偏移
+          window.setTimeout(() => {
+            const obj = document.getElementById(id).getBoundingClientRect();
+            this.spanStyle[id].left = `${Number(this.spanStyle[id].left.replace('px', '')) + ((obj.right - obj.left) / 2)}px`;
+            this.spanStyle[id].opacity = 1;
+          }, 0);
+        } else {
+          this.spanStyle[id].opacity = 1;
         }
+
+        // if (this.dragObject[id].rotate !== 0) {
+        //   this.spanStyle[id].top = `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1]) + 3}px`;
+        // }
         
   
         const width = this.pixelXLinear(item[2]);

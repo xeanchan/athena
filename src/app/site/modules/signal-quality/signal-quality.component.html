@@ -29,8 +29,8 @@
 
     <div class="quality_img" [ngStyle]="style" style="z-index: -1" >
       <!-- 障礙物 -->
-      <span *ngFor="let item of rectList" [ngStyle]="item.style">
-        <svg class="drag_obj" [attr.width]="item.style.width"  [attr.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
+      <span *ngFor="let item of rectList" #obstacleElm [ngStyle]="item.style">
+        <svg class="drag_obj" [attr.width]="item.style.width" [attr.height]="item.style.height" #tooltip="matTooltip" matTooltip="{{ item.hover }}" xmlns="http://www.w3.org/2000/svg">
           <g><rect [ngStyle]="item.svgStyle" stroke-width="1.5" x="0" y="0" /></g>
         </svg>
       </span>
