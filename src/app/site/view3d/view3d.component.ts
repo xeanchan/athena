@@ -159,8 +159,8 @@ export class View3dComponent implements OnInit {
       const obstacleData = [
           new BABYLON.Vector3(-depth, 0, 0),
           new BABYLON.Vector3(depth, 0, 0),
-          new BABYLON.Vector3(depth, 5, item.height),
-          new BABYLON.Vector3(-depth, 5, item.height)
+          new BABYLON.Vector3(depth, 0, item.height),
+          new BABYLON.Vector3(-depth, 0, item.height)
       ];
 
       const obstacle = BABYLON.MeshBuilder.ExtrudePolygon('obstacle', {shape: obstacleData, depth: item.width}, scene, Earcut);
@@ -173,8 +173,9 @@ export class View3dComponent implements OnInit {
         // if (item.rotate < 0) {
         //   obstacle.position.x = item.x + offsetX + 2;
         // }
-        // obstacle.rotation.y = item.rotate;
-        // obstacle.addRotation(Math.PI / item.rotate, 0, 0);
+        obstacle.rotation.y = item.rotate * (Math.PI / 180);
+        // obstacle.rotate(obstacleData[3], item.rotate);
+        // obstacle.addRotation(item.rotate, 0, 0);
       }
       
       obstacle.material = obstacleMat;
