@@ -268,7 +268,7 @@ export class ResultComponent implements OnInit {
       this.quality.calculateForm = this.calculateForm;
       this.quality.result = this.result;
       this.quality.showObstacle = this.showObstacle ? 'visible' : 'hidden';
-      this.quality.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.quality.showCandidate = this.showCandidate;
       this.quality.opacityValue = this.opacityValue;
       this.quality.draw(false, this.zValue);
     }, 0);
@@ -284,7 +284,7 @@ export class ResultComponent implements OnInit {
       this.cover.calculateForm = this.calculateForm;
       this.cover.result = this.result;
       this.cover.showObstacle = this.showObstacle ? 'visible' : 'hidden';
-      this.cover.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.cover.showCandidate = this.showCandidate;
       this.cover.opacityValue = this.opacityValue;
       this.cover.draw(false, this.zValue);
     }, 0);
@@ -300,7 +300,7 @@ export class ResultComponent implements OnInit {
       this.strength.calculateForm = this.calculateForm;
       this.strength.result = this.result;
       this.strength.showObstacle = this.showObstacle ? 'visible' : 'hidden';
-      this.strength.showCandidate = this.showCandidate ? 'visible' : 'hidden';
+      this.strength.showCandidate = this.showCandidate;
       this.strength.opacityValue = this.opacityValue;
       this.strength.draw(false, this.zValue);
     }, 0);
@@ -391,7 +391,7 @@ export class ResultComponent implements OnInit {
 
   /** ON/OFF 顯示AP */
   switchShowCandidate() {
-    const visible = this.showCandidate ? 'visible' : 'hidden';
+    const visible = this.showCandidate;
     if (this.chartType === 'SINR') {
       this.quality.switchShowCandidate(visible);
     } else if (this.chartType === 'PCI') {

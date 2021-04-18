@@ -113,6 +113,12 @@ export class NewPlanningComponent implements OnInit {
       sessionStorage.setItem('taskName', name);
       window.clearInterval(this.timeInterval);
       this.matDialog.closeAll();
+      Object.keys(sessionStorage).forEach((d) => {
+        if (d.indexOf('form_') !== -1) {
+          // 刪除其他task暫存
+          sessionStorage.removeItem(d);
+        }
+      });
       this.router.navigate(['/site/site-planning']);
     };
   }

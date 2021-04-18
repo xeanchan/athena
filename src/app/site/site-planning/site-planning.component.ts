@@ -159,6 +159,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     right: 400,
     bottom: 500
   };
+  // ue width
+  ueWidth = 9.5;
+  // ue height
+  ueHeight = 14.5;
+  // candidate width
+  candidateWidth = 28;
+  // candidate height
+  candidateHeight = 18;
 
   // we create an object that contains coordinates
   menuTopLeftStyle = {top: '0', left: '0'};
@@ -676,6 +684,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pathStyle[this.svgId] = {
         fill: this.CANDIDATE_COLOR
       };
+      width = this.candidateWidth;
+      height = this.candidateHeight;
     } else if (id === 'UE') {
       color = this.UE_COLOR;
       this.svgId = `${id}_${this.ueList.length}`;
@@ -683,8 +693,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.pathStyle[this.svgId] = {
         fill: this.UE_COLOR
       };
-      width = 20;
-      height = 30;
+      width = this.ueWidth;
+      height = this.ueHeight;
     } else if (id === 'trapezoid') {
       // 梯形
       color = this.OBSTACLE_COLOR;
@@ -1874,8 +1884,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           x: candidateData[i][0],
           y: candidateData[i][1],
           z: candidateData[i][2],
-          width: this.xLinear(30),
-          height: this.yLinear(30),
+          width: this.xLinear(this.candidateWidth),
+          height: this.yLinear(this.candidateHeight),
           altitude: 50,
           rotate: 0,
           title: this.svgMap['candidate'].title,
@@ -1887,14 +1897,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(candidateData[i][0])}px`,
-          top: `${this.chartHeight - 30 - this.pixelYLinear(candidateData[i][1])}px`,
-          width: `30px`,
-          height: `30px`
+          top: `${this.chartHeight - this.candidateHeight - this.pixelYLinear(candidateData[i][1])}px`,
+          width: `${this.candidateWidth}px`,
+          height: `${this.candidateHeight}px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
-          width: 30,
-          height: 30
+          width: this.candidateWidth,
+          height: this.candidateHeight
         };
         this.pathStyle[id] = {
           fill: color
@@ -1927,8 +1937,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             x: ueData[i][0],
             y: ueData[i][1],
             z: ueData[i][2],
-            width: 19,
-            height: 29,
+            width: this.xLinear(this.ueWidth),
+            height: this.yLinear(this.ueHeight),
             altitude: 50,
             rotate: 0,
             title: this.svgMap['UE'].title,
@@ -1939,14 +1949,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           };
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(ueData[i][0])}px`,
-            top: `${this.chartHeight - 30 - this.pixelYLinear(ueData[i][1])}px`,
+            top: `${this.chartHeight - this.ueHeight - this.pixelYLinear(ueData[i][1])}px`,
             width: `19px`,
             height: `29px`
           };
           this.svgStyle[id] = {
             display: 'inherit',
-            width: 19,
-            height: 29
+            width: this.ueWidth,
+            height: this.ueHeight
           };
           this.pathStyle[id] = {
             fill: color
@@ -2288,8 +2298,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           x: item[0],
           y: item[1],
           z: item[2],
-          width: 28,
-          height: 22,
+          width: this.candidateWidth,
+          height: this.candidateHeight,
           altitude: 50,
           rotate: 0,
           title: this.svgMap['candidate'].title,
@@ -2300,14 +2310,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(item[0])}px`,
-          top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
-          width: `28px`,
-          height: `22px`
+          top: `${this.chartHeight - this.candidateHeight - this.pixelYLinear(item[1])}px`,
+          width: `${this.candidateWidth}px`,
+          height: `${this.candidateHeight}px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
-          width: 28,
-          height: 22
+          width: this.candidateWidth,
+          height: this.candidateHeight
         };
         this.pathStyle[id] = {
           fill: this.dragObject[id].color
@@ -2330,8 +2340,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           x: item[0],
           y: item[1],
           z: item[2],
-          width: 20,
-          height: 30,
+          width: this.ueWidth,
+          height: this.ueHeight,
           altitude: 50,
           rotate: 0,
           title: this.svgMap['UE'].title,
@@ -2342,14 +2352,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.spanStyle[id] = {
           left: `${this.pixelXLinear(item[0])}px`,
-          top: `${this.chartHeight - 30 - this.pixelYLinear(item[1])}px`,
-          width: `20px`,
-          height: `30px`
+          top: `${this.chartHeight - this.ueHeight - this.pixelYLinear(item[1])}px`,
+          width: `${this.ueWidth}px`,
+          height: `${this.ueHeight}px`
         };
         this.svgStyle[id] = {
           display: 'inherit',
-          width: 20,
-          height: 30
+          width: this.ueWidth,
+          height: this.ueHeight
         };
         this.pathStyle[id] = {
           fill: this.dragObject[id].color

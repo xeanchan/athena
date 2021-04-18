@@ -11,6 +11,8 @@ import { ExcelService } from '../service/excel.service';
 import { MsgDialogComponent } from '../utility/msg-dialog/msg-dialog.component';
 import { FormService } from '../service/form.service';
 import { CalculateForm } from '../form/CalculateForm';
+import { ConfirmDailogComponent } from '../utility/confirm-dailog/confirm-dailog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var Plotly: any;
 
@@ -28,7 +30,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     private router: Router,
     private excelService: ExcelService,
     private formService: FormService,
-    private pdfService: PdfService
+    private pdfService: PdfService,
+    private translateService: TranslateService
   ) {
     sessionStorage.removeItem('calculateForm');
     sessionStorage.removeItem('importFile');
@@ -41,6 +44,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   dialogRef;
   matDialogConfig: MatDialogConfig;
   msgDialogConfig: MatDialogConfig;
+  confirmDialogConfig: MatDialogConfig;
+
   // round
   roundFormat = Plotly.d3.format('.1f');
 
@@ -55,6 +60,8 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.matDialogConfig.autoFocus = false;
     this.msgDialogConfig = new MatDialogConfig();
     this.msgDialogConfig.autoFocus = false;
+    this.confirmDialogConfig = new MatDialogConfig();
+    this.confirmDialogConfig.autoFocus = false;
 
     this.getList();
     window.setTimeout(() => {
@@ -230,5 +237,43 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     };
     this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
+
+  /** delete */
+  delete(item, type) {
+    const data = {
+      infoMessage: `${this.translateService.instant('confirm.delete')}${item.taskName}?`
+    };
+    // confirm delete
+    this.confirmDialogConfig.data = data;
+    const dialogRef = this.dialog.open(ConfirmDailogComponent, this.confirmDialogConfig);
+    // do delete
+    dialogRef.componentInstance.onOK.subscribe(() => {
+      dialogRef.close();
+      const url = `${this.authService.API_URL}/deleteTask`;
+      const form = {
+        id: this.authService.userId,
+        taskid: item.taskId,
+        sessionid: this.authService.userToken
+      };
+      this.http.post(url, JSON.stringify(form)).subscribe(
+        res => {
+          if (type === 'hst') {
+            this.hstList.splice(this.hstList.indexOf(item), 1);
+          } else {
+            this.taskList.splice(this.taskList.indexOf(item), 1);
+          }
+        },
+        err => {
+          this.msgDialogConfig.data = {
+            type: 'error',
+            infoMessage: this.translateService.instant('delete.fail')
+          };
+          this.dialog.open(MsgDialogComponent, this.msgDialogConfig);
+        }
+      );
+    });
+  }
+
+  
 
 }

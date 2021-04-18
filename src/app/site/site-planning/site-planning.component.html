@@ -237,7 +237,7 @@
         </span>
         <span *ngFor="let item of candidateList; let i=index" id="{{item}}_circle" [ngStyle]="circleStyle[item]" class="rounded-circle pink_circle" >{{ (i + 1) }}</span>
         <span *ngFor="let item of ueList" id="{{item}}" [ngStyle]="spanStyle[item]" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="UE" (click)="moveClick(item);" (contextmenu)="onRightClick($event, item)" >
-          <svg [ngStyle]="svgStyle[item]" class="s_ue" xmlns="http://www.w3.org/2000/svg">
+          <svg class="s_ue" xmlns="http://www.w3.org/2000/svg">
             <g>
               <rect fill="none" height="10" width="29" y="-1" x="-1"/>
             </g>

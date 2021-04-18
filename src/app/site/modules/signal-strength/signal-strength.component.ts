@@ -40,9 +40,11 @@ export class SignalStrengthComponent implements OnInit {
   // 障礙物顯示style
   showObstacle = 'visible';
   // AP顯示style
-  showCandidate = 'visible';
+  showCandidate = true;
   // slide
   opacityValue: number = 0.8;
+  shapes = [];
+  annotations = [];
 
   @ViewChildren('obstacletElm') obstacleElm: QueryList<ElementRef>;
 
@@ -364,6 +366,10 @@ export class SignalStrengthComponent implements OnInit {
         chosenCandidate.push(this.result['chosenCandidate'][i].toString());
       }
       let num = 1;
+      const candidateX = [];
+      const candidateY = [];
+      const candidateText = [];
+      const hoverText = [];
       for (const item of list) {
         const oData = JSON.parse(item);
         if (chosenCandidate.includes(oData.toString())) {
@@ -383,11 +389,37 @@ export class SignalStrengthComponent implements OnInit {
             y: ydata,
             color: '#f7176a',
             hover: text,
-            num: num
+            num: num,
+            ap: `AP ${num}`
           });
+
+          candidateX.push(xdata);
+          candidateY.push(ydata);
+          candidateText.push(`Z: ${zdata}<br>${this.translateService.instant('bsPower')}: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`);
+          hoverText.push(text);
         }
         num++;
       }
+
+      traces.push({
+        x: candidateX,
+        y: candidateY,
+        text: candidateText,
+        textfont: {
+          color: '#fff'
+        },
+        type: 'scatter',
+        mode: 'markers',
+        marker: {
+          size: 25,
+          color: '#000'
+        },
+        hovertemplate: `X: %{x}<br>Y: %{y}<br>%{text}<extra></extra>`,
+        showlegend: false,
+        visible: this.showCandidate,
+        uid: `AP`,
+        opacity: 0
+      });
     }
 
     console.log(traces);
@@ -399,6 +431,49 @@ export class SignalStrengthComponent implements OnInit {
     }).then((gd) => {
       const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
       const rect = xy.getBoundingClientRect();
+      let layoutOption = {};
+      this.shapes.length = 0;
+      this.annotations.length = 0;
+      // 新增基站
+      if (this.calculateForm.candidateBs !== '') {
+        const xLinear = Plotly.d3.scale.linear()
+        .domain([0, rect.width])
+        .range([0, this.calculateForm.width]);
+
+        const yLinear = Plotly.d3.scale.linear()
+          .domain([0, rect.height])
+          .range([0, this.calculateForm.height]);
+
+        
+        for (const item of this.candidateList) {
+          this.shapes.push({
+            type: 'rect',
+            xref: 'x',
+            yref: 'y',
+            x0: item.x,
+            y0: item.y,
+            x1: item.x + Number(xLinear(25)),
+            y1: item.y + Number(yLinear(18)),
+            fillcolor: '#000',
+            visible: this.showCandidate
+          });
+
+          this.annotations.push({
+            x: item.x + Number(xLinear(12.5)),
+            y: item.y + Number(yLinear(9)),
+            xref: 'x',
+            yref: 'y',
+            text: item.ap,
+            showarrow: false,
+            font: {
+              color: '#fff',
+              size: 10
+            },
+            visible: this.showCandidate
+          });
+        }
+      }
+
       if (images.length > 0) {
         const image = new Image();
         image.src = images[0].source;
@@ -408,7 +483,6 @@ export class SignalStrengthComponent implements OnInit {
           if (imgHeight > maxHeight) {
             imgHeight = maxHeight;
           }
-          let layoutOption;
           if (image.width > imgHeight) {
             const height = (imgHeight / (image.width * 0.9)) * rect.width;
             layoutOption = {
@@ -421,10 +495,15 @@ export class SignalStrengthComponent implements OnInit {
             };
           }
 
+          layoutOption['shapes'] = this.shapes;
+          layoutOption['annotations'] = this.annotations;
           this.reLayout(id, layoutOption);
         };
+        
       } else {
-        this.reLayout(id, {});
+        layoutOption['shapes'] = this.shapes;
+        layoutOption['annotations'] = this.annotations;
+        this.reLayout(id, layoutOption);
       }
     });
   }
@@ -548,10 +627,25 @@ export class SignalStrengthComponent implements OnInit {
 
   /** show/hide AP */
   switchShowCandidate(visible) {
-    for (const item of this.candidateList) {
-      item.style['visibility'] = visible;
-      item.circleStyle['visibility'] = visible;
+    // for (const item of this.candidateList) {
+    //   item.style['visibility'] = visible;
+    //   item.circleStyle['visibility'] = visible;
+    // }
+    Plotly.restyle(this.chartId, {
+      visible: visible
+    }, [2]);
+
+    for (const item of this.shapes) {
+      item.visible = visible;
     }
+    for (const item of this.annotations) {
+      item.visible = visible;
+    }
+
+    Plotly.relayout(this.chartId, {
+      shapes: this.shapes,
+      annotations: this.annotations
+    });
   }
 
   /** heatmap透明度 */

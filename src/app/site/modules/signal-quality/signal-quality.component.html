@@ -5,7 +5,7 @@
       <div style="color: #000;">dB</div>
     </div>
     <!-- 新增基站 -->
-    <span *ngFor="let item of candidateList" [matTooltip]="item.hover" [ngStyle]="item.style" style="z-index: 99999;">
+    <!-- <span *ngFor="let item of candidateList" [matTooltip]="item.hover" [ngStyle]="item.style" style="z-index: 99999;">
       <svg class="drag_obj" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
         <g>
           <rect fill="none" id="canvas_background" height="3" width="25" y="-1" x="-1"/>
@@ -25,7 +25,7 @@
         </g>
       </svg>
     </span>
-    <span *ngFor="let item of candidateList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle pink_circle" >{{ item.num }}</span>
+    <span *ngFor="let item of candidateList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle pink_circle" >{{ item.num }}</span> -->
 
     <div class="quality_img" [ngStyle]="style" style="z-index: -1" >
       <!-- 障礙物 -->

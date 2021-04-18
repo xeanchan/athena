@@ -32,11 +32,19 @@ export class PerformanceComponent implements OnInit {
     }
   }
 
-  parseNoData(val, isPercentage) {
+  parseNoData(val, isPercentage, type) {
     if (val == null || val === '') {
       return '-';
     } else {
-      return Math.round(val * 1000) / 1000 + (isPercentage ? '%' : '');
+      let result = Math.round(val * 1000) / 1000 + (isPercentage ? '%' : '');
+      if (type === 'ueAverageRsrp') {
+        result += 'dBm';
+      } else if (type === 'ueAverageSinr') {
+        result += 'dB';
+      } else if (type === 'ueThroughput') {
+        result += 'Mbps';
+      }
+      return result;
     }
   }
 

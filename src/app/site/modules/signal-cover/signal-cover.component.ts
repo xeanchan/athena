@@ -38,9 +38,11 @@ export class SignalCoverComponent implements OnInit {
   // 障礙物顯示style
   showObstacle = 'visible';
   // AP顯示style
-  showCandidate = 'visible';
+  showCandidate = true;
   // slide
   opacityValue: number = 0.8;
+  shapes = [];
+  annotations = [];
 
   @ViewChildren('obstaclecElm') obstacleElm: QueryList<ElementRef>;
 
@@ -161,7 +163,7 @@ export class SignalCoverComponent implements OnInit {
             console.log(item);
           }
           
-          zText[i][yIndex][xIndex] = Math.round(yData[i] * 100) / 100;
+          zText[i][yIndex][xIndex] = `AP ${(Math.round(yData[i] * 100) / 100)}`;
           yIndex++;
           allZ[i].push(yData[i]);
         }
@@ -235,6 +237,7 @@ export class SignalCoverComponent implements OnInit {
         chosenCandidate.push(this.result['chosenCandidate'][i].toString());
       }
 
+      const apMap = {};
       for (let i = 0; i < list.length; i++) {
         const oData = JSON.parse(list[i]);
         if (chosenCandidate.includes(oData.toString())) {
@@ -268,8 +271,22 @@ export class SignalCoverComponent implements OnInit {
             hoverinfo: 'none',
             showlegend: true
           });
+
+          apMap[z] = `AP ${k}`;
         }
         k++;
+      }
+      // 重新指定連線對象tooltip
+      xIndex = 0;
+      for (const item of this.result['connectionMapAll']) {
+        for (let i = 0; i < zLen; i++) {
+          let yIndex = 0;
+          for (const yData of item) {
+            zText[i][yIndex][xIndex] = apMap[yData[i]];
+            yIndex++;
+          }
+        }
+        xIndex++;
       }
     }
 
@@ -286,7 +303,7 @@ export class SignalCoverComponent implements OnInit {
         ['1', 'rgb(217,30,30)'],
       ],
       type: 'heatmap',
-      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
+      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('ap.num')}: %{text}<extra></extra>`,
       showscale: false,
       zsmooth: 'best',
       opacity: this.opacityValue
@@ -333,6 +350,11 @@ export class SignalCoverComponent implements OnInit {
         chosenCandidate.push(this.result['chosenCandidate'][i].toString());
       }
       let num = 1;
+
+      const candidateX = [];
+      const candidateY = [];
+      const candidateText = [];
+      const hoverText = [];
       for (const item of list) {
         const oData = JSON.parse(item);
         if (chosenCandidate.includes(oData.toString())) {
@@ -352,11 +374,37 @@ export class SignalCoverComponent implements OnInit {
             y: ydata,
             color: '#f7176a',
             hover: text,
-            num: num
+            num: num,
+            ap: `AP ${num}`
           });
+
+          candidateX.push(xdata);
+          candidateY.push(ydata);
+          candidateText.push(`Z: ${zdata}<br>${this.translateService.instant('bsPower')}: ${this.result['candidateBsPower'][chosenCandidate.indexOf(oData.toString())]} dBm`);
+          hoverText.push(text);
         }
         num++;
       }
+
+      traces.push({
+        x: candidateX,
+        y: candidateY,
+        text: candidateText,
+        textfont: {
+          color: '#fff'
+        },
+        type: 'scatter',
+        mode: 'markers',
+        marker: {
+          size: 25,
+          color: '#000'
+        },
+        hovertemplate: `X: %{x}<br>Y: %{y}<br>%{text}<extra></extra>`,
+        showlegend: false,
+        visible: this.showCandidate,
+        uid: `AP`,
+        opacity: 0
+      });
     }
 
     // 障礙物
@@ -413,6 +461,49 @@ export class SignalCoverComponent implements OnInit {
       const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
       const rect = xy.getBoundingClientRect();
 
+      let layoutOption = {};
+      this.shapes.length = 0;
+      this.annotations.length = 0;
+      // 新增基站
+      if (this.calculateForm.candidateBs !== '') {
+        const xLinear = Plotly.d3.scale.linear()
+        .domain([0, rect.width])
+        .range([0, this.calculateForm.width]);
+
+        const yLinear = Plotly.d3.scale.linear()
+          .domain([0, rect.height])
+          .range([0, this.calculateForm.height]);
+
+        
+        for (const item of this.candidateList) {
+          this.shapes.push({
+            type: 'rect',
+            xref: 'x',
+            yref: 'y',
+            x0: item.x,
+            y0: item.y,
+            x1: item.x + Number(xLinear(25)),
+            y1: item.y + Number(yLinear(18)),
+            fillcolor: '#000',
+            visible: this.showCandidate
+          });
+
+          this.annotations.push({
+            x: item.x + Number(xLinear(12.5)),
+            y: item.y + Number(yLinear(9)),
+            xref: 'x',
+            yref: 'y',
+            text: item.ap,
+            showarrow: false,
+            font: {
+              color: '#fff',
+              size: 10
+            },
+            visible: this.showCandidate
+          });
+        }
+      }
+
       if (images.length > 0) {
         const image = new Image();
         image.src = images[0].source;
@@ -422,7 +513,6 @@ export class SignalCoverComponent implements OnInit {
           if (imgHeight > maxHeight) {
             imgHeight = maxHeight;
           }
-          let layoutOption;
           if (image.width > imgHeight) {
             const height = (imgHeight / (image.width * 0.9)) * rect.width;
             layoutOption = {
@@ -435,10 +525,15 @@ export class SignalCoverComponent implements OnInit {
             };
           }
 
+          layoutOption['shapes'] = this.shapes;
+          layoutOption['annotations'] = this.annotations;
           this.reLayout(id, layoutOption);
         };
+
       } else {
-        this.reLayout(id, {});
+        layoutOption['shapes'] = this.shapes;
+        layoutOption['annotations'] = this.annotations;
+        this.reLayout(id, layoutOption);
       }
     });
   }
@@ -571,10 +666,25 @@ export class SignalCoverComponent implements OnInit {
 
   /** show/hide AP */
   switchShowCandidate(visible) {
-    for (const item of this.candidateList) {
-      item.style['visibility'] = visible;
-      item.circleStyle['visibility'] = visible;
+    // for (const item of this.candidateList) {
+    //   item.style['visibility'] = visible;
+    //   item.circleStyle['visibility'] = visible;
+    // }
+    Plotly.restyle(this.chartId, {
+      visible: visible
+    }, [4]);
+
+    for (const item of this.shapes) {
+      item.visible = visible;
     }
+    for (const item of this.annotations) {
+      item.visible = visible;
+    }
+
+    Plotly.relayout(this.chartId, {
+      shapes: this.shapes,
+      annotations: this.annotations
+    });
   }
 
   /** heatmap透明度 */
