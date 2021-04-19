@@ -478,22 +478,29 @@ export class SignalStrengthComponent implements OnInit {
         const image = new Image();
         image.src = images[0].source;
         image.onload = () => {
-          const maxHeight = window.innerHeight - 170;
-          let imgHeight = image.height;
-          if (imgHeight > maxHeight) {
-            imgHeight = maxHeight;
-          }
-          if (image.width > imgHeight) {
-            const height = (imgHeight / (image.width * 0.9)) * rect.width;
-            layoutOption = {
-              height: height
-            };
-          } else {
-            const width = (image.width / (imgHeight * 0.9)) * rect.height;
-            layoutOption = {
-              width: width
-            };
-          }
+          // const maxHeight = window.innerHeight - 170;
+          // let imgHeight = image.height;
+          // if (imgHeight > maxHeight) {
+          //   imgHeight = maxHeight;
+          // }
+          // if (image.width > imgHeight) {
+          //   const height = (imgHeight / (image.width * 0.9)) * rect.width;
+          //   layoutOption = {
+          //     height: height
+          //   };
+          // } else {
+          //   const width = (image.width / (imgHeight * 0.9)) * rect.height;
+          //   layoutOption = {
+          //     width: width
+          //   };
+          // }
+          const main = gd.getBoundingClientRect();
+          const imgWidth = (main.width / image.width) * image.width;
+          const imgHeight = (main.height / image.height) * image.height;
+          layoutOption = {
+            width: imgWidth,
+            height: imgHeight
+          };
 
           layoutOption['shapes'] = this.shapes;
           layoutOption['annotations'] = this.annotations;

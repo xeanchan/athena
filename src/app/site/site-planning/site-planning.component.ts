@@ -456,7 +456,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         zeroline: false,
         fixedrange: true
       },
-      margin: { t: 20, b: 20, l: 40}
+      margin: { t: 20, b: 20, l: 40, r: 20}
     };
 
     if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
@@ -491,23 +491,62 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           image.src = reader.result.toString();
           image.onload = () => {
             const maxHeight = window.innerHeight - 170;
+            const main = gd.getBoundingClientRect();
+            let imgWidth = image.width;
             let imgHeight = image.height;
-            const imgWidth = image.width;
             if (imgHeight > maxHeight) {
-              imgHeight = maxHeight;
+              for (let i = 0.9; i >= 0; i -= 0.1) {
+                imgHeight = image.height * i;
+                imgWidth = image.width * i;
+                if (imgHeight < maxHeight) {
+                  break;
+                }
+              }
             }
-            let layoutOption;
-            if (imgWidth > imgHeight) {
-              const height = (imgHeight / (imgWidth * 0.9)) * rect.width;
-              layoutOption = {
-                height: height
-              };
-            } else {
-              const width = (imgWidth / (imgHeight * 0.9)) * rect.height;
-              layoutOption = {
-                width: width
-              };
+
+            if (imgWidth > main.width) {
+              for (let i = 0.9; i >= 0; i -= 0.1) {
+                imgHeight = image.height * i;
+                imgWidth = image.width * i;
+                if (imgWidth < main.width) {
+                  break;
+                }
+              }
             }
+
+            // let imgWidth = (main.width / image.width) * image.width;
+            // let imgHeight = (main.height / image.height) * image.height;
+            // console.log(image.width, image.height, maxHeight, main.width, main.height)
+            // if (imgHeight > maxHeight) {
+            //   const ratio = maxHeight / imgHeight;
+            //   console.log(ratio)
+            //   imgHeight = maxHeight;
+            //   imgWidth = imgWidth * ratio;
+            // }
+            console.log(imgWidth, imgHeight)
+            const layoutOption = {
+              width: imgWidth,
+              height: imgHeight
+            };
+            // let imgHeight = image.height;
+            // const imgWidth = image.width;
+            // if (imgHeight > maxHeight) {
+            //   imgHeight = maxHeight;
+
+            //   console.log(imgHeight, image.height - imgHeight)
+            // }
+            // let layoutOption;
+            // if (imgWidth > imgHeight) {
+            //   const height = (imgHeight / (imgWidth * 0.9)) * rect.width;
+            //   layoutOption = {
+            //     height: height
+            //   };
+            // } else {
+            //   const width = (imgWidth / (imgHeight * 0.9)) * rect.height;
+            //   layoutOption = {
+            //     width: width
+            //   };
+            // }
 
             Plotly.relayout('chart', layoutOption).then((gd2) => {
               this.chart.nativeElement.style.opacity = 1;
