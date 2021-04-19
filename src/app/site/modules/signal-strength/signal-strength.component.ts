@@ -125,7 +125,7 @@ export class SignalStrengthComponent implements OnInit {
         ticks: 'inside',
         ticksuffix: 'm'
       },
-      margin: { t: 20, b: 20, l: 40},
+      margin: { t: 20, b: 20, l: 40, r: 5},
       images: images,
       hovermode: 'closest'
     };
@@ -452,14 +452,14 @@ export class SignalStrengthComponent implements OnInit {
             yref: 'y',
             x0: item.x,
             y0: item.y,
-            x1: item.x + Number(xLinear(25)),
+            x1: item.x + Number(xLinear(30)),
             y1: item.y + Number(yLinear(18)),
             fillcolor: '#000',
             visible: this.showCandidate
           });
 
           this.annotations.push({
-            x: item.x + Number(xLinear(12.5)),
+            x: item.x + Number(xLinear(15)),
             y: item.y + Number(yLinear(9)),
             xref: 'x',
             yref: 'y',
@@ -495,8 +495,29 @@ export class SignalStrengthComponent implements OnInit {
           //   };
           // }
           const main = gd.getBoundingClientRect();
-          const imgWidth = (main.width / image.width) * image.width;
-          const imgHeight = (main.height / image.height) * image.height;
+          console.log(`img width: ${image.width}, img height: ${image.height}`);
+          console.log(`gd width: ${main.width}, gd height: ${main.height}`);
+          let imgWidth = image.width;
+          let imgHeight = image.height;
+          const maxMain = main.width - 90;
+          if (imgWidth >= main.width) {
+            for (let i = 0.99; i >= 0; i -= 0.01) {
+              imgHeight = image.height * i;
+              imgWidth = image.width * i;
+              if (imgWidth <= maxMain) {
+                break;
+              }
+            }
+          } else {
+            for (let i = 1.01; i < 2; i += 0.01) {
+              imgHeight = image.height * i;
+              imgWidth = image.width * i;
+              if (imgWidth >= maxMain) {
+                break;
+              }
+            }
+          }
+          console.log(`width: ${imgWidth}, height: ${imgHeight}`);
           layoutOption = {
             width: imgWidth,
             height: imgHeight

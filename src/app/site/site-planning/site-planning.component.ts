@@ -486,29 +486,32 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }).then((gd) => {
           const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
           const rect = xy.getBoundingClientRect();
-
+          
           const image = new Image();
           image.src = reader.result.toString();
           image.onload = () => {
-            const maxHeight = window.innerHeight - 170;
+            console.log(image.width, image.height);
+            const maxHeight = window.innerHeight - 140;
             const main = gd.getBoundingClientRect();
+            console.log(main.width, main.height, maxHeight);
             let imgWidth = image.width;
             let imgHeight = image.height;
             if (imgHeight > maxHeight) {
-              for (let i = 0.9; i >= 0; i -= 0.1) {
+              console.log('imgHeight > maxHeight');
+              for (let i = 0.99; i >= 0; i -= 0.01) {
                 imgHeight = image.height * i;
                 imgWidth = image.width * i;
-                if (imgHeight < maxHeight) {
+                if (imgHeight <= maxHeight) {
                   break;
                 }
               }
             }
 
             if (imgWidth > main.width) {
-              for (let i = 0.9; i >= 0; i -= 0.1) {
+              for (let i = 0.99; i >= 0; i -= 0.01) {
                 imgHeight = image.height * i;
                 imgWidth = image.width * i;
-                if (imgWidth < main.width) {
+                if (imgWidth <= main.width) {
                   break;
                 }
               }
