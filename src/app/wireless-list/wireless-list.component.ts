@@ -67,6 +67,14 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     window.setTimeout(() => {
       this.startInterval();
     }, 5000);
+
+    this.http.get(`${this.authService.API_URL}/history/${this.authService.userId}/${this.authService.userToken}`).subscribe(
+      res => {
+        this.hstList = res['history'];
+      }, err => {
+        console.log(err);
+      }
+    );
   }
 
   ngOnDestroy(): void {
@@ -87,14 +95,6 @@ export class WirelessListComponent implements OnInit, OnDestroy {
         }, err => {
           console.log(err);
           this.router.navigate(['/logon']);
-        }
-      );
-
-      this.http.get(`${this.authService.API_URL}/history/${this.authService.userId}/${this.authService.userToken}`).subscribe(
-        res => {
-          this.hstList = res['history'];
-        }, err => {
-          console.log(err);
         }
       );
     }

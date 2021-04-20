@@ -171,11 +171,20 @@ export class View3dComponent implements OnInit {
       // console.log(item)
       if (item.rotate !== 0) {
         // if (item.rotate < 0) {
-        //   obstacle.position.x = item.x + offsetX + 2;
+          
         // }
         obstacle.rotation.y = item.rotate * (Math.PI / 180);
+        // console.log(item.rotate)
+        if (item.rotate < 0 || item.rotate > 90) {
+          obstacle.position.z = item.y + offsetZ - (obstacle.rotation.y);
+        } else {
+          obstacle.position.z = item.y + offsetZ + 7;
+        }
+        obstacle.position.x = item.x + offsetX + 2;
+        // console.log(item.rotate, obstacle.rotation.y, obstacle.position.z)
         // obstacle.rotate(obstacleData[3], item.rotate);
         // obstacle.addRotation(item.rotate, 0, 0);
+        
       }
       
       obstacle.material = obstacleMat;
