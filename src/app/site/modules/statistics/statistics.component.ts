@@ -132,7 +132,19 @@ export class StatisticsComponent implements OnInit {
     }
 
     const traces = [];
-    const x = ['QPSK', '16-QAM', '64-QAM'];
+    const layeredLen = this.result['layeredModulationCount'].length;
+    let x = ['QPSK', '16-QAM', '64-QAM'];
+    if (this.calculateForm.objectiveIndex === '2') {
+      // WIFI
+      if (layeredLen === 5) {
+        x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    } else if (this.calculateForm.objectiveIndex === '1') {
+      // 5G
+      if (layeredLen === 4) {
+        x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    }
     const y = [];
     const text = [];
     let k = 0;
@@ -150,9 +162,9 @@ export class StatisticsComponent implements OnInit {
 
     for (let i = 0; i < y.length; i++) {
       const sum = Plotly.d3.sum(y[i]);
-      text[i].push((y[i][0] === 0 ? 0 : this.fmt(y[i][0] / sum)));
-      text[i].push((y[i][1] === 0 ? 0 : this.fmt(y[i][1] / sum)));
-      text[i].push((y[i][2] === 0 ? 0 : this.fmt(y[i][2] / sum)));
+      for (let n = 0; n < layeredLen; n++) {
+        text[i].push((y[i][n] === 0 ? 0 : this.fmt(y[i][n] / sum)));
+      }
 
       traces.push({
         type: 'bar',
@@ -238,7 +250,19 @@ export class StatisticsComponent implements OnInit {
     }
 
     const traces = [];
-    const x = ['QPSK', '16-QAM', '64-QAM'];
+    const layeredLen = this.result['layeredModulationCount'].length;
+    let x = ['QPSK', '16-QAM', '64-QAM'];
+    if (this.calculateForm.objectiveIndex === '2') {
+      // WIFI
+      if (layeredLen === 5) {
+        x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    } else if (this.calculateForm.objectiveIndex === '1') {
+      // 5G
+      if (layeredLen === 4) {
+        x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    }
     const y = [];
     const yData = [];
     const text = [];
