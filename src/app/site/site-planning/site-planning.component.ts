@@ -526,7 +526,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             //   imgHeight = maxHeight;
             //   imgWidth = imgWidth * ratio;
             // }
-            console.log(imgWidth, imgHeight)
+            console.log(imgWidth, imgHeight);
             const layoutOption = {
               width: imgWidth,
               height: imgHeight
@@ -1414,6 +1414,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.calculateForm[key] = Number(this.calculateForm[key]);
       }
     });
+
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
+      // Wifi強制指定為wifi模型
+      this.calculateForm.pathLossModelId = 9;
+    }
   }
 
   addInterval() {
@@ -2473,6 +2478,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculateForm.frequency = 2400;
     } else if (this.wifiFrequency === '2') {
       this.calculateForm.frequency = 5800;
+    }
+    // 場域內無線訊號衰減模型 default value
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
+      this.calculateForm.pathLossModelId = 9;
+    } else {
+      this.calculateForm.pathLossModelId = 0;
     }
   }
 

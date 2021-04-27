@@ -134,12 +134,12 @@ export class StatisticsComponent implements OnInit {
     const traces = [];
     const layeredLen = this.result['layeredModulationCount'].length;
     let x = ['QPSK', '16-QAM', '64-QAM'];
-    if (this.calculateForm.objectiveIndex === '2') {
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
       // WIFI
       if (layeredLen === 5) {
         x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
       }
-    } else if (this.calculateForm.objectiveIndex === '1') {
+    } else if (Number(this.calculateForm.objectiveIndex) === 1) {
       // 5G
       if (layeredLen === 4) {
         x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
@@ -252,12 +252,12 @@ export class StatisticsComponent implements OnInit {
     const traces = [];
     const layeredLen = this.result['layeredModulationCount'].length;
     let x = ['QPSK', '16-QAM', '64-QAM'];
-    if (this.calculateForm.objectiveIndex === '2') {
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
       // WIFI
       if (layeredLen === 5) {
         x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
       }
-    } else if (this.calculateForm.objectiveIndex === '1') {
+    } else if (Number(this.calculateForm.objectiveIndex) === 1) {
       // 5G
       if (layeredLen === 4) {
         x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
