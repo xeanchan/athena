@@ -414,7 +414,9 @@ export class SignalCoverComponent implements OnInit {
         const oData = JSON.parse(item);
         const xdata = oData[0];
         const ydata = oData[1];
-        let oColor = oData[7];
+        const oColor = '#000000';
+        // 0~3分別是矩型、三角形、圓形、梯形
+        let shape = oData[7];
         let text = `${this.translateService.instant('planning.obstacleInfo')}
         X: ${xdata}
         Y: ${ydata}
@@ -426,13 +428,14 @@ export class SignalCoverComponent implements OnInit {
           text += `${this.translateService.instant('material')}: ${this.authService.parseMaterial(oData[6])}`;
         }
         if (typeof oData[7] === 'undefined') {
-          oColor = '#000000';
+          shape = '0';
         }
         const rotate = oData[5];
         this.rectList.push({
           x: xdata,
           y: ydata,
           rotate: rotate,
+          shape: shape,
           style: {
             left: 0,
             top: 0,
@@ -610,6 +613,18 @@ export class SignalCoverComponent implements OnInit {
         item['style'].height = `${height}px`;
         item['svgStyle'].width = `${width}px`;
         item['svgStyle'].height = `${height}px`;
+        if (item.shape === 1) {
+          const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
+          item['points'] = points;
+          console.log(item)
+        } else if (item.shape === 2) {
+          item['ellipseStyle'] = {
+            cx: width / 2,
+            cy: height / 2,
+            rx: width / 2,
+            ry: height / 2
+          };
+        }
         
         if (item.rotate < 0) {
           ary.push({

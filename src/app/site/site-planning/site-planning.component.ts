@@ -456,7 +456,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         zeroline: false,
         fixedrange: true
       },
-      margin: { t: 20, b: 20, l: 40, r: 20}
+      margin: { t: 20, b: 20, l: 40, r: (!this.authService.isEmpty(this.calculateForm.mapImage) ? 20 : 50)}
     };
 
     if (!this.authService.isEmpty(this.calculateForm.mapImage)) {
