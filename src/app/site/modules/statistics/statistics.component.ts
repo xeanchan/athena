@@ -372,15 +372,27 @@ export class StatisticsComponent implements OnInit {
     }
 
     const traces = [];
-    const x = ['QPSK', '16-QAM', '64-QAM'];
+    const layeredLen = this.result['ueModulationCount'].length;
+    let x = ['QPSK', '16-QAM', '64-QAM'];
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
+      // WIFI
+      if (layeredLen === 5) {
+        x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    } else if (Number(this.calculateForm.objectiveIndex) === 1) {
+      // 5G
+      if (layeredLen === 4) {
+        x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    }
     const y = this.result['ueModulationCount'];
     const text = [];
     if (this.calculateForm.ueCoordinate !== '') {
       const sum = Plotly.d3.sum(y);
       const fmt = Plotly.d3.format('.0%');
-      text.push(fmt(y[0] / sum));
-      text.push(fmt(y[1] / sum));
-      text.push(fmt(y[2] / sum));
+      for (let i = 0; i < layeredLen; i++) {
+        text.push(fmt(y[i] / sum));
+      }
     }
 
     traces.push({
@@ -687,7 +699,19 @@ export class StatisticsComponent implements OnInit {
     }
 
     const traces = [];
-    const x = ['QPSK', '16-QAM', '64-QAM'];
+    const layeredLen = this.result['ueModulationCount'].length;
+    let x = ['QPSK', '16-QAM', '64-QAM'];
+    if (Number(this.calculateForm.objectiveIndex) === 2) {
+      // WIFI
+      if (layeredLen === 5) {
+        x = ['BPSK', 'QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    } else if (Number(this.calculateForm.objectiveIndex) === 1) {
+      // 5G
+      if (layeredLen === 4) {
+        x = ['QPSK', '16-QAM', '64-QAM', '256-QAM'];
+      }
+    }
     const y = [];
     const text = [];
     const data = this.result['ueModulationCount'];
