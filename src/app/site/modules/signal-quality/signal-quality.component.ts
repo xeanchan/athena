@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, HostListener, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ViewChildren, QueryList, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
 import { Options } from '@angular-slider/ngx-slider';
+import html2canvas from 'html2canvas';
 
 declare var Plotly: any;
 
@@ -44,8 +45,11 @@ export class SignalQualityComponent implements OnInit {
   opacityValue: number = 0.8;
   shapes = [];
   annotations = [];
+  showImg = false;
+  imageSRC = '';
 
   @ViewChildren('obstacleElm') obstacleElm: QueryList<ElementRef>;
+  @ViewChild('draw_done') drawDone: ElementRef<HTMLInputElement>;
 
   @HostListener('window:resize') windowResize() {
     Plotly.relayout(this.chartId, {
@@ -319,10 +323,21 @@ export class SignalQualityComponent implements OnInit {
         [1, 'rgb(217,30,30)'],
       ],
       type: 'heatmap',
-      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-      showscale: false,
+      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signal.quality')}: %{text}dB<extra></extra>`,
+      // showscale: false,
       opacity: this.opacityValue,
-      zsmooth: 'best'
+      zsmooth: 'best',
+      zmin: -8,
+      zmax: 24,
+      colorbar: {
+        autotick: false,
+        tickvals: [24, 16, 8, 0, -8],
+        ticksuffix: 'dB',
+        // ticktext: [24, 16, 8, 0, -8],
+        ticklabelposition: 'inside bottom'
+        // tick1: 24,
+        // dtick: 7
+      }
     };
     traces.push(trace);
 
@@ -477,6 +492,7 @@ export class SignalQualityComponent implements OnInit {
       layout: layout,
       config: defaultPlotlyConfiguration
     }).then((gd) => {
+      
       const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
       const rect = xy.getBoundingClientRect();
       let layoutOption = {};
@@ -555,7 +571,8 @@ export class SignalQualityComponent implements OnInit {
           console.log(`gd width: ${main.width}, gd height: ${main.height}`);
           let imgWidth = image.width;
           let imgHeight = image.height;
-          const maxMain = main.width - 90;
+          // const maxMain = main.width - 90;
+          const maxMain = main.width;
           if (imgWidth >= main.width) {
             for (let i = 0.99; i >= 0; i -= 0.01) {
               imgHeight = image.height * i;
@@ -581,20 +598,21 @@ export class SignalQualityComponent implements OnInit {
 
           layoutOption['shapes'] = this.shapes;
           layoutOption['annotations'] = this.annotations;
-          this.reLayout(id, layoutOption);
+          this.reLayout(id, layoutOption, isPDF);
         };
         
       } else {
         layoutOption['shapes'] = this.shapes;
         layoutOption['annotations'] = this.annotations;
-        this.reLayout(id, layoutOption);
+        this.reLayout(id, layoutOption, isPDF);
       }
 
     });
   }
 
-  reLayout(id, layoutOption) {
+  reLayout(id, layoutOption, isPDF) {
     Plotly.relayout(id, layoutOption).then((gd2) => {
+
       this.divStyle.opacity = 1;
       const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
       const rect2 = xy2.getBoundingClientRect();
@@ -701,6 +719,17 @@ export class SignalQualityComponent implements OnInit {
           position: 'absolute',
           visibility: this.showCandidate
         };
+      }
+
+      if (isPDF) {
+        // pdf轉成png，避免colorbar空白
+        this.showImg = true;
+        const gd2Rect = gd2.getBoundingClientRect();
+        Plotly.toImage(gd2, {width: gd2Rect.width, height: gd2Rect.height}).then(dataUri => {
+          this.imageSRC = dataUri;
+          Plotly.d3.select(gd2.querySelector('.plotly')).remove();
+        });
+
       }
     });
   }

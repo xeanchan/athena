@@ -526,6 +526,10 @@ export class PdfComponent implements OnInit {
       pdf.addPage();
       console.log(id);
       const data = <HTMLDivElement> area.querySelector(`#${id}`);
+      if (data.querySelector('#is_quality') != null) {
+        // 訊號品質圖等待轉png
+        await this.sleep(1000);
+      }
       await html2canvas(data, {
         useCORS: true,
         // allowTaint: true,
@@ -539,6 +543,7 @@ export class PdfComponent implements OnInit {
         const contentDataURL = canvas.toDataURL('image/png');
         const position = 10;
         pdf.addImage(contentDataURL, 'PNG', 14, position, imgWidth, imgHeight, undefined, 'FAST');
+        console.log(id);
       });
     }
     // 預估效能
@@ -649,5 +654,11 @@ export class PdfComponent implements OnInit {
       return false;
     }
   }
+
+  async sleep(time: number): Promise<void>{
+    return new Promise<void>((res, rej) => {
+        setTimeout(res, time);
+    });
+}
 
 }
