@@ -899,14 +899,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     title += `X: ${this.dragObject[id].x}<br>`;
     title += `Y: ${this.dragObject[id].y}<br>`;
     if (this.dragObject[id].type === 'obstacle') {
-      title += `長: ${this.dragObject[id].width}<br>`;
-      title += `寬: ${this.dragObject[id].height}<br>`;
-      title += `高: ${this.dragObject[id].altitude}<br>`;
+      title += `${this.translateService.instant('width')}: ${this.dragObject[id].width}<br>`;
+      title += `${this.translateService.instant('height')}: ${this.dragObject[id].height}<br>`;
+      title += `${this.translateService.instant('result.pdf.altitude')}: ${this.dragObject[id].altitude}<br>`;
     } else {
       title += `Z: ${this.dragObject[id].z}<br>`;
     }
     if (this.dragObject[id].type === 'obstacle') {
-      title += `材質: ${this.parseMaterial(this.dragObject[id].material)}`;
+      title += `${this.translateService.instant('material')}: ${this.parseMaterial(this.dragObject[id].material)}`;
     }
     return title;
   }
