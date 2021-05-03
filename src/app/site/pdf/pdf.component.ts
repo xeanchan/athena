@@ -530,6 +530,10 @@ export class PdfComponent implements OnInit {
         // 訊號品質圖等待轉png
         await this.sleep(1000);
       }
+      if (data.querySelector('#is_strength') != null) {
+        // 訊號強度圖等待轉png
+        await this.sleep(1000);
+      }
       await html2canvas(data, {
         useCORS: true,
         // allowTaint: true,

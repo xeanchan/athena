@@ -2472,11 +2472,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /** Wifi頻率切換 */
   changeWifiFrequency() {
-    if (this.wifiFrequency === '0') {
+    if (Number(this.wifiFrequency) === 0) {
       this.calculateForm.frequency = 950;
-    } else if (this.wifiFrequency === '1') {
+    } else if (Number(this.wifiFrequency) === 1) {
       this.calculateForm.frequency = 2400;
-    } else if (this.wifiFrequency === '2') {
+    } else if (Number(this.wifiFrequency) === 2) {
       this.calculateForm.frequency = 5800;
     }
     // 場域內無線訊號衰減模型 default value

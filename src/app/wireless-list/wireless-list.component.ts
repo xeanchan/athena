@@ -64,9 +64,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.confirmDialogConfig.autoFocus = false;
 
     this.getList();
-    window.setTimeout(() => {
-      this.startInterval();
-    }, 5000);
+    // window.setTimeout(() => {
+    //   this.startInterval();
+    // }, 5000);
 
     this.http.get(`${this.authService.API_URL}/history/${this.authService.userId}/${this.authService.userToken}`).subscribe(
       res => {
@@ -92,6 +92,10 @@ export class WirelessListComponent implements OnInit, OnDestroy {
       this.http.get(`${this.authService.API_URL}/taskList/${this.authService.userId}/${this.authService.userToken}`).subscribe(
         res => {
           this.taskList = res;
+          window.clearTimeout(this.timeInterval);
+          this.timeInterval = window.setTimeout(() => {
+            this.getList();
+          }, 5000);
         }, err => {
           console.log(err);
           this.router.navigate(['/logon']);

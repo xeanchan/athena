@@ -45,6 +45,8 @@ export class SignalStrengthComponent implements OnInit {
   opacityValue: number = 0.8;
   shapes = [];
   annotations = [];
+  showImg = false;
+  imageSRC = '';
 
   @ViewChildren('obstacletElm') obstacleElm: QueryList<ElementRef>;
 
@@ -259,11 +261,11 @@ export class SignalStrengthComponent implements OnInit {
       y: y,
       z: zData[zValues.indexOf(this.zValue)],
       text: zText[zValues.indexOf(this.zValue)],
-      colorbar: {
-        tickmode: 'array',
-        tickvals: [-44, -60, -80, -100, -120, -140],
-        ticktext: [-44, -60, -80, -100, -120, -140]
-      },
+      // colorbar: {
+      //   tickmode: 'array',
+      //   tickvals: [-44, -60, -80, -100, -120, -140],
+      //   ticktext: [-44, -60, -80, -100, -120, -140]
+      // },
       colorscale: [
         ['0.0', 'rgb(12,51,131)'],
         ['0.25', 'rgb(10,136,186)'],
@@ -272,12 +274,17 @@ export class SignalStrengthComponent implements OnInit {
         ['1', 'rgb(217,30,30)'],
       ],
       type: 'heatmap',
-      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}<extra></extra>`,
-      showscale: false,
+      hovertemplate: `X: %{x}<br>Y: %{y}<br>${this.translateService.instant('signalStrength')}: %{text}dBm<extra></extra>`,
+      // showscale: false,
       zmax: -44,
       zmin: -140,
       zsmooth: 'best',
-      opacity: this.opacityValue
+      opacity: this.opacityValue,
+      colorbar: {
+        autotick: false,
+        tickvals: [-44, -70, -95, -120, -140],
+        ticksuffix: 'dBm',
+      }
     };
     traces.push(trace);
 
@@ -502,7 +509,7 @@ export class SignalStrengthComponent implements OnInit {
           console.log(`gd width: ${main.width}, gd height: ${main.height}`);
           let imgWidth = image.width;
           let imgHeight = image.height;
-          const maxMain = main.width - 90;
+          const maxMain = main.width;
           if (imgWidth >= main.width) {
             for (let i = 0.99; i >= 0; i -= 0.01) {
               imgHeight = image.height * i;
@@ -528,18 +535,18 @@ export class SignalStrengthComponent implements OnInit {
 
           layoutOption['shapes'] = this.shapes;
           layoutOption['annotations'] = this.annotations;
-          this.reLayout(id, layoutOption);
+          this.reLayout(id, layoutOption, isPDF);
         };
         
       } else {
         layoutOption['shapes'] = this.shapes;
         layoutOption['annotations'] = this.annotations;
-        this.reLayout(id, layoutOption);
+        this.reLayout(id, layoutOption, isPDF);
       }
     });
   }
 
-  reLayout(id, layoutOption) {
+  reLayout(id, layoutOption, isPDF) {
     Plotly.relayout(id, layoutOption).then((gd2) => {
       this.divStyle.opacity = 1;
       const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
@@ -648,6 +655,17 @@ export class SignalStrengthComponent implements OnInit {
           position: 'absolute',
           visibility: this.showCandidate
         };
+      }
+
+      if (isPDF) {
+        // pdf轉成png，避免colorbar空白
+        this.showImg = true;
+        const gd2Rect = gd2.getBoundingClientRect();
+        Plotly.toImage(gd2, {width: gd2Rect.width, height: gd2Rect.height}).then(dataUri => {
+          this.imageSRC = dataUri;
+          Plotly.d3.select(gd2.querySelector('.plotly')).remove();
+        });
+
       }
 
     });

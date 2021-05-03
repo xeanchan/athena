@@ -33,12 +33,12 @@ export class SiteInfoComponent implements OnInit {
   }
 
   parseOB(type) {
-    if (type === '0') {
-      return '5G';
-    } else if (type === '1') {
+    if (Number(type) === 0) {
       return '4G';
-    } else if (type === '2') {
-      return 'WIFI';
+    } else if (Number(type) === 1) {
+      return '5G';
+    } else if (Number(type) === 2) {
+      return 'Wifi';
     }
   }
 
