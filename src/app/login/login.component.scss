@@ -14,16 +14,16 @@
 .login .box {
     display: inline-block;
     min-width: 25em;
-    min-height: 20em;
-    margin: auto;
+    height: 25em;
+    margin: 20vh auto 0;
     padding: 3em 2em 2em;
-    /* background-color: #ec8119; */
-    opacity: 0.9;
-    border: 1px solid #4a290c;
+    opacity: 0.85;
+    border: 1px solid #216ec1;
+    border-top: 7px solid #7cd1d1;
     line-height: 2;
     border-radius: 6px;
-    background: rgb(17,59,60);
-    background: linear-gradient(337deg, rgba(17,59,60,1) 25%, rgba(232,152,11,1) 81%);
+    background: #113b3c;
+    background: linear-gradient(337deg, #0c6d92 25%, #07468a 81%);
 }
 .login .box input {
     margin: 3px;
@@ -50,13 +50,13 @@
     border-radius: 5em;
     background-color: #333;
     color: #fff;
-    padding: .1em 4em;
+    padding: 0.1em 4em;
     margin: 1em auto 0;
     display: block;
     cursor: pointer;
     width: 96%;
     outline: 0;
-    background-image: linear-gradient(to right, #16222A 0%, #3A6073  51%, #16222A  100%);
+    background-image: linear-gradient(to right, #0a3756 0%, #175a7b 51%, #0a2c43 100%);
     background-size: 200% auto;
     box-shadow: 0 0 20px #eee;
     text-transform: uppercase;
