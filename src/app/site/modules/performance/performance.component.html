@@ -1,47 +1,57 @@
 <table id="performace" class="thCenter">
   <tbody>
       <tr>
-          <th class="panel" colspan="4"><label class="bold">{{ 'result.performance' | translate }}</label></th>
+          <th class="panel" colspan="3"><label class="bold">{{ 'result.performance.field' | translate }}</label></th>
       </tr>
       <tr>
           <th>{{ 'result.coverage' | translate }}</th>
           <th>{{ 'result.averageSinr' | translate }}</th>
           <th>{{ 'result.averageRsrp' | translate }}</th>
-          <th></th>
       </tr>
       <tr>
           <td>{{ result['coverage'] }}%</td>
           <td>{{ result['averageSinr'] | number }}dB</td>
           <td>{{ result['averageRsrp'] | number }}dBm</td>
-          <td></td>
-      </tr>
-  </tbody>
-  <tbody>
-      <tr>
-          <th>{{ 'ue.corver' | translate }}</th>
-          <th>{{ 'ue.quality' | translate }}</th>
-          <th>{{ 'ue.strength' | translate }}</th>
-          <th>{{ 'ue.throughput' | translate }}</th>
-      </tr>
-      <tr>
-          <td>{{ parseNoData(result['ueCoverage'], true, 'ueCoverage') }}</td>
-          <td>{{ parseNoData(result['ueAverageSinr'], false, 'ueAverageSinr') }}</td>
-          <td>{{ parseNoData(result['ueAverageRsrp'], false, 'ueAverageRsrp') }}</td>
-          <td>{{ parseNoData(result['ueThroughput'], false, 'ueThroughput') }}</td>
-      </tr>
-  </tbody>
-  <tbody>
-      <tr>
-          <th>{{ 'result.img.section' | translate }}</th>
-          <th>{{ 'result.section.coverage' | translate }}</th>
-          <th>{{ 'result.section.sinr' | translate }}</th>
-          <th>{{ 'result.section.rsrp' | translate }}</th>
-      </tr>
-      <tr *ngFor="let item of zValueList">
-          <td>{{ item[0] }} {{ 'meter' | translate }}</td>
-          <td>{{ item[1] }}%</td>
-          <td>{{ item[2] | number }}dB</td>
-          <td>{{ item[3] | number }}dBm</td>
       </tr>
   </tbody>
 </table>
+
+<table id="performace" class="thCenter">
+    <tbody>
+        <tr>
+            <th class="panel" colspan="4"><label class="bold">{{ 'result.performance.ue' | translate }}</label></th>
+        </tr>
+        <tr>
+            <th>{{ 'ue.corver' | translate }}</th>
+            <th>{{ 'ue.quality' | translate }}</th>
+            <th>{{ 'ue.strength' | translate }}</th>
+            <th>{{ 'ue.throughput' | translate }}</th>
+        </tr>
+        <tr>
+            <td>{{ parseNoData(result['ueCoverage'], true, 'ueCoverage') }}</td>
+            <td>{{ parseNoData(result['ueAverageSinr'], false, 'ueAverageSinr') }}</td>
+            <td>{{ parseNoData(result['ueAverageRsrp'], false, 'ueAverageRsrp') }}</td>
+            <td>{{ parseNoData(result['ueThroughput'], false, 'ueThroughput') }}</td>
+        </tr>
+    </tbody>
+  </table>
+
+  <table id="performace" class="thCenter">
+    <tbody>
+        <tr>
+            <th class="panel" colspan="4"><label class="bold">{{ 'result.performance.height' | translate }}</label></th>
+        </tr>
+        <tr>
+            <th>{{ 'result.img.section' | translate }}</th>
+            <th>{{ 'result.section.coverage' | translate }}</th>
+            <th>{{ 'result.section.sinr' | translate }}</th>
+            <th>{{ 'result.section.rsrp' | translate }}</th>
+        </tr>
+        <tr *ngFor="let item of zValueList">
+            <td>{{ item[0] }} {{ 'meter' | translate }}</td>
+            <td>{{ item[1] }}%</td>
+            <td>{{ item[2] | number }}dB</td>
+            <td>{{ item[3] | number }}dBm</td>
+        </tr>
+    </tbody>
+  </table>

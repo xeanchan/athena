@@ -232,6 +232,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** 進度 */
   progressNum = 0;
   pgInterval = 0;
+  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
   @ViewChild('chart') chart: ElementRef;
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
@@ -685,7 +686,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     let height = 30;
     if (id === 'rect') {
       color = this.OBSTACLE_COLOR;
-      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.obstacleList.push(this.svgId);
       this.rectStyle[this.svgId] = {
         width: 30,
@@ -695,7 +696,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
     } else if (id === 'ellipse') {
       color = this.OBSTACLE_COLOR;
-      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.obstacleList.push(this.svgId);
       this.ellipseStyle[this.svgId] = {
         ry: 15,
@@ -706,7 +707,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     } else if (id === 'polygon') {
       color = this.OBSTACLE_COLOR;
-      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.obstacleList.push(this.svgId);
       this.polygonStyle[this.svgId] = {
         points: '15,0 30,30 0,30',
@@ -714,14 +715,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       };
     } else if (id === 'defaultBS') {
       color = this.DEFAULT_BS_COLOR;
-      this.svgId = `${id}_${this.defaultBSList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.defaultBSList.push(this.svgId);
       this.pathStyle[this.svgId] = {
         fill: this.DEFAULT_BS_COLOR
       };
     } else if (id === 'candidate') {
       color = this.CANDIDATE_COLOR;
-      this.svgId = `${id}_${this.candidateList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.candidateList.push(this.svgId);
       this.pathStyle[this.svgId] = {
         fill: this.CANDIDATE_COLOR
@@ -730,7 +731,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       height = this.candidateHeight;
     } else if (id === 'UE') {
       color = this.UE_COLOR;
-      this.svgId = `${id}_${this.ueList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.ueList.push(this.svgId);
       this.pathStyle[this.svgId] = {
         fill: this.UE_COLOR
@@ -740,7 +741,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (id === 'trapezoid') {
       // 梯形
       color = this.OBSTACLE_COLOR;
-      this.svgId = `${id}_${this.obstacleList.length}`;
+      this.svgId = `${id}_${this.generateString(10)}`;
       this.obstacleList.push(this.svgId);
       this.trapezoidStyle[this.svgId] = {
         fill: color
@@ -1141,30 +1142,17 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   /** delete */
   delete() {
     if (this.dragObject[this.svgId].type === 'obstacle') {
-      for (let i = this.obstacleList.length - 1; i >= 0; i--) {
-        if (this.obstacleList[i] === this.svgId) {
-          this.obstacleList.splice(i, 1);
-        }
-      }
+      this.obstacleList.splice(this.obstacleList.indexOf(this.svgId), 1);
     } else if (this.dragObject[this.svgId].type === 'defaultBS') {
-      for (let i = this.defaultBSList.length - 1; i >= 0; i--) {
-        if (this.defaultBSList[i] === this.svgId) {
-          this.defaultBSList.splice(i, 1);
-        }
-      }
+      this.defaultBSList.splice(this.defaultBSList.indexOf(this.svgId), 1);
     } else if (this.dragObject[this.svgId].type === 'candidate') {
-      for (let i = this.candidateList.length - 1; i >= 0; i--) {
-        if (this.candidateList[i] === this.svgId) {
-          this.candidateList.splice(i, 1);
-        }
-      }
+      this.candidateList.splice(this.candidateList.indexOf(this.svgId), 1);
     } else if (this.dragObject[this.svgId].type === 'UE') {
-      for (let i = this.ueList.length - 1; i >= 0; i--) {
-        if (this.ueList[i] === this.svgId) {
-          this.ueList.splice(i, 1);
-        }
-      }
+      this.ueList.splice(this.ueList.indexOf(this.svgId), 1);
     }
+    window.setTimeout(() => {
+      delete this.dragObject[this.svgId];
+    }, 300);
   }
 
   /** change color */
@@ -2022,33 +2010,34 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let polygon = 0;
       let trapezoid = 0;
       for (let i = 1; i < obstacleData.length; i++) {
+        console.log(obstacleData[i])
         if ((<Array<any>> obstacleData[i]).length === 0) {
           continue;
         }
         let id;
         let type;
         let shape = obstacleData[i][8];
-        if (shape === 'rect' || shape === '0') {
-          id = `rect_${rect}`;
+        if (shape === 'rect' || Number(shape) === 0) {
+          id = `rect_${this.generateString(10)}`;
           type = 'rect';
           rect++;
-        } else if (shape === 'ellipse' || shape === '2') {
-          id = `ellipse_${ellipse}`;
+        } else if (shape === 'ellipse' || Number(shape) === 2) {
+          id = `ellipse_${this.generateString(10)}`;
           type = 'ellipse';
           ellipse++;
-        } else if (shape === 'polygon' || shape === '1') {
-          id = `polygon_${polygon}`;
+        } else if (shape === 'polygon' || Number(shape) === 1) {
+          id = `polygon_${this.generateString(10)}`;
           type = 'polygon';
           polygon++;
-        } else if (shape === 'trapezoid' || shape === '3') {
-          id = `trapezoid_${ellipse}`;
+        } else if (shape === 'trapezoid' || Number(shape) === 3) {
+          id = `trapezoid_${this.generateString(10)}`;
           type = 'trapezoid';
           trapezoid++;
 
         } else {
           // default
           shape = 'rect';
-          id = `rect_${rect}`;
+          id = `rect_${this.generateString(10)}`;
           type = 'rect';
           rect++;
         }
@@ -2076,7 +2065,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           width: this.pixelXLinear(this.dragObject[id].width),
           height: this.pixelYLinear(this.dragObject[id].height)
         };
-        if (shape === 'rect') {
+        if (shape === 'rect' || Number(shape) === 0) {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
             top: `${this.chartHeight - this.pixelYLinear(this.dragObject[id].height) - this.pixelYLinear(obstacleData[i][1])}px`,
@@ -2089,7 +2078,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             height: this.pixelYLinear(this.dragObject[id].height),
             fill: this.dragObject[id].color
           };
-        } else if (shape === 'ellipse') {
+        } else if (shape === 'ellipse' || Number(shape) === 1) {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}px`,
             top: `${this.pixelYLinear(this.dragObject[id].y)}px`,
@@ -2107,7 +2096,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             ry: y,
             fill: this.dragObject[id].color
           };
-        } else if (shape === 'polygon') {
+        } else if (shape === 'polygon' || Number(shape) === 2) {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
             top: `${this.pixelYLinear(this.dragObject[id].y)}`,
@@ -2122,7 +2111,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             points: points,
             fill: this.dragObject[id].color
           };
-        } else if (shape === 'trapezoid') {
+        } else if (shape === 'trapezoid' || Number(shape) === 3) {
           this.spanStyle[id] = {
             left: `${this.pixelXLinear(this.dragObject[id].x)}`,
             top: `${this.pixelYLinear(this.dragObject[id].y)}`,
@@ -2213,7 +2202,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             shape = 'ellipse';
           }
         }
-        const id = `${shape}_${i}`;
+        const id = `${shape}_${this.generateString(10)}`;
         this.obstacleList.push(id);
         this.dragObject[id] = {
           x: item[0],
@@ -2298,7 +2287,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const defaultBSLen = defaultBS.length;
       for (let i = 0; i < defaultBSLen; i++) {
         const item = JSON.parse(defaultBS[i]);
-        const id = `defaultBS_${i}`;
+        const id = `defaultBS_${this.generateString(10)}`;
         this.defaultBSList.push(id);
         this.dragObject[id] = {
           x: item[0],
@@ -2339,7 +2328,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const candidateLen = candidate.length;
       for (let i = 0; i < candidateLen; i++) {
         const item = JSON.parse(candidate[i]);
-        const id = `candidate_${i}`;
+        const id = `candidate_${this.generateString(10)}`;
         this.candidateList.push(id);
         this.dragObject[id] = {
           x: item[0],
@@ -2381,7 +2370,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const ueLen = ue.length;
       for (let i = 0; i < ueLen; i++) {
         const item = JSON.parse(ue[i]);
-        const id = `ue_${i}`;
+        const id = `ue_${this.generateString(10)}`;
         this.ueList.push(id);
         this.dragObject[id] = {
           x: item[0],
@@ -2539,5 +2528,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         this.calculateForm.isUeAvgSinr = true;
       }
     }
+  }
+
+  /** 亂數字串 */
+  generateString(len) {
+    let result = ' ';
+    const charactersLength = this.characters.length;
+    for (let i = 0; i < len; i++) {
+        result += this.characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result.trim();
   }
 }

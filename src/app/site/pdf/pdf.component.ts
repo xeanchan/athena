@@ -558,7 +558,7 @@ export class PdfComponent implements OnInit {
       pdf.setFontStyle('normal');
       pdf.setFillColor(42, 58, 93);
       pdf.rect(14, 7, 182, 7, 'F');
-      pdf.text(this.translateService.instant('result.performance'), 100, 12);
+      pdf.text(this.translateService.instant('result.performance.field'), 100, 12);
     };
     const p1Title = [
       this.translateService.instant('result.coverage'),
@@ -576,6 +576,14 @@ export class PdfComponent implements OnInit {
       beforePageContent: performanceHeader
     });
 
+    const performanceHeader2 = (data) => {
+      pdf.setFontSize(12);
+      pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(42, 58, 93);
+      pdf.rect(14, 30, 182, 7, 'F');
+      pdf.text(this.translateService.instant('result.performance.ue'), 100, 35);
+    };
     const p2Title = [
       this.translateService.instant('ue.corver'),
       this.translateService.instant('ue.quality'),
@@ -596,10 +604,18 @@ export class PdfComponent implements OnInit {
     pdf.autoTable(p2Title, p2Data, {
       styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
       headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
-      margin: { top: 0 }
+      margin: { top: 0 },
+      beforePageContent: performanceHeader2
     });
     
-
+    const performanceHeader3 = (data) => {
+      pdf.setFontSize(12);
+      pdf.setTextColor(255);
+      pdf.setFontStyle('normal');
+      pdf.setFillColor(42, 58, 93);
+      pdf.rect(14, 53, 182, 7, 'F');
+      pdf.text(this.translateService.instant('result.performance.height'), 100, 58);
+    };
     const p3Title = [
       this.translateService.instant('result.img.section'),
       this.translateService.instant('result.section.coverage'),
@@ -618,7 +634,8 @@ export class PdfComponent implements OnInit {
     pdf.autoTable(p3Title, p3Data, {
       styles: { font: 'NotoSansCJKtc', fontStyle: 'normal'},
       headStyles: { font: 'NotoSansCJKtc', fontStyle: 'bold'},
-      margin: { top: 0 }
+      margin: { top: 0 },
+      beforePageContent: performanceHeader3
     });
 
     // 統計資訊
