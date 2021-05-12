@@ -103,19 +103,19 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 'svg_1',
       title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
-      element: 'rect'
+      element: '0'
     },
     ellipse: {
       id: 'svg_2',
       title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
-      element: 'ellipse'
+      element: '1'
     },
     polygon: {
       id: 'svg_3',
       title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
-      element: 'polygon'
+      element: '2'
     },
     defaultBS: {
       id: 'svg_4',
@@ -139,7 +139,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       id: 'svg_7',
       title: this.translateService.instant('obstacleInfo'),
       type: 'obstacle',
-      element: 'trapezoid'
+      element: '3'
     }
   };
   // select svg id
@@ -744,7 +744,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.svgId = `${id}_${this.generateString(10)}`;
       this.obstacleList.push(this.svgId);
       this.trapezoidStyle[this.svgId] = {
-        fill: color
+        fill: color,
+        width: width,
+        height: height
       };
     }
 
@@ -772,7 +774,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       type: this.svgMap[id].type,
       color: color,
       material: '0',
-      element: id
+      element: this.parseElement(id)
     };
 
     this.realId = _.cloneDeep(this.svgId);
@@ -928,20 +930,20 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const yVal = this.roundFormat(this.yLinear(rectBottom));
     let wVal;
     let hVal;
-    if (type === 'rect') {
+    if (Number(type) === 0) {
       // 方形
       wVal = this.roundFormat(this.xLinear(this.rectStyle[this.svgId].width));
       hVal = this.roundFormat(this.yLinear(this.rectStyle[this.svgId].height));
-    } else if (type === 'ellipse') {
+    } else if (Number(type) === 1) {
       // 圓形正圓
       wVal = this.roundFormat(this.xLinear(rect.width));
       hVal = this.roundFormat(this.yLinear(rect.width));
 
-    } else if (type === 'polygon') {
+    } else if (Number(type) === 2) {
       // 三角形
       wVal = this.roundFormat(this.xLinear(this.svgStyle[this.svgId].width));
       hVal = this.roundFormat(this.yLinear(this.svgStyle[this.svgId].height));
-    } else if (type === 'trapezoid') {
+    } else if (Number(type) === 3) {
       wVal = this.roundFormat(this.xLinear(this.trapezoidStyle[this.svgId].width));
       hVal = this.roundFormat(this.yLinear(this.trapezoidStyle[this.svgId].height));
     }
@@ -1042,7 +1044,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const type = this.dragObject[this.svgId].element;
 
-    if (type === 'trapezoid') {
+    if (type === '3') {
       if (width > height) {
         height = width;
       } else {
@@ -1076,11 +1078,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.spanStyle[this.svgId].width = `${width}px`;
     this.spanStyle[this.svgId].height = `${height}px`;
 
-    if (type === 'rect') {
+    if (Number(type) === 0) {
       // 方形
       this.rectStyle[this.svgId].width = width;
       this.rectStyle[this.svgId].height = height;
-    } else if (type === 'ellipse') {
+    } else if (Number(type) === 1) {
       // 圓形正圓
       const x = (width / 2).toString();
       this.ellipseStyle[this.svgId].rx = x;
@@ -1088,12 +1090,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       this.ellipseStyle[this.svgId].cx = x;
       this.ellipseStyle[this.svgId].cy = x;
 
-    } else if (type === 'polygon') {
+    } else if (Number(type) === 2) {
       // 三角形
       const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
       this.polygonStyle[this.svgId].points = points;
       // dragRect.setAttribute('points', points);
-    } else if (type === 'trapezoid') {
+    } else if (Number(type) === 3) {
       this.trapezoidStyle[this.svgId].width = width;
       this.trapezoidStyle[this.svgId].height = height;
     }
@@ -1159,13 +1161,13 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
   colorChange() {
     this.dragObject[this.svgId].color = this.color;
     if (this.dragObject[this.svgId].type === 'obstacle') {
-      if (this.dragObject[this.svgId].element === 'rect') {
+      if (Number(this.dragObject[this.svgId].element) === 0) {
         this.rectStyle[this.svgId].fill = this.color;
-      } else if (this.dragObject[this.svgId].element === 'ellipse') {
+      } else if (Number(this.dragObject[this.svgId].element) === 1) {
         this.ellipseStyle[this.svgId].fill = this.color;
-      } else if (this.dragObject[this.svgId].element === 'polygon') {
+      } else if (Number(this.dragObject[this.svgId].element) === 2) {
         this.polygonStyle[this.svgId].fill = this.color;
-      } else if (this.dragObject[this.svgId].element === 'trapezoid') {
+      } else if (Number(this.dragObject[this.svgId].element) === 3) {
         this.trapezoidStyle[this.svgId].fill = this.color;
       }
     } else {
@@ -1499,18 +1501,18 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     svg.setAttribute('height', elementHeight.toString());
     const dragRect = svg.querySelector('.drag_rect');
     const type = this.dragObject[this.svgId].element;
-    if (type === 'rect') {
+    if (Number(type) === 0) {
       // 方形
       dragRect.setAttribute('width', elementWidth.toString());
       dragRect.setAttribute('height', elementHeight.toString());
-    } else if (type === 'ellipse') {
+    } else if (Number(type) === 1) {
       // 圓形
       const val = (Plotly.d3.min([elementWidth, elementHeight]) / 2).toString();
       dragRect.setAttribute('rx', val.toString());
       dragRect.setAttribute('ry', val.toString());
       dragRect.setAttribute('cx', val.toString());
       dragRect.setAttribute('cy', val.toString());
-    } else if (type === 'polygon') {
+    } else if (Number(type) === 2) {
       // 三角形
       const points = `${elementWidth / 2},0 ${elementWidth}, ${elementHeight} 0, ${elementHeight}`;
       dragRect.setAttribute('points', points);
@@ -2010,7 +2012,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       let polygon = 0;
       let trapezoid = 0;
       for (let i = 1; i < obstacleData.length; i++) {
-        console.log(obstacleData[i])
         if ((<Array<any>> obstacleData[i]).length === 0) {
           continue;
         }
@@ -2036,7 +2037,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
         } else {
           // default
-          shape = 'rect';
+          shape = '0';
           id = `rect_${this.generateString(10)}`;
           type = 'rect';
           rect++;
@@ -2193,17 +2194,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const obstacle = this.calculateForm.obstacleInfo.split('|');
       const obstacleLen = obstacle.length;
       for (let i = 0; i < obstacleLen; i++) {
+        if (obstacle[i].indexOf('undefined') !== -1) {
+          continue;
+        }
         const item = JSON.parse(obstacle[i]);
-        let shape = 'rect';
+        let shape = '0';
         if (typeof item[7] !== 'undefined') {
-          if (item[7] === 1) {
-            shape = 'polygon';
-          } else if (item[7] === 2) {
-            shape = 'ellipse';
-          }
+          shape = item[7];
         }
         const id = `${shape}_${this.generateString(10)}`;
-        this.obstacleList.push(id);
+        
         this.dragObject[id] = {
           x: item[0],
           y: item[1],
@@ -2212,8 +2212,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           height: item[3],
           altitude: item[4],
           rotate: item[5],
-          title: this.svgMap[shape].title,
-          type: this.svgMap[shape].type,
+          title: this.translateService.instant('obstacleInfo'),
+          type: this.svgElmMap(shape).type,
           color: this.OBSTACLE_COLOR,
           material: item[6].toString(),
           element: shape
@@ -2251,14 +2251,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           height: height
         };
   
-        if (shape === 'rect') {
+        if (Number(shape) === 0) {
           // 方形
           this.rectStyle[id] = {
             width: width,
             height: height,
             fill: this.dragObject[id].color
           };
-        } else if (shape === 'ellipse') {
+        } else if (Number(shape) === 1) {
           // 圓形
           const x = (width / 2).toString();
           const y = (height / 2).toString();
@@ -2270,7 +2270,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             fill: this.dragObject[id].color
           };
   
-        } else if (shape === 'polygon') {
+        } else if (Number(shape) === 2) {
           // 三角形
           const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
           this.polygonStyle[id] = {
@@ -2278,6 +2278,8 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
             fill: this.dragObject[id].color
           };
         }
+
+        this.obstacleList.push(id);
       }
     }
     
@@ -2540,4 +2542,58 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
     return result.trim();
   }
+
+  svgElmMap(type) {
+    if (Number(type) === 0) {
+      return {
+        id: 'svg_1',
+        title: this.translateService.instant('obstacleInfo'),
+        type: 'obstacle',
+        element: '0'
+      };
+    } else if (Number(type) === 1) {
+      return {
+        id: 'svg_2',
+        title: this.translateService.instant('obstacleInfo'),
+        type: 'obstacle',
+        element: '1'
+      };
+    } else if (Number(type) === 2) {
+      return {
+        id: 'svg_3',
+        title: this.translateService.instant('obstacleInfo'),
+        type: 'obstacle',
+        element: '2'
+      };
+    } else if (Number(type) === 3) {
+      return {
+        id: 'svg_7',
+        title: this.translateService.instant('obstacleInfo'),
+        type: 'obstacle',
+        element: '3'
+      };
+    } else {
+      return {
+        id: 'svg_1',
+        title: this.translateService.instant('obstacleInfo'),
+        type: 'obstacle',
+        element: '0'
+      };
+    }
+  }
+
+  parseElement(type) {
+    if (type === 'rect') {
+      return 0;
+    } else if (type === 'ellipse') {
+      return 1;
+    } else if (type === 'polygon') {
+      return 2;
+    } else if (type === 'trapezoid') {
+      return 3;
+    } else {
+      return type;
+    }
+  }
+
 }
