@@ -121,7 +121,7 @@
     
 
   <div id="d_area">
-    <button class="toggle" mat-button (click)="sidenav.toggle();plotResize()">
+    <button class="toggle" mat-button (click)="sidenav.toggle()">
       <span class="material-icons">swap_horiz</span>
     </button>
     <h2 class="inline-block">
@@ -201,7 +201,7 @@
           </svg>
           
         </span>
-        <!-- <span *ngFor="let item of obstacleList; let i=index" id="{{item}}_circle" class="rounded-circle" >{{ (i + 1) }}</span> -->
+        
         <span *ngFor="let item of defaultBSList" id="{{item}}" [ngStyle]="spanStyle[item]" (mouseover)="hover($event, item)" (mouseout)="hoverout($event)" class="defaultBS" (click)="moveClick(item);" (contextmenu)="onRightClick($event, item)" >
           <svg [ngStyle]="svgStyle[item]" class="s" xmlns="http://www.w3.org/2000/svg">
             <g>
@@ -363,53 +363,6 @@
             <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
           </div>
         </div>
-        <!--
-        <div class="panel_content">
-          <p class="sub_title active">目標設定</p>
-          <div class="sub_content">
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isAverageSinr">平均訊號品質</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.sinrRatio" (keyup)="calculateForm.isAverageSinr = setCheckbox(calculateForm.sinrRatio)" >
-            </div>
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isAvgThroughput">平均 Throughput</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.throughputRatio" (keyup)="calculateForm.isAvgThroughput = setCheckbox(calculateForm.throughputRatio)">
-            </div>
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isCoverage">場域訊號覆蓋</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.coverageRatio"  (keyup)="calculateForm.isCoverage = setCheckbox(calculateForm.coverageRatio)">
-            </div>
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgSinr">行動終端平均訊號品質</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.ueAvgSinrRatio" (keyup)="calculateForm.isUeAvgSinr = setCheckbox(calculateForm.ueAvgSinrRatio)">
-            </div>
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isUeAvgThroughput">行動終端平均 Throughput</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.ueAvgThroughputRatio" (keyup)="calculateForm.isUeAvgThroughput = setCheckbox(calculateForm.ueAvgThroughputRatio)">
-            </div>
-            <div>
-              <mat-checkbox [(ngModel)]="calculateForm.isUeTpByDistance">行動終端平均 Throughput 最大(依距離)</mat-checkbox>
-              <input type="text" [(ngModel)]="calculateForm.ueTpByDistanceRatio" (keyup)="calculateForm.isUeTpByDistance = setCheckbox(calculateForm.ueTpByDistanceRatio)">
-            </div>
-          </div>
-          
-          <p class="sub_title inline-block">欲佈建的無線基站數量</p>
-          <div class="sub_content inline-block">
-              <input type="text" [(ngModel)]="calculateForm.availableNewBsNumber">
-          </div>
-          <p class="sub_title">佈建使用的無線基站規格</p>
-          <div class="sub_content">
-            <ul>
-              <li>
-                <label>傳輸功率</label>
-                <span>
-                  <input type="text" [(ngModel)]="calculateForm.powerMinRange" placeholder="下限">~<input [(ngModel)]="calculateForm.powerMaxRange" type="text" placeholder="上限">dBm
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        -->
       </mat-expansion-panel>
       
       <mat-expansion-panel (opened)="panelOpenState = true"
@@ -436,15 +389,15 @@
                   <ul class="inline-block">
                     <li class="inline-block">
                       <label>{{ 'width' | translate }}</label>
-                      <input type="text" [(ngModel)]="calculateForm.width" (change)="initData(false)">
+                      <input type="text" [(ngModel)]="calculateForm.width" (change)="initData(false, false)">
                     </li>
                     <li class="inline-block">
                       <label>{{ 'height' | translate }}</label>
-                      <input type="text" [(ngModel)]="calculateForm.height" (change)="initData(false)">
+                      <input type="text" [(ngModel)]="calculateForm.height" (change)="initData(false, false)">
                     </li>
                     <li class="inline-block">
                       <label>{{ 'altitude' | translate }}</label>
-                      <input type="text" [(ngModel)]="calculateForm.altitude" (change)="initData(false)">
+                      <input type="text" [(ngModel)]="calculateForm.altitude" (change)="initData(false, false)">
                     </li>
                   </ul>
                 </li>
@@ -600,48 +553,48 @@
               <span *ngIf="obstacleList.length > 0" class="clearAll" (click)="clearAll('obstacle')">
                 <span class="material-icons">clear</span>Clear All
               </span>
-                  <!--<p [class]="subitemClass['obstacle']">障礙物資訊<label class="matBadge">{{ obstacleList.length }}</label>
-                    <span class="material-icons" (click)="arrowUpDown($event, 'obstacle')" >keyboard_arrow_up</span>
-                  </p>-->
-                  <ol>
-                    <li *ngFor="let item of obstacleList">
-                      <span>
-                        <label>X</label>
-                        <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                      </span>
-                      <span>
-                        <label>Y</label>
-                        <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                      </span>
-                      <span>
-                        <label>{{ 'rotate' | translate }}</label>
-                        <input type="text" [(ngModel)]="dragObject[item].rotate" (change)="changeRotate(item)">
-                      </span>
-                      <br>
-                      <span>
-                        <label>{{ 'width' | translate }}</label>
-                        <input type="text" [(ngModel)]="dragObject[item].width" (change)="changeSize(item)">
-                      </span>
-                      <span>
-                        <label>{{ 'height' | translate }}</label>
-                        <input type="text" [(ngModel)]="dragObject[item].height" (change)="changeSize(item)">
-                      </span>
-                      <span>
-                        <label>{{ 'altitude' | translate }}</label>
-                        <input type="text" [(ngModel)]="dragObject[item].altitude">
-                      </span>
-                      <span>
-                        <label>{{ 'material' | translate }}</label>
-                        <select class="w7em" [(ngModel)]="dragObject[item].material">
-                          <option value="0">{{ 'material.wood' | translate }}</option>
-                          <option value="1">{{ 'material.cement' | translate }}</option>
-                          <option value="2">{{ 'material.light_steel_frame' | translate }}</option>
-                          <option value="3">{{ 'material.glass' | translate }}</option>
-                          <option value="4">{{ 'material.stainless' | translate }}</option>
-                        </select>
-                      </span>
-                    </li>
-                  </ol>
+              <ol>
+                <li *ngFor="let item of obstacleList">
+                  <span>
+                    <label>X</label>
+                    <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                  </span>
+                  <span>
+                    <label>Y</label>
+                    <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                  </span>
+                  <span>
+                    <label>{{ 'rotate' | translate }}</label>
+                    <input type="text" [(ngModel)]="dragObject[item].rotate" (change)="changeRotate(item)">
+                  </span>
+                  <br>
+                  <span>
+                    <label>{{ 'width' | translate }}</label>
+                    <input type="text" [(ngModel)]="dragObject[item].width" (change)="changeSize(item)">
+                  </span>
+                  <span>
+                    <label>{{ 'height' | translate }}</label>
+                    <input type="text" [(ngModel)]="dragObject[item].height" (change)="changeSize(item)">
+                  </span>
+                  <span>
+                    <label>{{ 'altitude' | translate }}</label>
+                    <input type="text" [(ngModel)]="dragObject[item].altitude">
+                  </span>
+                  <span>
+                    <label>{{ 'material' | translate }}</label>
+                    <select class="w7em" [(ngModel)]="dragObject[item].material">
+                      <option value="0">{{ 'material.wood' | translate }}</option>
+                      <option value="1">{{ 'material.cement' | translate }}</option>
+                      <option value="2">{{ 'material.light_steel_frame' | translate }}</option>
+                      <option value="3">{{ 'material.glass' | translate }}</option>
+                      <option value="4">{{ 'material.stainless' | translate }}</option>
+                    </select>
+                  </span>
+                  <span class="clearAll clearOne ml-3" (click)="removeObj(item)">
+                    <span class="material-icons">clear</span>
+                  </span>
+                </li>
+              </ol>
             </mat-expansion-panel>
             
             <mat-expansion-panel>
@@ -655,19 +608,7 @@
                 <span class="material-icons">clear</span>Clear All
               </span>
               <ul>
-                      <!--<label>基站頻率</label>
-                      <span>
-                        <select [(ngModel)]="calculateForm.objectiveIndex">
-                          <option value="1">3.5</option>
-                          <option value="2">3</option>
-                          <option value="3">5</option>
-                          <option value="3">10</option>
-                          <option value="3">15</option>
-                        </select>
-                      </span>-->
-                    
                 <li>
-                  <!--<p>{{ 'defaultBs' | translate }}</p>-->
                   <ol>
                     <li *ngFor="let item of defaultBSList">
                       <span>
@@ -681,6 +622,9 @@
                       <span>
                         <label>Z</label>
                         <input type="text" [(ngModel)]="dragObject[item].z" >
+                      </span>
+                      <span class="clearAll clearOne ml-3" (click)="removeObj(item)">
+                        <span class="material-icons">clear</span>
                       </span>
                     </li>
                   </ol>
@@ -699,9 +643,6 @@
               </span>
               <ul>
                 <li>
-                  <!--<p [class]="subitemClass['ue']">行動終端設定<label class="matBadge">{{ ueList.length }}</label>
-                    <span (click)="arrowUpDown($event, 'ue')" class="material-icons">keyboard_arrow_up</span>
-                  </p>-->
                   <ol>
                     <li *ngFor="let item of ueList">
                       <span>
@@ -718,6 +659,9 @@
                           <option *ngFor="let z of zValues" [value]="z">{{ z }}</option>
                         </select>
                       </span>
+                      <span class="clearAll clearOne ml-3" (click)="removeObj(item)">
+                        <span class="material-icons">clear</span>
+                      </span>
                     </li>
                   </ol>
                 </li>
@@ -733,22 +677,25 @@
               <span *ngIf="candidateList.length > 0" class="clearAll" (click)="clearAll('candidate')">
                 <span class="material-icons">clear</span>Clear All
               </span>
-                <ol>
-                  <li *ngFor="let item of candidateList">
-                    <span>
-                      <label>X</label>
-                      <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
-                    </span>
-                    <span>
-                      <label>Y</label>
-                      <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
-                    </span>
-                    <span>
-                      <label>Z</label>
-                      <input type="text" [(ngModel)]="dragObject[item].z" >
-                    </span>
-                  </li>
-                </ol>
+              <ol>
+                <li *ngFor="let item of candidateList">
+                  <span>
+                    <label>X</label>
+                    <input type="text" [(ngModel)]="dragObject[item].x" (change)="changePosition(item)">
+                  </span>
+                  <span>
+                    <label>Y</label>
+                    <input type="text" [(ngModel)]="dragObject[item].y" (change)="changePosition(item)">
+                  </span>
+                  <span>
+                    <label>Z</label>
+                    <input type="text" [(ngModel)]="dragObject[item].z" >
+                  </span>
+                  <span class="clearAll clearOne ml-3" (click)="removeObj(item)">
+                    <span class="material-icons">clear</span>
+                  </span>
+                </li>
+              </ol>
             </mat-expansion-panel>
       
             <mat-expansion-panel>
@@ -756,14 +703,6 @@
                 <mat-panel-title>{{ 'planning.model' | translate }}</mat-panel-title>
               </mat-expansion-panel-header>
               <ul>
-                <!--<li>
-                  <p>
-                    <span>Path Loss Model</span>
-                    <select class="widthAuto">
-                      <option>台中智機場域</option>
-                    </select>
-                  </p>
-                </li>-->
                 <li>
                   <p>
                     <label>{{ 'pathLossModelId' | translate }}</label>

@@ -27,7 +27,7 @@ interface PlotHTMLElement extends HTMLElement {
   templateUrl: './site-planning.component.html',
   styleUrls: ['./site-planning.component.scss']
 })
-export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SitePlanningComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
@@ -370,7 +370,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               this.calculateForm = JSON.parse(window.sessionStorage.getItem(`form_${this.taskid}`));
             }
 
-            this.initData(false);
+            this.initData(false, false);
           },
           err => {
             this.msgDialogConfig.data = {
@@ -394,11 +394,14 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           this.calculateForm.bandwidth = 1;
         }
 
-        this.initData(false);
+        this.initData(false, false);
       }
     }
   }
 
+  /**
+   * 離開頁面
+   */
   ngOnDestroy(): void {
     this.setForm();
     // 暫存
@@ -418,15 +421,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } catch (error) {}
   }
 
-  ngAfterViewInit(): void {
-    // this.tools = _.cloneDeep(document.querySelector('.tool').innerHTML);
-    // this.moveable.destroy();
-  }
-
   /**
-   * init data
+   * init Data
+   * @param isImportXls 是否import xlxs
+   * @param isImportImg 是否import image
    */
-  initData(isImport) {
+  initData(isImportXls, isImportImg) {
     if (typeof this.chart !== 'undefined') {
       this.chart.nativeElement.style.opacity = 0;
     }
@@ -486,7 +486,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           config: defaultPlotlyConfiguration
         }).then((gd) => {
           const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
-          const rect = xy.getBoundingClientRect();
           
           const image = new Image();
           image.src = reader.result.toString();
@@ -518,39 +517,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
               }
             }
 
-            // let imgWidth = (main.width / image.width) * image.width;
-            // let imgHeight = (main.height / image.height) * image.height;
-            // console.log(image.width, image.height, maxHeight, main.width, main.height)
-            // if (imgHeight > maxHeight) {
-            //   const ratio = maxHeight / imgHeight;
-            //   console.log(ratio)
-            //   imgHeight = maxHeight;
-            //   imgWidth = imgWidth * ratio;
-            // }
             console.log(imgWidth, imgHeight);
             const layoutOption = {
               width: imgWidth,
               height: imgHeight
             };
-            // let imgHeight = image.height;
-            // const imgWidth = image.width;
-            // if (imgHeight > maxHeight) {
-            //   imgHeight = maxHeight;
-
-            //   console.log(imgHeight, image.height - imgHeight)
-            // }
-            // let layoutOption;
-            // if (imgWidth > imgHeight) {
-            //   const height = (imgHeight / (imgWidth * 0.9)) * rect.width;
-            //   layoutOption = {
-            //     height: height
-            //   };
-            // } else {
-            //   const width = (imgWidth / (imgHeight * 0.9)) * rect.height;
-            //   layoutOption = {
-            //     width: width
-            //   };
-            // }
 
             Plotly.relayout('chart', layoutOption).then((gd2) => {
               this.chart.nativeElement.style.opacity = 1;
@@ -566,9 +537,12 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
 
               // 計算比例尺
               this.calScale(gd2);
-              // import xlsx
-              if (isImport) {
+              
+              if (isImportXls) {
+                // import xlsx
                 this.setImportData();
+              } else if (isImportImg) {
+                // do noting
               } else if (this.taskid !== '' || sessionStorage.getItem('form_blank_task') != null) {
                 // 編輯
                 this.edit();
@@ -603,8 +577,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         // 計算比例尺
         this.calScale(gd);
         // import xlsx
-        if (isImport) {
+        if (isImportXls) {
           this.setImportData();
+        } else if (isImportImg) {
+          // do nothing
         } else if (this.taskid !== '' || sessionStorage.getItem('form_blank_task') != null) {
           // 編輯
           this.edit();
@@ -768,7 +744,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       z: this.zValues[0],
       width: width,
       height: height,
-      altitude: 50,
+      altitude: this.calculateForm.altitude,
       rotate: 0,
       title: this.svgMap[id].title,
       type: this.svgMap[id].type,
@@ -1141,7 +1117,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.matMenuTrigger.openMenu();
   }
 
-  /** delete */
+  /**
+   * 刪除互動物件
+   */
   delete() {
     if (this.dragObject[this.svgId].type === 'obstacle') {
       this.obstacleList.splice(this.obstacleList.indexOf(this.svgId), 1);
@@ -1152,9 +1130,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (this.dragObject[this.svgId].type === 'UE') {
       this.ueList.splice(this.ueList.indexOf(this.svgId), 1);
     }
-    window.setTimeout(() => {
-      delete this.dragObject[this.svgId];
-    }, 300);
   }
 
   /** change color */
@@ -1175,6 +1150,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * 開啟高度設定燈箱
+   */
   openHeightSetting() {
     this.matDialog.open(this.materialModal);
   }
@@ -1192,12 +1170,30 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setLabel();
   }
 
+  /**
+   * mouseout物件
+   * @param event 
+   */
   hoverout(event) {
     this.live = false;
   }
 
-  /** file change */
+  /**
+   * image upload
+   * @param event 
+   */
   fileChange(event) {
+    // 清除所有物件
+    this.obstacleList.length = 0;
+    this.defaultBSList.length = 0;
+    this.candidateList.length = 0;
+    this.ueList.length = 0;
+    this.dragObject = {};
+    this.calculateForm.obstacleInfo = '';
+    this.calculateForm.defaultBs = '';
+    this.calculateForm.candidateBs = '';
+    this.calculateForm.ueCoordinate = '';
+
     const file = event.target.files[0];
     this.calculateForm.mapName = file.name;
     this.showFileName = false;
@@ -1205,7 +1201,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     reader.readAsDataURL(file);
     reader.onload = () => {
       this.calculateForm.mapImage = reader.result.toString();
-      this.initData(false);
+      this.initData(false, true);
     };
   }
 
@@ -1221,14 +1217,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         left: `${left + width - 10}px`
       };
       // console.log(this.spanStyle[svgId], this.circleStyle[svgId])
-    }
-  }
-
-  setCheckbox(val) {
-    if (val !== '') {
-      return true;
-    } else {
-      return false;
     }
   }
 
@@ -1279,7 +1267,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** 規劃目標  */
+  /** 設定規劃目標  */
   setPlanningObj() {
     // check規劃目標
     if (this.planningIndex === '1') {
@@ -1375,7 +1363,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // 現有基站
       for (let i = 0; i < this.defaultBSList.length; i++) {
         const obj = this.dragObject[this.defaultBSList[i]];
-        // defaultBs += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
         defaultBs += `[${obj.x},${obj.y},${obj.z}]`;
         if (i < this.defaultBSList.length - 1) {
           defaultBs += '|';
@@ -1389,7 +1376,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       // 新增基站
       for (let i = 0; i < this.candidateList.length; i++) {
         const obj = this.dragObject[this.candidateList[i]];
-        // candidate += `[${obj.x},${obj.y},${obj.z},${obj.material}]`;
         candidate += `[${obj.x},${obj.y},${obj.z}]`;
         if (i < this.candidateList.length - 1) {
           candidate += '|';
@@ -1411,6 +1397,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * 進度百分比，3秒加1%
+   */
   addInterval() {
     this.pgInterval = window.setInterval(() => {
       if (this.progressNum < 100) {
@@ -1453,8 +1442,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
           }
           this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid }});
           
-          // location.replace(`#/site/result?taskId=${this.taskid}`);
-          // location.reload();
         } else {
           // query again
           window.clearInterval(this.progressInterval);
@@ -1487,6 +1474,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  /**
+   * 變更場域size
+   * @param svgId 物件id 
+   */
   changeSize(svgId) {
     this.svgId = svgId;
     this.target = document.querySelector(`#${svgId}`);
@@ -1517,13 +1508,16 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       const points = `${elementWidth / 2},0 ${elementWidth}, ${elementHeight} 0, ${elementHeight}`;
       dragRect.setAttribute('points', points);
     }
-    // this.setDragData();
+
     if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
       this.moveNumber(svgId);
     }
   }
 
-  /** change X,Y */
+  /**
+   * 變更物件位置
+   * @param svgId 物件id
+   */
   changePosition(svgId) {
     // this.svgId = svgId;
     this.target = document.querySelector(`#${svgId}`);
@@ -1549,7 +1543,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** change rotate */
+  /**
+   * 變更物件角度
+   * @param svgId 物件id
+   */
   changeRotate(svgId) {
     this.svgId = svgId;
     this.target = document.querySelector(`#${svgId}`);
@@ -1563,7 +1560,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** clear all */
+  /**
+   * 清除全部物件
+   * @param type 物件類別
+   */
   clearAll(type) {
     if (type === 'obstacle') {
       this.obstacleList.length = 0;
@@ -1576,27 +1576,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /** 圖區縮放 */
-  plotResize() {
-    // window.setTimeout(() => {
-    //   const dArea = document.getElementById('d_area');
-    //   if (dArea != null) {
-    //     const dWidth = dArea.clientWidth;
-    //     Plotly.relayout('chart', {
-    //       width: dWidth
-    //     }).then((gd) => {
-    //       // 重新計算比例尺
-    //       this.calScale(gd);
-    //       // 物件移動
-    //       const ary = _.concat(this.obstacleList, this.defaultBSList, this.candidateList, this.ueList);
-    //       for (const item of ary) {
-    //         this.changePosition(item);
-    //       }
-    //     });
-    //   }
-    // }, 300);
-  }
-
+  /**
+   * View 3D
+   */
   view3D() {
     const defaultBS = [];
     for (const item of this.defaultBSList) {
@@ -1718,7 +1700,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     const bsWS: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(bsData);
     XLSX.utils.book_append_sheet(wb, bsWS, 'bs parameters');
     // algorithm parameters
-
     const algorithmData = [
       ['crossover', 'mutation', 'iteration', 'seed', 'computeRound', 'useUeCoordinate', 'pathLossModel'],
       [
@@ -1741,7 +1722,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     XLSX.writeFile(wb, `${this.calculateForm.taskName}.xlsx`);
   }
 
-  /** import xlsx */
+  /**
+   * 匯入xlsx
+   * @param event file
+   */
   import(event) {
     /* wire up file reader */
     const target: DataTransfer = <DataTransfer> (event.target);
@@ -1762,7 +1746,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     reader.readAsBinaryString(target.files[0]);
   }
 
-  /** read xls */
+  /**
+   * Read xlsx
+   * @param result Reader result
+   */
   readXls(result) {
     this.obstacleList.length = 0;
     this.defaultBSList.length = 0;
@@ -1814,7 +1801,7 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
   
-      this.initData(true);
+      this.initData(true, false);
     } catch (error) {
       console.log(error);
       // fail xlsx
@@ -1829,22 +1816,11 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
       }, 2000);
     }
 
-    // if (mapData.length === 1) {
-    //   // fail xlsx
-    //   // this.msgDialogConfig.data = {
-    //   //   type: 'error',
-    //   //   infoMessage: this.translateService.instant('xlxs.fail')
-    //   // };
-    //   // this.matDialog.open(MsgDialogComponent, this.msgDialogConfig);
-    //   this.calculateForm.width = 1;
-    //   this.calculateForm.height = 1;
-    //   this.calculateForm.altitude = 1;
-    //   this.initData(false);
-    // } else {
-      
-    // }
   }
 
+  /**
+   * 載入匯入物件
+   */
   setImportData() {
     this.obstacleList.length = 0;
     this.defaultBSList.length = 0;
@@ -2171,6 +2147,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * 儲存場域
+   */
   save() {
     this.authService.spinnerShowAsHome();
     this.setForm();
@@ -2188,6 +2167,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  /**
+   * 首頁點編輯場域
+   */
   edit() {
     // obstacleInfo
     if (!this.authService.isEmpty(this.calculateForm.obstacleInfo)) {
@@ -2237,11 +2219,6 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.spanStyle[id].opacity = 1;
         }
-
-        // if (this.dragObject[id].rotate !== 0) {
-        //   this.spanStyle[id].top = `${this.chartHeight - this.pixelYLinear(item[3]) - this.pixelYLinear(item[1]) + 3}px`;
-        // }
-        
   
         const width = this.pixelXLinear(item[2]);
         const height = this.pixelYLinear(item[3]);
@@ -2478,6 +2455,9 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * 互動結束event
+   */
   dragEnd() {
     for (const item of this.obstacleList) {
       if (item !== this.svgId) {
@@ -2543,6 +2523,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     return result.trim();
   }
 
+  /**
+   * 障礙物物件類型判別
+   * @param type 物件類型
+   */
   svgElmMap(type) {
     if (Number(type) === 0) {
       return {
@@ -2582,6 +2566,10 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  /**
+   * 障礙物形狀轉換
+   * @param type 形狀
+   */
   parseElement(type) {
     if (type === 'rect') {
       return 0;
@@ -2594,6 +2582,15 @@ export class SitePlanningComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       return type;
     }
+  }
+
+  /**
+   * 右側清單刪除互動物件
+   * @param id 
+   */
+  removeObj(id) {
+    this.svgId = id;
+    this.delete();
   }
 
 }
