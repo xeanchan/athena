@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject, EventEmitter } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+/**
+ * 公用Confirm dialog util
+ */
 @Component({
   selector: 'app-confirm-dailog',
   templateUrl: './confirm-dailog.component.html',

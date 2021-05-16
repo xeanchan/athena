@@ -1,0 +1,3 @@
+{
+  "exclude": ["src/test.ts", "src/**/*.spec.ts", "src/app/service/js-pdffont.service.ts"]
+}

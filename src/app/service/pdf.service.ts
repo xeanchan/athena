@@ -3,6 +3,9 @@ import html2canvas from 'html2canvas';
 import * as jsPDF from 'jspdf';
 import { AuthService } from './auth.service';
 
+/**
+ * PDF Service
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +13,10 @@ export class PdfService {
 
   constructor(private authService: AuthService) { }
 
-  /** export PDF */
+  /**
+   * export PDF
+   * @param taskName 
+   */
   async export(taskName) {
     this.authService.spinnerShow();
     const pdf = new jsPDF('p', 'mm', 'a4'); // A4 size page of PDF

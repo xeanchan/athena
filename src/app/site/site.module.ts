@@ -5,7 +5,6 @@ import { SiteRoutingModule } from './site-routing.module';
 import { SitePlanningModule } from './site-planning/site-planning.module';
 import { View3dModule } from './view3d/view3d.module';
 import { ResultModule } from './result/result.module';
-import { PlanningReportModule } from './planning-report/planning-report.module';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -14,9 +13,7 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     SiteRoutingModule,
     SitePlanningModule,
-    View3dModule,
-    ResultModule,
-    PlanningReportModule
+    View3dModule
   ],
   declarations: []
 })

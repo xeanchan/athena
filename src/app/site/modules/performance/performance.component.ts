@@ -2,6 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * 結果頁效能分析
+ */
 @Component({
   selector: 'app-performance',
   templateUrl: './performance.component.html',
@@ -10,8 +13,10 @@ import { TranslateService } from '@ngx-translate/core';
 export class PerformanceComponent implements OnInit {
 
   constructor(private translateService: TranslateService) { }
-
+  
+  /** 結果資料 */
   result = {};
+  /** 結果form */
   calculateForm = new CalculateForm();
   /** 地圖切面 list */
   zValueList = [];
@@ -19,6 +24,7 @@ export class PerformanceComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /** set data */
   setData() {
     // 地圖切面 list
     const zValues = this.calculateForm.zValue.replace('[', '').replace(']', '').split(',');
@@ -32,6 +38,7 @@ export class PerformanceComponent implements OnInit {
     }
   }
 
+  /** parse無資料為- */
   parseNoData(val, isPercentage, type) {
     if (val == null || val === '') {
       return '-';

@@ -2,33 +2,6 @@
   <div class="signal_strength">
     <input type="hidden" id="is_strength" value="true">
     <img *ngIf="showImg" src="{{ imageSRC }}" alt="">
-    <!-- <div class="color_bar">
-      <div *ngFor="let item of colorBars" [ngStyle]="item"><label>{{ item.val }}</label></div>
-      <div style="color: #000;">dBm</div>
-    </div> -->
-    
-    <!-- 新增基站 -->
-    <!-- <span *ngFor="let item of candidateList" [matTooltip]="item.hover" [ngStyle]="item.style" #tooltip="matTooltip" matTooltip="{{ item.text }}" style="z-index: 99999;">
-      <svg class="drag_obj" width="30" height="30" xmlns="http://www.w3.org/2000/svg">
-        <g>
-          <rect fill="none" id="canvas_background" height="3" width="25" y="-1" x="-1"/>
-        </g>
-        <g>
-          <g>
-            <rect  x="0" width="24" height="15" fill="none"/>
-          </g>
-          <g>
-            <g stroke="null">
-              <g stroke="null">
-                <rect stroke="#000" rx="3" id="svg_3" height="17.79447" width="27.84664" y="0.08384" x="0.08216" stroke-opacity="null" stroke-width="0" fill="#000"/>
-                <text stroke="#fff" transform="matrix(0.8532502651214598,0,0,0.8532502651214598,0.7290017828345299,0.38280437514185905) " font-style="normal" font-weight="bold" xml:space="preserve" text-anchor="start" font-family="sans-serif" font-size="12" id="svg_7" y="14.00717" x="3.15093" stroke-opacity="null" stroke-width="0" fill="#fff">New</text>                  
-              </g>
-            </g>
-          </g>
-        </g>
-      </svg>
-    </span>
-    <span *ngFor="let item of candidateList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle pink_circle" >{{ item.num }}</span> -->
 
     <div class="quality_img" [ngStyle]="style" style="z-index: -1;">
       <!-- 障礙物 -->
@@ -90,23 +63,7 @@
       </span>
       <span *ngFor="let item of defaultBsList; let i=index" [ngStyle]="item.circleStyle" class="rounded-circle blue_circle" >{{ (i + 1) }}</span>
       
-      <!-- UE -->
-      <span *ngFor="let item of ueList" [ngStyle]="item.style">
-        <svg width="20" height="30" class="s_ue" xmlns="http://www.w3.org/2000/svg">
-          <g>
-            <rect fill="none" height="10" width="29" y="-1" x="-1"/>
-          </g>
-          <g>
-            <path class="drag_rect" [attr.fill]="item.color" d="M15.88,0H3.12C1.4,0,0,1.47,0,3.27v22.46C0,27.53,1.4,29,3.12,29h12.76C17.6,29,19,27.53,19,25.73V3.27
-            C19,1.47,17.6,0,15.88,0z M9.5,27.09c-0.48,0-0.86-0.41-0.86-0.91c0-0.5,0.39-0.91,0.86-0.91c0.48,0,0.86,0.41,0.86,0.91
-            C10.36,26.69,9.98,27.09,9.5,27.09z M16.71,21.99c0,0.77-0.59,1.39-1.32,1.39H3.61c-0.73,0-1.32-0.62-1.32-1.39V4.11
-            c0-0.77,0.59-1.39,1.32-1.39h11.77c0.73,0,1.32,0.62,1.32,1.39V21.99z"/>
-          </g>
-        </svg>
-      </span>
     </div>
-    <!-- <div class="quality_img" [ngStyle]="style" style="opacity: 0.7;">
-      <span *ngFor="let item of heatmap" [ngStyle]="item" #tooltip="matTooltip" matTooltip="{{ item.hoverInfo }}" ></span>
-    </div> -->
+
   </div>
 </div>

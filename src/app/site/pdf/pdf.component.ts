@@ -20,6 +20,9 @@ import { ActivatedRoute } from '@angular/router';
 
 declare var Plotly: any;
 
+/**
+ * 匯出pdf
+ */
 @Component({
   selector: 'app-pdf',
   templateUrl: './pdf.component.html',
@@ -32,27 +35,44 @@ export class PdfComponent implements OnInit {
     private formService: FormService,
     private jsPDFFontService: JsPDFFontService,
     private translateService: TranslateService,
-    private route: ActivatedRoute,
     private http: HttpClient) { }
-
+  
+  /** 測試用taskId */
   taskId = 'task_sel_365aa925-c004-443c-949d-a2eed2d9dd60_1';
-  result = {};
+  /** 結果form */
   calculateForm: CalculateForm = new CalculateForm();
+  /** 結果data */
+  result = {};
+  /** 高度 */
   zValues = [];
+  /** 現有基站 */
   defaultBs = [];
+  /** 新增基站 */
   inputBsList = [];
+  /** 障礙物 */
   obstacleList = [];
+  /** 行動終端 */
   ueList = [];
 
+  /** 建議方案 Component */
   @ViewChild('propose') propose: ProposeComponent;
+  /** 訊號品質圖 Component */
   @ViewChildren('quality') quality: QueryList<SignalQualityComponent>;
+  /** 訊號覆蓋圖 Component */
   @ViewChildren('cover') cover: QueryList<SignalCoverComponent>;
+  /** 訊號強度圖 Component */
   @ViewChildren('strength') strength: QueryList<SignalStrengthComponent>;
+  /** 效能分析 Component */
   @ViewChild('performance') performance: PerformanceComponent;
+  /** 統計圖 Component */
   @ViewChild('statistics') statistics: StatisticsComponent;
+  /** 設定資訊 Component */
   @ViewChild('siteInfo') siteInfo: SiteInfoComponent;
+  /** 3D訊號品質圖 Component */
   @ViewChildren('view3D1') view3D1: QueryList<View3dComponent>;
+  /** 3D訊號覆蓋圖 Component */
   @ViewChildren('view3D2') view3D2: QueryList<View3dComponent>;
+  /** 3D訊號強度圖 Component */
   @ViewChildren('view3D3') view3D3: QueryList<View3dComponent>;
 
   ngOnInit() {

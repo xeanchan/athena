@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../service/auth.service';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
+/**
+ * 共用Layout Component
+ */
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
@@ -13,16 +14,16 @@ export class LayoutComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private router: Router,
-    private http: HttpClient,
-    private dialog: MatDialog
+    private router: Router
   ) { }
 
   ngOnInit() {
   }
 
+  /**
+   * 回首頁
+   */
   home() {
-    // location.href = '';
     window.setTimeout(() => {
       try {
         this.router.navigate(['/']);  
@@ -34,8 +35,10 @@ export class LayoutComponent implements OnInit {
     
   }
 
+  /**
+   * 登出
+   */
   logout() {
-    // window.clearInterval(this.timeInterval);
     this.authService.logout();
   }
 

@@ -4,8 +4,6 @@ import { AuthService } from '../service/auth.service';
 import { NewPlanningComponent } from '../new-planning/new-planning.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import * as XLSX from 'xlsx';
-import { PdfService } from '../service/pdf.service';
 import { PdfComponent } from '../site/pdf/pdf.component';
 import { ExcelService } from '../service/excel.service';
 import { MsgDialogComponent } from '../utility/msg-dialog/msg-dialog.component';
@@ -14,8 +12,12 @@ import { CalculateForm } from '../form/CalculateForm';
 import { ConfirmDailogComponent } from '../utility/confirm-dailog/confirm-dailog.component';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Plotly套件引用 */
 declare var Plotly: any;
 
+/**
+ * Task List page
+ */
 @Component({
   selector: 'app-wireless-list',
   templateUrl: './wireless-list.component.html',
@@ -30,28 +32,36 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     private router: Router,
     private excelService: ExcelService,
     private formService: FormService,
-    private pdfService: PdfService,
     private translateService: TranslateService
   ) {
+    // 清除sessionStorage
     sessionStorage.removeItem('calculateForm');
     sessionStorage.removeItem('importFile');
     sessionStorage.removeItem('taskName');
   }
 
+  /** 運算中場域清單  */
   taskList: any = [];
+  /** 歷史資料清單  */
   hstList: any = [];
+  /** time interval  */
   timeInterval = 0;
+  /** open dialog物件 */
   dialogRef;
+  /** 新增場域Dialog config  */
   matDialogConfig: MatDialogConfig;
+  /** 訊息Dialog config  */
   msgDialogConfig: MatDialogConfig;
+  /** Confirm Dialog config  */
   confirmDialogConfig: MatDialogConfig;
-
-  // round
+  /** 數值格式化為.1  */
   roundFormat = Plotly.d3.format('.1f');
 
+  /** 呼叫PdfComponent元件 */
   @ViewChild('pdf')
   pdf: PdfComponent;
 
+  /** 呼叫Confirm Dialog元件 */
   @ViewChild('confirmAdd')
   confirmAdd: TemplateRef<any>;
 
@@ -64,10 +74,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.confirmDialogConfig.autoFocus = false;
 
     this.getList();
-    // window.setTimeout(() => {
-    //   this.startInterval();
-    // }, 5000);
-
+    // Query歷史紀錄
     this.http.get(`${this.authService.API_URL}/history/${this.authService.userId}/${this.authService.userToken}`).subscribe(
       res => {
         this.hstList = res['history'];
@@ -78,6 +85,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // 清除time interval
     window.clearInterval(this.timeInterval);
     for (let i = 0; i < this.timeInterval; i++) {
       window.clearInterval(i);
@@ -86,6 +94,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
 
   /**
    * get task list
+   * 每5秒取一次運算進度
    */
   getList() {
     if (this.authService.userToken != null) {
@@ -105,7 +114,7 @@ export class WirelessListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * timer get list
+   * timer get task list
    */
   startInterval() {
     window.clearInterval(this.timeInterval);
@@ -114,6 +123,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     }, 5000);
   }
 
+  /**
+   * logout
+   */
   logout() {
     window.clearInterval(this.timeInterval);
     for (let i = 0; i < this.timeInterval; i++) {
@@ -122,6 +134,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
+  /**
+   * open 新增場域dialog
+   */
   openDialog() {
     if (window.sessionStorage.getItem('form_blank_task') != null) {
       this.matDialogConfig.data = {
@@ -136,7 +151,10 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 匯出歷史紀錄excel */
+  /**
+   * 匯出歷史紀錄excel
+   * @param taskId taskId
+   */
   exportHstExcel(taskId) {
     let url = `${this.authService.API_URL}/historyDetail/${this.authService.userId}/`;
     url += `${this.authService.userToken}/${taskId}`;
@@ -157,7 +175,10 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** export excel */
+  /**
+   * 匯出非歷史紀錄excel
+   * @param taskId taskId
+   */
   exportExcel(taskId) {
     const url = `${this.authService.API_URL}/completeCalcResult/${taskId}/${this.authService.userToken}`;
     this.http.get(url).subscribe(
@@ -174,11 +195,20 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** export PDF */
+  /**
+   * export PDF
+   * @param taskId taskId
+   * @param isHst 是否歷史紀錄
+   */
   async exportPDF(taskId, isHst) {
     this.pdf.export(taskId, isHst);
   }
 
+  /**
+   * 編輯場域
+   * @param taskId taskId
+   * @param isHst 是否歷史紀錄
+   */
   edit(taskId, isHst) {
     this.authService.spinnerShow();
     window.clearInterval(this.timeInterval);
@@ -221,6 +251,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * 建立場域時使用暫存的場域資料
+   */
   useOld() {
     const form = sessionStorage.getItem('form_blank_task');
     sessionStorage.setItem('calculateForm', form);
@@ -228,6 +261,9 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/site/site-planning']);
   }
 
+  /**
+   * 建立場域時使用全新資料
+   */
   useNew() {
     this.dialog.closeAll();
     Object.keys(sessionStorage).forEach((d) => {
@@ -242,7 +278,11 @@ export class WirelessListComponent implements OnInit, OnDestroy {
     this.dialogRef = this.dialog.open(NewPlanningComponent, this.matDialogConfig);
   }
 
-  /** delete */
+  /**
+   * 刪除場域
+   * @param item 場域資料
+   * @param type hst: 歷史資料; task: 剛運算結束的資料
+   */
   delete(item, type) {
     const data = {
       infoMessage: `${this.translateService.instant('confirm.delete')}${item.taskName}?`

@@ -5,9 +5,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpClient } from '@angular/common/http';
 import { CalculateForm } from '../../form/CalculateForm';
-import html2canvas from 'html2canvas';
-import * as jsPDF from 'jspdf';
-import { PdfService } from '../../service/pdf.service';
 import { PdfComponent } from '../pdf/pdf.component';
 import { ProposeComponent } from '../modules/propose/propose.component';
 import { SignalQualityComponent } from '../modules/signal-quality/signal-quality.component';
@@ -24,6 +21,9 @@ import { Options } from '@angular-slider/ngx-slider/options';
 
 declare var Plotly: any;
 
+/**
+ * 結果頁
+ */
 @Component({
   selector: 'app-result',
   templateUrl: './result.component.html',
@@ -37,46 +37,61 @@ export class ResultComponent implements OnInit {
     private router: Router,
     private matDialog: MatDialog,
     public spinner: NgxSpinnerService,
-    private pdfService: PdfService,
     private translateService: TranslateService,
     private formService: FormService,
     private http: HttpClient) { }
 
+  /** task id */
   taskId;
-  // taskId = 'task_sel_26cc4b6e-7096-4202-aa39-500a1214df85_0';
+  /** 結果data */
   result = {};
+  /** 結果form */
   calculateForm: CalculateForm = new CalculateForm();
+  /** 畫圖layout參數 */
   plotLayout;
+  /** 顯示訊號品質圖 */
   showQuality = true;
+  /** 顯示訊號覆蓋圖 */
   showCover = false;
+  /** 顯示訊號強度圖 */
   showStrength = false;
+  /** 高度list */
   zValues = [];
+  /** 已選高度 */
   zValue;
+  /** 訊號強度圖/訊號覆蓋圖/訊號強度圖 */
   chartType = 'SINR';
+  /** Message dialog config */
   msgDialogConfig: MatDialogConfig = new MatDialogConfig();
+  /** View 3D dialog config */
   view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
-
+  /** 現有基站 list */
   defaultBSList = [];
+  /** AP list */
   candidateList = [];
+  /** 障礙物 list */
   obstacleList = [];
+  /** 行動終端 list */
   ueList = [];
-  dragObject = {};
-  /** 歷史紀錄 */
+  /** 是否歷史紀錄 */
   isHst = false;
+  /** 是否顯示行動終端 */
   showUE = true;
+  /** 歷史紀錄 result output */
   hstOutput = {};
-  // 有UE
+  /** 有UE */
   showUEArea = false;
-  // 有障礙物
+  /** 有障礙物 */
   showObstacleArea = false;
-  // 有AP
+  /** 有AP */
   showCandidateArea = false;
-  // 障礙物顯示
+  /** 障礙物顯示 */
   showObstacle = true;
-  // AP顯示
+  /** AP顯示 */
   showCandidate = true;
-  // slide heatmapw透明度
+  /** slide heatmapw透明度 */
   opacityValue: number = 0.8;
+  /** slide heatmapw透明度清單 */
   opacityOptions: Options = {
     showSelectionBar: true,
     showTicks: true,
@@ -95,14 +110,21 @@ export class ResultComponent implements OnInit {
     ]
   };
 
+  /** PDF Component */
   @ViewChild('pdf') pdf: PdfComponent;
-
+  /** 建議方案 Component */
   @ViewChild('propose') propose: ProposeComponent;
+  /** 訊號品質圖 Component */
   @ViewChild('quality') quality: SignalQualityComponent;
+  /** 訊號覆蓋圖 Component */
   @ViewChild('cover') cover: SignalCoverComponent;
+  /** 訊號強度圖 Component */
   @ViewChild('strength') strength: SignalStrengthComponent;
+  /** 訊號強度圖 效能分析 */
   @ViewChild('performance') performance: PerformanceComponent;
+  /** 統計圖 效能分析 */
   @ViewChild('statistics') statistics: StatisticsComponent;
+  /** 設定資訊 效能分析 */
   @ViewChild('siteInfo') siteInfo: SiteInfoComponent;
 
   ngOnInit() {
@@ -121,6 +143,9 @@ export class ResultComponent implements OnInit {
 
   }
 
+  /**
+   * 取得結果
+   */
   getResult() {
     let url;
     if (this.isHst) {
@@ -322,7 +347,10 @@ export class ResultComponent implements OnInit {
     this.save(true);
   }
 
-  /** 儲存 */
+  /**
+   * 儲存
+   * @param isBack 儲存後是否回上一頁
+   */
   save(isBack) {
     const form = {
       id: this.authService.userId,
@@ -353,6 +381,9 @@ export class ResultComponent implements OnInit {
     );
   }
 
+  /**
+   * View 3D
+   */
   view3D() {
     this.view3dDialogConfig.data = {
       calculateForm: this.calculateForm,

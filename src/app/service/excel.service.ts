@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { CalculateForm } from '../form/CalculateForm';
 import * as XLSX from 'xlsx';
-import { JoystickAxis } from 'babylonjs';
 import { AuthService } from './auth.service';
 
+/**
+ * export excel
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +13,10 @@ export class ExcelService {
 
   constructor(private authService: AuthService) { }
 
+  /**
+   * export excel
+   * @param calculateForm 
+   */
   export(calculateForm: CalculateForm) {
     console.log(calculateForm);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();

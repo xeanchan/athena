@@ -4,18 +4,20 @@ import { SpinnerComponent } from './utility/spinner/spinner.component';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import { AuthService } from './service/auth.service';
 
+/**
+ * Main APP Component
+ */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @ViewChild('spinner') spinner: SpinnerComponent;
 
   constructor(
     public authService: AuthService,
     translate: TranslateService,
-    private _changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     // get last language setting
     if (window.localStorage.getItem('son_language') != null) {
@@ -31,10 +33,13 @@ export class AppComponent {
     translate.onLangChange.subscribe((event: LangChangeEvent) => {
       this.authService.lang = event.lang;
       // TODO This as a workaround.
-      this._changeDetectorRef.detectChanges();
+      this.changeDetectorRef.detectChanges();
       window.localStorage.setItem('son_language', event.lang);
     });
   }
+
+  /** loading Component */
+  @ViewChild('spinner') spinner: SpinnerComponent;
 
   /** 運算中 */
   show() {

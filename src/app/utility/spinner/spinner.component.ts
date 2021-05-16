@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router } from '@angular/router';
 
+/**
+ * 公用loading dialog util
+ */
 @Component({
   selector: 'app-spinner',
   templateUrl: './spinner.component.html',
@@ -11,8 +14,11 @@ export class SpinnerComponent {
 
   constructor(public spinner: NgxSpinnerService, private router: Router) { }
 
+  /** 顯示回首頁 */
   showHome = false;
+  /** 顯示運算中 */
   showCal = true;
+  /** 顯示loading */
   showLoad = false;
 
   /** show loading */
@@ -35,6 +41,7 @@ export class SpinnerComponent {
     this.spinner.show();
   }
 
+  /** show loading, 有運算中 */
   showCalculating() {
     this.showLoad = false;
     this.showCal = true;

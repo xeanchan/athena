@@ -11,7 +11,10 @@ export class FormService {
 
   constructor() { }
 
-  /** 歷史資料回寫CalculateForm */
+  /**
+   * 歷史資料回寫CalculateForm
+   * @param result 
+   */
   setHstToForm(result) {
     const calculateForm = new CalculateForm();
     calculateForm.addFixedBsNumber = result['addfixedbsnumber'];
@@ -47,7 +50,10 @@ export class FormService {
     return calculateForm;
   }
 
-  /** 轉換跟結果一樣的key */
+  /**
+   * 轉換跟結果一樣的key
+   * @param result 
+   */
   setHstOutputToResultOutput(result) {
     const output = {};
     output['averageRsrp'] = result['averagersrp'];

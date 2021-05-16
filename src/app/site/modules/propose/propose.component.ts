@@ -6,6 +6,9 @@ import html2canvas from 'html2canvas';
 
 declare var Plotly: any;
 
+/**
+ * 建議方案
+ */
 @Component({
   selector: 'app-propose',
   templateUrl: './propose.component.html',
@@ -18,6 +21,7 @@ export class ProposeComponent implements OnInit {
     private translateService: TranslateService
   ) { }
 
+  /** 圖layout */
   plotLayout;
   /** result output */
   result = {};
@@ -25,10 +29,14 @@ export class ProposeComponent implements OnInit {
   calculateForm = new CalculateForm();
   /** 建議方案 list */
   candidateList = [];
+  /** 是否PDF頁面 */
   isPDF = false;
 
+  /** 圖element */
   @ViewChild('layoutChart') layoutChart: ElementRef;
+  /** table element */
   @ViewChild('proposeTbody') proposeTbody: ElementRef<HTMLElement>;
+  /** image element */
   @ViewChild('proposeImg') proposeImg: ElementRef<HTMLImageElement>;
 
   @HostListener('window:resize') windowResize() {
@@ -40,7 +48,10 @@ export class ProposeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  /** draw layout */
+  /**
+   * draw layout
+   * @param isPDF 
+   */
   drawLayout(isPDF) {
     this.layoutChart.nativeElement.style.opacity = 0;
     const images = [];
@@ -70,6 +81,11 @@ export class ProposeComponent implements OnInit {
     }
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   * @param images 
+   */
   draw(isPDF, images) {
     const defaultPlotlyConfiguration = {
       displaylogo: false,
@@ -245,11 +261,17 @@ export class ProposeComponent implements OnInit {
     });
   }
 
+  /**
+   * replace i18n文字內容
+   */
   getWaitSelect() {
     return this.translateService.instant('result.propose.wait_select_2')
     .replace('{0}', this.candidateList.length);
   }
 
+  /**
+   * 將圖轉為image
+   */
   async toImg() {
     const proposeData = <HTMLDivElement> document.querySelector(`#propose`);
     await html2canvas(proposeData, {

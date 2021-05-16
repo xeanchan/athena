@@ -1,18 +1,12 @@
 import { Component, OnInit, Inject, Optional, ViewChild, ElementRef } from '@angular/core';
 import { CalculateForm } from '../../form/CalculateForm';
-import { AuthService } from '../../service/auth.service';
-import { Router } from '@angular/router';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
-import * as _ from 'lodash';
-// import { Scene, Engine } from 'babylonjs';
-
 import * as BABYLON from 'babylonjs';
 import * as Earcut from 'earcut';
-import { Engine } from 'babylonjs';
 
-declare const Plotly: any;
-
+/**
+ * View 3D
+ */
 @Component({
   selector: 'app-view3d',
   templateUrl: './view3d.component.html',
@@ -21,10 +15,7 @@ declare const Plotly: any;
 export class View3dComponent implements OnInit {
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
     private matDialog: MatDialog,
-    private http: HttpClient,
     @Optional() @Inject(MAT_DIALOG_DATA) public data) {
 
       if (data != null) {
@@ -46,6 +37,7 @@ export class View3dComponent implements OnInit {
 
     }
 
+  /** 結果form */
   calculateForm: CalculateForm;
   /** 障礙物 */
   obstacleList = [];
@@ -55,50 +47,60 @@ export class View3dComponent implements OnInit {
   candidateList = [];
   /** 新增ＵＥ */
   ueList = [];
+  /** 互動的物件 */
   dragObject = {};
-
+  /** 高度list */
   zValue = [];
+  /** BABYLON engine */
   engine = null;
+  /** BABYLON scene */
   scene = null;
+  /** 障礙物 group */
   obstacleGroup = [];
+  /** 現有基站 group */
   defaultBsGroup = [];
+  /** 新增AP group */
   candidateGroup = [];
+  /** 行動終端 group */
   ueGroup = [];
+  /** heatmap group */
   heatmapGroup = {};
+  /** 顯示現有基站 */
   showDefaultBs = true;
+  /** 顯示AP */
   showCandidate = true;
+  /** 顯示行動終端 */
   showUe = true;
+  /** 顯有障礙物 */
   showObstacle = true;
-  heatmapType = 0;     // 0 = SINR, 1 = PCI, 2 = RSRP
+  /** 0 = SINR, 1 = PCI, 2 = RSRP */
+  heatmapType = 0;
+  /** heatmap height */
   planeHeight;
+  /** 圖寬 */
   width = 0;
+  /** 圖高 */
   height = 0;
+  /** 障礙物 list */
   obstacle = [];
+  /** 現有基站 list */
   defaultBs = [];
+  /** 新增AP list */
   candidate = [];
+  /** 行動終端 list */
   ue = [];
+  /** 結果data */
   result = {};
+  /** 是否PDF */
   isPDF = false;
-  // heatmapConfig = {
-  //   container: document.getElementById('heatmap'),
-  //   radius: 5,
-  //   maxOpacity: .8,
-  //   minOpacity: .8,
-  //   blur: 0,
-  //   gradient: {
-  //     // plotly js 'portland' setup
-  //     0: 'rgb(12, 51, 131)',
-  //     0.25: 'rgb(10,136,186)',
-  //     0.5: 'rgb(242,211,56)',
-  //     0.75: 'rgb(242,143,56)',
-  //     1: 'rgb(217,30,30)'
-  //   }
-  // };
+  /** heatmap config */
   heatmapConfig = [[12, 51, 131], [10, 136, 186], [242, 211, 56], [242, 143, 56], [217, 30, 30]];
 
+  /** canvas element */
   @ViewChild('canvas', { static: true }) 
   canvas: ElementRef<HTMLCanvasElement>;
 
+  /** image element */
   @ViewChild('img')
   img: ElementRef<HTMLImageElement>;
 
@@ -107,6 +109,9 @@ export class View3dComponent implements OnInit {
     
   }
 
+  /**
+   * 畫圖
+   */
   createScene() {
 
     this.engine = new BABYLON.Engine(this.canvas.nativeElement, true);
@@ -282,28 +287,35 @@ export class View3dComponent implements OnInit {
     return scene;
   }
 
+  /** 切換顯示障礙物 */
   switchObstacle() {
     for (const id of this.obstacleGroup){
       id.isVisible = !id.isVisible;
     }
   }
 
+  /** 切換顯示現有基站 */
   switchDefaultBs() {
     for (const id of this.defaultBsGroup) {
       id.isVisible = !id.isVisible;
     }
   }
+
+  /** 切換顯示新增AP */
   switchCandidate() {
     for (const id of this.candidateGroup){
       id.isVisible = !id.isVisible;
     }
   }
+
+  /** 切換顯示UE */
   switchUe() {
     for (const id of this.ueGroup){
       id.isVisible = !id.isVisible;
     }
   }
 
+  /** 切換顯示heatmap */
   switchHeatMap() {
     Object.keys(this.heatmapGroup).forEach(id => {
       for (let i = 0; i < 3; i++) {
@@ -316,6 +328,10 @@ export class View3dComponent implements OnInit {
     });
   }
 
+  /**
+   * 訊號覆蓋圖
+   * @param zIndex 高度
+   */
   genPciMapData(zIndex) {
     const blockCount = this.defaultBs.length + this.result['gaResult'].chosenCandidate.length;
     const colorMap = new Uint8Array(this.width * this.height * 3);
@@ -353,6 +369,10 @@ export class View3dComponent implements OnInit {
     return colorMap;
   }
 
+  /**
+   * 訊號品質圖
+   * @param zIndex 高度
+   */
   genSinrMapData(zIndex) {
     const colorMap = new Uint8Array(this.width * this.height * 3);
     const totalDelta = this.result['sinrMax'] - this.result['sinrMin'];
@@ -390,7 +410,10 @@ export class View3dComponent implements OnInit {
     return colorMap;
   }
 
-
+  /**
+   * 訊號強度圖
+   * @param zIndex 高度
+   */
   genRsrpMapData(zIndex) {
     const colorMap = new Uint8Array(this.width * this.height * 3);
     const totalDelta = this.result['rsrpMax'] - this.result['rsrpMin'];
@@ -428,6 +451,9 @@ export class View3dComponent implements OnInit {
     return colorMap;
   }
 
+  /**
+   * 畫圖
+   */
   mounted() {
     console.log('mounted');
     const vm = this;
@@ -448,6 +474,9 @@ export class View3dComponent implements OnInit {
     }
   }
 
+  /**
+   * closee dialog
+   */
   close() {
     this.matDialog.closeAll();
   }

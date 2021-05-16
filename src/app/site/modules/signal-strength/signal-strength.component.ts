@@ -2,10 +2,12 @@ import { Component, OnInit, Input, HostListener, ViewChildren, QueryList, Elemen
 import { AuthService } from '../../../service/auth.service';
 import { CalculateForm } from '../../../form/CalculateForm';
 import { TranslateService } from '@ngx-translate/core';
-import { Options } from '@angular-slider/ngx-slider';
 
 declare var Plotly: any;
 
+/**
+ * 訊號強度圖
+ */
 @Component({
   selector: 'app-signal-strength',
   templateUrl: './signal-strength.component.html',
@@ -18,36 +20,44 @@ export class SignalStrengthComponent implements OnInit {
     private translateService: TranslateService
   ) { }
 
-  // plotLayout;
+  /** 結果form */
   calculateForm = new CalculateForm();
+  /** 結果data */
   result = {};
+  /** 障礙物list */
   rectList = [];
-  ellipseList = [];
-  polygonList = [];
+  /** AP list */
   candidateList = [];
+  /** 現有基站 list */
   defaultBsList = [];
-  ueList = [];
+  /** 外框style */
   style = {};
-  colorBars = [];
-  imgSRC;
+  /** 高度 */
+  zValue = '';
+  /** 圖id */
   chartId;
+  /** show UE */
   showUE = true;
+  /** 圖區style */
   divStyle = {
     position: 'relative',
     opacity: 0
   };
-  zValue = '';
-  // 障礙物顯示style
+  /** 障礙物顯示 */
   showObstacle = 'visible';
-  // AP顯示style
+  /** AP顯示 */
   showCandidate = true;
-  // slide
+  /** slide */
   opacityValue: number = 0.8;
+  /** AP */
   shapes = [];
+  /** AP文字 */
   annotations = [];
+  /** 顯示圖轉換的image */
   showImg = false;
+  /** 圖轉換的image src */
   imageSRC = '';
-
+  /** 障礙物element */
   @ViewChildren('obstacletElm') obstacleElm: QueryList<ElementRef>;
 
   @HostListener('window:resize') windowResize() {
@@ -59,6 +69,11 @@ export class SignalStrengthComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   * @param zValue 
+   */
   draw(isPDF, zValue) {
     zValue = Number(zValue);
     this.zValue = zValue;
@@ -89,6 +104,11 @@ export class SignalStrengthComponent implements OnInit {
     }
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   * @param images 
+   */
   drawChart(isPDF, images) {
     const defaultPlotlyConfiguration = {
       displaylogo: false,
@@ -99,11 +119,8 @@ export class SignalStrengthComponent implements OnInit {
     };
 
     this.rectList.length = 0;
-    this.ellipseList.length = 0;
-    this.polygonList.length = 0;
     this.defaultBsList.length = 0;
     this.candidateList.length = 0;
-    this.ueList.length = 0;
 
     const layout = {
       autosize: true,
@@ -177,36 +194,6 @@ export class SignalStrengthComponent implements OnInit {
       zMin.push(Plotly.d3.min(item));
     }
 
-    // 套件的colorbar在pdf會空白，另外產生
-    this.colorBars.length = 0;
-    this.colorBars.push(
-      {
-        val: -44,
-        background: 'rgb(217,30,30)',
-        height: '25%'
-      },
-      {
-        val: -70,
-        background: 'linear-gradient(rgb(217,30,30), rgb(242,143,56))',
-        height: '25%'
-      },
-      {
-        val: -95,
-        background: 'linear-gradient(rgb(242,143,56), rgb(242,211,56))',
-        height: '25%'
-      },
-      {
-        val: -120,
-        background: 'linear-gradient(rgb(242,211,56), rgb(10,136,186))',
-        height: '25%'
-      },
-      {
-        val: -140,
-        background: 'linear-gradient(rgb(10,136,186), rgb(12,51,131))',
-        height: '25%'
-      }
-    );
-
     const x = [];
     const y = [];
     const wRatio = this.calculateForm.width / this.result['rsrpMap'].length;
@@ -261,11 +248,6 @@ export class SignalStrengthComponent implements OnInit {
       y: y,
       z: zData[zValues.indexOf(this.zValue)],
       text: zText[zValues.indexOf(this.zValue)],
-      // colorbar: {
-      //   tickmode: 'array',
-      //   tickvals: [-44, -60, -80, -100, -120, -140],
-      //   ticktext: [-44, -60, -80, -100, -120, -140]
-      // },
       colorscale: [
         ['0.0', 'rgb(12,51,131)'],
         ['0.25', 'rgb(10,136,186)'],
@@ -488,22 +470,7 @@ export class SignalStrengthComponent implements OnInit {
         const image = new Image();
         image.src = images[0].source;
         image.onload = () => {
-          // const maxHeight = window.innerHeight - 170;
-          // let imgHeight = image.height;
-          // if (imgHeight > maxHeight) {
-          //   imgHeight = maxHeight;
-          // }
-          // if (image.width > imgHeight) {
-          //   const height = (imgHeight / (image.width * 0.9)) * rect.width;
-          //   layoutOption = {
-          //     height: height
-          //   };
-          // } else {
-          //   const width = (image.width / (imgHeight * 0.9)) * rect.height;
-          //   layoutOption = {
-          //     width: width
-          //   };
-          // }
+
           const main = gd.getBoundingClientRect();
           console.log(`img width: ${image.width}, img height: ${image.height}`);
           console.log(`gd width: ${main.width}, gd height: ${main.height}`);
@@ -546,6 +513,12 @@ export class SignalStrengthComponent implements OnInit {
     });
   }
 
+  /**
+   * 畫好圖後重新計算比例尺
+   * @param id 
+   * @param layoutOption 
+   * @param isPDF 
+   */
   reLayout(id, layoutOption, isPDF) {
     Plotly.relayout(id, layoutOption).then((gd2) => {
       this.divStyle.opacity = 1;
@@ -671,26 +644,31 @@ export class SignalStrengthComponent implements OnInit {
     });
   }
 
-  /** show/hide UE */
+  /**
+   * show/hide UE
+   * @param visible 
+   */
   switchUE(visible) {
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [0]);
   }
 
-  /** show/hide 障礙物 */
+  /**
+   * show/hide 障礙物
+   * @param visible 
+   */
   switchShowObstacle(visible) {
     for (const item of this.rectList) {
       item.style['visibility'] = visible;
     }
   }
 
-  /** show/hide AP */
+  /**
+   * show/hide AP
+   * @param visible 
+   */
   switchShowCandidate(visible) {
-    // for (const item of this.candidateList) {
-    //   item.style['visibility'] = visible;
-    //   item.circleStyle['visibility'] = visible;
-    // }
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [2]);

@@ -6,6 +6,9 @@ import { Options } from '@angular-slider/ngx-slider';
 
 declare var Plotly: any;
 
+/**
+ * 訊號覆蓋圖
+ */
 @Component({
   selector: 'app-signal-cover',
   templateUrl: './signal-cover.component.html',
@@ -18,32 +21,42 @@ export class SignalCoverComponent implements OnInit {
     private translateService: TranslateService
   ) { }
 
-  // plotLayout;
+  /** 結果form */
   calculateForm = new CalculateForm();
+  /** 結果data */
   result = {};
+  /** 障礙物list */
   rectList = [];
-  ellipseList = [];
-  polygonList = [];
+  /** AP list */
   candidateList = [];
+  /** 現有基站 list */
   defaultBsList = [];
+  /** UE list */
   ueList = [];
+  /** 外框style */
   style = {};
+  /** 圖id */
   chartId;
+  /** show UE */
   showUE = true;
+  /** 圖區style */
   divStyle = {
     position: 'relative',
     opacity: 0
   };
+  /** 高度 */
   zValue = '1';
-  // 障礙物顯示style
+  /** 障礙物顯示 */
   showObstacle = 'visible';
-  // AP顯示style
+  /** AP顯示 */
   showCandidate = true;
-  // slide
+  /** slide */
   opacityValue: number = 0.8;
+  /** AP */
   shapes = [];
+  /** AP文字 */
   annotations = [];
-
+  /** 障礙物element */
   @ViewChildren('obstaclecElm') obstacleElm: QueryList<ElementRef>;
 
   @HostListener('window:resize') windowResize() {
@@ -55,6 +68,11 @@ export class SignalCoverComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   * @param zValue 
+   */
   draw(isPDF, zValue) {
     this.zValue = zValue;
     const images = [];
@@ -86,6 +104,11 @@ export class SignalCoverComponent implements OnInit {
 
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   * @param images 
+   */
   drawChart(isPDF, images) {
     const defaultPlotlyConfiguration = {
       displaylogo: false,
@@ -96,8 +119,6 @@ export class SignalCoverComponent implements OnInit {
     };
 
     this.rectList.length = 0;
-    this.ellipseList.length = 0;
-    this.polygonList.length = 0;
     this.defaultBsList.length = 0;
     this.candidateList.length = 0;
     this.ueList.length = 0;
@@ -570,6 +591,11 @@ export class SignalCoverComponent implements OnInit {
     });
   }
 
+  /**
+   * 畫好圖後重新計算比例尺
+   * @param id 
+   * @param layoutOption 
+   */
   reLayout(id, layoutOption) {
     Plotly.relayout(id, layoutOption).then((gd2) => {
       this.divStyle.opacity = 1;
@@ -616,7 +642,7 @@ export class SignalCoverComponent implements OnInit {
         if (item.shape === 1) {
           const points = `${width / 2},0 ${width}, ${height} 0, ${height}`;
           item['points'] = points;
-          console.log(item)
+          console.log(item);
         } else if (item.shape === 2) {
           item['ellipseStyle'] = {
             cx: width / 2,
@@ -694,26 +720,31 @@ export class SignalCoverComponent implements OnInit {
     return color;
   }
 
-  /** show/hide UE */
+  /**
+   * show/hide UE
+   * @param visible 
+   */
   switchUE(visible) {
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [0]);
   }
 
-  /** show/hide 障礙物 */
+  /**
+   * show/hide 障礙物
+   * @param visible 
+   */
   switchShowObstacle(visible) {
     for (const item of this.rectList) {
       item.style['visibility'] = visible;
     }
   }
 
-  /** show/hide AP */
+  /**
+   * show/hide AP
+   * @param visible 
+   */
   switchShowCandidate(visible) {
-    // for (const item of this.candidateList) {
-    //   item.style['visibility'] = visible;
-    //   item.circleStyle['visibility'] = visible;
-    // }
     Plotly.restyle(this.chartId, {
       visible: visible
     }, [4]);

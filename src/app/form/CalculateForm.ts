@@ -1,3 +1,6 @@
+/**
+ * 場域form
+ */
 export class CalculateForm {
 
   sessionid: string = null;

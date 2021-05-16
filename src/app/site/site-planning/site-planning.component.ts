@@ -16,12 +16,12 @@ import { MsgDialogComponent } from '../../utility/msg-dialog/msg-dialog.componen
 import { FormService } from '../../service/form.service';
 import { TranslateService } from '@ngx-translate/core';
 
+/** Plotly套件引用 */
 declare var Plotly: any;
 
-interface PlotHTMLElement extends HTMLElement {
-  on(eventName: string, handler: any): void;
-}
-
+/**
+ * 場域規劃頁
+ */
 @Component({
   selector: 'app-site-planning',
   templateUrl: './site-planning.component.html',
@@ -39,14 +39,25 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     private http: HttpClient) {
     }
 
+  /**
+   * NgxMoveableComponent
+   */
   @ViewChild('moveable') moveable: NgxMoveableComponent;
-  // @ViewChildren(TemplateRef) templateList: QueryList<TemplateRef<any>>;
+  /**
+   * MatMenuTrigger
+   */
   @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger: MatMenuTrigger;
-
+  /**
+   * moveable target
+   */
   target;
-  scalable = false;
+  /**
+   * resizable enable
+   */
   resizable = true;
-  warpable = false;
+  /**
+   * moveable 設定值
+   */
   frame = new Frame({
     width: '30px',
     height: '30px',
@@ -56,16 +67,20 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     transform: {
       rotate: '0deg',
       scaleX: 1,
-      scaleY: 1,
-      // matrix3d: [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+      scaleY: 1
     }
   });
-  iconList = [1, 2, 3];
-  // target;
-
+  /**
+   * sidenav 展開/收合
+   */
   opened = true;
+  /**
+   * mat-expansion-panel 展開/收合
+   */
   panelOpenState = false;
-  matrix;
+  /**
+   * 正在使用moveable物件
+   */
   live = false;
   /** calculate form */
   calculateForm: CalculateForm = new CalculateForm();
@@ -80,6 +95,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
   zValues = ['1', '', ''];
   /** 障礙物 */
   obstacleList = [];
+  /** 互動物件 */
   dragObject = {};
   /** 現有基站 */
   defaultBSList = [];
@@ -87,17 +103,25 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
   candidateList = [];
   /** 新增ＵＥ */
   ueList = [];
-  // 比例尺公式
+  /** 比例尺 X軸pixel轉長度公式 */
   xLinear;
+  /** 比例尺 Y軸pixel轉寬度公式 */
   yLinear;
+  /** 比例尺 X軸長度轉pixel公式 */
   pixelXLinear;
+  /** 比例尺 Y軸寬度轉pixel公式 */
   pixelYLinear;
-  // chart邊界
+  /** 圖區左邊界 */
   chartLeft = 0;
+  /** 圖區右邊界 */
   chartRight = 0;
+  /** 圖區上邊界 */
   chartTop = 0;
+  /** 圖區下邊界 */
   chartBottom = 0;
+  /** 圖寬度 */
   chartHeight = 0;
+  /** 互動svg種類 */
   svgMap = {
     rect: {
       id: 'svg_1',
@@ -142,40 +166,40 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       element: '3'
     }
   };
-  // select svg id
+  /** 當下互動物件的id */
   svgId;
-  /** 避免互動時id錯亂用 */
+  /** 互動物件的真實id，避免互動時id錯亂用 */
   realId;
-  scalex;
-  scaley;
+  /** 互動物件的tooltip */
   tooltipStr = '';
-  // round
+  /** 4捨5入格式化 */
   roundFormat = Plotly.d3.format('.1f');
-  // 預設無線模型 list
+  /** 預設無線模型 list */
   pathLossModelIdList = [];
+  /** 物件移動範圍 */
   bounds = {
     left: 0,
     top: 0,
     right: 400,
     bottom: 500
   };
-  // ue width
+  /** ue width */
   ueWidth = 9.5;
-  // ue height
+  /** ue height */
   ueHeight = 14.5;
-  // candidate width
+  /** candidate width */
   candidateWidth = 28;
-  // candidate height
+  /** candidate height */
   candidateHeight = 18;
-
-  // we create an object that contains coordinates
+  /** 右鍵選單position */
   menuTopLeftStyle = {top: '0', left: '0'};
-  public color;
-  // mouseover target
+  /** 障礙物顏色 */
+  color;
+  /** mouseover target */
   hoverObj;
-  // show image file name
+  /** show image file name */
   showFileName = true;
-  // number column list
+  /** number型態 column list */
   numColumnList = ['totalRound', 'crossover', 'mutation', 'iteration', 'seed',
     'width', 'height', 'altitude', 'pathLossModelId', 'useUeCoordinate',
     'powerMaxRange', 'powerMinRange', 'beamMaxId', 'beamMinId', 'objectiveIndex',
@@ -183,37 +207,51 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     'throughputRatio', 'coverageRatio', 'ueAvgSinrRatio', 'ueAvgThroughputRatio', 'ueTpByDistanceRatio',
     'mctsC', 'mctsMimo', 'ueCoverageRatio', 'ueTpByRsrpRatio',
     'mctsTemperature', 'mctsTime', 'mctsTestTime', 'mctsTotalTime'];
-    // 'distanceFactor', 'contantFactor',
-  // @Input() public bounds!: { left?: 10, top?: 20, right?: 70, bottom?: 50 };
-  // task id
+
+  /** task id */
   taskid = '';
-  // progress interval
+  /** progress interval */
   progressInterval = 0;
-  heightList = [];
+  /** 畫圖layout參數 */
   plotLayout;
+  /** View 3D dialog config */
   view3dDialogConfig: MatDialogConfig = new MatDialogConfig();
+  /** Message dialog config */
   msgDialogConfig: MatDialogConfig = new MatDialogConfig();
-  // tooltip
+  /** tooltip position */
   tooltipStyle = {
     left: '0px',
     top: '0px'
   };
+  /** span互動物件 style */
   spanStyle = {};
+  /** 方形互動物件 style */
   rectStyle = {};
+  /** 圓形互動物件 style */
   ellipseStyle = {};
+  /** 三角形互動物件 style */
   polygonStyle = {};
-  svgStyle = {};
-  pathStyle = {};
-  circleStyle = {};
+  /** 梯形形互動物件 style */
   trapezoidStyle = {};
+  /** svg互動物件 style */
+  svgStyle = {};
+  /** svg path互動物件 style */
+  pathStyle = {};
+  /** defaultBs編號 style */
+  circleStyle = {};
   /** workbook */
   wb: XLSX.WorkBook;
+  /** 互動區域範圍 */
   dragStyle = {};
   /** Wifi頻率 */
   wifiFrequency = '0';
+  /** 是否為歷史紀錄 */
   isHst = false;
+  /** 互動時的position left */
   currentLeft;
+  /** 互動時的position top */
   currentTop;
+  /** 避免跑版的暫存sapn style */
   ognSpanStyle;
   /** 1: 以整體場域為主進行規劃, 2: 以行動終端為主進行規劃 */
   planningIndex = '1';
@@ -231,16 +269,16 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
   subcarrier = 15;
   /** 進度 */
   progressNum = 0;
+  /** 進度百分比 time interval */
   pgInterval = 0;
+  /** 英文亂數用 */
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
+  /** 畫圖物件 */
   @ViewChild('chart') chart: ElementRef;
+  /** 高度設定燈箱 */
   @ViewChild('materialModal') materialModal: TemplateRef<any>;
 
-  @HostListener('window:resize') windowResize() {
-    // this.plotResize();
-  }
-
+  /** click外部取消moveable */
   @HostListener('document:click', ['$event'])
   clickout(event) {
     if (typeof this.target !== 'undefined' && this.target != null) {
@@ -292,7 +330,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     for (let i = 0; i < 9; i++) {
       this.pathLossModelIdList.push(i);
     }
-
+    // 接收URL參數
     this.route.queryParams.subscribe(params => {
       if (typeof params['taskId'] !== 'undefined') {
         this.taskid = params['taskId'];
@@ -312,8 +350,9 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       reader.readAsBinaryString(this.dataURLtoBlob(sessionStorage.getItem('importFile')));
 
     } else {
+      
       if (this.taskid !== '') {
-        // 編輯
+        // 編輯場域
         let url;
         if (this.isHst) {
           // 歷史紀錄
@@ -381,7 +420,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        // from new-planning upload image
+        // 新增場域 upload image
         this.calculateForm = JSON.parse(sessionStorage.getItem('calculateForm'));
 
         // 頻寬初始值
@@ -430,7 +469,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     if (typeof this.chart !== 'undefined') {
       this.chart.nativeElement.style.opacity = 0;
     }
-
+    // Plotly繪圖config
     const defaultPlotlyConfiguration = {
       displaylogo: false,
       showTips: false,
@@ -438,7 +477,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       scrollZoom: false,
       displayModeBar: false
     };
-
+    // 繪圖layout
     this.plotLayout = {
       autosize: true,
       xaxis: {
@@ -464,7 +503,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       const reader = new FileReader();
       reader.readAsDataURL(this.dataURLtoBlob(this.calculateForm.mapImage));
       reader.onload = (e) => {
-
+        // 背景圖
         this.plotLayout['images'] = [{
           source: reader.result,
           x: 0,
@@ -475,8 +514,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
           yref: 'y',
           xanchor: 'left',
           yanchor: 'bottom',
-          sizing: 'stretch',
-          hover: 'x+y'
+          sizing: 'stretch'
         }];
 
         // draw background image chart
@@ -485,8 +523,8 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
           layout: this.plotLayout,
           config: defaultPlotlyConfiguration
         }).then((gd) => {
-          const xy: SVGRectElement = gd.querySelector('.xy').querySelectorAll('rect')[0];
           
+          // 設定圖區的長寬
           const image = new Image();
           image.src = reader.result.toString();
           image.onload = () => {
@@ -523,6 +561,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
               height: imgHeight
             };
 
+            // image放進圖裡後需取得比例尺
             Plotly.relayout('chart', layoutOption).then((gd2) => {
               this.chart.nativeElement.style.opacity = 1;
               const xy2: SVGRectElement = gd2.querySelector('.xy').querySelectorAll('rect')[0];
@@ -647,7 +686,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     return new Blob([ia], {type: mimeString});
   }
 
-  /** add moveable */
+  /**
+   * 新增互動物件
+   * @param id 
+   */
   addMoveable(id) {
     try {
       this.moveable.destroy();
@@ -732,6 +774,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       width: `${width}px`,
       height: `${height}px`
     };
+
     this.svgStyle[this.svgId] = {
       display: 'inherit',
       width: width,
@@ -754,7 +797,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     };
 
     this.realId = _.cloneDeep(this.svgId);
-
+    // 預設互動外框設定值
     this.frame = new Frame({
       width: `${width}px`,
       height: `${height}px`,
@@ -782,7 +825,6 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
         this.moveable.rotatable = false;
         this.moveable.resizable = false;
       }
-      // this.moveable.
       
       this.moveable.ngOnInit();
       this.setDragData();
@@ -793,7 +835,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
 
   }
 
-  /** moveable init */
+  /**
+   * click互動物件
+   * @param id 
+   */
   moveClick(id) {
     try {
       this.moveable.destroy();
@@ -837,25 +882,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.setLabel();
   }
 
-  onWindowReisze = () => {
-    this.moveable.updateRect();
-  }
-  clickScalable() {
-    this.scalable = true;
-    this.resizable = false;
-    this.warpable = false;
-  }
-  clickResizable() {
-    this.scalable = false;
-    this.resizable = true;
-    this.warpable = false;
-  }
-  clickWarpable() {
-    this.scalable = false;
-    this.resizable = false;
-    this.warpable = true;
-  }
-
+  /**
+   * 設定互動外框style
+   * @param target 
+   */
   setTransform(target) {
     target.style.cssText = this.frame.toCSS();
   }
@@ -885,7 +915,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
       title += `Z: ${this.dragObject[id].z}<br>`;
     }
     if (this.dragObject[id].type === 'obstacle') {
-      title += `${this.translateService.instant('material')}: ${this.parseMaterial(this.dragObject[id].material)}`;
+      title += `${this.translateService.instant('material')}: ${this.authService.parseMaterial(this.dragObject[id].material)}`;
     }
     return title;
   }
@@ -930,25 +960,18 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.dragObject[this.svgId].height = hVal;
   }
 
-  parseMaterial(val) {
-    if (val === '0' || val === 0) {
-      return '木頭';
-    } else if (val === '1' || val === 1) {
-      return '水泥';
-    } else if (val === '2' || val === 2) {
-      return '輕鋼架';
-    } else if (val === '3' || val === 3) {
-      return '玻璃';
-    } else if (val === '4' || val === 4) {
-      return '不鏽鋼/其它金屬類';
-    }
-  }
-
+  /**
+   * moveable移動開始
+   * @param e 
+   */
   dragStart(e: any) {
     // e.bounds = this.bounds;
   }
 
-  /** drag */
+  /**
+   * moveable 移動中
+   * @param param0 
+   */
   onDrag({ target, clientX, clientY, top, left, isPinch }: OnDrag) {
     if (this.svgId !== this.realId) {
       this.svgId = _.cloneDeep(this.realId);
@@ -973,23 +996,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.setLabel();
   }
 
-  /** 縮放 */
-  onScale({ target, delta, clientX, clientY, isPinch }: OnScale) {
-    const scaleX = this.frame.get('transform', 'scaleX') * delta[0];
-    const scaleY = this.frame.get('transform', 'scaleY') * delta[1];
-    this.frame.set('transform', 'scaleX', scaleX);
-    this.frame.set('transform', 'scaleY', scaleY);
-    this.setTransform(target);
-    if (!isPinch) {
-      this.setLabel();
-    }
-    this.scalex = scaleX;
-    if (this.dragObject[this.svgId].type === 'defaultBS' || this.dragObject[this.svgId].type === 'candidate') {
-      this.moveNumber(this.svgId);
-    }
-  }
-
-  /** 旋轉角度 */
+  /**
+   * moveable 旋轉角度
+   * @param param0 
+   */
   onRotate({ target, clientX, clientY, beforeDelta, isPinch }: OnRotate) {
     if (this.svgId !== this.realId) {
       this.svgId = _.cloneDeep(this.realId);
@@ -1005,7 +1015,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.setLabel();
   }
 
-  /** 縮放 */
+  /**
+   * moveable resize
+   * @param param0 
+   */
   onResize({ target, clientX, clientY, width, height, drag }: OnResize) {
     if (this.svgId !== this.realId) {
       // 物件太接近，id有時會錯亂，還原id
@@ -1035,19 +1048,14 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     } else {
       this.frame.set('height', `${height}px`);
     }
-
     
-    this.spanStyle[this.svgId].transform = `rotate(${this.dragObject[this.svgId].rotate}deg)`;
-
-    
+    this.spanStyle[this.svgId].transform = `rotate(${this.dragObject[this.svgId].rotate}deg)`;   
     this.frame.set('z-index', 9999999);
     this.frame.set('transform', 'rotate', `${this.dragObject[this.svgId].rotate}deg`);
     this.setTransform(target);
     
     const beforeTranslate = drag.beforeTranslate;
     target.style.transform = `translate(${beforeTranslate[0]}px, ${beforeTranslate[1]}px) rotate(${this.dragObject[this.svgId].rotate}deg)`;
-    
-    // this.setTransform(target);
 
     this.svgStyle[this.svgId].width = width;
     this.svgStyle[this.svgId].height = height;
@@ -1079,6 +1087,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.setLabel();
   }
 
+  /**
+   * moveable 互動結束
+   * @param param0 
+   */
   onEnd() {
     this.live = false;
     for (const item of this.obstacleList) {
@@ -1089,11 +1101,18 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * destory moveable
+   */
   moveableDestroy() {
     this.moveable.destroy();
   }
 
-  /** 右邊選單開合切換 */
+  /**
+   * 右邊選單開合切換時變更上下箭頭
+   * @param event 
+   * @param type 
+   */
   arrowUpDown(event, type) {
     const target = event.target;
     if (target.innerHTML === 'keyboard_arrow_down') {
@@ -1105,7 +1124,11 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 右鍵選單 */
+  /**
+   * 右鍵選單
+   * @param event 
+   * @param svgId 
+   */
   onRightClick(event: MouseEvent, svgId) {
     this.svgId = svgId;
     // preventDefault avoids to show the visualization of the right-click menu of the browser
@@ -1162,7 +1185,11 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     this.dragObject[this.svgId].material = val;
   }
 
-  /** get mat-tooltip object */
+  /**
+   * mouseover info
+   * @param event 
+   * @param svgId 
+   */
   hover(event, svgId) {
     this.live = true;
     this.svgId = svgId;
@@ -1205,7 +1232,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     };
   }
 
-  /** 數量物件移動 */
+  /**
+   * 數量物件移動position
+   * @param svgId 
+   */
   moveNumber(svgId) {
     const circleElement: HTMLSpanElement = document.querySelector(`#${svgId}_circle`);
     if (circleElement != null) {
@@ -1983,10 +2013,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     const obstacleWS: XLSX.WorkSheet = this.wb.Sheets[obstacle];
     const obstacleData = (XLSX.utils.sheet_to_json(obstacleWS, {header: 1}));
     if (obstacleData.length > 1) {
-      let rect = 0;
-      let ellipse = 0;
-      let polygon = 0;
-      let trapezoid = 0;
+
       for (let i = 1; i < obstacleData.length; i++) {
         if ((<Array<any>> obstacleData[i]).length === 0) {
           continue;
@@ -1997,26 +2024,25 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
         if (shape === 'rect' || Number(shape) === 0) {
           id = `rect_${this.generateString(10)}`;
           type = 'rect';
-          rect++;
+
         } else if (shape === 'ellipse' || Number(shape) === 2) {
           id = `ellipse_${this.generateString(10)}`;
           type = 'ellipse';
-          ellipse++;
+
         } else if (shape === 'polygon' || Number(shape) === 1) {
           id = `polygon_${this.generateString(10)}`;
           type = 'polygon';
-          polygon++;
+
         } else if (shape === 'trapezoid' || Number(shape) === 3) {
           id = `trapezoid_${this.generateString(10)}`;
           type = 'trapezoid';
-          trapezoid++;
 
         } else {
           // default
           shape = '0';
           id = `rect_${this.generateString(10)}`;
           type = 'rect';
-          rect++;
+
         }
         let material = (typeof obstacleData[i][6] === 'undefined' ? '0' : obstacleData[i][6].toString());
         if (!materialReg.test(material)) {
@@ -2396,8 +2422,7 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
   result() {
     // 規劃目標
     this.setPlanningObj();
-    // location.replace(`#/site/result?taskId=${this.taskid}&isHst=true`);
-    // location.reload();
+
     if (this.isHst) {
       this.router.navigate(['/site/result'], { queryParams: { taskId: this.taskid, isHst: true }});
     } else {
@@ -2406,7 +2431,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     
   }
 
-  /** 歷史資料塞回form */
+  /**
+   * 歷史資料塞回form
+   * @param result 
+   */
   setHstToForm(result) {
     this.calculateForm.addFixedBsNumber = result['addfixedbsnumber'];
     this.calculateForm.availableNewBsNumber = result['availablenewbsnumber'];
@@ -2512,7 +2540,10 @@ export class SitePlanningComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 亂數字串 */
+  /**
+   * 亂數字串
+   * @param len 
+   */
   generateString(len) {
     let result = ' ';
     const charactersLength = this.characters.length;

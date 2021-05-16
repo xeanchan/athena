@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
+/**
+ * 公用參數與function service
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -18,11 +21,20 @@ export class AuthService {
     this.userId = window.sessionStorage.getItem('son_userId');
   }
 
+  /** API URL */
   public API_URL = 'http://211.20.94.210:3000/son';
+  /** 登入後的session_id */
   public userToken = null;
+  /** 語系 */
   public lang = 'zh-TW';
+  /** user id */
   public userId = null;
 
+  /**
+   * set user token
+   * @param sonSession 
+   * @param userId 
+   */
   public setUserToken(sonSession: string, userId: string) {
     sessionStorage.setItem('son_session', sonSession);
     sessionStorage.setItem('son_userId', userId);
@@ -57,6 +69,10 @@ export class AuthService {
     return this.http.post(`${this.API_URL}/login`, loginForm);
   }
 
+  /**
+   * 切換語系
+   * @param langulage 
+   */
   public changeLanguage(langulage) {
     this.translateService.use(langulage);
   }
@@ -97,6 +113,10 @@ export class AuthService {
     return new Blob([ia], {type: mimeString});
   }
 
+  /**
+   * parse材質數值為文字
+   * @param val 
+   */
   parseMaterial(val) {
     if (val === '0' || val === 0) {
       return '木頭';
@@ -111,6 +131,10 @@ export class AuthService {
     }
   }
 
+  /**
+   * check is empty
+   * @param val 
+   */
   isEmpty(val) {
     if (val == null || val === 'null' || val === '') {
       return true;

@@ -1,6 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig } from '@angular/material/dialog';
 
+/**
+ * 公用訊息 dialog util
+ */
 @Component({
   selector: 'app-msg-dialog',
   templateUrl: './msg-dialog.component.html',
@@ -28,6 +31,7 @@ export class MsgDialogComponent implements OnInit {
       this.dialogConfig.autoFocus = false;
     }
 
+  /** dialog config */
   dialogConfig = new MatDialogConfig();
   /** title */
   title = 'Message';
@@ -37,6 +41,7 @@ export class MsgDialogComponent implements OnInit {
   closeTime = 2000;
   /** text color */
   type = 'success';
+  /** text css class */
   textClass = 'text-normal';
 
   ngOnInit() {

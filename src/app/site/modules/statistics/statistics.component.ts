@@ -5,6 +5,9 @@ import { AuthService } from '../../../service/auth.service';
 
 declare var Plotly: any;
 
+/**
+ * 結果頁統計圖
+ */
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
@@ -16,9 +19,11 @@ export class StatisticsComponent implements OnInit {
     private translateService: TranslateService,
     public authService: AuthService) { }
 
-  result = {};
+  /** 結果form */
   calculateForm = new CalculateForm();
-
+  /** 結果data */
+  result = {};
+  /** plotly config */
   defaultPlotlyConfiguration = {
     displaylogo: false,
     showTips: false,
@@ -30,13 +35,20 @@ export class StatisticsComponent implements OnInit {
   bgColor = 'rbga(0, 0, 0, 0)';
   /** 文字顏色 */
   textColor = '#ffffff';
+  /** 高度list */
   zValues = [];
+  /** 數值格式化 */
   fmt = Plotly.d3.format('.2%');
+  /** 顯示UE統計圖 */
   showUE = true;
 
   ngOnInit(): void {
   }
 
+  /**
+   * 畫圖
+   * @param isPDF 
+   */
   drawChart(isPDF) {
     if (isPDF) {
       this.bgColor = '#ffffff';
@@ -70,7 +82,10 @@ export class StatisticsComponent implements OnInit {
     
   }
 
-  /** 場域Modulation統計 */
+  /**
+   * 場域Modulation統計
+   * @param isPDF 
+   */
   drawLayerModulation(isPDF) {
     const layout = {
       autosize: true,
@@ -188,7 +203,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** 場域Modulation CDF圖 */
+  /**
+   * 場域Modulation CDF圖
+   * @param isPDF 
+   */
   drawLayerModulationCDF(isPDF) {
     const layout = {
       autosize: true,
@@ -316,7 +334,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** 行動終端Modulation統計 */
+  /**
+   * 行動終端Modulation統計
+   * @param isPDF 
+   */
   drawUEModulation(isPDF) {
     const layout = {
       autosize: true,
@@ -415,7 +436,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** 場域訊號強度統計 */
+  /**
+   * 場域訊號強度統計
+   * @param isPDF 
+   */
   drawLayerSignal(isPDF) {
     const layout = {
       autosize: true,
@@ -523,7 +547,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** 場域訊號強度CDF圖 */
+  /**
+   * 場域訊號強度CDF圖
+   * @param isPDF 
+   */
   drawLayerSignalCDF(isPDF) {
     const layout = {
       autosize: true,
@@ -641,7 +668,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** 行動終端Modulation CDF圖 */
+  /**
+   * 行動終端Modulation CDF圖
+   * @param isPDF 
+   */
   drawUEModulationCDF(isPDF) {
     const layout = {
       autosize: true,
@@ -749,7 +779,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** UE訊號強度統計 */
+  /**
+   * UE訊號強度統計
+   * @param isPDF 
+   */
   drawUESignal(isPDF) {
     const layout = {
       autosize: true,
@@ -839,7 +872,10 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  /** UE訊號強度CDF圖 */
+  /**
+   * UE訊號強度CDF圖
+   * @param isPDF 
+   */
   drawUESignalCDF(isPDF) {
     const layout = {
       autosize: true,
