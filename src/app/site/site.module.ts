@@ -13,7 +13,8 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     SiteRoutingModule,
     SitePlanningModule,
-    View3dModule
+    View3dModule,
+    ResultModule
   ],
   declarations: []
 })
