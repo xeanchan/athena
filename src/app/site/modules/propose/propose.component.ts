@@ -270,7 +270,7 @@ export class ProposeComponent implements OnInit {
   }
 
   /**
-   * 將圖轉為image
+   * 將圖轉為image，pdf才不會空白
    */
   async toImg() {
     const proposeData = <HTMLDivElement> document.querySelector(`#propose`);

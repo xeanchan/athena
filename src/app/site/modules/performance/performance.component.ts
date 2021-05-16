@@ -38,7 +38,7 @@ export class PerformanceComponent implements OnInit {
     }
   }
 
-  /** parse無資料為- */
+  /** parse無資料為 - */
   parseNoData(val, isPercentage, type) {
     if (val == null || val === '') {
       return '-';
